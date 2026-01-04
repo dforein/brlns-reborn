@@ -1,0 +1,995 @@
+package com.brlnsreb.minigames.mm;
+
+import cn.nukkit.Player;
+import cn.nukkit.block.Block;
+import cn.nukkit.entity.Entity;
+import cn.nukkit.entity.data.EntityFlag;
+import cn.nukkit.entity.effect.Effect;
+import cn.nukkit.entity.effect.EffectType;
+import cn.nukkit.level.Level;
+import cn.nukkit.level.Location;
+import cn.nukkit.level.Position;
+import cn.nukkit.math.Vector3;
+import cn.nukkit.scheduler.Task;
+import cn.nukkit.utils.TextFormat;
+import com.brlnsreb.minigames.MinigameCore;
+import com.brlnsreb.minigames.core.Arena;
+import com.brlnsreb.minigames.core.GameState;
+import com.brlnsreb.minigames.mm.config.MMConfig;
+import com.brlnsreb.minigames.mm.items.ItemManager;
+import com.brlnsreb.minigames.mm.roles.GamePlayer;
+import com.brlnsreb.minigames.mm.roles.MMRole;
+import com.brlnsreb.minigames.mm.roles.MMRoleManager;
+import com.brlnsreb.minigames.mm.systems.*;
+
+import java.util.*;
+
+public class MurderMysteryGame {
+    
+    private final MinigameCore plugin;
+    private final MMConfig config;
+    private final MMRoleManager roleManager;
+    
+    private GameState state;
+    private Arena arena;
+    private final List<Player> players;
+    private String selectedMap;
+    private String selectedTime;
+    
+    private TimerSystem timer;
+    private ScoreboardSystem scoreboard;
+    private RaycastSystem raycast;
+    private ProjectileSystem projectile;
+    private DeathSystem death;
+    private GoldSystem gold;
+    private CooldownSystem cooldowns;
+    private BossBarSystem bossBar;
+    private GoldSpawnMapper mapper;
+    private QuitTracker quitTracker;
+    private SpectatorMenu spectatorMenu;
+    private TrackerSystem trackerSystem;
+    private VotingSystem votingSystem;
+    private VotingMenu votingMenu;
+
+    private Task updateTask;
+
+    private boolean countdownShortened;
+    private int initialCountdown;
+    
+    private boolean firstKill;
+
+    private final Set<Entity> deadBodies = new HashSet<>();
+    private final List<Position> redstonePositions = new ArrayList<>();
+    
+    public MurderMysteryGame(MinigameCore plugin) {
+        this.plugin = plugin;
+        this.config = new MMConfig(plugin.getConfig());
+        this.roleManager = new MMRoleManager();
+        this.state = GameState.LOBBY;
+        this.players = new ArrayList<>();
+        
+        this.scoreboard = new ScoreboardSystem();
+        this.raycast = new RaycastSystem(config);
+        this.projectile = new ProjectileSystem(config);
+        this.death = new DeathSystem(plugin, this);
+        this.gold = new GoldSystem(plugin, config);
+        this.cooldowns = new CooldownSystem();
+        this.bossBar = new BossBarSystem();
+        this.mapper = new GoldSpawnMapper(plugin);
+        this.quitTracker = new QuitTracker();
+        this.spectatorMenu = new SpectatorMenu(this);
+        this.trackerSystem = new TrackerSystem();
+        this.votingSystem = new VotingSystem();
+        this.votingMenu = new VotingMenu(this);
+    }
+    
+    public boolean joinPlayer(Player player) {
+        if (players.contains(player)) {
+            player.sendMessage(TextFormat.colorize(config.getMessage("already-in-game")));
+            return false;
+        }
+
+        if (quitTracker.hasQuitted(player.getName())) {
+            joinAsSpectator(player);
+            return false;
+        }
+
+        if (state != GameState.LOBBY && state != GameState.COUNTDOWN) {
+            joinAsSpectator(player);
+            return false;
+        }
+        
+        players.add(player);
+        roleManager.addPlayer(player);
+
+        refreshPlayerState(player, false);
+        if (state == GameState.COUNTDOWN) {
+            ItemManager.giveLobbyItems(
+                player, 
+                config.getRulesItemName(), 
+                config.getGamePollItemName()
+            );
+        }
+
+        String message = config.getMessageNoPrefix("player-joined")
+                        .replace("{name}", player.getName())
+                        .replace("{playersNumber}", Integer.toString(players.size()))
+                        .replace("{maxPlayers}", Integer.toString(config.getMaxPlayers()));
+        
+        for (Player p : players) {
+            p.sendActionBar(TextFormat.colorize(message), 10, 60, 10);
+        }
+        
+        if (state == GameState.LOBBY && players.size() >= config.getMinPlayers()) {
+            startCountdown();
+        } 
+
+        else if (state == GameState.COUNTDOWN && 
+                !countdownShortened && 
+                players.size() >= config.getMinPlayersStart()) {
+            shortenCountdown();
+        }
+        
+        return true;
+    }
+
+    private void joinAsSpectator(Player player) {
+        players.add(player);
+        
+        roleManager.addPlayer(player);
+        GamePlayer gp = roleManager.getGamePlayer(player);
+        if (gp != null) {
+            gp.setAlive(false);
+            gp.setRole(MMRole.SPECTATOR);
+        }
+
+        player.setGamemode(Player.ADVENTURE);
+        player.noClip = false;
+        player.setFlying(true);
+        player.setAllowFlight(true);
+        player.setNameTagVisible(false);
+        player.setDataFlag(EntityFlag.INVISIBLE, true);
+        player.setDataFlag(EntityFlag.COLLIDABLE, false);
+
+        ItemManager.clearInventory(player);
+        ItemManager.giveSpectatorItems(player, config.getSpectatorItemName());
+
+        if (plugin.getConfig().getBoolean("world.arena-regions." + selectedMap + ".night-vision")) {      
+            giveNightVision(player);
+        }
+
+        player.sendMessage(TextFormat.colorize(config.getMessage("spectator-in-game")));
+
+        if (arena != null) {
+            Vector3 spawn = arena.getSpawns().get(0);
+            player.teleport(new Location(spawn.x, spawn.y, spawn.z, arena.getLevel()));
+        }
+    }
+
+    public void forceStart() {
+        if (timer != null) timer.stop();
+
+        finalizeVoting();
+
+        broadcast("§aGame start was forced by an op!");
+        startGame();
+    }
+
+    public void leavePlayer(Player player) {
+        players.remove(player);
+        roleManager.removePlayer(player);
+        refreshPlayerState(player, true);
+
+        switch (state) {
+            case LOBBY:
+            case COUNTDOWN:
+                String message = config.getMessageNoPrefix("player-left")
+                                .replace("{name}", player.getName())
+                                .replace("{playersNumber}", Integer.toString(players.size()))
+                                .replace("{maxPlayers}", Integer.toString(config.getMaxPlayers()));
+                
+                for (Player p : players) {
+                    p.sendActionBar(TextFormat.colorize(message), 10, 60, 10);
+                }
+                break;
+            case PREGAME_COUNTDOWN:
+                returnToLobby(player);
+                break;
+            case IN_GAME:
+                returnToLobby(player);
+                checkWinCondition();
+                break;
+            case ENDING:
+                returnToLobby(player);
+                break;
+            }
+        
+        if (players.size() < config.getMinPlayers() && state == GameState.COUNTDOWN) {
+            cancelCountdown();
+        }
+    }
+
+    private void startCountdown() {
+        state = GameState.COUNTDOWN;
+
+        for (Player p : players) {
+            ItemManager.giveLobbyItems(
+                    p, 
+                    config.getRulesItemName(), 
+                    config.getGamePollItemName()
+                );
+        }
+        prepareMapVoting();
+        
+        int duration = config.getMaxCountdown();
+        timer = new TimerSystem(plugin, duration);
+
+        initialCountdown = duration;
+        
+        for (Player p : players) {
+            String message = config.getCountdownBossbar().replace("{seconds}", String.valueOf(duration));
+            bossBar.showCountdown(p, duration, TextFormat.colorize(message));
+        }
+        
+        timer.startCountdown(duration, this::startGame, () -> {
+            int remaining = timer.getSecondsRemaining();
+
+            for (Player p : players) {
+                String message = formatCountdownMessage(remaining);
+                bossBar.updateCountdown(p, message, remaining, initialCountdown);
+            }
+        });
+    }
+
+    private void shortenCountdown() {
+        if (countdownShortened) return;
+        countdownShortened = true;
+        int shortened = config.getShortenedCountdown();
+        
+        if (timer != null) timer.stop();
+
+        initialCountdown = shortened;
+        timer = new TimerSystem(plugin, shortened);
+        
+        String message = formatCountdownMessage(shortened);
+        for (Player p : players) {
+            ItemManager.clearInventory(p);
+            bossBar.updateCountdown(p, message, shortened, initialCountdown);
+        }
+        
+        timer.startCountdown(shortened, this::startGame, () -> {
+            int remaining = timer.getSecondsRemaining();
+
+            String message2 = formatCountdownMessage(remaining);
+            for (Player p : players) {
+                bossBar.updateCountdown(p, message2, remaining, initialCountdown);
+            }
+        });
+
+        String shortenedMsg = config.getMessage("timer-shortened")
+                                .replace("{seconds}", String.valueOf(shortened));
+        broadcast(shortenedMsg);
+        
+        finalizeVoting();
+    }
+    
+    private void cancelCountdown() {
+        if (timer != null) timer.stop();
+        
+        countdownShortened = false;
+
+        state = GameState.LOBBY;
+        refreshPlayerState();
+    }
+    
+    private void startGame() {
+        for (Player p : players) {
+            bossBar.hide(p);
+        }
+
+        if (players.size() < config.getMinPlayers()) {
+            state = GameState.LOBBY;
+            countdownShortened = false;
+            refreshPlayerState();
+
+            String message = config.getMessage("not-enough-players").replace("{min}", String.valueOf(config.getMinPlayers()));
+            broadcast(message);
+            
+            return;
+        }
+
+        if (selectedMap == null) {
+            List<String> enabledMaps = config.getEnabledMaps();
+            if (enabledMaps.isEmpty()) {
+                plugin.getLogger().error("CRITICAL ERROR: No maps enabled in config!");
+                broadcast(TextFormat.RED + "ERROR: no maps available!");
+                returnToLobby();
+                reset();
+                return;
+            }
+            selectedMap = enabledMaps.get(new Random().nextInt(enabledMaps.size()));
+            loadArena(selectedMap);
+        }
+
+        gold.loadSpawns(mapper, selectedMap);
+
+        startScoreboardUpdates();
+        teleportPlayers();
+
+        broadcast(config.getMessage("teleported-to-arena"));
+
+        startPreGameCountdown();
+    }
+
+    private void startPreGameCountdown() {
+        state = GameState.PREGAME_COUNTDOWN;
+
+        int pregameDuration = config.getPregameCountdown();
+        timer = new TimerSystem(plugin, pregameDuration);
+
+        refreshPlayerState();
+        
+        for (Player p : players) {
+            if (plugin.getConfig().getBoolean("world.arena-regions." + selectedMap + ".night-vision")) {
+                giveNightVision(p);
+            }
+
+            bossBar.showExp(p, 0);
+        }
+
+        List<String> builders = config.getMapBuilders(selectedMap);
+        if (!builders.isEmpty()) {
+            String buildersStr = String.join(" &7/ ", builders);
+            String creditsMsg = config.getMessage("map-credits")
+                                        .replace("{builders}", buildersStr);
+            broadcast(creditsMsg);
+        }
+    
+        timer.startCountdown(pregameDuration, this::startInGameState, () -> {
+            int remaining = timer.getSecondsRemaining() - 1;
+
+            for (Player p : players) {
+                switch (remaining) {
+                    case 3:
+                        p.sendTitle(TextFormat.colorize("&l&a3"), "", 4, 17, 4);
+                        break;
+                    case 2:
+                        p.sendTitle(TextFormat.colorize("&l&62"), "", 4, 17, 4);
+                        break;
+                    case 1:
+                        p.sendTitle(TextFormat.colorize("&l&c1"), "", 4, 17, 4);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+    }
+
+    private void startInGameState() {
+        state = GameState.IN_GAME;
+
+        for (Player p : players) {
+            bossBar.hide(p);
+        }
+
+        roleManager.assignRoles(players);
+        giveItems();
+
+        for (GamePlayer gp : roleManager.getAllPlayers()) {
+            Player player = gp.getPlayer();
+
+            broadcast(config.getMessage("game-start"));
+            broadcast(config.getMessage("game-start2"));
+
+            switch (gp.getRole()) {
+                case INNOCENT:
+                    bossBar.showExpAndGold(player, 0, 0);
+                    player.sendTitle(
+                        TextFormat.colorize(config.getMessageNoPrefix("innocent-title")), 
+                        TextFormat.colorize(config.getMessageNoPrefix("innocent-subtitle")),
+                        10, 60, 10
+                    );
+                    break;
+                case SHERIFF:
+                    bossBar.showExp(player, 0);
+                    player.sendTitle(
+                        TextFormat.colorize(config.getMessageNoPrefix("sheriff-title")), 
+                        TextFormat.colorize(config.getMessageNoPrefix("sheriff-subtitle")),
+                        10, 60, 10
+                    );
+                    player.sendMessage(TextFormat.colorize(config.getMessage("sheriff-advice")));
+                    break;
+                case MURDERER:
+                    bossBar.showExp(player, 0);
+                    player.sendTitle(
+                        TextFormat.colorize(config.getMessageNoPrefix("murderer-title")), 
+                        TextFormat.colorize(config.getMessageNoPrefix("murderer-subtitle")),
+                        10, 60, 10
+                    );
+                    player.sendMessage(TextFormat.colorize(config.getMessage("murderer-advice")));
+                    break;
+                case SPECTATOR:
+                    break;
+            }
+        }
+        
+        timer = new TimerSystem(plugin, config.getGameDuration());
+        timer.startGame(config.getGameDuration(), this::onTimeExpired);
+        
+        gold.startSpawning(arena);
+    }
+
+    private void prepareMapVoting() {
+        if (!votingSystem.getAvailableMaps().isEmpty()) return;
+        
+        List<String> allMaps = config.getEnabledMaps();
+        List<String> votingMaps = new ArrayList<>();
+        
+        if (allMaps.size() <= 3) {
+            votingMaps.addAll(allMaps);
+        } else {
+            List<String> shuffled = new ArrayList<>(allMaps);
+            Collections.shuffle(shuffled);
+            votingMaps.addAll(shuffled.subList(0, 3));
+        }
+        votingSystem.setAvailableMaps(votingMaps);
+    }
+
+    private void finalizeVoting() {
+        if (selectedMap != null) return;
+
+        selectedMap = votingSystem.getMostVotedMap();
+        if (selectedMap == null) {
+            List<String> enabledMaps = config.getEnabledMaps();
+            if (!enabledMaps.isEmpty()) {
+                selectedMap = enabledMaps.get(new Random().nextInt(enabledMaps.size()));
+                plugin.getLogger().warning("No vote. Fallback on random map: " + selectedMap);
+            } else {
+                plugin.getLogger().error("CRITIC ERROR: No map enabled in config!");
+                broadcast("§cError: no map available. Match cancelled.");
+                forceStop();
+                return;
+            }
+        }
+
+        selectedTime = votingSystem.getMostVotedTime(config.getAvailableTimes());
+        if (selectedTime == null) {
+            selectedTime = config.getAvailableTimes().isEmpty() ? "day" : config.getAvailableTimes().get(0);
+        }
+
+        String selectedMapMsg = config.getMessage("selected-map")
+                .replace("{selectedMap}", config.getMapDisplayName(selectedMap))
+                .replace("{selectedTime}", selectedTime)
+                .replace("{weather}", config.getMapWeather(selectedMap));
+        
+        broadcast(selectedMapMsg);
+
+        loadArena(selectedMap);
+    }
+
+    private String formatCountdownMessage(int seconds) {
+        if (seconds <= 10) {
+            return TextFormat.colorize(
+                config.getCountdownBossbarShort()
+                    .replace("{seconds}", String.valueOf(seconds))
+            );
+        } else if (seconds < 60) {
+            return TextFormat.colorize(
+                config.getCountdownBossbarMedium()
+                    .replace("{seconds}", String.valueOf(seconds))
+            );
+        } else {
+            int minutes = seconds / 60;
+            int secs = seconds % 60;
+            return TextFormat.colorize(
+                config.getCountdownBossbarLong()
+                    .replace("{minutes}", String.valueOf(minutes))
+                    .replace("{seconds}", String.valueOf(secs))
+            );
+        }
+    }
+
+    private void giveNightVision(Player player) {
+        Effect nightVision = Effect.get(EffectType.NIGHT_VISION);
+        nightVision.setDuration(9999);
+        nightVision.setAmplifier(0);
+        nightVision.setVisible(false);
+        player.addEffect(nightVision);
+    }
+
+    private void loadArena(String selectedMap) {
+        String worldName;
+        if (plugin.getConfig().exists("world.arena-regions." + selectedMap + ".world")) {
+            worldName = plugin.getConfig().getString("world.arena-regions." + selectedMap + ".world");
+        } else {
+            worldName = plugin.getConfig().getString("world.default-world");
+        }
+        
+        Level level = plugin.getServer().getLevelByName(worldName);
+        
+        //min & max coords
+        List<?> rawMinCoords = plugin.getConfig().getList("world.arena-regions." + selectedMap + ".min");
+        List<?> rawMaxCoords = plugin.getConfig().getList("world.arena-regions." + selectedMap + ".max");
+        List<Integer> minCoords = (List<Integer>) rawMinCoords;
+        List<Integer> maxCoords = (List<Integer>) rawMaxCoords;
+        
+        Vector3 min = new Vector3(
+            minCoords.get(0).doubleValue(), 
+            minCoords.get(1).doubleValue(), 
+            minCoords.get(2).doubleValue()
+        );
+        Vector3 max = new Vector3(
+            maxCoords.get(0).doubleValue(), 
+            maxCoords.get(1).doubleValue(), 
+            maxCoords.get(2).doubleValue()
+        );
+
+        //spawns
+        Object spawnsRaw = plugin.getConfig().getList("world.arena-regions." + selectedMap + ".spawns");
+        List<List<?>> spawnsRawList = (List<List<?>>) spawnsRaw;
+        List<List<Double>> spawnsList = new ArrayList<>();
+        for (int i = 0; i < spawnsRawList.size(); i++) {
+            List<?> coords = spawnsRawList.get(i);
+            spawnsList.add(Arrays.asList(
+                ((Number) coords.get(0)).doubleValue(),
+                ((Number) coords.get(1)).doubleValue(),
+                ((Number) coords.get(2)).doubleValue()
+            ));
+        }
+        
+        List<Vector3> spawns = new ArrayList<>();
+        for (List<Double> coords : spawnsList) {
+            spawns.add(new Vector3(
+                coords.get(0),
+                coords.get(1), 
+                coords.get(2)
+            ));
+        }
+
+        if (level != null) {
+            //time
+            if (selectedTime != null) {
+                int timeValue;
+                switch (selectedTime.toLowerCase()) {
+                    case "day":
+                        timeValue = 6000;
+                        break;
+                    case "night": 
+                        timeValue = 18000; 
+                        break;
+                    case "sunset": 
+                        timeValue = 12000; 
+                        break;
+                    case "midnight": 
+                        timeValue = 20000; 
+                        break;
+                    default:
+                        timeValue = 6000;
+                        break;
+                }
+                level.setTime(timeValue);
+            }
+
+            //weather
+            switch (config.getMapWeather(selectedMap).toLowerCase()) {
+                case "clear":
+                    level.setRaining(false);
+                    level.setThundering(false);
+                    break;
+                case "rain":
+                    level.setRaining(true);
+                    level.setThundering(false);
+                    break;
+                case "storm":
+                    level.setRaining(true);
+                    level.setThundering(false);
+                    break;
+                default:
+                    level.setRaining(false);
+                    level.setThundering(false);
+                    break;
+            }
+        }
+
+        
+        arena = new Arena(plugin.getConfig().getString("world.arena-regions." + selectedMap + ".name"), level, min, max, spawns);
+    }
+
+    private void teleportPlayers() {
+        List<Vector3> spawns = arena.getSpawns();
+        
+        for (int i = 0; i < players.size(); i++) {
+            Vector3 spawn = spawns.get(i % spawns.size());
+            Location loc = new Location(spawn.x, spawn.y, spawn.z, arena.getLevel());
+
+            players.get(i).teleport(loc);
+        }
+    }
+
+    private void giveItems() {
+        for (GamePlayer gp : roleManager.getAllPlayers()) {
+            Player p = gp.getPlayer();
+            
+            switch (gp.getRole()) {
+                case MURDERER:
+                    ItemManager.giveMurdererItems(p, config.getMurdererSwordName(), config.getMurdererBlazeRodName());
+                    break;
+                case SHERIFF:
+                    ItemManager.giveSheriffItems(p, config.getSheriffHoeName());
+                    break;
+                case INNOCENT:
+                    break;
+                case SPECTATOR:
+                    break;
+            }
+        }
+    }
+    
+    private void onTimeExpired() {
+        endGame(false);
+    }
+    
+    public void checkWinCondition() {
+        if (state != GameState.IN_GAME) return;
+        
+        if (roleManager.allInnocentsDead()) {
+            endGame(true);
+        } else if (roleManager.isMurdererDead()) {
+            endGame(false);
+        }
+    }
+
+    private void endGame(boolean murdererWin) {
+        state = GameState.ENDING;
+        
+        if (timer != null) timer.stop();
+        
+        gold.stop(arena);
+
+        if (!murdererWin) {
+            GamePlayer sheriffGp = roleManager.getSheriff();
+            if (sheriffGp != null && sheriffGp.isAlive()) {
+                int bonus = config.getExpSheriffWin();
+                sheriffGp.addExp(bonus);
+                
+            }
+
+            broadcast(config.getMessage("murderer-dead"));
+
+        }
+        
+        String titleMsg = murdererWin ? 
+            config.getMessageNoPrefix("murderer-won-title") : 
+            config.getMessageNoPrefix("innocents-won-title");
+        
+        for (Player p : players) {
+            p.sendTitle(TextFormat.colorize(titleMsg), "",
+                        10, 60, 10);
+        }
+        
+        String chatMsg = murdererWin ? 
+            config.getMessage("murderer-won") : 
+            config.getMessage("innocents-won");
+        String chatMsg2 = murdererWin ? 
+            config.getMessage("murderer-won2") : 
+            config.getMessage("innocents-won2");
+
+        broadcast(chatMsg, true);
+        broadcast(chatMsg2, false);
+
+        plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
+            cleanupBodies();
+            cleanupRedstone(arena);
+            returnToLobby();
+            reset();
+        }, config.getEndTime() * 20);
+    }
+
+    public void forceStop() {
+        if (state == GameState.IN_GAME 
+            || state == GameState.COUNTDOWN 
+            || state == GameState.PREGAME_COUNTDOWN) {
+
+            state = GameState.ENDING;
+
+            if (timer != null) timer.stop();
+            gold.stop(arena);
+
+            cleanupBodies();
+            cleanupRedstone(arena);
+            returnToLobby();
+            reset();
+        }
+    }
+
+    private void returnToLobby() {
+        for (Player p : players) {
+            returnToLobby(p);
+        }
+    }
+
+    private void returnToLobby(Player player) {
+        Level lobby = plugin.getServer().getLevelByName(config.getLobbyWorld());
+        Vector3 spawnPos = config.getLobbySpawn();
+        Location lobbySpawn = new Location(spawnPos.x, spawnPos.y, spawnPos.z, lobby);
+        
+        ItemManager.clearInventory(player);
+        
+        player.teleport(lobbySpawn);
+    }
+        
+    private void reset() {
+        stopScoreboardUpdates();
+        refreshPlayerState();
+
+        state = GameState.LOBBY;
+        selectedMap = null;
+        selectedTime = null;
+        countdownShortened = false;
+        firstKill = true;
+
+        players.clear();
+        roleManager.clear();
+        cooldowns.clear();
+        bossBar.clear();
+        quitTracker.clear();
+        votingSystem.clear();
+    }
+
+    private void cleanupBodies() {
+        for (Entity body : deadBodies) {
+            if (body != null && !body.isClosed()) {
+                body.close();
+            }
+        }
+        deadBodies.clear();
+    }
+
+    private void cleanupRedstone(Arena arena) {
+        if (redstonePositions.isEmpty()) return;
+
+        int removed = 0;
+        for (Position pos : redstonePositions) {
+            if (pos.getLevel() != null) {
+                if (pos.getLevel().getBlock(pos).getId().contains("redstone")) {
+                    pos.getLevel().setBlock(pos, Block.get(Block.AIR));
+                    removed++;
+                }
+            }
+        }
+
+        plugin.getLogger().info("Removed " + removed + " redstone blocks");
+        
+        redstonePositions.clear();
+    }
+
+    private void refreshPlayerState() {
+        for (Player p : players) {
+            refreshPlayerState(p, false);
+        }
+    }
+
+    private void refreshPlayerState(Player p, Boolean leaving) {
+        ItemManager.clearInventory(p);
+        
+        p.setGamemode(Player.ADVENTURE);
+        p.noClip = false;
+        p.setFlying(false);
+        p.setAllowFlight(false);
+        p.setNameTagVisible(true);
+        p.setDataFlag(EntityFlag.INVISIBLE, false);
+        p.setDataFlag(EntityFlag.COLLIDABLE, false);
+        p.removeAllEffects();
+
+        if (leaving) {
+            ItemManager.clearInventory(p);
+            switch (state) {
+                case LOBBY:
+                    break;
+                case COUNTDOWN:
+                    bossBar.hide(p);
+                    break;
+                case PREGAME_COUNTDOWN:
+                case IN_GAME:
+                case ENDING:
+                    bossBar.hide(p);
+                    scoreboard.remove(p);
+                    break;
+            }
+            
+        } else {
+            switch (state) {
+                case LOBBY:
+                    scoreboard.remove(p);
+                    bossBar.hide(p);
+                    ItemManager.giveLobbyItems(p, config.getRulesItemName());
+                    break;
+
+                case COUNTDOWN:
+                    ItemManager.giveLobbyItems(p, config.getRulesItemName(), config.getGamePollItemName());
+                    break;
+
+                case IN_GAME:
+                case PREGAME_COUNTDOWN:
+                case ENDING:
+                    scoreboard.remove(p);
+                    bossBar.hide(p);
+                    break;
+            }
+        }
+    }
+    
+    private void startScoreboardUpdates() {
+        if (updateTask != null) {
+            return;
+        }
+
+        updateTask = new Task() {
+            @Override
+            public void onRun(int currentTick) {
+                updateScoreboards();
+            }
+        };
+        
+        plugin.getServer().getScheduler().scheduleRepeatingTask(plugin, updateTask, 10);
+    }
+    
+    private void stopScoreboardUpdates() {
+        if (updateTask != null) {
+            updateTask.cancel();
+            updateTask = null;
+        }
+    }
+
+    private void updateScoreboards() {
+        if (timer == null) return;
+        
+        String timeStr = timer.getFormattedTime();
+        int remainingSeconds = timer.getSecondsRemaining();
+
+        if (state == GameState.PREGAME_COUNTDOWN) {
+            for (Player p : players) {
+                if (p.isOnline()) {
+                    scoreboard.show(p, timeStr, 0, false, MMRole.INNOCENT, true);
+                }
+            }
+            return;
+        } else if (state == GameState.IN_GAME) {
+            int innocents = roleManager.getAliveInnocentsCount();
+            boolean sheriffAlive = !roleManager.isSheriffDead();
+            int trackThreshold = config.getMurdererTrackThreshold();
+
+            GamePlayer murdererGp = roleManager.getMurderer();
+            boolean trackingActive = (murdererGp != null && murdererGp.isAlive() && remainingSeconds <= trackThreshold);
+
+            for (GamePlayer gp : roleManager.getAllPlayers()) {
+                Player p = gp.getPlayer();
+                if (!p.isOnline()) continue;
+
+                scoreboard.show(p, timeStr, innocents, sheriffAlive, gp.getRole(), false);
+                updatePlayerBossBar(p, gp, trackingActive);
+            }
+        }
+    }
+
+    private void updatePlayerBossBar(Player p, GamePlayer gp, boolean trackingActive) {
+        switch (gp.getRole()) {
+            case MURDERER:
+                if (trackingActive) {
+                    double dist = trackerSystem.getNearestDistance(p, roleManager.getAllPlayers());
+                    bossBar.updateExpWithDistance(p, gp.getExpEarned(), dist);
+                } else {
+                    bossBar.updateExp(p, gp.getExpEarned());
+                }
+                break;
+                
+            case INNOCENT:
+                bossBar.updateExpAndGold(p, gp.getGoldCollected(), gp.getExpEarned());
+                break;
+                
+            case SHERIFF:
+                bossBar.updateExp(p, gp.getExpEarned());
+                break;
+                
+            case SPECTATOR:
+                break;
+        }
+    }
+
+    private void broadcast(String message) {
+        for (Player p : players) {
+            p.sendMessage(TextFormat.colorize(message));
+        }
+    }
+
+    private void broadcast(String message, Boolean spectatorsIncluded) {
+        for (Player p : players) {
+            if (spectatorsIncluded) {
+                p.sendMessage(TextFormat.colorize(message));
+            } else if (roleManager.getGamePlayer(p).getRole() != MMRole.SPECTATOR) {
+                p.sendMessage(TextFormat.colorize(message));
+            }
+        }
+    }
+
+    public boolean isFirstKill() {
+        if (firstKill) {
+            firstKill = false;
+            return true;
+        }
+        return false;
+    }
+
+    public void addTrackedRedstone(Position pos) {
+        redstonePositions.add(pos);
+    }
+    
+    public GameState getState() {
+        return state;
+    }
+    
+    public MMRoleManager getRoleManager() {
+        return roleManager;
+    }
+    
+    public MMConfig getConfig() {
+        return config;
+    }
+    
+    public RaycastSystem getRaycast() {
+        return raycast;
+    }
+    
+    public ProjectileSystem getProjectile() {
+        return projectile;
+    }
+    
+    public DeathSystem getDeath() {
+        return death;
+    }
+    
+    public CooldownSystem getCooldowns() {
+        return cooldowns;
+    }
+    
+    public List<Player> getPlayers() {
+        return new ArrayList<>(players);
+    }
+
+    public BossBarSystem getBossBar() {
+        return bossBar;
+    }
+
+    public GoldSpawnMapper getMapper() {
+        return mapper;
+    }
+
+    public QuitTracker getQuitTracker() {
+        return quitTracker;
+    }
+
+    public SpectatorMenu getSpectatorMenu() {
+        return spectatorMenu;
+    }
+
+    public Arena getArena() {
+        return arena;
+    }
+
+    public Set<Entity> getDeadBodies() {
+        return deadBodies;
+    }
+
+    public MinigameCore getPlugin() {
+        return plugin;
+    }
+
+    public VotingSystem getVotingSystem() {
+        return votingSystem;
+    }
+
+    public VotingMenu getVotingMenu() {
+        return votingMenu;
+    }
+}
