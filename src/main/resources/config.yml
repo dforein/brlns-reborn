@@ -1,0 +1,175 @@
+#config.yml
+
+game:
+  min-players: 2
+  max-players: 20
+  min-players-start: 6
+  max-countdown: 45
+  shortened-countdown: 10
+  pregame-countdown: 10
+  game-duration: 420
+  end-time: 10
+
+lobby:
+  spawn:
+    x: 0
+    y: 81
+    z: 0
+    world: "lobby"
+  rules-book:
+    item-name: "&o&l&fRules &7- Hold / Right Click"
+    title: "Murder Mystery Rules"
+    author: "Server"
+    pages:
+      - "§l§aMurder§2Mystery\n\n§r§7Find and eliminate the murderer before they kill everyone!\n\n§7Collect §6GOLD §7to craft a gun."
+      - "§l§6Roles:\n\n§r§cMurderer§e: Kill all innocents\n\n§9Sheriff§e: Protect innocents\n\n§aInnocent§e: Survive and collect gold"
+      - "§l§dTips:\n\n§r§7- Watch for suspicious behavior\n§e- Work together\n§e- The murderer has a throwable sword and can turn the lights off for a short period"
+  game-poll:
+    item-name: "&o&l&dGame Poll &7- Hold / Right Click"
+    times:
+      - "Day"
+      - "Sunrise"
+      - "Sunset"
+      - "Night"
+
+murderer:
+  sword-throw-cooldown: 10
+  sword-throw-speed: 6
+  blindness-duration: 20
+  time-start-tracking: 60
+  sword-name: "&o&l&cMurderstick"
+  blaze-rod-name: "&o&l&6Lights Out"
+
+sheriff:
+  shoot-cooldown: 0.2
+  friendly-fire-death: true
+  raycast-max-distance: 100
+  raycast-step: 0.2
+  hoe-name: "§o§l§9Sheriff Hoe"
+
+innocents:
+  gold-for-gun: 5
+  dye-name: "&o&l&eCraft The Gun &r&7( Hold / Right Click)"
+
+spectator:
+  item-name: "&l&7Teleport to Player"
+
+death:
+  animation-duration: 0.4167
+  head-yaw-offset: 35
+  head-pitch-offset: 40
+  redstone-drop: 2
+  blindness-duration: 2
+
+gold:
+  spawn-interval-min: 2
+  spawn-interval-max: 3
+
+exp:
+  per-gold: 10
+  per-kill: 15
+  sheriff-won: 600
+  sheriff-kill: 100
+
+scoreboard:
+  title: "&l§aMurder§2Mystery"
+  update-interval: 10
+
+messages:
+  prefix: "§l§aM§r§l§2M §r"
+  spectator-in-game: "&aThe match has already started. You joined as spectator!"
+  countdown-bossbar-long: "&l&eStarting in &6{minutes}m {seconds}s"
+  countdown-bossbar-medium: "&l&eStarting in &6{seconds}s"
+  countdown-bossbar-short: "&l&eStarting in &c{seconds}s"
+  pregame-countdown: "§aMatch begins in §6{seconds}§e seconds..."
+  game-start: "&aThe game has now started!"
+  game-start2: "§cYou are no longer invicible!"
+  gold-collected: "§aCollected +1 §r§eGOLD"
+  not-enough-players: "§cAt least {min} players are required!"
+  already-in-game: "§cYou are already in a game!"
+  teleported-to-arena: "§aMatch will begin soon..."
+  map-vote: "&aYou voted for map: &e{mapName}"
+  time-vote: "&aYou voted for time: &e{time}"
+  player-joined: "&3{name} &7joined (&a{playersNumber}&7/&a{maxPlayers}&7)"
+  player-left: "&3{name} &7left (&a{playersNumber}&7/&a{maxPlayers}&7)"
+  selected-map: "&eYou're going to play on the map &d{selectedMap} &eat &d{selectedTime} &7/ &d{weather}"
+  timer-shortened: "&aTimer shortened in {seconds} seconds"
+  map-credits: "&eMap created by &d{builders}"
+  innocent-title: "&aYOU ARE INNOCENT"
+  innocent-subtitle: "&eStay away from the murderer\n&eand collect gold to earn points"
+  murderer-title: "&cYOU ARE MURDERER"
+  murderer-subtitle: "&eKill all the innocents, but be\n&estealthy not to get caught by the sheriff" 
+  sheriff-title: "&9YOU ARE SHERIFF"
+  sheriff-subtitle: "&l&eProtect the innocents and kill the murderer"
+  dead-title: "&cYOU ARE DEAD" 
+  dead-subtitle: "&6Oh no... too bad" 
+  sheriff-advice: "&eRight click or hold your screen to shoot your gun"
+  murderer-advice: "&eRight click or hold your screen to throw your sword"
+  sheriff-friendly-fire: "The &9Sheriff &ckilled an innocent and is now DEAD."
+  sheriff-gun-dropped: "&eThe &9Sheriff's &egun is now dropped."
+  sheriff-dead-instructions: "&aYou can collect the &9Sheriff's &agun, or craft a gun by using &eGOLD &ato become the sheriff!" 
+  new-sheriff-chosen: "&aA new &9Sheriff &ahas been chosen"
+  killed: "{killer} &ckilled &a{killed}"
+  murderer:  "&eThe Murderer"
+  sheriff: "&cThe &9Sheriff"
+  sheriff-lowercase: "&cthe &9Sheriff"
+  murderer-kill: "&cYou hunted &e{player} &cdown! &7(&2+15E &e+25C &7)" 
+  murderer-kill-sheriff: "&cYou killed the &9Sheriff&c! &7(&2+100E &e+300C &7)"
+  sheriff-kill: "&cYou killed &eThe Murderer&c! &7(&2+600E &e+800C &7)"
+  murderer-dead: "&cThe Murderer is gone!"
+  lights-out-others: "&eThe Murderer &cput the lights out for &e{seconds} &cseconds"
+  lights-out-murderer: "&cThe lights are now out to the other players for &e{seconds} &cseconds"
+  lights-out-murderer-warning: "&eBeware. The sheriff can easily discover you while you are helding your weapon!"
+  lights-out-over: "&cLights out is over!"
+  murderer-won-title: "&cMURDERER WON"
+  innocent-won-title: "&aINNOCENTS WON"
+  murderer-won: "&cMURDERER WON"
+  murderer-won2: "&cCongratulations! You WON"
+  innocents-won: "&aINNOCENT team WON!"
+  innocents-won2: "&aCongratulations! You WON"
+  sword-cooldown: "&cYou have to wait for the cooldown before throwing the sword again!"
+  no-chat: "&cYou can't write in the chat!"
+
+world:
+  lobby: "lobby"
+  default-world: "world"
+  enabled-maps:
+    - "map1"
+    - "map2"
+  arena-regions:
+    map1:
+      name: "Test Map"
+      world: "world"
+      min: [0, 80, 0]
+      max: [100, 80, 100]
+      night-vision: true
+      weather: "Clear"
+      builders:
+        - "ItzDS35"
+      spawns:
+        - [50, 80, 50]
+        - [20, 80, 20]
+        - [80, 80, 80]
+    map2:
+      name: "Museum"
+      world: "museum"
+      min: [-63, 0, -95]
+      max: [81, 45, 58]
+      night-vision: true
+      weather: "Clear"
+      builders:
+        - "Lesz"
+        - "@BrokenLensTeam"
+      spawns:
+        - [12, 5, 0]
+        - [30, 5, -23]
+        - [-31, 5, -13]
+        - [16, 5, -56]
+        - [53, 5, 33]
+        - [65, 5, -6]
+        - [14, 5, -86]
+        - [-41, 5, -61]
+        - [1, 24, 4]
+        - [11, 8, -26]
+        - [1, 13, -26]
+        - [71, 6, -44]
