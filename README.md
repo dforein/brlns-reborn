@@ -1,10 +1,13 @@
+# BrokenLens Reborn Minigames
 Plugin based on PowerNukkitX that recreates from scratch, with high fidelty, the mechanics of MurderMystery minigame (mm) on BrokenLens, a server closed in 2022. 
 The plugin supports multiple minigames, which could be developed later. 
 This project is not affiliated with official BrokenLens.
 
+## config.yml settings and adding maps
 After starting the plugin for the first time, the plugin will generate a config.yml file, where you can edit the settings of the plugin and add valid maps.
 Here an example of how to set up a mm map inside config.yml:
-<config.yml>
+
+```
 world:
   lobby: "lobby"                        # folder name of the lobby world 
   default-world: "world"                # folder name of the default map world
@@ -27,9 +30,9 @@ world:
         - [80, 80, 80]
     map2:
       # ...
-</config.yml>
+```
 
-
+## Making gold spawn in maps 
 In order to make mm gold system work, you'd need to use the "/mm map" commands to scan the maps you are going to use,
 so the plugin understands where it's possible to spawn golds. ps: "<mapName>" is the main name (not the one shown ingame) e.g. "map1", not "Test Map".
 
