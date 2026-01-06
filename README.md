@@ -33,15 +33,15 @@ world:
 ```
 
 ## Making gold spawn in maps 
-In order to make mm gold system work, you'd need to use the "/mm map" commands to scan the maps you are going to use,
-so the plugin understands where it's possible to spawn golds. ps: "<mapName>" is the main name (not the one shown ingame) e.g. "map1", not "Test Map".
+In order to make mm gold system work, you'd need to use the ```/mm map``` commands to scan the maps you are going to use,
+so the plugin understands where it's possible to spawn golds. ps: ```<mapName>``` is the main name (not the one shown ingame) e.g. ```map1```, not ```Test Map```.
 
 However it scans from the min to the max coords you specified in the config.yml, so it could find more valid spawn blocks
 than necessary (for example outside the map itself, but still inside the mix-max coords).
 
-Therefore, you need to place barriers on top of blocks to exclude these (only one per block is enough), or use "/mm map remove [etc..]"
+Therefore, you need to place barriers on top of blocks to exclude these (only one per block is enough), or use ```/mm map remove [etc..]```
 (use the command with no other arguments to see the usage) to remove from the gold spawn blocks list a volume of blocks. 
 Don't worry if the volume you selected contains already excluded blocks.
 
-If you want to include certain barriers as valid spawn blocks, use first "/mm map scanforbarriers <mapName>", 
-then "/mm map scan <mapName> true" to include those barriers scanned before as well.
+If you want to include certain barriers as valid spawn blocks, use first ```/mm map scanforbarriers <mapName>```, 
+then ```/mm map scan <mapName> true``` to include those barriers scanned before as well.
