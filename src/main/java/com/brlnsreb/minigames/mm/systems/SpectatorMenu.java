@@ -24,8 +24,8 @@ public class SpectatorMenu {
     
     public void openTeleportMenu(Player spectator) {
         SimpleForm menu = new SimpleForm(
-            TextFormat.colorize("&l&7Teleport to Player"),
-            TextFormat.colorize("&7Select a player to teleport")
+            TextFormat.colorize(game.getConfig().getSpectatorItemName()),
+            TextFormat.colorize("Select a player to teleport")
         );
         
         List<Player> alivePlayers = new ArrayList<>();
@@ -65,9 +65,12 @@ public class SpectatorMenu {
             
             if (target != null && target.isOnline()) {
                 spectator.teleport(target.getLocation());
-                spectator.sendMessage(TextFormat.GREEN + "Teleported to " + target.getName());
+
+                String message = game.getConfig().getMessage("teleported-to")
+                                                .replace("{player}", target.getName());
+                spectator.sendMessage(message);
             } else {
-                spectator.sendMessage(TextFormat.RED + "Player is no longer available!");
+                spectator.sendMessage(game.getConfig().getMessage("player-not-available"));
             }
         }
     }

@@ -4,9 +4,16 @@ import cn.nukkit.Server;
 import cn.nukkit.Player;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
+import cn.nukkit.entity.Entity;
+import cn.nukkit.entity.data.EntityDataType;
+import cn.nukkit.entity.data.EntityDataTypes;
+import cn.nukkit.entity.data.EntityFlag;
 import cn.nukkit.utils.TextFormat;
 import cn.nukkit.math.Vector3;
+import cn.nukkit.registry.Registries;
 import cn.nukkit.level.Level;
+import cn.nukkit.level.Position;
+import cn.nukkit.level.format.IChunk;
 import cn.nukkit.level.GameRule;
 import cn.nukkit.level.GameRules;
 
@@ -17,6 +24,7 @@ import java.util.List;
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.core.Arena;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
+import com.brlnsreb.minigames.mm.entities.DeadBodyEntity;
 import com.brlnsreb.minigames.mm.systems.GoldSpawnMapper;
 
 public class MMCommand extends Command {
@@ -168,6 +176,24 @@ public class MMCommand extends Command {
                 gameRules.setGameRule(GameRule.TNT_EXPLODES, false);
                 
                 player.sendMessage(TextFormat.GREEN + "Game rules set!");
+                return true;
+            
+            case "debug":
+                if (!player.isOp()) {
+                    player.sendMessage(TextFormat.RED + "No permission!");
+                    return true;
+                }
+
+                runDebug(player, args);
+                return true;
+            
+            case "debugaux":
+                if (!player.isOp()) {
+                    player.sendMessage(TextFormat.RED + "No permission!");
+                    return true;
+                }
+
+                runDebugAuxiliary(player);
                 return true;
                 
             default:
@@ -464,6 +490,93 @@ public class MMCommand extends Command {
             player.sendMessage(TextFormat.RED + "Error loading arena: " + e.getMessage());
             e.printStackTrace();
             return null;
+        }
+    }
+
+    private void runDebug(Player player, String[] args) {
+        //everything needing debug
+        //reminder: args start from args[1] ("/mm debug {args[1]} {args[2]} ...")
+        if (args.length < 2) {
+            player.sendMessage("§cUsa: /mm debug <comando>");
+            player.sendMessage("§7Comandi: check, dead, test");
+            return;
+        }
+
+        if (args[1].equals("check")) {
+            //verifica registrazione
+            try {
+                Class<?> entityClass = Registries.ENTITY.getEntityClass("mm:dead_body");
+                if (entityClass != null) {
+                    player.sendMessage("§a✓ Entità 'mm:dead_body' è registrata!");
+                    player.sendMessage("§7Classe: " + entityClass.getName());
+                } else {
+                    player.sendMessage("§c✗ Entità 'mm:dead_body' NON è registrata!");
+                }
+            } catch (Exception e) {
+                player.sendMessage("§cErrore: " + e.getMessage());
+            }
+        }
+        else if (args[1].equals("dead")) {
+            //spawna il corpo alla posizione del player (no gravità, quindi non serve height)
+            Position pos = player.getPosition().add(2, 0, 2);
+
+            IChunk chunk = (IChunk) pos.getLevel().getChunk(pos.getFloorX() >> 4, pos.getFloorZ() >> 4);
+            DeadBodyEntity body = new DeadBodyEntity(chunk, Entity.getDefaultNBT(pos));
+            
+            //imposta la skin del player
+            body.setSkin(player.getSkin());
+            
+            //imposta rotazione iniziale
+            body.setRotation(player.getYaw(), 0);
+            
+            //spawn
+            body.spawnToAll();
+            
+            //attiva l'animazione dopo un breve delay per assicurarsi che sia spawnato
+            boolean fallForward = new java.util.Random().nextBoolean();
+            plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
+                body.playFallAnimation(fallForward);
+                plugin.getLogger().info("§eAnimazione attivata: " + (fallForward ? "AVANTI" : "INDIETRO"));
+            }, 5);
+            
+            game.getDeadBodies().add(body);
+            player.sendMessage("§aCorpo spawnato! Direzione: " + (fallForward ? "AVANTI" : "INDIETRO"));
+        }
+        else if (args[1].equals("test")) {
+            //test con animazione forzata
+            Position pos = player.getPosition().add(2, 0, 2);
+
+            IChunk chunk = (IChunk) pos.getLevel().getChunk(pos.getFloorX() >> 4, pos.getFloorZ() >> 4);
+            DeadBodyEntity body = new DeadBodyEntity(chunk, Entity.getDefaultNBT(pos));
+            
+            body.setSkin(player.getSkin());
+            body.spawnToAll();
+            
+            //test: attiva SEMPRE forward
+            plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
+                plugin.getLogger().info("§e=== TEST ANIMATION ===");
+                body.setDataFlag(EntityFlag.PLAYING_DEAD, true);
+                plugin.getLogger().info("PLAYING_DEAD flag: " + body.getDataFlag(EntityFlag.PLAYING_DEAD));
+                
+                for (Player viewer : body.getViewers().values()) {
+                    body.sendData(viewer);
+                    plugin.getLogger().info("Data sent to: " + viewer.getName());
+                }
+            }, 5);
+            
+            player.sendMessage("§eTest body spawnato - dovrebbe cadere AVANTI");
+        }
+    }
+
+    private void runDebugAuxiliary(Player victim) {
+        //auxiliary function for debug
+        
+        for (Level level : Server.getInstance().getLevels().values()) {
+            for (Entity entity : level.getEntities()) {
+                if (entity instanceof DeadBodyEntity || entity.getIdentifier().equals(DeadBodyEntity.IDENTIFIER)) {
+                    entity.close();
+                }
+            }
         }
     }
 }

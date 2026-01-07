@@ -17,15 +17,15 @@ lobby:
     z: 0
     world: "lobby"
   rules-book:
-    item-name: "&o&l&fRules &7- Hold / Right Click"
+    item-name: "&o&l&fRules &r&7- Hold / Right Click"
     title: "Murder Mystery Rules"
     author: "Server"
     pages:
       - "§l§aMurder§2Mystery\n\n§r§7Find and eliminate the murderer before they kill everyone!\n\n§7Collect §6GOLD §7to craft a gun."
-      - "§l§6Roles:\n\n§r§cMurderer§e: Kill all innocents\n\n§9Sheriff§e: Protect innocents\n\n§aInnocent§e: Survive and collect gold"
-      - "§l§dTips:\n\n§r§7- Watch for suspicious behavior\n§e- Work together\n§e- The murderer has a throwable sword and can turn the lights off for a short period"
+      - "§l§6Roles:\n\n§r§cMurderer§7: Kill all innocents\n\n§9Sheriff§7: Protect innocents\n\n§aInnocent§7: Survive and collect gold"
+      - "§l§dTips:\n\n§r§7- Watch for suspicious behavior\n§7- Work together\n§7- The murderer has a throwable sword and can turn the lights off for a short period"
   game-poll:
-    item-name: "&o&l&dGame Poll &7- Hold / Right Click"
+    item-name: "&o&l&dGame Poll &r&7- Hold / Right Click"
     times:
       - "Day"
       - "Sunrise"
@@ -49,15 +49,15 @@ sheriff:
 
 innocents:
   gold-for-gun: 5
-  dye-name: "&o&l&eCraft The Gun &r&7( Hold / Right Click)"
+  dye-name: "&o&l&eCraft The Gun &r&7( Hold / Right Click )"
 
 spectator:
-  item-name: "&l&7Teleport to Player"
+  item-name: "&o&l&7Teleport to Player"
 
 death:
   animation-duration: 0.4167
-  head-yaw-offset: 35
-  head-pitch-offset: 40
+  head-yaw-offset: -35
+  head-pitch-offset: -40
   redstone-drop: 2
   blindness-duration: 2
 
@@ -129,6 +129,8 @@ messages:
   innocents-won2: "&aCongratulations! You WON"
   sword-cooldown: "&cYou have to wait for the cooldown before throwing the sword again!"
   no-chat: "&cYou can't write in the chat!"
+  teleported-to: "&aYou have been teleported to &e{player}&a!"
+  player-not-available: "&cPlayer is no longer available!"
 
 world:
   lobby: "lobby"

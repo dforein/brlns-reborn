@@ -44,7 +44,8 @@ public class GoldSpawnMapper {
         Block.VINE,
         Block.WHEAT, Block.CARROTS, Block.POTATOES, Block.BEETROOT,
         Block.OAK_SAPLING, Block.BIRCH_SAPLING, Block.SPRUCE_SAPLING, Block.ACACIA_SAPLING,
-        Block.CHERRY_SAPLING, Block.JUNGLE_SAPLING, Block.DARK_OAK_SAPLING, Block.PALE_OAK_SAPLING
+        Block.CHERRY_SAPLING, Block.JUNGLE_SAPLING, Block.DARK_OAK_SAPLING, Block.PALE_OAK_SAPLING,
+        Block.LADDER
     );
     
     public GoldSpawnMapper(MinigameCore plugin) {
@@ -151,7 +152,7 @@ public class GoldSpawnMapper {
                     Position pos = new Position(x, y, z, level);
                     Block block = level.getBlock(pos);
                     
-                    if (block.getId().equals("minecraft:barrier")) {
+                    if (block.getId().equals(Block.BARRIER)) {
                         barriers.add(new Vector3(x, y, z));
                     }
                     
@@ -192,7 +193,7 @@ public class GoldSpawnMapper {
                     Position pos = new Position(x, y, z, level);
                     Block block = level.getBlock(pos);
                     
-                    if (block.getId().equals("minecraft:barrier")) {
+                    if (block.getId().equals(Block.BARRIER)) {
                         barrierCount++;
                     }
                 }
@@ -220,10 +221,10 @@ public class GoldSpawnMapper {
         boolean isBelowWhitelisted = whitelistedBarriers.contains(belowVec);
         
         boolean isBelowValid;
-        if (isBelowWhitelisted && blockBelowId.equals("minecraft:barrier")) {
+        if (isBelowWhitelisted && blockBelowId.equals(Block.BARRIER)) {
             isBelowValid = true;
         } else {
-            isBelowValid = blockBelow.isSolid() && !blockBelowId.equals("minecraft:barrier");
+            isBelowValid = blockBelow.isSolid() && !blockBelowId.equals(Block.BARRIER);
         }
         
         // Conditions: passable block, valid below, passable above

@@ -1,6 +1,7 @@
 package com.brlnsreb.minigames.mm.roles;
 
 import cn.nukkit.Player;
+import cn.nukkit.IPlayer;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.config.MMConfig;
 import com.brlnsreb.minigames.mm.items.ItemManager;
@@ -19,9 +20,20 @@ public class MMRoleManager {
     public void addPlayer(Player player) {
         players.put(player.getName(), new GamePlayer(player));
     }
-    
-    public void removePlayer(Player player) {
-        players.remove(player.getName());
+
+    public void removePlayer(IPlayer player) {
+        if (player == null) return;
+
+        GamePlayer gp = players.remove(player.getName());
+
+        if (gp != null) {
+            if (gp == murderer) {
+                murderer = null;
+            }
+            if (gp == sheriff) {
+                sheriff = null;
+            }
+        }
     }
     
     public GamePlayer getGamePlayer(Player player) {
@@ -72,7 +84,9 @@ public class MMRoleManager {
     public List<GamePlayer> getInnocents() {
         List<GamePlayer> innocents = new ArrayList<>();
         for (GamePlayer gp : players.values()) {
-            if (gp.getRole() == MMRole.INNOCENT && gp.isAlive()) {
+            if (gp.getRole() == MMRole.INNOCENT && 
+                gp.isAlive() && 
+                gp.getPlayer().isOnline()) {
                 innocents.add(gp);
             }
         }
@@ -82,7 +96,9 @@ public class MMRoleManager {
     public int getAliveInnocentsCount() {
         int count = 0;
         for (GamePlayer gp : players.values()) {
-            if (gp.getRole() == MMRole.INNOCENT && gp.isAlive()) {
+            if (gp.getRole() == MMRole.INNOCENT && 
+                gp.isAlive() && 
+                gp.getPlayer().isOnline()) {
                 count++;
             }
         }
@@ -105,6 +121,12 @@ public class MMRoleManager {
         return players.values();
     }
 
+    public Collection<GamePlayer> getOnlinePlayers() {
+        return players.values().stream()
+            .filter(gp -> gp.getPlayer().isOnline())
+            .toList();
+    }
+
     public void checkGoldRewards(MurderMysteryGame game) {
         if (!isSheriffDead()) return;
 
@@ -112,7 +134,10 @@ public class MMRoleManager {
         int goldRequired = config.getGoldForGun();
         
         for (GamePlayer gp : players.values()) {
-            if (gp.isAlive() && gp.getRole() == MMRole.INNOCENT) {
+            if (gp.isAlive() && 
+                gp.getRole() == MMRole.INNOCENT && 
+                gp.getPlayer().isOnline()) {
+                
                 if (gp.getGoldCollected() >= goldRequired) {
                     ItemManager.giveYellowDye(gp.getPlayer(), config.getDyeName());
                 }

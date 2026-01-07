@@ -24,7 +24,7 @@ public class VotingMenu {
         
         CustomForm menu = new CustomForm("Game Poll");
         
-        // Map dropdown
+        //map dropdown
         List<String> availableMaps = voting.getAvailableMaps();
         List<String> mapOptions = new ArrayList<>();
         mapOptions.add("None");
@@ -48,7 +48,7 @@ public class VotingMenu {
         );
         menu.addElement(mapDropdown);
         
-        // Time dropdown
+        //time dropdown
         List<String> times = config.getAvailableTimes();
         List<String> timeOptions = new ArrayList<>();
         timeOptions.add("None");

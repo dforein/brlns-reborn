@@ -103,7 +103,7 @@ public class ItemManager {
         Item netherStar = Item.get(Item.NETHER_STAR);
         netherStar.setCustomName(TextFormat.colorize(netherStarName));
 
-        if (!player.getInventory().contains(netherStar)) return;
+        if (player.getInventory().contains(netherStar)) return;
 
         clearInventory(player);
         
@@ -114,6 +114,8 @@ public class ItemManager {
     }
     
     public static void clearInventory(Player player) {
+        if (!player.isOnline()) return;
+        
         player.getInventory().clearAll();
         player.getCursorInventory().clearAll();
     }

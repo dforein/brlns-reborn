@@ -84,6 +84,8 @@ public class MurderMysteryGame {
     }
     
     public boolean joinPlayer(Player player) {
+        if (player == null || !player.isOnline()) return false;
+
         if (players.contains(player)) {
             player.sendMessage(TextFormat.colorize(config.getMessage("already-in-game")));
             return false;
@@ -120,14 +122,17 @@ public class MurderMysteryGame {
         for (Player p : players) {
             p.sendActionBar(TextFormat.colorize(message), 10, 60, 10);
         }
+
+        cleanupOfflinePlayers();
+        int onlineCount = getOnlinePlayers().size();
         
-        if (state == GameState.LOBBY && players.size() >= config.getMinPlayers()) {
+        if (state == GameState.LOBBY && onlineCount >= config.getMinPlayers()) {
             startCountdown();
         } 
 
-        else if (state == GameState.COUNTDOWN && 
-                !countdownShortened && 
-                players.size() >= config.getMinPlayersStart()) {
+        else if (state == GameState.COUNTDOWN 
+                && !countdownShortened 
+                && onlineCount >= config.getMinPlayersStart()) {
             shortenCountdown();
         }
         
@@ -135,8 +140,13 @@ public class MurderMysteryGame {
     }
 
     private void playersRejoin() {
-        for (Player p : players) {
-            joinPlayer(p);
+        List<Player> playersRejoining = new ArrayList<>(getOnlinePlayers());
+        players.clear();
+
+        for (Player p : playersRejoining) {
+            if (p.isOnline()) {
+                joinPlayer(p);
+            }
         }
     }
 
@@ -174,9 +184,11 @@ public class MurderMysteryGame {
     }
 
     public void leavePlayer(Player player) {
+        if (player == null || !players.contains(player)) return;
+
         players.remove(player);
         roleManager.removePlayer(player);
-        refreshPlayerState(player, true);
+        if (player.isOnline()) refreshPlayerState(player, true);
 
         switch (state) {
             case LOBBY:
@@ -246,26 +258,30 @@ public class MurderMysteryGame {
                 String message = formatCountdownMessage(remaining);
                 bossBar.updateCountdown(p, message, remaining, initialCountdown);
             }
+
+            if (remaining == config.getShortenedCountdown()) {
+                finalizeVoting();
+            }
         });
     }
 
     private void shortenCountdown() {
         if (countdownShortened) return;
         countdownShortened = true;
-        int shortened = config.getShortenedCountdown();
+        int shortenedTime = config.getShortenedCountdown();
         
         if (timer != null) timer.stop();
 
-        initialCountdown = shortened;
-        timer = new TimerSystem(plugin, shortened);
+        initialCountdown = shortenedTime;
+        timer = new TimerSystem(plugin, shortenedTime);
         
-        String message = formatCountdownMessage(shortened);
+        String message = formatCountdownMessage(shortenedTime);
         for (Player p : players) {
             ItemManager.clearInventory(p);
-            bossBar.updateCountdown(p, message, shortened, initialCountdown);
+            bossBar.updateCountdown(p, message, shortenedTime, initialCountdown);
         }
         
-        timer.startCountdown(shortened, this::startGame, () -> {
+        timer.startCountdown(shortenedTime, this::startGame, () -> {
             int remaining = timer.getSecondsRemaining();
 
             String message2 = formatCountdownMessage(remaining);
@@ -275,7 +291,7 @@ public class MurderMysteryGame {
         });
 
         String shortenedMsg = config.getMessage("timer-shortened")
-                                .replace("{seconds}", String.valueOf(shortened));
+                                .replace("{seconds}", String.valueOf(shortenedTime));
         broadcast(shortenedMsg);
         
         finalizeVoting();
@@ -291,11 +307,13 @@ public class MurderMysteryGame {
     }
     
     private void startGame() {
-        for (Player p : players) {
+        for (Player p : getOnlinePlayers()) {
             bossBar.hide(p);
         }
 
-        if (players.size() < config.getMinPlayers()) {
+        cleanupOfflinePlayers();
+
+        if (getOnlinePlayers().size() < config.getMinPlayers()) {
             state = GameState.LOBBY;
             countdownShortened = false;
             refreshPlayerState();
@@ -377,18 +395,19 @@ public class MurderMysteryGame {
     private void startInGameState() {
         state = GameState.IN_GAME;
 
-        for (Player p : players) {
+        for (Player p : getOnlinePlayers()) {
             bossBar.hide(p);
         }
 
-        roleManager.assignRoles(players);
+        roleManager.assignRoles(getOnlinePlayers());
         giveItems();
 
-        for (GamePlayer gp : roleManager.getAllPlayers()) {
-            Player player = gp.getPlayer();
+        broadcast(config.getMessage("game-start"));
+        broadcast(config.getMessage("game-start2"));
 
-            broadcast(config.getMessage("game-start"));
-            broadcast(config.getMessage("game-start2"));
+        for (GamePlayer gp : roleManager.getOnlinePlayers()) {
+            Player player = gp.getPlayer();
+            if (!player.isOnline()) continue;
 
             switch (gp.getRole()) {
                 case INNOCENT:
@@ -606,30 +625,43 @@ public class MurderMysteryGame {
 
     private void teleportPlayers() {
         List<Vector3> spawns = arena.getSpawns();
+        List<Player> onlinePlayers = getOnlinePlayers();
         
-        for (int i = 0; i < players.size(); i++) {
+        for (int i = 0; i < onlinePlayers.size(); i++) {
+            Player player = onlinePlayers.get(i);
+            if (!player.isOnline()) continue;
+            
             Vector3 spawn = spawns.get(i % spawns.size());
             Location loc = new Location(spawn.x, spawn.y, spawn.z, arena.getLevel());
 
-            players.get(i).teleport(loc);
+            try {
+                player.teleport(loc);
+            } catch (Exception e) {
+                plugin.getLogger().error("Error teleporting player: " + e.getMessage());
+            }
         }
     }
 
     private void giveItems() {
         for (GamePlayer gp : roleManager.getAllPlayers()) {
             Player p = gp.getPlayer();
+            if (!p.isOnline()) continue;
             
-            switch (gp.getRole()) {
-                case MURDERER:
-                    ItemManager.giveMurdererItems(p, config.getMurdererSwordName(), config.getMurdererBlazeRodName());
-                    break;
-                case SHERIFF:
-                    ItemManager.giveSheriffItems(p, config.getSheriffHoeName());
-                    break;
-                case INNOCENT:
-                    break;
-                case SPECTATOR:
-                    break;
+            try {
+                switch (gp.getRole()) {
+                    case MURDERER:
+                        ItemManager.giveMurdererItems(p, config.getMurdererSwordName(), config.getMurdererBlazeRodName());
+                        break;
+                    case SHERIFF:
+                        ItemManager.giveSheriffItems(p, config.getSheriffHoeName());
+                        break;
+                    case INNOCENT:
+                        break;
+                    case SPECTATOR:
+                        break;
+                }
+            } catch (Exception e) {
+                plugin.getLogger().error("Error giving items to player: " + e.getMessage());
             }
         }
     }
@@ -641,10 +673,12 @@ public class MurderMysteryGame {
     public void checkWinCondition() {
         if (state != GameState.IN_GAME) return;
         
-        if (roleManager.allInnocentsDead()) {
-            endGame(true);
-        } else if (roleManager.isMurdererDead()) {
+        cleanupOfflinePlayers();
+
+        if (roleManager.isMurdererDead()) {
             endGame(false);
+        } else if (roleManager.allInnocentsDead()) {
+            endGame(true);
         }
     }
 
@@ -657,21 +691,19 @@ public class MurderMysteryGame {
 
         if (!murdererWin) {
             GamePlayer sheriffGp = roleManager.getSheriff();
-            if (sheriffGp != null && sheriffGp.isAlive()) {
+            if (sheriffGp != null && sheriffGp.isAlive() && sheriffGp.getPlayer().isOnline()) {
                 int bonus = config.getExpSheriffWin();
                 sheriffGp.addExp(bonus);
-                
             }
 
             broadcast(config.getMessage("murderer-dead"));
-
         }
         
         String titleMsg = murdererWin ? 
             config.getMessageNoPrefix("murderer-won-title") : 
             config.getMessageNoPrefix("innocents-won-title");
         
-        for (Player p : players) {
+        for (Player p : getOnlinePlayers()) {
             p.sendTitle(TextFormat.colorize(titleMsg), "",
                         10, 60, 10);
         }
@@ -720,18 +752,43 @@ public class MurderMysteryGame {
     }
 
     public void returnToLobby(Player player) {
-        Level lobby = plugin.getServer().getLevelByName(config.getLobbyWorld());
-        Vector3 spawnPos = config.getLobbySpawn();
-        Location lobbySpawn = new Location(spawnPos.x, spawnPos.y, spawnPos.z, lobby);
-        
-        ItemManager.clearInventory(player);
-        
-        player.teleport(lobbySpawn);
+        if (player == null || !player.isOnline()) return;
+
+        try {
+            Level lobby = plugin.getServer().getLevelByName(config.getLobbyWorld());
+            if (lobby == null) {
+                plugin.getLogger().warning("Lobby world not found: " + config.getLobbyWorld());
+                return;
+            }
+            
+            Vector3 spawnPos = config.getLobbySpawn();
+            Location lobbySpawn = new Location(spawnPos.x, spawnPos.y, spawnPos.z, lobby);
+            
+            ItemManager.clearInventory(player);
+            player.teleport(lobbySpawn);
+
+            plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
+                if (player.isOnline()) {
+                    player.setFlying(false);
+                    player.setAllowFlight(false);
+                }
+            }, 5);
+
+        } catch (Exception e) {
+            plugin.getLogger().error("Error returning player to lobby: " + e.getMessage());
+        }
     }
         
     private void reset() {
         stopScoreboardUpdates();
-        refreshPlayerState();
+        
+        for (Player p : players) {
+            if (p.isOnline()) {
+                bossBar.hide(p);
+                scoreboard.remove(p);
+                ItemManager.clearInventory(p);
+            }
+        }
 
         state = GameState.LOBBY;
         selectedMap = null;
@@ -773,6 +830,20 @@ public class MurderMysteryGame {
         redstonePositions.clear();
     }
 
+    private void cleanupOfflinePlayers() {
+        players.removeIf(player -> !player.isOnline());
+        
+        for (String playerName : new ArrayList<>(roleManager.getAllPlayers().stream()
+                .map(gp -> gp.getPlayer().getName())
+                .toList())) {
+            
+            Player p = plugin.getServer().getPlayer(playerName);
+            if (p == null || !p.isOnline()) {
+                roleManager.removePlayer(plugin.getServer().getOfflinePlayer(playerName));
+            }
+        }
+    }
+
     private void refreshPlayerState() {
         for (Player p : players) {
             refreshPlayerState(p, false);
@@ -785,9 +856,8 @@ public class MurderMysteryGame {
         ItemManager.clearInventory(p);
         
         p.setGamemode(Player.ADVENTURE);
+
         p.noClip = false;
-        p.setFlying(false);
-        p.setAllowFlight(false);
         p.setNameTagVisible(true);
         p.setDataFlag(EntityFlag.INVISIBLE, false);
         p.setDataFlag(EntityFlag.COLLIDABLE, false);
@@ -816,11 +886,9 @@ public class MurderMysteryGame {
                     bossBar.hide(p);
                     ItemManager.giveLobbyItems(p, config.getRulesItemName(), plugin);
                     break;
-
                 case COUNTDOWN:
                     ItemManager.giveLobbyItems(p, config.getRulesItemName(), config.getGamePollItemName(), plugin);
                     break;
-
                 case IN_GAME:
                 case PREGAME_COUNTDOWN:
                 case ENDING:
@@ -860,10 +928,8 @@ public class MurderMysteryGame {
         int remainingSeconds = timer.getSecondsRemaining();
 
         if (state == GameState.PREGAME_COUNTDOWN) {
-            for (Player p : players) {
-                if (p.isOnline()) {
-                    scoreboard.show(p, timeStr, 0, false, MMRole.INNOCENT, true);
-                }
+            for (Player p : getOnlinePlayers()) {
+                scoreboard.show(p, timeStr, 0, false, MMRole.INNOCENT, true);
             }
             return;
         } else if (state == GameState.IN_GAME) {
@@ -872,7 +938,10 @@ public class MurderMysteryGame {
             int trackThreshold = config.getMurdererTrackThreshold();
 
             GamePlayer murdererGp = roleManager.getMurderer();
-            boolean trackingActive = (murdererGp != null && murdererGp.isAlive() && remainingSeconds <= trackThreshold);
+            boolean trackingActive = (murdererGp != null && 
+                                    murdererGp.getPlayer().isOnline() && 
+                                    murdererGp.isAlive() && 
+                                    remainingSeconds <= trackThreshold);
 
             for (GamePlayer gp : roleManager.getAllPlayers()) {
                 Player p = gp.getPlayer();
@@ -909,16 +978,19 @@ public class MurderMysteryGame {
     }
 
     private void broadcast(String message) {
-        for (Player p : players) {
+        for (Player p : getOnlinePlayers()) {
             p.sendMessage(TextFormat.colorize(message));
         }
     }
 
     private void broadcast(String message, Boolean spectatorsIncluded) {
-        for (Player p : players) {
+        for (Player p : getOnlinePlayers()) {
+            GamePlayer gp = roleManager.getGamePlayer(p);
+            if (gp == null) continue;
+            
             if (spectatorsIncluded) {
                 p.sendMessage(TextFormat.colorize(message));
-            } else if (roleManager.getGamePlayer(p).getRole() != MMRole.SPECTATOR) {
+            } else if (gp.getRole() != MMRole.SPECTATOR) {
                 p.sendMessage(TextFormat.colorize(message));
             }
         }
@@ -934,6 +1006,12 @@ public class MurderMysteryGame {
 
     public void addTrackedRedstone(Position pos) {
         redstonePositions.add(pos);
+    }
+
+    public List<Player> getOnlinePlayers() {
+        return players.stream()
+            .filter(Player::isOnline)
+            .toList();
     }
     
     public GameState getState() {

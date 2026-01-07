@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
+import cn.nukkit.event.block.ItemFrameUseEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.event.player.PlayerInteractEntityEvent;
 import cn.nukkit.item.Item;
@@ -58,9 +59,19 @@ public class MMPlayerInteractListener implements Listener {
         Entity entity = event.getEntity();
         Player player = event.getPlayer();
 
-        if (entity instanceof EntityArmorStand && !player.isOp()) {
-            event.setCancelled(true);
+        if (entity instanceof EntityArmorStand) {
+            if (player.getGamemode() == Player.ADVENTURE || !player.isOp()) {
+                event.setCancelled(true);
+            }
         }
+    }
+
+    @EventHandler
+    public void onItemFrameInteract(ItemFrameUseEvent event) {
+        Player player = event.getPlayer();
+
+        if (player != null && (player.getGamemode() == Player.ADVENTURE || !player.isOp()))
+                event.setCancelled(true);
     }
 
     @EventHandler
@@ -86,8 +97,7 @@ public class MMPlayerInteractListener implements Listener {
             }
 
             if (gp.getRole() == MMRole.SPECTATOR) {
-                if (blockId.contains("level")
-                    || blockId.contains("door")
+                if (blockId.contains("door")
                     || blockId.contains("fence_gate")
                     || blockId.contains("button")
                     || blockId.contains("lever")) {

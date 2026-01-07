@@ -85,7 +85,8 @@ public class GoldSystem {
             pos.getLevel().loadChunk(cx, cz);
         }
         
-        EntityItem entity = (EntityItem) Entity.createEntity("minecraft:item", 
+        EntityItem entity = (EntityItem) Entity.createEntity(
+            Entity.ITEM, 
             pos.getLevel().getChunk(cx, cz), 
             nbt
         );

@@ -32,7 +32,8 @@ public class ProjectileSystem {
         int cx = murderer.getFloorX() >> 4;
         int cz = murderer.getFloorZ() >> 4;
         
-        EntitySnowball snowball = (EntitySnowball) Entity.createEntity("minecraft:snowball",
+        EntitySnowball snowball = (EntitySnowball) Entity.createEntity(
+            Entity.SNOWBALL,
             level.getChunk(cx, cz),
             nbt
         );

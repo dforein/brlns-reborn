@@ -2,8 +2,10 @@ package com.brlnsreb.minigames.mm.listeners;
 
 import cn.nukkit.Player;
 import cn.nukkit.event.EventHandler;
+import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.player.PlayerQuitEvent;
+import cn.nukkit.event.player.PlayerKickEvent;
 import cn.nukkit.event.player.PlayerJoinEvent;
 
 import com.brlnsreb.minigames.mm.roles.GamePlayer;
@@ -19,10 +21,18 @@ public class MMPlayerJoinQuitListener implements Listener {
     public MMPlayerJoinQuitListener(MurderMysteryGame game) {
         this.game = game;
     }
-    
-    @EventHandler
+
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onQuit(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
+        handlePlayerLeave(event.getPlayer());
+    }
+    
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onKick(PlayerKickEvent event) {
+        handlePlayerLeave(event.getPlayer());
+    }
+
+    private void handlePlayerLeave(Player player) {
         GamePlayer gp = game.getRoleManager().getGamePlayer(player);
 
         if (gp != null) {
@@ -34,7 +44,10 @@ public class MMPlayerJoinQuitListener implements Listener {
                 }
                 
                 game.leavePlayer(player);
-                game.checkWinCondition();
+
+                if (gp.isAlive()) {
+                    game.checkWinCondition();
+                }
             } else {
                 game.leavePlayer(player);
             }
