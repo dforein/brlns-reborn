@@ -42,57 +42,57 @@ public class MMProjectileHitListener implements Listener {
         if (!(hit instanceof Player)) return;
 
         Player victim = (Player) hit;
-        GamePlayer gp = game.getRoleManager().getGamePlayer(victim);
+        GamePlayer victimGp = game.getRoleManager().getGamePlayer(victim);
         MMConfig config = game.getConfig();
         
-        if (gp != null && gp.isAlive()) {
-            gp.setAlive(false);
+        if (victimGp == null || !victimGp.isAlive()) return;
 
-            if (gp.getRole() == MMRole.SHERIFF) {
-                game.getDeath().kill(victim, true);
-                game.getRoleManager().checkGoldRewards(game);
-            } else if (gp.getRole() == MMRole.INNOCENT) {
-                game.getDeath().kill(victim, false);
-            }
-            
-            if (thrownSword.shootingEntity instanceof Player) {
-                Player murderer = (Player) thrownSword.shootingEntity;
-                GamePlayer murdererGp = game.getRoleManager().getGamePlayer(murderer);
+        victimGp.setAlive(false);
 
-                if (game.isFirstKill()) {
-                    murderer.sendMessage(TextFormat.colorize(config.getMessage("murderer-warning")));
-                }
-
-                String message = config.getMessage("killed").replace("{killer}", config.getMessageNoPrefix("murderer"));
-
-                if (murdererGp != null) {
-                    if (gp.getRole() == MMRole.SHERIFF) {
-                        murdererGp.addExp(config.getExpSheriffKilled());
-
-                        murderer.sendMessage(TextFormat.colorize(config.getMessage("murderer-kill-sheriff")));
-
-                        message = message.replace("{killed}", config.getMessageNoPrefix("sheriff-lowercase"));
-                        for (Player p : game.getPlayers()) {
-                            p.sendMessage(TextFormat.colorize(message));
-                            p.sendMessage(TextFormat.colorize(config.getMessage("sheriff-gun-dropped")));
-                            p.sendMessage(TextFormat.colorize(config.getMessage("sheriff-dead-instructions")));
-                        }
-                    } else if (gp.getRole() == MMRole.INNOCENT) {
-                        murdererGp.addExp(config.getExpPerKill());
-
-                        message = message.replace("{killed}", victim.getName());
-                        for (Player p : game.getPlayers()) {
-                            p.sendMessage(TextFormat.colorize(message));
-                        }
-
-                        message = config.getMessage("murderer-kill").replace("{player}", victim.getName());
-                        murderer.sendMessage(TextFormat.colorize(message));
-                    }
-                }
-            }
-        
-            game.checkWinCondition();
+        if (victimGp.getRole() == MMRole.SHERIFF) {
+            game.getDeath().kill(victim, true);
+            game.getRoleManager().checkGoldRewards(game);
+        } else if (victimGp.getRole() == MMRole.INNOCENT) {
+            game.getDeath().kill(victim, false);
         }
         
+        if (thrownSword.shootingEntity instanceof Player) {
+            Player murderer = (Player) thrownSword.shootingEntity;
+            GamePlayer murdererGp = game.getRoleManager().getGamePlayer(murderer);
+
+            if (game.isFirstKill()) {
+                murderer.sendMessage(TextFormat.colorize(config.getMessage("murderer-warning")));
+            }
+
+            String message = config.getMessage("killed").replace("{killer}", config.getMessageNoPrefix("murderer"));
+
+            if (murdererGp != null) {
+                if (victimGp.getRole() == MMRole.SHERIFF) {
+                    murdererGp.addExp(config.getExpSheriffKilled());
+
+                    murderer.sendMessage(TextFormat.colorize(config.getMessage("murderer-kill-sheriff")));
+
+                    message = message.replace("{killed}", config.getMessageNoPrefix("sheriff-lowercase"));
+                    for (Player p : game.getPlayers()) {
+                        p.sendMessage(TextFormat.colorize(message));
+                        p.sendMessage(TextFormat.colorize(config.getMessage("sheriff-gun-dropped")));
+                        p.sendMessage(TextFormat.colorize(config.getMessage("sheriff-dead-instructions")));
+                    }
+
+                } else if (victimGp.getRole() == MMRole.INNOCENT) {
+                    murdererGp.addExp(config.getExpPerKill());
+
+                    message = message.replace("{killed}", victim.getName());
+                    for (Player p : game.getPlayers()) {
+                        p.sendMessage(TextFormat.colorize(message));
+                    }
+
+                    message = config.getMessage("murderer-kill").replace("{player}", victim.getName());
+                    murderer.sendMessage(TextFormat.colorize(message));
+                }
+            }
+        }
+    
+        game.checkWinCondition();
     }
 }
