@@ -8,11 +8,7 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.data.EntityFlag;
 import cn.nukkit.utils.TextFormat;
 import cn.nukkit.math.Vector3;
-import cn.nukkit.network.protocol.AnimateEntityPacket.Animation;
-import cn.nukkit.registry.Registries;
 import cn.nukkit.level.Level;
-import cn.nukkit.level.Position;
-import cn.nukkit.level.format.IChunk;
 import cn.nukkit.level.GameRule;
 import cn.nukkit.level.GameRules;
 
@@ -25,7 +21,6 @@ import com.brlnsreb.minigames.core.Arena;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.entities.DeadBodyEntity;
 import com.brlnsreb.minigames.mm.systems.GoldSpawnMapper;
-import com.brlnsreb.minigames.mm.systems.ProjectileSystem;
 
 public class MMCommand extends Command {
     
