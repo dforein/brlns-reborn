@@ -3,22 +3,21 @@ package com.brlnsreb.minigames.mm.entities;
 import org.jetbrains.annotations.NotNull;
 
 import cn.nukkit.Player;
-import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.entity.custom.CustomEntity;
 import cn.nukkit.entity.custom.CustomEntityDefinition;
 import cn.nukkit.entity.data.EntityFlag;
+import cn.nukkit.entity.projectile.EntityProjectile;
 import cn.nukkit.level.format.IChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
 
-public class DeadBodyEntity extends EntityHuman implements CustomEntity {
+public class ThrownSwordEntity extends EntityProjectile implements CustomEntity {       //will replace snowball
 
-    public static final String IDENTIFIER = "mm:dead_body";
+    public static final String IDENTIFIER = "mm:thrown_sword";
 
-    public DeadBodyEntity(IChunk chunk, CompoundTag nbt) {
+    public ThrownSwordEntity(IChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
     }
-    
+
     @Override
     public @NotNull String getIdentifier() {
         return IDENTIFIER;
@@ -30,24 +29,21 @@ public class DeadBodyEntity extends EntityHuman implements CustomEntity {
                 .hasSpawnEgg(false)
                 .isSummonable(true)
                 .maxHealth(5)
-                .physics(false, false, false)
+                .attack(0)
+                .physics(false, true, false)
                 .pushable(false, false)
-                .isPersistent(true)
+                .isPersistent(false)
                 .build();
     }
-    
+
     @Override
     protected void initEntity() {
-        super.initEntity();
-        
-        this.invulnerable = true;
-        this.fireProof = true;
+        initEntity();
+
         this.setNameTagVisible(false);
         this.setCanClimb(false);
         this.setDataFlag(EntityFlag.SILENT, true);
-        this.setDataFlag(EntityFlag.COLLIDABLE, false);
-        this.setDataFlag(EntityFlag.BODY_ROTATION_BLOCKED, false);
-        
+
         this.setHealth(5);
     }
 
@@ -57,29 +53,5 @@ public class DeadBodyEntity extends EntityHuman implements CustomEntity {
         this.sendData(player);
     }
 
-    @Override
-    public boolean onUpdate(int currentTick) {
-        if (this.closed) return false;
-
-        this.motionX = 0;
-        this.motionY = 0;
-        this.motionZ = 0;
-        
-        return super.onUpdate(currentTick);
-    }
-    
-    @Override
-    public float getGravity() {
-        return 0;
-    }
-    
-    @Override
-    public boolean canCollideWith(Entity entity) {
-        return false;
-    }
-    
-    @Override
-    public boolean canBeMovedByCurrents() {
-        return false;
-    }
+    //others later
 }

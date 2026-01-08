@@ -11,6 +11,7 @@ import cn.nukkit.utils.TextFormat;
 import com.brlnsreb.minigames.core.GameState;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.config.MMConfig;
+import com.brlnsreb.minigames.mm.entities.DeadBodyEntity;
 import com.brlnsreb.minigames.mm.roles.GamePlayer;
 import com.brlnsreb.minigames.mm.roles.MMRole;
 
@@ -37,6 +38,12 @@ public class MMProjectileHitListener implements Listener {
         if (game.getState() != GameState.ENDING) return;
         
         Entity hit = event.getMovingObjectPosition().entityHit;
+
+        if (hit instanceof DeadBodyEntity) {
+            event.setCancelled();
+            return;
+        }
+
         if (hit instanceof Player) {
             Player victim = (Player) hit;
             GamePlayer gp = game.getRoleManager().getGamePlayer(victim);

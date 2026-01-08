@@ -8,6 +8,7 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.data.EntityFlag;
 import cn.nukkit.utils.TextFormat;
 import cn.nukkit.math.Vector3;
+import cn.nukkit.network.protocol.AnimateEntityPacket.Animation;
 import cn.nukkit.registry.Registries;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
@@ -494,76 +495,40 @@ public class MMCommand extends Command {
     private void runDebug(Player player, String[] args) {
         //everything needing debug
         //reminder: args start from args[1] ("/mm debug {args[1]} {args[2]} ...")
-        if (args.length < 2) {
-            player.sendMessage("§cUsa: /mm debug <comando>");
-            player.sendMessage("§7Comandi: check, dead, test");
-            return;
-        }
 
-        if (args[1].equals("check")) {
-            //verifica registrazione
-            try {
-                Class<?> entityClass = Registries.ENTITY.getEntityClass("mm:dead_body");
-                if (entityClass != null) {
-                    player.sendMessage("§a✓ Entità 'mm:dead_body' è registrata!");
-                    player.sendMessage("§7Classe: " + entityClass.getName());
-                } else {
-                    player.sendMessage("§c✗ Entità 'mm:dead_body' NON è registrata!");
-                }
-            } catch (Exception e) {
-                player.sendMessage("§cErrore: " + e.getMessage());
-            }
-        }
-        else if (args[1].equals("dead")) {
-            //spawna il corpo alla posizione del player (no gravità, quindi non serve height)
-            Position pos = player.getPosition().add(2, 0, 2);
+        Position pos = player.getPosition();
+        pos = pos.add(2, -0.4, 2);
+        IChunk chunk = (IChunk) pos.getLevel().getChunk(pos.getFloorX() >> 4, pos.getFloorZ() >> 4);
 
-            IChunk chunk = (IChunk) pos.getLevel().getChunk(pos.getFloorX() >> 4, pos.getFloorZ() >> 4);
-            DeadBodyEntity body = new DeadBodyEntity(chunk, Entity.getDefaultNBT(pos));
-            
-            //imposta la skin del player
-            body.setSkin(player.getSkin());
-            
-            //imposta rotazione iniziale
-            body.setRotation(player.getYaw(), 0);
-            
-            //spawn
-            body.spawnToAll();
-            
-            //attiva l'animazione dopo un breve delay per assicurarsi che sia spawnato
-            boolean fallForward = new java.util.Random().nextBoolean();
-            plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
-                body.playFallAnimation(fallForward);
-                plugin.getLogger().info("§eAnimazione attivata: " + (fallForward ? "AVANTI" : "INDIETRO"));
-            }, 5);
-            
-            game.getDeadBodies().add(body);
-            player.sendMessage("§aCorpo spawnato! Direzione: " + (fallForward ? "AVANTI" : "INDIETRO"));
-        }
-        else if (args[1].equals("test")) {
-            //test con animazione forzata
-            Position pos = player.getPosition().add(2, 0, 2);
+        DeadBodyEntity body = new DeadBodyEntity(chunk, Entity.getDefaultNBT(pos));
 
-            IChunk chunk = (IChunk) pos.getLevel().getChunk(pos.getFloorX() >> 4, pos.getFloorZ() >> 4);
-            DeadBodyEntity body = new DeadBodyEntity(chunk, Entity.getDefaultNBT(pos));
-            
-            body.setSkin(player.getSkin());
-            body.spawnToAll();
-            
-            //test: attiva SEMPRE forward
-            plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
-                plugin.getLogger().info("§e=== TEST ANIMATION ===");
-                body.setDataFlag(EntityFlag.PLAYING_DEAD, true);
-                plugin.getLogger().info("PLAYING_DEAD flag: " + body.getDataFlag(EntityFlag.PLAYING_DEAD));
-                
-                for (Player viewer : body.getViewers().values()) {
-                    body.sendData(viewer);
-                    plugin.getLogger().info("Data sent to: " + viewer.getName());
-                }
-            }, 5);
-            
-            player.sendMessage("§eTest body spawnato - dovrebbe cadere AVANTI");
-        }
+        boolean fallForward = new java.util.Random().nextBoolean();
+        Animation selectedAnimation = Animation.builder()
+            .animation(fallForward ? "animation.corpse.fall_forward" : "animation.corpse.fall_backward") 
+            .nextState(fallForward ? "animation.corpse.fall_forward" : "animation.corpse.fall_backward")
+            .stopExpression("0")
+            .stopExpressionVersion(16777216)
+            .controller("__runtime_controller")
+            .build();
+        
+        double yaw = player.getYaw();
+        double pitch = game.getConfig().getHeadPitchOffset();
+        double headYaw = yaw + game.getConfig().getHeadYawOffset();
+        
+        body.setSkin(player.getSkin());
+        body.setRotation(yaw, pitch, headYaw);
+        body.setDataFlag(EntityFlag.INVISIBLE, true);
+
+        body.spawnToAll();
+
+        plugin.getServer().getScheduler().scheduleDelayedTask(game.getPlugin(), () -> {
+            body.setDataFlag(EntityFlag.INVISIBLE, false);
+        }, 2);
+        plugin.getServer().getScheduler().scheduleDelayedTask(game.getPlugin(), () -> {
+            body.playAnimation(selectedAnimation);
+        }, 3);
+
+        game.getDeadBodies().add(body);
     }
 
     private void runDebugAuxiliary(Player victim) {
@@ -571,7 +536,7 @@ public class MMCommand extends Command {
         
         for (Level level : Server.getInstance().getLevels().values()) {
             for (Entity entity : level.getEntities()) {
-                if (entity instanceof DeadBodyEntity || entity.getIdentifier().equals(DeadBodyEntity.IDENTIFIER)) {
+                if (entity instanceof DeadBodyEntity) {
                     entity.close();
                 }
             }

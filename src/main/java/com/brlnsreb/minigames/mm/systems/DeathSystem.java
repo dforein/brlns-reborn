@@ -3,7 +3,6 @@ package com.brlnsreb.minigames.mm.systems;
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.data.EntityDataTypes;
 import cn.nukkit.entity.data.EntityFlag;
 import cn.nukkit.entity.effect.Effect;
 import cn.nukkit.entity.effect.EffectType;
@@ -13,6 +12,7 @@ import cn.nukkit.level.Position;
 import cn.nukkit.level.format.IChunk;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
+import cn.nukkit.network.protocol.AnimateEntityPacket.Animation;
 import cn.nukkit.utils.TextFormat;
 
 import java.util.List;
@@ -141,27 +141,38 @@ public class DeathSystem {
     }
     
     private void createBody(Player victim, Position pos) {
+        pos = pos.add(0, -0.4, 0);
         IChunk chunk = (IChunk) pos.getLevel().getChunk(pos.getFloorX() >> 4, pos.getFloorZ() >> 4);
+
         DeadBodyEntity body = new DeadBodyEntity(chunk, Entity.getDefaultNBT(pos));
+
+        boolean fallForward = new java.util.Random().nextBoolean();
+        Animation selectedAnimation = Animation.builder()
+            .animation(fallForward ? "animation.corpse.fall_forward" : "animation.corpse.fall_backward") 
+            .nextState(fallForward ? "animation.corpse.fall_forward" : "animation.corpse.fall_backward")
+            .stopExpression("0")
+            .stopExpressionVersion(16777216)
+            .controller("__runtime_controller")
+            .build();
+        
+        double yaw = victim.getYaw();
+        double pitch = game.getConfig().getHeadPitchOffset();
+        double headYaw = yaw + game.getConfig().getHeadYawOffset();
         
         body.setSkin(victim.getSkin());
-        body.setRotation(game.getConfig().getHeadYawOffset(), game.getConfig().getHeadPitchOffset());
+        body.setRotation(yaw, pitch, headYaw);
+        body.setDataFlag(EntityFlag.INVISIBLE, true);
+
         body.spawnToAll();
 
+        plugin.getServer().getScheduler().scheduleDelayedTask(game.getPlugin(), () -> {
+            body.setDataFlag(EntityFlag.INVISIBLE, false);
+        }, 2);
+        plugin.getServer().getScheduler().scheduleDelayedTask(game.getPlugin(), () -> {
+            body.playAnimation(selectedAnimation);
+        }, 3);
+
         game.getDeadBodies().add(body);
-
-        boolean fallsForward = new java.util.Random().nextBoolean();
-
-        if (fallsForward) {
-            //forward fall
-            body.setDataFlag(EntityFlag.POWERED, true);
-        } else {
-            //backward fall
-            body.setDataFlag(EntityFlag.SADDLED, true);
-        }
-
-        body.getEntityDataMap().put(EntityDataTypes.LAYING_AMOUNT, 1.0f);
-        body.getEntityDataMap().put(EntityDataTypes.LAYING_AMOUNT_PREVIOUS, 1.0f);
     }
     
     private void dropRedstone(Position pos) {

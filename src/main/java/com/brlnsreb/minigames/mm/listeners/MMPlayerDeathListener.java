@@ -10,6 +10,7 @@ import cn.nukkit.utils.TextFormat;
 import com.brlnsreb.minigames.core.GameState;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.config.MMConfig;
+import com.brlnsreb.minigames.mm.entities.DeadBodyEntity;
 import com.brlnsreb.minigames.mm.roles.GamePlayer;
 import com.brlnsreb.minigames.mm.roles.MMRole;
 
@@ -24,7 +25,12 @@ public class MMPlayerDeathListener implements Listener {
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
         if (game.getState() != GameState.IN_GAME) return;
-        
+
+        if (event.getEntity() instanceof DeadBodyEntity) {
+            event.setCancelled();
+            return;
+        }
+
         if (!(event.getEntity() instanceof Player)) return;
         
         Player victim = (Player) event.getEntity();
