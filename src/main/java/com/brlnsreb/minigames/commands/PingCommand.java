@@ -8,7 +8,7 @@ import cn.nukkit.utils.TextFormat;
 public class PingCommand extends Command {
     
     public PingCommand() {
-        super("ping", "Check your ping", "/ping [player]");
+        super("ping", "Check your ping", "/ping <player>");
     }
     
     @Override

@@ -5,8 +5,6 @@ import cn.nukkit.Player;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.data.EntityDataType;
-import cn.nukkit.entity.data.EntityDataTypes;
 import cn.nukkit.entity.data.EntityFlag;
 import cn.nukkit.utils.TextFormat;
 import cn.nukkit.math.Vector3;
