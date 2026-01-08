@@ -3,6 +3,7 @@ package com.brlnsreb.minigames.mm.entities;
 import org.jetbrains.annotations.NotNull;
 
 import cn.nukkit.Player;
+import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.custom.CustomEntity;
 import cn.nukkit.entity.custom.CustomEntityDefinition;
 import cn.nukkit.entity.data.EntityFlag;
@@ -10,7 +11,7 @@ import cn.nukkit.entity.projectile.EntityProjectile;
 import cn.nukkit.level.format.IChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
 
-public class ThrownSwordEntity extends EntityProjectile implements CustomEntity {       //will replace snowball
+public class ThrownSwordEntity extends EntityProjectile implements CustomEntity {
 
     public static final String IDENTIFIER = "mm:thrown_sword";
 
@@ -53,5 +54,12 @@ public class ThrownSwordEntity extends EntityProjectile implements CustomEntity 
         this.sendData(player);
     }
 
-    //others later
+    @Override
+    public boolean canCollideWith(Entity entity) {
+        if (entity instanceof DeadBodyEntity) {
+            return false;
+        }
+
+        return super.canCollideWith(entity);
+    }
 }

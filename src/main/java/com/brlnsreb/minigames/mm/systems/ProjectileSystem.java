@@ -8,6 +8,7 @@ import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 
 import com.brlnsreb.minigames.mm.config.MMConfig;
+import com.brlnsreb.minigames.mm.entities.ThrownSwordEntity;
 
 public class ProjectileSystem {
     
@@ -31,22 +32,16 @@ public class ProjectileSystem {
 
         int cx = murderer.getFloorX() >> 4;
         int cz = murderer.getFloorZ() >> 4;
-        
-        EntitySnowball snowball = (EntitySnowball) Entity.createEntity(
-            Entity.SNOWBALL,
-            level.getChunk(cx, cz),
-            nbt
-        );
-        
-        if (snowball == null) return;
-        
-        snowball.setNameTagVisible(false);
 
-        snowball.shootingEntity = murderer;
+        ThrownSwordEntity thrownSword = new ThrownSwordEntity(level.getChunk(cx, cz), nbt);
+        
+        if (thrownSword == null) return;
+
+        thrownSword.shootingEntity = murderer;
         Vector3 direction = murderer.getDirectionVector();
         double speed = config.getSwordThrowSpeed();
-        snowball.setMotion(direction.multiply(speed));
+        thrownSword.setMotion(direction.multiply(speed));
         
-        snowball.spawnToAll();
+        thrownSword.spawnToAll();
     }
 }

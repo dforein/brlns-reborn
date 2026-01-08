@@ -146,6 +146,8 @@ public class DeathSystem {
 
         DeadBodyEntity body = new DeadBodyEntity(chunk, Entity.getDefaultNBT(pos));
 
+        if (body == null) return;
+
         boolean fallForward = new java.util.Random().nextBoolean();
         Animation selectedAnimation = Animation.builder()
             .animation(fallForward ? "animation.corpse.fall_forward" : "animation.corpse.fall_backward") 
