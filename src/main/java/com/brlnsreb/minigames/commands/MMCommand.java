@@ -25,6 +25,7 @@ import com.brlnsreb.minigames.core.Arena;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.entities.DeadBodyEntity;
 import com.brlnsreb.minigames.mm.systems.GoldSpawnMapper;
+import com.brlnsreb.minigames.mm.systems.ProjectileSystem;
 
 public class MMCommand extends Command {
     
@@ -496,39 +497,24 @@ public class MMCommand extends Command {
         //everything needing debug
         //reminder: args start from args[1] ("/mm debug {args[1]} {args[2]} ...")
 
-        Position pos = player.getPosition();
-        pos = pos.add(2, -0.4, 2);
-        IChunk chunk = (IChunk) pos.getLevel().getChunk(pos.getFloorX() >> 4, pos.getFloorZ() >> 4);
-
-        DeadBodyEntity body = new DeadBodyEntity(chunk, Entity.getDefaultNBT(pos));
-
-        boolean fallForward = new java.util.Random().nextBoolean();
-        Animation selectedAnimation = Animation.builder()
-            .animation(fallForward ? "animation.corpse.fall_forward" : "animation.corpse.fall_backward") 
-            .nextState(fallForward ? "animation.corpse.fall_forward" : "animation.corpse.fall_backward")
-            .stopExpression("0")
-            .stopExpressionVersion(16777216)
-            .controller("__runtime_controller")
-            .build();
-        
-        double yaw = player.getYaw();
-        double pitch = game.getConfig().getHeadPitchOffset();
-        double headYaw = yaw + game.getConfig().getHeadYawOffset();
-        
-        body.setSkin(player.getSkin());
-        body.setRotation(yaw, pitch, headYaw);
-        body.setDataFlag(EntityFlag.INVISIBLE, true);
-
-        body.spawnToAll();
-
-        plugin.getServer().getScheduler().scheduleDelayedTask(game.getPlugin(), () -> {
-            body.setDataFlag(EntityFlag.INVISIBLE, false);
-        }, 2);
-        plugin.getServer().getScheduler().scheduleDelayedTask(game.getPlugin(), () -> {
-            body.playAnimation(selectedAnimation);
-        }, 3);
-
-        game.getDeadBodies().add(body);
+        switch (args[1]) {
+            case "hct":
+                player.setDataFlag(EntityFlag.HAS_COLLISION, true);
+                break;
+            case "hcf":
+                player.setDataFlag(EntityFlag.HAS_COLLISION, false);
+                break;
+            case "ct":
+                player.setDataFlag(EntityFlag.COLLIDABLE, true);
+                break;
+            case "cf":
+                player.setDataFlag(EntityFlag.COLLIDABLE, false);
+                break;
+            case "sword":
+                game.getProjectile().throwSword(player);
+            default:
+                break;
+        }
     }
 
     private void runDebugAuxiliary(Player victim) {

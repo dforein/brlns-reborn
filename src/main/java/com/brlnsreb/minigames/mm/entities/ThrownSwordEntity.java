@@ -29,7 +29,7 @@ public class ThrownSwordEntity extends EntityProjectile implements CustomEntity 
                 .eid(IDENTIFIER)
                 .hasSpawnEgg(false)
                 .isSummonable(true)
-                .maxHealth(5)
+                .collisionBox(0.25f, 0.25f)
                 .attack(0)
                 .physics(false, true, false)
                 .pushable(false, false)
@@ -44,8 +44,6 @@ public class ThrownSwordEntity extends EntityProjectile implements CustomEntity 
         this.setNameTagVisible(false);
         this.setCanClimb(false);
         this.setDataFlag(EntityFlag.SILENT, true);
-
-        this.setHealth(5);
     }
 
     @Override
