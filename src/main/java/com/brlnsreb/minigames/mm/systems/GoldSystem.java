@@ -97,14 +97,13 @@ public class GoldSystem {
         }
     }
     
-    public void stop(Arena arena) {
+    public void stop() {
         if (spawnTask != null) {
-            cleanupGold(arena.getLevel());
             spawnTask.cancel();
         }
     }
 
-    private void cleanupGold(Level level) {
+    public void cleanupGold(Level level) {
         for (Entity entity : level.getEntities()) {
             if (entity instanceof EntityItem && entity.namedTag != null && entity.namedTag.getBoolean("mm_gold")) {
                 entity.close();
