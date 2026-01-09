@@ -31,7 +31,7 @@ public class ThrownSwordEntity extends EntityProjectile implements CustomEntity 
                 .isSummonable(true)
                 .collisionBox(0.25f, 0.25f)
                 .attack(0)
-                .physics(false, true, false)
+                .physics(true, true, true)
                 .pushable(false, false)
                 .isPersistent(false)
                 .build();
@@ -39,8 +39,9 @@ public class ThrownSwordEntity extends EntityProjectile implements CustomEntity 
 
     @Override
     protected void initEntity() {
-        initEntity();
+        super.initEntity();
 
+        this.setScale(0.6f);
         this.setNameTagVisible(false);
         this.setCanClimb(false);
         this.setDataFlag(EntityFlag.SILENT, true);
@@ -54,10 +55,36 @@ public class ThrownSwordEntity extends EntityProjectile implements CustomEntity 
 
     @Override
     public boolean canCollideWith(Entity entity) {
-        if (entity instanceof DeadBodyEntity) {
+        if (entity instanceof DeadBodyEntity || entity.getId() == shootingEntity.getId()) {
             return false;
         }
 
         return super.canCollideWith(entity);
+    }
+
+    @Override
+    public float getGravity() {
+        return 0.03f;
+    }
+
+    @Override
+    public float getDrag() {
+        return 0.01f;
+    }
+
+    @Override
+    public boolean onUpdate(int currentTick) {
+        if (this.closed) {
+            return false;
+        }
+
+        boolean hasUpdate = super.onUpdate(currentTick);
+
+        if (this.isCollided || this.age > 1200) {
+            this.close();
+            return false;
+        }
+
+        return hasUpdate;
     }
 }

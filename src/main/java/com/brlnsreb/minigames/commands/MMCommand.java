@@ -5,7 +5,6 @@ import cn.nukkit.Player;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.data.EntityFlag;
 import cn.nukkit.utils.TextFormat;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.level.Level;
@@ -493,18 +492,6 @@ public class MMCommand extends Command {
         //reminder: args start from args[1] ("/mm debug {args[1]} {args[2]} ...")
 
         switch (args[1]) {
-            case "hct":
-                player.setDataFlag(EntityFlag.HAS_COLLISION, true);
-                break;
-            case "hcf":
-                player.setDataFlag(EntityFlag.HAS_COLLISION, false);
-                break;
-            case "ct":
-                player.setDataFlag(EntityFlag.COLLIDABLE, true);
-                break;
-            case "cf":
-                player.setDataFlag(EntityFlag.COLLIDABLE, false);
-                break;
             case "sword":
                 game.getProjectile().throwSword(player);
             default:
