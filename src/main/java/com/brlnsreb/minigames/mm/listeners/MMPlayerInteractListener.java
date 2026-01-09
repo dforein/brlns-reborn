@@ -210,14 +210,14 @@ public class MMPlayerInteractListener implements Listener {
     }
     
     private void startXpRecharge(Player player, double cooldown) {
-        int ticks = (int)(cooldown * 20);
+        double ticks = cooldown * 20;
         
         for (int i = 0; i <= ticks; i++) {
             final int tick = i;
             
             player.getServer().getScheduler().scheduleDelayedTask(() -> {
-                int progress = tick / ticks;
-                player.setExperience(0, progress);
+                int progress = (int) (tick / ticks * 100.0);
+                player.setExperience(progress, 0);
             }, i);
         }
     }

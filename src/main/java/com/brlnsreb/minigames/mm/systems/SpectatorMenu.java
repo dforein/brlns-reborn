@@ -67,10 +67,10 @@ public class SpectatorMenu {
                 spectator.teleport(target.getLocation());
 
                 String message = game.getConfig().getMessage("teleported-to")
-                                                .replace("{player}", target.getName());
-                spectator.sendMessage(message);
+                                                    .replace("{player}", target.getName());
+                spectator.sendMessage(TextFormat.colorize(message));
             } else {
-                spectator.sendMessage(game.getConfig().getMessage("player-not-available"));
+                spectator.sendMessage(TextFormat.colorize(game.getConfig().getMessage("player-not-available")));
             }
         }
     }

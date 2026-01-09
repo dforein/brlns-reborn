@@ -5,20 +5,17 @@ import cn.nukkit.Player;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.data.EntityFlag;
 import cn.nukkit.utils.TextFormat;
 import cn.nukkit.math.Vector3;
-import cn.nukkit.network.protocol.AnimateEntityPacket.Animation;
-import cn.nukkit.registry.Registries;
 import cn.nukkit.level.Level;
-import cn.nukkit.level.Position;
-import cn.nukkit.level.format.IChunk;
 import cn.nukkit.level.GameRule;
 import cn.nukkit.level.GameRules;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.core.Arena;
@@ -48,7 +45,7 @@ public class MMCommand extends Command {
         Player player = (Player) sender;
         
         if (args.length == 0) {
-            player.sendMessage(TextFormat.RED + "Game:   /mm <join|leave|start|stop>");
+            player.sendMessage(TextFormat.RED + "Game:   /mm <join|joinall|leave|start|stop>");
             player.sendMessage(TextFormat.RED + "Worlds:  /mm <listworlds|world|map|setrules>");
             return true;
         }
@@ -61,10 +58,26 @@ public class MMCommand extends Command {
                     player.sendMessage(TextFormat.RED + "Could not join game!");
                 }
                 return true;
+            
+            case "joinall":
+                if (!player.isOp()) {
+                    player.sendMessage(TextFormat.RED + "No permission!");
+                    return true;
+                }
+
+                Map<UUID, Player> playersJoining = plugin.getServer().getOnlinePlayers();
+
+                for (Map.Entry<UUID, Player> entry : playersJoining.entrySet()) {
+                    game.joinPlayer(entry.getValue());
+                }
+                return true;
                 
             case "leave":
-                game.leavePlayer(player);
-                player.sendMessage(TextFormat.YELLOW + "You left the game!");
+                if (game.leavePlayer(player)){
+                    player.sendMessage(TextFormat.YELLOW + "You left the game!");
+                } else {
+                    if (player.isOnline()) player.sendMessage(TextFormat.RED + "You have already left!");
+                }
                 return true;
             
             case "start":
@@ -496,39 +509,12 @@ public class MMCommand extends Command {
         //everything needing debug
         //reminder: args start from args[1] ("/mm debug {args[1]} {args[2]} ...")
 
-        Position pos = player.getPosition();
-        pos = pos.add(2, -0.4, 2);
-        IChunk chunk = (IChunk) pos.getLevel().getChunk(pos.getFloorX() >> 4, pos.getFloorZ() >> 4);
-
-        DeadBodyEntity body = new DeadBodyEntity(chunk, Entity.getDefaultNBT(pos));
-
-        boolean fallForward = new java.util.Random().nextBoolean();
-        Animation selectedAnimation = Animation.builder()
-            .animation(fallForward ? "animation.corpse.fall_forward" : "animation.corpse.fall_backward") 
-            .nextState(fallForward ? "animation.corpse.fall_forward" : "animation.corpse.fall_backward")
-            .stopExpression("0")
-            .stopExpressionVersion(16777216)
-            .controller("__runtime_controller")
-            .build();
-        
-        double yaw = player.getYaw();
-        double pitch = game.getConfig().getHeadPitchOffset();
-        double headYaw = yaw + game.getConfig().getHeadYawOffset();
-        
-        body.setSkin(player.getSkin());
-        body.setRotation(yaw, pitch, headYaw);
-        body.setDataFlag(EntityFlag.INVISIBLE, true);
-
-        body.spawnToAll();
-
-        plugin.getServer().getScheduler().scheduleDelayedTask(game.getPlugin(), () -> {
-            body.setDataFlag(EntityFlag.INVISIBLE, false);
-        }, 2);
-        plugin.getServer().getScheduler().scheduleDelayedTask(game.getPlugin(), () -> {
-            body.playAnimation(selectedAnimation);
-        }, 3);
-
-        game.getDeadBodies().add(body);
+        switch (args[1]) {
+            case "sword":
+                game.getProjectile().throwSword(player);
+            default:
+                break;
+        }
     }
 
     private void runDebugAuxiliary(Player victim) {

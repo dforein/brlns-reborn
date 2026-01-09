@@ -56,9 +56,13 @@ public class ScoreboardSystem {
                     roleText = "   &1sheriff";
                     break;
                 case INNOCENT:
-                default:
                     roleText = "   &ainnocent";
                     break;
+                case SPECTATOR:
+                    roleText = "   &7spectator";
+                    break;
+                default:
+                    roleText = "   &cno role";
             }
             lines.add(TextFormat.colorize(roleText));
             lines.add("");

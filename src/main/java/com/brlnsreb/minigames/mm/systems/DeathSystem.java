@@ -8,6 +8,7 @@ import cn.nukkit.entity.effect.Effect;
 import cn.nukkit.entity.effect.EffectType;
 import cn.nukkit.entity.item.EntityItem;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.format.IChunk;
 import cn.nukkit.nbt.NBTIO;
@@ -18,6 +19,7 @@ import cn.nukkit.utils.TextFormat;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
 
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.mm.items.ItemManager;
@@ -67,9 +69,7 @@ public class DeathSystem {
         victim.setDataFlag(EntityFlag.INVISIBLE, true);
         victim.setDataFlag(EntityFlag.COLLIDABLE, false);
 
-        ItemManager.clearInventory(victim);
         ItemManager.giveSpectatorItems(victim, config.getSpectatorItemName());
-        plugin.getLogger().info("SPECTATOR ITEMS COMMAND PASSED");
         
         Position deathPos = victim.getPosition();
 
@@ -86,10 +86,7 @@ public class DeathSystem {
             10, 60, 10
         );
 
-        if (isSheriff) {
-            plugin.getLogger().info("§a[DEBUG] Sheriff died, dropping hoe at " + deathPos);
-            dropSheriffHoe(deathPos);
-        }
+        if (isSheriff) {dropSheriffHoe(deathPos);}
         
         createBody(victim, deathPos);
         dropRedstone(deathPos);
@@ -98,51 +95,49 @@ public class DeathSystem {
     public void dropSheriffHoe(Position pos) {
         MMConfig config = game.getConfig();
 
-        try {
-            Item hoe = Item.get(Item.GOLDEN_HOE, 0, 1);
-            hoe.setCustomName(TextFormat.colorize(config.getSheriffHoeName()));
-            
-            CompoundTag nbt = Entity.getDefaultNBT(pos);
-            nbt.putCompound("Item", NBTIO.putItemHelper(hoe));
-            nbt.putBoolean("mm_sheriff_hoe", true);
-            nbt.putShort("Health", 5);
-            nbt.putShort("Age", -32768);
+        Item hoe = Item.get(Item.GOLDEN_HOE, 0, 1);
+        hoe.setCustomName(TextFormat.colorize(config.getSheriffHoeName()));
+        
+        CompoundTag nbt = Entity.getDefaultNBT(pos);
+        nbt.putCompound("Item", NBTIO.putItemHelper(hoe));
+        nbt.putBoolean("mm_sheriff_hoe", true);
+        nbt.putShort("Health", 5);
+        nbt.putShort("Age", -32768);
 
-            int cx = pos.getFloorX() >> 4;
-            int cz = pos.getFloorZ() >> 4;
+        int cx = pos.getFloorX() >> 4;
+        int cz = pos.getFloorZ() >> 4;
 
-            if (!pos.getLevel().isChunkLoaded(cx, cz)) {
-                pos.getLevel().loadChunk(cx, cz);
-            }
+        if (!pos.getLevel().isChunkLoaded(cx, cz)) {
+            pos.getLevel().loadChunk(cx, cz);
+        }
 
-            EntityItem drop = (EntityItem) Entity.createEntity(
-                Entity.ITEM,
-                pos.getLevel().getChunk(cx, cz),
-                nbt
-            );
+        EntityItem drop = (EntityItem) Entity.createEntity(
+            Entity.ITEM,
+            pos.getLevel().getChunk(cx, cz),
+            nbt
+        );
+        
+        if (drop != null) {
+            drop.setNameTagVisible(true);
+            drop.setNameTagAlwaysVisible(true);
+            drop.setNameTag(TextFormat.colorize(config.getSheriffHoeName()));
+            drop.setScale(1.2f);
             
-            if (drop != null) {
-                drop.setNameTagVisible(true);
-                drop.setNameTagAlwaysVisible(true);
-                drop.setNameTag(TextFormat.colorize(config.getSheriffHoeName()));
-                drop.setScale(1.2f);
-                
-                drop.spawnToAll();
-                
-                plugin.getLogger().info("§a[DEBUG] Sheriff hoe spawned successfully!");
-            } else {
-                plugin.getLogger().error("§c[ERROR] Failed to create sheriff hoe entity!");
-            }
-            
-        } catch (Exception e) {
-            plugin.getLogger().error("§c[ERROR] Failed to spawn sheriff hoe: " + e.getMessage());
-            e.printStackTrace();
+            drop.spawnToAll();
         }
     }
     
     private void createBody(Player victim, Position pos) {
         pos = pos.add(0, -0.4, 0);
-        IChunk chunk = (IChunk) pos.getLevel().getChunk(pos.getFloorX() >> 4, pos.getFloorZ() >> 4);
+
+        int cx = pos.getFloorX() >> 4;
+        int cz = pos.getFloorZ() >> 4;
+
+        if (!pos.getLevel().isChunkLoaded(cx, cz)) {
+            pos.getLevel().loadChunk(cx, cz);
+        }
+
+        IChunk chunk = (IChunk) pos.getLevel().getChunk(cx, cz);
 
         DeadBodyEntity body = new DeadBodyEntity(chunk, Entity.getDefaultNBT(pos));
 
@@ -219,5 +214,40 @@ public class DeathSystem {
 
             placed++;
         }
+    }
+
+    public void cleanupBodies(Set<Entity> deadBodies) {
+        for (Entity body : deadBodies) {
+            if (body != null && !body.isClosed()) {
+                body.close();
+            }
+        }
+        deadBodies.clear();
+    }
+
+    public void cleanupSheriffHoe(Level level) {
+        for (Entity entity : level.getEntities()) {
+            if (entity instanceof EntityItem && entity.namedTag != null && entity.namedTag.getBoolean("mm_sheriff_hoe")) {
+                entity.close();
+            }
+        }
+    }
+
+    public void cleanupRedstone(List<Position> redstonePositions) {
+        if (redstonePositions.isEmpty()) return;
+
+        int removed = 0;
+        for (Position pos : redstonePositions) {
+            if (pos.getLevel() != null) {
+                if (pos.getLevel().getBlock(pos).getId().contains("redstone")) {
+                    pos.getLevel().setBlock(pos, Block.get(Block.AIR));
+                    removed++;
+                }
+            }
+        }
+
+        plugin.getLogger().info("Removed " + removed + " redstone blocks");
+        
+        redstonePositions.clear();
     }
 }

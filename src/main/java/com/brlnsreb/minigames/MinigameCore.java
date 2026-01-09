@@ -5,6 +5,7 @@ import cn.nukkit.registry.Registries;
 import cn.nukkit.utils.TextFormat;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.entities.DeadBodyEntity;
+import com.brlnsreb.minigames.mm.entities.ThrownSwordEntity;
 import com.brlnsreb.minigames.mm.listeners.*;
 import com.brlnsreb.minigames.commands.MMCommand;
 import com.brlnsreb.minigames.commands.PingCommand;
@@ -21,8 +22,9 @@ public class MinigameCore extends PluginBase {
 
         try {
             Registries.ENTITY.registerCustomEntity(this, DeadBodyEntity.class);
+            Registries.ENTITY.registerCustomEntity(this, ThrownSwordEntity.class);
             Registries.ENTITY.rebuildTag();
-            this.getLogger().info("§aCustom entity 'DeadBodyEntity' registered successfully!");
+            this.getLogger().info("§aCustom entities registered successfully.");
             
         } catch (cn.nukkit.registry.RegisterException e) {
             this.getLogger().error("Error during DeadBodyEntity registration: " + e.getMessage());
