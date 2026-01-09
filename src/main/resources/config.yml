@@ -34,7 +34,7 @@ lobby:
 
 murderer:
   sword-throw-cooldown: 10
-  sword-throw-speed: 6
+  sword-throw-speed: 30     #measured in blocks/second    # 30 = 1.5 blocks/tick = snowball speed
   blindness-duration: 20
   time-start-tracking: 60
   sword-name: "&o&l&cMurderstick"

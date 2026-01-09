@@ -2,12 +2,12 @@ package com.brlnsreb.minigames.mm.systems;
 
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.projectile.EntitySnowball;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 
 import com.brlnsreb.minigames.mm.config.MMConfig;
+import com.brlnsreb.minigames.mm.entities.ThrownSwordEntity;
 
 public class ProjectileSystem {
     
@@ -26,27 +26,22 @@ public class ProjectileSystem {
         );
         
         CompoundTag nbt = Entity.getDefaultNBT(eyePosition);
-        nbt.putString("mm_projectile", "sword");
         nbt.putString("mm_thrower", murderer.getName());
 
         int cx = murderer.getFloorX() >> 4;
         int cz = murderer.getFloorZ() >> 4;
-        
-        EntitySnowball snowball = (EntitySnowball) Entity.createEntity(
-            Entity.SNOWBALL,
-            level.getChunk(cx, cz),
-            nbt
-        );
-        
-        if (snowball == null) return;
-        
-        snowball.setNameTagVisible(false);
 
-        snowball.shootingEntity = murderer;
+        if (!level.isChunkLoaded(cx, cz)) {
+            level.loadChunk(cx, cz);
+        }
+
+        ThrownSwordEntity thrownSword = new ThrownSwordEntity(level.getChunk(cx, cz), nbt);
+
+        thrownSword.shootingEntity = murderer;
         Vector3 direction = murderer.getDirectionVector();
-        double speed = config.getSwordThrowSpeed();
-        snowball.setMotion(direction.multiply(speed));
+        double speed = config.getSwordThrowSpeed() / 20;
+        thrownSword.setMotion(direction.multiply(speed));
         
-        snowball.spawnToAll();
+        thrownSword.spawnToAll();
     }
 }

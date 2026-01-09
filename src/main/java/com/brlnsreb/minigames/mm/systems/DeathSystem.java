@@ -142,7 +142,15 @@ public class DeathSystem {
     
     private void createBody(Player victim, Position pos) {
         pos = pos.add(0, -0.4, 0);
-        IChunk chunk = (IChunk) pos.getLevel().getChunk(pos.getFloorX() >> 4, pos.getFloorZ() >> 4);
+
+        int cx = pos.getFloorX() >> 4;
+        int cz = pos.getFloorZ() >> 4;
+
+        if (!pos.getLevel().isChunkLoaded(cx, cz)) {
+            pos.getLevel().loadChunk(cx, cz);
+        }
+
+        IChunk chunk = (IChunk) pos.getLevel().getChunk(cx, cz);
 
         DeadBodyEntity body = new DeadBodyEntity(chunk, Entity.getDefaultNBT(pos));
 
