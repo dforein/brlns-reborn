@@ -14,6 +14,8 @@ import cn.nukkit.level.GameRules;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.core.Arena;
@@ -43,7 +45,7 @@ public class MMCommand extends Command {
         Player player = (Player) sender;
         
         if (args.length == 0) {
-            player.sendMessage(TextFormat.RED + "Game:   /mm <join|leave|start|stop>");
+            player.sendMessage(TextFormat.RED + "Game:   /mm <join|joinall|leave|start|stop>");
             player.sendMessage(TextFormat.RED + "Worlds:  /mm <listworlds|world|map|setrules>");
             return true;
         }
@@ -56,10 +58,26 @@ public class MMCommand extends Command {
                     player.sendMessage(TextFormat.RED + "Could not join game!");
                 }
                 return true;
+            
+            case "joinall":
+                if (!player.isOp()) {
+                    player.sendMessage(TextFormat.RED + "No permission!");
+                    return true;
+                }
+
+                Map<UUID, Player> playersJoining = plugin.getServer().getOnlinePlayers();
+
+                for (Map.Entry<UUID, Player> entry : playersJoining.entrySet()) {
+                    game.joinPlayer(entry.getValue());
+                }
+                return true;
                 
             case "leave":
-                game.leavePlayer(player);
-                player.sendMessage(TextFormat.YELLOW + "You left the game!");
+                if (game.leavePlayer(player)){
+                    player.sendMessage(TextFormat.YELLOW + "You left the game!");
+                } else {
+                    if (player.isOnline()) player.sendMessage(TextFormat.RED + "You have already left!");
+                }
                 return true;
             
             case "start":

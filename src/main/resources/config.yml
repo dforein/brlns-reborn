@@ -3,7 +3,7 @@
 game:
   min-players: 2
   max-players: 20
-  min-players-start: 6
+  min-players-start: 20
   max-countdown: 45
   shortened-countdown: 10
   pregame-countdown: 10
@@ -122,7 +122,7 @@ messages:
   lights-out-murderer-warning: "&eBeware. The sheriff can easily discover you while you are helding your weapon!"
   lights-out-over: "&cLights out is over!"
   murderer-won-title: "&cMURDERER WON"
-  innocent-won-title: "&aINNOCENTS WON"
+  innocents-won-title: "&aINNOCENTS WON"
   murderer-won: "&cMURDERER WON"
   murderer-won2: "&cCongratulations! You WON"
   innocents-won: "&aINNOCENT team WON!"

@@ -24,12 +24,12 @@ public class MMPlayerDeathListener implements Listener {
     
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
-        if (game.getState() != GameState.IN_GAME) return;
-
         if (event.getEntity() instanceof DeadBodyEntity) {
             event.setCancelled();
             return;
         }
+
+        if (game.getState() != GameState.IN_GAME) return;
 
         if (!(event.getEntity() instanceof Player)) return;
         

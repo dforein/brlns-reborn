@@ -31,8 +31,9 @@ public class MMPlayerChatListener implements Listener {
         if (gp.getRole() == MMRole.MURDERER || 
             gp.getRole() == MMRole.SHERIFF || 
             gp.getRole() == MMRole.SPECTATOR) {
-            //event.setCancelled(true);
-            //player.sendMessage(TextFormat.colorize(game.getConfig().getMessage("no-chat")));  //TODO: remove commenting
+
+            event.setCancelled(true);
+            player.sendMessage(TextFormat.colorize(game.getConfig().getMessage("no-chat")));
         }
     }
 }
