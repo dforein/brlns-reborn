@@ -3,6 +3,13 @@ Plugin based on PowerNukkitX that recreates from scratch, with high fidelty, the
 The plugin supports multiple minigames, which could be developed later. 
 This project is not affiliated with official BrokenLens.
 
+## First setup
+- Follow the steps listed under the **Install** section, to install PowerNukkitX, at https://github.com/PowerNukkitX/PowerNukkitX
+- Start the server for the first time, in order to create the necessary folders
+- Download the plugin and put it in the plugins folder
+- Download the Resource Pack and put it in the resource_packs folder
+- Set up the plugin | next chapter
+
 ## config.yml settings and adding maps
 After starting the plugin for the first time, the plugin will generate a **config.yml** file, where you can edit the **settings** of the plugin and **add valid maps**.
 Here an example of how to set up a mm map inside config.yml:
@@ -57,7 +64,7 @@ world:
 ```/mm map countbarriers <mapName>``` - Count barriers present in the map (no save)  
 ```/mm map savepos1``` - Save current coordinates in internal variable ```position1``` (and resets ```position2``` for safety)  
 ```/mm map savepos2``` - Save current coordinates in internal variable ```position2```  
-```/mm map remove <mapName> <saved> <x1> <y1> <z1> <x2> <y2> <z2>``` - Remove a volume of blocks from pos1 to pos2  
+```/mm map remove <mapName> <x1> <y1> <z1> <x2> <y2> <z2>``` - Remove a volume of blocks from pos1 to pos2  
 ```/mm map remove <mapName> sp``` - Use s.aved p.ositions coords in the internal variables (need both)  
 ```/mm map add <mapName> <x1> <y1> <z1> <x2> <y2> <z2>``` - Add a volume of blocks from pos1 to pos2 (same as scan: checking for valid blocks, but in a restricted volume)  
 ```/mm map reload <mapName>``` - Reload the saved scan in cache  
