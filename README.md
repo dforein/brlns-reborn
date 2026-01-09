@@ -57,7 +57,7 @@ world:
 ```/mm map countbarriers <mapName>``` - Count barriers present in the map (no save)  
 ```/mm map savepos1``` - Save current coordinates in internal variable ```position1``` (and resets ```position2``` for safety)  
 ```/mm map savepos2``` - Save current coordinates in internal variable ```position2```  
-```/mm map remove <mapName> <saved> <x1> <y1> <z1> <x2> <y2> <z2>``` - Remove a volume of blocks from pos1 to pos2  
+```/mm map remove <mapName> <x1> <y1> <z1> <x2> <y2> <z2>``` - Remove a volume of blocks from pos1 to pos2  
 ```/mm map remove <mapName> sp``` - Use s.aved p.ositions coords in the internal variables (need both)  
 ```/mm map add <mapName> <x1> <y1> <z1> <x2> <y2> <z2>``` - Add a volume of blocks from pos1 to pos2 (same as scan: checking for valid blocks, but in a restricted volume)  
 ```/mm map reload <mapName>``` - Reload the saved scan in cache  
