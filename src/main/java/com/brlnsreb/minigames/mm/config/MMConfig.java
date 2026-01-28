@@ -39,7 +39,7 @@ public class MMConfig {
     }
     
     public double getSwordThrowSpeed() {
-        return config.getDouble("murderer.sword-throw-speed", 5);
+        return config.getDouble("murderer.sword-throw-speed", 1.5);
     }
     
     public int getBlindnessDuration() {
