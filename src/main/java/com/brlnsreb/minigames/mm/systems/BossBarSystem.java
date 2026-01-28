@@ -7,6 +7,8 @@ import cn.nukkit.utils.DummyBossBar;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO: bossbar astraction into Utils
+
 public class BossBarSystem {
     
     private final Map<String, Long> bossBarIds;

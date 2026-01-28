@@ -13,7 +13,7 @@ import com.brlnsreb.minigames.commands.PingCommand;
 public class MinigameCore extends PluginBase {
     
     private static MinigameCore instance;
-    private MurderMysteryGame game;
+    private MurderMysteryGame mmGame;
     
     @Override
     public void onLoad() {
@@ -36,19 +36,19 @@ public class MinigameCore extends PluginBase {
     public void onEnable() {
         saveDefaultConfig();
         
-        game = new MurderMysteryGame(this);
+        mmGame = new MurderMysteryGame(this);
         
-        getServer().getCommandMap().register("mm", new MMCommand(this, game));
+        getServer().getCommandMap().register("mm", new MMCommand(this, mmGame));
         getServer().getCommandMap().register("ping", new PingCommand());
         
-        getServer().getPluginManager().registerEvents(new MMPlayerInteractListener(game), this);
-        getServer().getPluginManager().registerEvents(new MMProjectileHitListener(game), this);
-        getServer().getPluginManager().registerEvents(new MMPlayerPickupListener(game), this);
-        getServer().getPluginManager().registerEvents(new MMPlayerJoinQuitListener(game), this);
-        getServer().getPluginManager().registerEvents(new MMPlayerDeathListener(game), this);
-        getServer().getPluginManager().registerEvents(new MMPlayerChatListener(game), this);
-        getServer().getPluginManager().registerEvents(new MMFormResponseListener(game), this);
-        getServer().getPluginManager().registerEvents(new MMPlayerInventoryListener(game), this);
+        getServer().getPluginManager().registerEvents(new MMPlayerInteractListener(mmGame), this);
+        getServer().getPluginManager().registerEvents(new MMProjectileHitListener(mmGame), this);
+        getServer().getPluginManager().registerEvents(new MMPlayerPickupListener(mmGame), this);
+        getServer().getPluginManager().registerEvents(new MMPlayerJoinQuitListener(mmGame), this);
+        getServer().getPluginManager().registerEvents(new MMPlayerDeathListener(mmGame), this);
+        getServer().getPluginManager().registerEvents(new MMPlayerChatListener(mmGame), this);
+        getServer().getPluginManager().registerEvents(new MMFormResponseListener(mmGame), this);
+        getServer().getPluginManager().registerEvents(new MMPlayerInventoryListener(mmGame), this);
 
         
         
@@ -57,8 +57,8 @@ public class MinigameCore extends PluginBase {
     
     @Override
     public void onDisable() {
-        if (game != null) {
-            game.forceStop();
+        if (mmGame != null) {
+            mmGame.forceStop();
         }
         this.getLogger().info(TextFormat.DARK_RED + "brlnsreb Minigames disabled!");
     }
@@ -67,7 +67,7 @@ public class MinigameCore extends PluginBase {
         return instance;
     }
     
-    public MurderMysteryGame getGame() {
-        return game;
+    public MurderMysteryGame getMMGame() {
+        return mmGame;
     }
 }

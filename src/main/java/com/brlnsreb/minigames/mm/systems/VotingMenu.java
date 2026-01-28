@@ -10,6 +10,8 @@ import com.brlnsreb.minigames.mm.config.MMConfig;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: votingmenu astraction into Utils
+
 public class VotingMenu {
     
     private final MurderMysteryGame game;

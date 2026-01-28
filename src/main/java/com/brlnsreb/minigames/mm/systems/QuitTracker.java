@@ -3,6 +3,8 @@ package com.brlnsreb.minigames.mm.systems;
 import java.util.HashSet;
 import java.util.Set;
 
+// TODO: MAYBE quittracking astraction into Utils
+
 public class QuitTracker {
     
     private final Set<String> quittedPlayers;

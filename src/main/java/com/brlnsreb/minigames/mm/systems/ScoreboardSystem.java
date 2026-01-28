@@ -13,6 +13,8 @@ import com.brlnsreb.minigames.mm.roles.MMRole;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: scoreboard astraction into Utils
+
 public class ScoreboardSystem {
     
     private static final String OBJECTIVE_NAME = "mm_scoreboard";

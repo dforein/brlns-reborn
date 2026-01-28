@@ -3,6 +3,8 @@ package com.brlnsreb.minigames.mm.systems;
 import cn.nukkit.Player;
 import java.util.*;
 
+// TODO: votingsystem astraction into Utils
+
 public class VotingSystem {
     
     private final Map<String, String> mapVotes;      // playerName -> mapName

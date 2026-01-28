@@ -3,6 +3,8 @@ package com.brlnsreb.minigames.core;
 import cn.nukkit.Player;
 import java.util.List;
 
+// TODO: implement and refine this astraction
+
 public abstract class Minigame {
     
     protected String name;

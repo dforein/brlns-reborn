@@ -7,6 +7,9 @@ import java.util.List;
 
 import cn.nukkit.math.Vector3;
 
+// TODO: separate messages.yml from config.yml and categorize by minigame
+// TODO: config abstraction into Utils
+
 public class MMConfig {
     
     private final Config config;

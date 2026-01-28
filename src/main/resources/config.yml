@@ -138,6 +138,7 @@ world:
   enabled-maps:
     - "map1"
     - "map2"
+    - "map3"
   arena-regions:
     map1:
       name: "Test Map"
@@ -161,7 +162,6 @@ world:
       weather: "Clear"
       builders:
         - "Lesz"
-        - "@BrokenLensTeam"
       spawns:
         - [12, 5, 0]
         - [30, 5, -23]
@@ -175,3 +175,29 @@ world:
         - [11, 8, -26]
         - [1, 13, -26]
         - [71, 6, -44]
+    map3:
+        name: "Village"
+        world: "village"
+        min: [-10, -1, -71]
+        max: [124, 15, 143]
+        night-vision: true
+        weather: "Clear"
+        builders:
+          - "Yoursenpaiisme"
+          - "Amphinous"
+        spawns:
+          - [13, 4, 5]
+          - [63, 6, 20]
+          - [55, 4, -6]
+          - [50, 5, -61]
+          - [75, 4, 10]
+          - [86, 4, 15]
+          - [58, 6, -24]
+          - [66, 4, -4]
+          - [44, 6, -4]
+          - [71, 10, 36]
+          - [58, 10, 78]
+          - [86, 5, 99]
+          - [55, 7, 56]
+          - [45, 14, 86]
+          - [22, 4, -5]

@@ -3,6 +3,8 @@ package com.brlnsreb.minigames.mm.systems;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO: cooldownsystem astraction/move into Utils
+
 public class CooldownSystem {
     
     private final Map<String, Long> cooldowns;
