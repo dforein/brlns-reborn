@@ -1,14 +1,30 @@
 package com.brlnsreb.minigames.commands;
 
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
+import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.utils.TextFormat;
 
 public class PingCommand extends Command {
     
     public PingCommand() {
         super("ping", "Check your ping", "/ping <player>");
+
+        this.getCommandParameters().clear();
+
+        String[] playerNames = Server.getInstance().getOnlinePlayers()
+            .values()
+            .stream()
+            .map(Player::getName)
+            .toArray(String[]::new);
+
+        this.addCommandParameters("default", new CommandParameter[0]);
+        this.addCommandParameters("target", new CommandParameter[] {
+            CommandParameter.newEnum("target", playerNames)
+        });
+
     }
     
     @Override

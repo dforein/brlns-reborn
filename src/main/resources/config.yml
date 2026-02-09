@@ -1,5 +1,3 @@
-#config.yml
-
 game:
   min-players: 2
   max-players: 20
@@ -9,195 +7,241 @@ game:
   pregame-countdown: 10
   game-duration: 420
   end-time: 10
-
 lobby:
   spawn:
     x: 0
     y: 81
     z: 0
-    world: "lobby"
+    world: lobby
   rules-book:
-    item-name: "&o&l&fRules &r&7- Hold / Right Click"
-    title: "Murder Mystery Rules"
-    author: "Server"
+    item-name: '&o&l&fRules &r&7- Hold / Right Click'
+    title: Murder Mystery Rules
+    author: Server
     pages:
-      - "§l§aMurder§2Mystery\n\n§r§7Find and eliminate the murderer before they kill everyone!\n\n§7Collect §6GOLD §7to craft a gun."
-      - "§l§6Roles:\n\n§r§cMurderer§7: Kill all innocents\n\n§9Sheriff§7: Protect innocents\n\n§aInnocent§7: Survive and collect gold"
-      - "§l§dTips:\n\n§r§7- Watch for suspicious behavior\n§7- Work together\n§7- The murderer has a throwable sword and can turn the lights off for a short period"
-  game-poll:
-    item-name: "&o&l&dGame Poll &r&7- Hold / Right Click"
-    times:
-      - "Day"
-      - "Sunrise"
-      - "Sunset"
-      - "Night"
+    - |-
+      §l§aMurder§2Mystery
 
+      §r§7Find and eliminate the murderer before they kill everyone!
+
+      §7Collect §6GOLD §7to craft a gun.
+    - |-
+      §l§6Roles:
+
+      §r§cMurderer§7: Kill all innocents
+
+      §9Sheriff§7: Protect innocents
+
+      §aInnocent§7: Survive and collect gold
+    - |-
+      §l§dTips:
+
+      §r§7- Watch for suspicious behavior
+      §7- Work together
+      §7- The murderer has a throwable sword and can turn the lights off for a short period
+  game-poll:
+    item-name: '&o&l&dGame Poll &r&7- Hold / Right Click'
+    times:
+    - Day
+    - Sunrise
+    - Sunset
+    - Night
 murderer:
   sword-throw-cooldown: 10
-  sword-throw-speed: 30     #measured in blocks/second    # 30 = 1.5 blocks/tick = snowball speed
+  sword-throw-speed: 30
   blindness-duration: 20
   time-start-tracking: 60
-  sword-name: "&o&l&cMurderstick"
-  blaze-rod-name: "&o&l&6Lights Out"
-
+  sword-name: '&o&l&cMurderstick'
+  blaze-rod-name: '&o&l&6Lights Out'
 sheriff:
   shoot-cooldown: 0.2
   friendly-fire-death: true
   raycast-max-distance: 100
   raycast-step: 0.2
-  hoe-name: "§o§l§9Sheriff Hoe"
-
+  hoe-name: §o§l§9Sheriff Hoe
 innocents:
   gold-for-gun: 5
-  dye-name: "&o&l&eCraft The Gun &r&7( Hold / Right Click )"
-
+  dye-name: '&o&l&eCraft The Gun &r&7( Hold / Right Click )'
 spectator:
-  item-name: "&o&l&7Teleport to Player"
-
+  item-name: '&o&l&7Teleport to Player'
 death:
   animation-duration: 0.4167
   head-yaw-offset: -35
   head-pitch-offset: -40
   redstone-drop: 2
   blindness-duration: 2
-
 gold:
   spawn-interval-min: 2
   spawn-interval-max: 3
-
 exp:
   per-gold: 10
   per-kill: 15
   sheriff-won: 600
   sheriff-kill: 100
-
 scoreboard:
-  title: "&l§aMurder§2Mystery"
+  title: '&l§aMurder§2Mystery'
   update-interval: 10
-
 messages:
-  prefix: "§l§aM§r§l§2M §r"
-  spectator-in-game: "&aThe match has already started. You joined as spectator!"
-  countdown-bossbar-long: "&l&eStarting in &6{minutes}m {seconds}s"
-  countdown-bossbar-medium: "&l&eStarting in &6{seconds}s"
-  countdown-bossbar-short: "&l&eStarting in &c{seconds}s"
-  pregame-countdown: "§aMatch begins in §6{seconds}§e seconds..."
-  game-start: "&aThe game has now started!"
-  game-start2: "§cYou are no longer invicible!"
-  gold-collected: "§aCollected +1 §r§eGOLD"
-  not-enough-players: "§cAt least {min} players are required!"
-  already-in-game: "§cYou are already in a game!"
-  teleported-to-arena: "§aMatch will begin soon..."
-  map-vote: "&aYou voted for map: &e{mapName}"
-  time-vote: "&aYou voted for time: &e{time}"
-  player-joined: "&3{name} &7joined (&a{playersNumber}&7/&a{maxPlayers}&7)"
-  player-left: "&3{name} &7left (&a{playersNumber}&7/&a{maxPlayers}&7)"
-  selected-map: "&eYou're going to play on the map &d{selectedMap} &eat &d{selectedTime} &7/ &d{weather}"
-  timer-shortened: "&aTimer shortened in {seconds} seconds"
-  map-credits: "&eMap created by &d{builders}"
-  innocent-title: "&aYOU ARE INNOCENT"
-  innocent-subtitle: "&eStay away from the murderer\n&eand collect gold to earn points"
-  murderer-title: "&cYOU ARE MURDERER"
-  murderer-subtitle: "&eKill all the innocents, but be\n&estealthy not to get caught by the sheriff" 
-  sheriff-title: "&9YOU ARE SHERIFF"
-  sheriff-subtitle: "&l&eProtect the innocents and kill the murderer"
-  dead-title: "&cYOU ARE DEAD" 
-  dead-subtitle: "&6Oh no... too bad" 
-  sheriff-advice: "&eRight click or hold your screen to shoot your gun"
-  murderer-advice: "&eRight click or hold your screen to throw your sword"
-  sheriff-friendly-fire: "The &9Sheriff &ckilled an innocent and is now DEAD."
-  sheriff-gun-dropped: "&eThe &9Sheriff's &egun is now dropped."
-  sheriff-dead-instructions: "&aYou can collect the &9Sheriff's &agun, or craft a gun by using &eGOLD &ato become the sheriff!" 
-  new-sheriff-chosen: "&aA new &9Sheriff &ahas been chosen"
-  killed: "{killer} &ckilled &a{killed}"
-  murderer:  "&eThe Murderer"
-  sheriff: "&cThe &9Sheriff"
-  sheriff-lowercase: "&cthe &9Sheriff"
-  murderer-kill: "&cYou hunted &e{player} &cdown! &7(&2+15E &e+25C &7)" 
-  murderer-kill-sheriff: "&cYou killed the &9Sheriff&c! &7(&2+100E &e+300C &7)"
-  sheriff-kill: "&cYou killed &eThe Murderer&c! &7(&2+600E &e+800C &7)"
-  murderer-dead: "&cThe Murderer is gone!"
-  lights-out-others: "&eThe Murderer &cput the lights out for &e{seconds} &cseconds"
-  lights-out-murderer: "&cThe lights are now out to the other players for &e{seconds} &cseconds"
-  lights-out-murderer-warning: "&eBeware. The sheriff can easily discover you while you are helding your weapon!"
-  lights-out-over: "&cLights out is over!"
-  murderer-won-title: "&cMURDERER WON"
-  innocents-won-title: "&aINNOCENTS WON"
-  murderer-won: "&cMURDERER WON"
-  murderer-won2: "&cCongratulations! You WON"
-  innocents-won: "&aINNOCENT team WON!"
-  innocents-won2: "&aCongratulations! You WON"
-  sword-cooldown: "&cYou have to wait for the cooldown before throwing the sword again!"
-  no-chat: "&cYou can't write in the chat!"
-  teleported-to: "&aYou have been teleported to &e{player}&a!"
-  player-not-available: "&cPlayer is no longer available!"
-
+  prefix: §l§aM§r§l§2M §r
+  spectator-in-game: '&aThe match has already started. You joined as spectator!'
+  countdown-bossbar-long: '&l&eStarting in &6{minutes}m {seconds}s'
+  countdown-bossbar-medium: '&l&eStarting in &6{seconds}s'
+  countdown-bossbar-short: '&l&eStarting in &c{seconds}s'
+  pregame-countdown: §aMatch begins in §6{seconds}§e seconds...
+  game-start: '&aThe game has now started!'
+  game-start2: §cYou are no longer invicible!
+  gold-collected: §aCollected +1 §r§eGOLD
+  not-enough-players: §cAt least {min} players are required!
+  already-in-game: §cYou are already in a game!
+  teleported-to-arena: §aMatch will begin soon...
+  map-vote: '&aYou voted for map: &e{mapName}'
+  time-vote: '&aYou voted for time: &e{time}'
+  player-joined: '&3{name} &7joined (&a{playersNumber}&7/&a{maxPlayers}&7)'
+  player-left: '&3{name} &7left (&a{playersNumber}&7/&a{maxPlayers}&7)'
+  selected-map: '&eYou''re going to play on the map &d{selectedMap} &eat &d{selectedTime}
+    &7/ &d{weather}'
+  timer-shortened: '&aTimer shortened in {seconds} seconds'
+  map-credits: '&eMap created by &d{builders}'
+  innocent-title: '&aYOU ARE INNOCENT'
+  innocent-subtitle: |-
+    &eStay away from the murderer
+    &eand collect gold to earn points
+  murderer-title: '&cYOU ARE MURDERER'
+  murderer-subtitle: |-
+    &eKill all the innocents, but be
+    &estealthy not to get caught by the sheriff
+  sheriff-title: '&9YOU ARE SHERIFF'
+  sheriff-subtitle: '&l&eProtect the innocents and kill the murderer'
+  dead-title: '&cYOU ARE DEAD'
+  dead-subtitle: '&6Oh no... too bad'
+  sheriff-advice: '&eRight click or hold your screen to shoot your gun'
+  murderer-advice: '&eRight click or hold your screen to throw your sword'
+  sheriff-friendly-fire: The &9Sheriff &ckilled an innocent and is now DEAD.
+  sheriff-gun-dropped: '&eThe &9Sheriff''s &egun is now dropped.'
+  sheriff-dead-instructions: '&aYou can collect the &9Sheriff''s &agun, or craft a
+    gun by using &eGOLD &ato become the sheriff!'
+  new-sheriff-chosen: '&aA new &9Sheriff &ahas been chosen'
+  killed: '{killer} &ckilled &a{killed}'
+  murderer: '&eThe Murderer'
+  sheriff: '&cThe &9Sheriff'
+  sheriff-lowercase: '&cthe &9Sheriff'
+  murderer-kill: '&cYou hunted &e{player} &cdown! &7(&2+15E &e+25C &7)'
+  murderer-kill-sheriff: '&cYou killed the &9Sheriff&c! &7(&2+100E &e+300C &7)'
+  sheriff-kill: '&cYou killed &eThe Murderer&c! &7(&2+600E &e+800C &7)'
+  murderer-dead: '&cThe Murderer is gone!'
+  lights-out-others: '&eThe Murderer &cput the lights out for &e{seconds} &cseconds'
+  lights-out-murderer: '&cThe lights are now out to the other players for &e{seconds}
+    &cseconds'
+  lights-out-murderer-warning: '&eBeware. The sheriff can easily discover you while
+    you are helding your weapon!'
+  lights-out-over: '&cLights out is over!'
+  murderer-won-title: '&cMURDERER WON'
+  innocents-won-title: '&aINNOCENTS WON'
+  murderer-won: '&cMURDERER WON'
+  murderer-won2: '&cCongratulations! You WON'
+  innocents-won: '&aINNOCENT team WON!'
+  innocents-won2: '&aCongratulations! You WON'
+  sword-cooldown: '&cYou have to wait for the cooldown before throwing the sword again!'
+  no-chat: '&cYou can''t write in the chat!'
+  teleported-to: '&aYou have been teleported to &e{player}&a!'
+  player-not-available: '&cPlayer is no longer available!'
 world:
-  lobby: "lobby"
-  default-world: "world"
+  lobby: lobby
+  default-world: world
   enabled-maps:
-    - "map1"
-    - "map2"
-    - "map3"
+  - world
+  - museum
+  - village
+  - school_n
   arena-regions:
-    map1:
-      name: "Test Map"
-      world: "world"
-      min: [0, 80, 0]
-      max: [100, 80, 100]
-      night-vision: true
-      weather: "Clear"
+    world:
+      name: Test
+      world: world
+      min: 0 80 0
+      max: 100 80 100
+      night-vision: false
+      weather: Clear
       builders:
-        - "ItzDS35"
+      - ItzDS35
+      - JoeMama
+      - BiggieKirk
       spawns:
-        - [50, 80, 50]
-        - [20, 80, 20]
-        - [80, 80, 80]
-    map2:
-      name: "Museum"
-      world: "museum"
-      min: [-63, 0, -95]
-      max: [81, 45, 58]
+      - 50 80 50
+      - 20 80 20
+      - 80 80 80
+    museum:
+      name: Museum
+      world: museum
+      min: -63 0 -95
+      max: 81 45 58
       night-vision: true
-      weather: "Clear"
+      weather: Clear
       builders:
-        - "Lesz"
+      - Lesz
       spawns:
-        - [12, 5, 0]
-        - [30, 5, -23]
-        - [-31, 5, -13]
-        - [16, 5, -56]
-        - [53, 5, 33]
-        - [65, 5, -6]
-        - [14, 5, -86]
-        - [-41, 5, -61]
-        - [1, 24, 4]
-        - [11, 8, -26]
-        - [1, 13, -26]
-        - [71, 6, -44]
-    map3:
-        name: "Village"
-        world: "village"
-        min: [-10, -1, -71]
-        max: [124, 15, 143]
-        night-vision: true
-        weather: "Clear"
-        builders:
-          - "Yoursenpaiisme"
-          - "Amphinous"
-        spawns:
-          - [13, 4, 5]
-          - [63, 6, 20]
-          - [55, 4, -6]
-          - [50, 5, -61]
-          - [75, 4, 10]
-          - [86, 4, 15]
-          - [58, 6, -24]
-          - [66, 4, -4]
-          - [44, 6, -4]
-          - [71, 10, 36]
-          - [58, 10, 78]
-          - [86, 5, 99]
-          - [55, 7, 56]
-          - [45, 14, 86]
-          - [22, 4, -5]
+      - 12 5 0
+      - 30 5 -23
+      - -31 5 -13
+      - 16 5 -56
+      - 53 5 33
+      - 65 5 -6
+      - 14 5 -86
+      - -41 5 -61
+      - 1 24 4
+      - 11 8 -26
+      - 1 13 -26
+      - 71 6 -44
+    village:
+      name: Village
+      world: village
+      min: -10 -1 -71
+      max: 124 15 143
+      night-vision: true
+      weather: Clear
+      builders:
+      - Yoursenpaiisme
+      - Amphinous
+      spawns:
+      - 13 4 5
+      - 63 6 20
+      - 55 4 -6
+      - 50 5 -61
+      - 75 4 10
+      - 86 4 15
+      - 58 6 -24
+      - 66 4 -4
+      - 44 6 -4
+      - 71 10 36
+      - 58 10 78
+      - 86 5 99
+      - 55 7 56
+      - 45 14 86
+      - 22 4 -5
+    school_n:
+      name: School N
+      world: school_n
+      min: 2428 31 2407
+      max: 2464 62 2468
+      night-vision: false
+      weather: Clear
+      builders:
+      - TrenzKGM
+      - KhrizKGM
+      spawns:
+      - 2446 56 2438
+      - 2436 52 2441
+      - 2446 48 2431
+      - 2435 48 2425
+      - 2438 48 2454
+      - 2444 40 2442
+      - 2446 40 2429
+      - 2435 40 2421
+      - 2460 40 2426
+      - 2456 32 2455
+      - 2436 33 2459
+      - 2445 32 2453
+      - 2438 32 2441
+      - 2446 48 2435
+      - 2436 44 2441
+      - 2435 32 2433
+      - 2456 33 2428
+      - 2447 32 2411

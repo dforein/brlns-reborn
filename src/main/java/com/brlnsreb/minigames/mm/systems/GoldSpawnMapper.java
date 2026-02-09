@@ -23,8 +23,6 @@ public class GoldSpawnMapper {
     private final File mapsFolder;
     private final File barriersFolder;
     private final Gson gson;
-    public Vector3 position1 = null;
-    public Vector3 position2 = null;
     
     private static final List<String> SAFE_PASSABLE = Arrays.asList(
         Block.AIR,
@@ -64,12 +62,12 @@ public class GoldSpawnMapper {
         }
     }
     
-    public void scanArena(Arena arena, String mapName, Player admin) {
-        scanArena(arena, mapName, admin, false);
+    public void scanArena(Arena arena, String mapId, Player admin) {
+        scanArena(arena, mapId, admin, false);
     }
 
-    public void scanArena(Arena arena, String mapName, Player admin, boolean useBarrierWhitelist) {
-        admin.sendMessage(TextFormat.YELLOW + "Starting scan for map: " + mapName);
+    public void scanArena(Arena arena, String mapId, Player admin, boolean useBarrierWhitelist) {
+        admin.sendMessage(TextFormat.YELLOW + "Starting scan for map: " + mapId);
         if (useBarrierWhitelist) {
             admin.sendMessage(TextFormat.GRAY + "Using barrier whitelist mode");
         }
@@ -77,9 +75,9 @@ public class GoldSpawnMapper {
         
         Set<Vector3> whitelistedBarriers = new HashSet<>();
         if (useBarrierWhitelist) {
-            List<Vector3> barriers = getBarriers(mapName);
+            List<Vector3> barriers = getBarriers(mapId);
             if (barriers.isEmpty()) {
-                admin.sendMessage(TextFormat.RED + "No barrier file found for " + mapName);
+                admin.sendMessage(TextFormat.RED + "No barrier file found for " + mapId);
                 admin.sendMessage(TextFormat.YELLOW + "Scanning without whitelist...");
             } else {
                 whitelistedBarriers.addAll(barriers);
@@ -121,17 +119,17 @@ public class GoldSpawnMapper {
         
         long elapsed = System.currentTimeMillis() - startTime;
         
-        saveToJson(mapName, validSpawns);
-        mapCache.put(mapName, validSpawns);
+        saveToJson(mapId, validSpawns);
+        mapCache.put(mapId, validSpawns);
         
         admin.sendMessage(TextFormat.GREEN + "Scan completed!");
         admin.sendMessage(TextFormat.GOLD + "Found: " + validSpawns.size() + " valid spawns");
         admin.sendMessage(TextFormat.GRAY + "Time: " + (elapsed / 1000.0) + "s");
-        admin.sendMessage(TextFormat.GRAY + "Saved to: maps/" + mapName + ".json");
+        admin.sendMessage(TextFormat.GRAY + "Saved to: maps/" + mapId + ".json");
     }
     
-    public void scanForBarriers(Arena arena, String mapName, Player admin) {
-        admin.sendMessage(TextFormat.YELLOW + "Starting barrier scan for map: " + mapName);
+    public void scanForBarriers(Arena arena, String mapId, Player admin) {
+        admin.sendMessage(TextFormat.YELLOW + "Starting barrier scan for map: " + mapId);
         admin.sendMessage(TextFormat.GRAY + "This may take a while...");
         
         List<Vector3> barriers = new ArrayList<>();
@@ -169,13 +167,13 @@ public class GoldSpawnMapper {
         
         long elapsed = System.currentTimeMillis() - startTime;
         
-        saveBarriersToJson(mapName, barriers);
-        barrierCache.put(mapName, barriers);
+        saveBarriersToJson(mapId, barriers);
+        barrierCache.put(mapId, barriers);
         
         admin.sendMessage(TextFormat.GREEN + "Barrier scan completed!");
         admin.sendMessage(TextFormat.GOLD + "Found: " + barriers.size() + " barriers");
         admin.sendMessage(TextFormat.GRAY + "Time: " + (elapsed / 1000.0) + "s");
-        admin.sendMessage(TextFormat.GRAY + "Saved to: barriers/" + mapName + ".json");
+        admin.sendMessage(TextFormat.GRAY + "Saved to: barriers/" + mapId + ".json");
     }
     
     public void countBarriers(Arena arena, Player admin) {
@@ -233,20 +231,20 @@ public class GoldSpawnMapper {
             SAFE_PASSABLE.contains(blockAboveId);
     }
     
-    public void removeVolume(String mapName, Vector3 pos1, Vector3 pos2, Player admin) {
+    public void removeVolume(String mapId, Vector3 pos1, Vector3 pos2, Player admin) {
         if (pos1 == null || pos2 == null) {
             admin.sendMessage(TextFormat.RED + "No positions saved");
             return;
         }
 
-        List<Vector3> spawns = mapCache.get(mapName);
+        List<Vector3> spawns = mapCache.get(mapId);
         
         if (spawns == null) {
-            if (!loadFromJson(mapName)) {
-                admin.sendMessage(TextFormat.RED + "Map not found: " + mapName);
+            if (!loadFromJson(mapId)) {
+                admin.sendMessage(TextFormat.RED + "Map not found: " + mapId);
                 return;
             }
-            spawns = mapCache.get(mapName);
+            spawns = mapCache.get(mapId);
         }
         
         int beforeSize = spawns.size();
@@ -266,21 +264,21 @@ public class GoldSpawnMapper {
         
         int removed = beforeSize - spawns.size();
         
-        saveToJson(mapName, spawns);
+        saveToJson(mapId, spawns);
         
         admin.sendMessage(TextFormat.GREEN + "Removed " + removed + " spawns from volume");
         admin.sendMessage(TextFormat.GRAY + "Remaining: " + spawns.size() + " spawns");
     }
     
-    public void addVolume(String mapName, Vector3 pos1, Vector3 pos2, Level level, Player admin) {
-        List<Vector3> spawns = mapCache.get(mapName);
+    public void addVolume(String mapId, Vector3 pos1, Vector3 pos2, Level level, Player admin) {
+        List<Vector3> spawns = mapCache.get(mapId);
         
         if (spawns == null) {
-            if (!loadFromJson(mapName)) {
+            if (!loadFromJson(mapId)) {
                 spawns = new ArrayList<>();
-                mapCache.put(mapName, spawns);
+                mapCache.put(mapId, spawns);
             } else {
-                spawns = mapCache.get(mapName);
+                spawns = mapCache.get(mapId);
             }
         }
         
@@ -310,31 +308,31 @@ public class GoldSpawnMapper {
         
         int added = spawns.size() - beforeSize;
         
-        saveToJson(mapName, spawns);
+        saveToJson(mapId, spawns);
         
         admin.sendMessage(TextFormat.GREEN + "Added " + added + " new spawns from volume");
         admin.sendMessage(TextFormat.GRAY + "Total: " + spawns.size() + " spawns");
     }
     
-    public List<Vector3> getSpawns(String mapName) {
-        if (mapCache.containsKey(mapName)) {
-            return new ArrayList<>(mapCache.get(mapName));
+    public List<Vector3> getSpawns(String mapId) {
+        if (mapCache.containsKey(mapId)) {
+            return new ArrayList<>(mapCache.get(mapId));
         }
 
-        if (loadFromJson(mapName)) {
-            return new ArrayList<>(mapCache.get(mapName));
+        if (loadFromJson(mapId)) {
+            return new ArrayList<>(mapCache.get(mapId));
         }
         
         return new ArrayList<>();
     }
     
-    public List<Vector3> getBarriers(String mapName) {
-        if (barrierCache.containsKey(mapName)) {
-            return new ArrayList<>(barrierCache.get(mapName));
+    public List<Vector3> getBarriers(String mapId) {
+        if (barrierCache.containsKey(mapId)) {
+            return new ArrayList<>(barrierCache.get(mapId));
         }
 
-        if (loadBarriersFromJson(mapName)) {
-            return new ArrayList<>(barrierCache.get(mapName));
+        if (loadBarriersFromJson(mapId)) {
+            return new ArrayList<>(barrierCache.get(mapId));
         }
         
         return new ArrayList<>();
@@ -353,51 +351,51 @@ public class GoldSpawnMapper {
         return maps;
     }
     
-    public MapInfo getMapInfo(String mapName) {
-        List<Vector3> spawns = getSpawns(mapName);
+    public MapInfo getMapInfo(String mapId) {
+        List<Vector3> spawns = getSpawns(mapId);
         if (spawns.isEmpty()) return null;
         
-        File file = new File(mapsFolder, mapName + ".json");
+        File file = new File(mapsFolder, mapId + ".json");
         
         return new MapInfo(
-            mapName,
+            mapId,
             spawns.size(),
             file.exists() ? file.lastModified() : 0
         );
     }
     
-    private void saveToJson(String mapName, List<Vector3> spawns) {
-        File file = new File(mapsFolder, mapName + ".json");
+    private void saveToJson(String mapId, List<Vector3> spawns) {
+        File file = new File(mapsFolder, mapId + ".json");
         
         try (FileWriter writer = new FileWriter(file)) {
             Map<String, Object> data = new HashMap<>();
-            data.put("map_name", mapName);
+            data.put("map_name", mapId);
             data.put("spawn_count", spawns.size());
             data.put("valid_spawns", spawns);
             
             gson.toJson(data, writer);
         } catch (IOException e) {
-            plugin.getLogger().error("Failed to save map: " + mapName, e);
+            plugin.getLogger().error("Failed to save map: " + mapId, e);
         }
     }
     
-    private void saveBarriersToJson(String mapName, List<Vector3> barriers) {
-        File file = new File(barriersFolder, mapName + ".json");
+    private void saveBarriersToJson(String mapId, List<Vector3> barriers) {
+        File file = new File(barriersFolder, mapId + ".json");
         
         try (FileWriter writer = new FileWriter(file)) {
             Map<String, Object> data = new HashMap<>();
-            data.put("map_name", mapName);
+            data.put("map_name", mapId);
             data.put("barrier_count", barriers.size());
             data.put("barriers", barriers);
             
             gson.toJson(data, writer);
         } catch (IOException e) {
-            plugin.getLogger().error("Failed to save barriers: " + mapName, e);
+            plugin.getLogger().error("Failed to save barriers: " + mapId, e);
         }
     }
     
-    private boolean loadFromJson(String mapName) {
-        File file = new File(mapsFolder, mapName + ".json");
+    private boolean loadFromJson(String mapId) {
+        File file = new File(mapsFolder, mapId + ".json");
         
         if (!file.exists()) return false;
         
@@ -415,17 +413,17 @@ public class GoldSpawnMapper {
                 ));
             }
             
-            mapCache.put(mapName, spawns);
+            mapCache.put(mapId, spawns);
             return true;
             
         } catch (IOException e) {
-            plugin.getLogger().error("Failed to load map: " + mapName, e);
+            plugin.getLogger().error("Failed to load map: " + mapId, e);
             return false;
         }
     }
     
-    private boolean loadBarriersFromJson(String mapName) {
-        File file = new File(barriersFolder, mapName + ".json");
+    private boolean loadBarriersFromJson(String mapId) {
+        File file = new File(barriersFolder, mapId + ".json");
         
         if (!file.exists()) return false;
         
@@ -443,43 +441,23 @@ public class GoldSpawnMapper {
                 ));
             }
             
-            barrierCache.put(mapName, barriers);
+            barrierCache.put(mapId, barriers);
             return true;
             
         } catch (IOException e) {
-            plugin.getLogger().error("Failed to load barriers: " + mapName, e);
+            plugin.getLogger().error("Failed to load barriers: " + mapId, e);
             return false;
         }
     }
     
-    public boolean reloadMap(String mapName) {
-        mapCache.remove(mapName);
-        return loadFromJson(mapName);
+    public boolean reloadMap(String mapId) {
+        mapCache.remove(mapId);
+        return loadFromJson(mapId);
     }
     
-    public boolean reloadBarriers(String mapName) {
-        barrierCache.remove(mapName);
-        return loadBarriersFromJson(mapName);
-    }
-
-    public void savePos1(Player player) {
-        position1 = new Vector3(
-            player.getFloorX(),
-            player.getFloorY(),
-            player.getFloorZ()
-        );
-        position2 = null;
-        player.sendMessage(TextFormat.GRAY + String.format("Position1 ready: %.1f %.1f %.1f", position1.x, position1.y, position1.z));
-    }
-
-    public void savePos2(Player player) {
-        position2 = new Vector3(
-            player.getFloorX(),
-            player.getFloorY(),
-            player.getFloorZ()
-        );
-        player.sendMessage(TextFormat.GRAY + String.format("Position2 ready: %.1f %.1f %.1f", position2.x, position2.y, position2.z));
-        player.sendMessage(TextFormat.GREEN + "Ready to launch command");
+    public boolean reloadBarriers(String mapId) {
+        barrierCache.remove(mapId);
+        return loadBarriersFromJson(mapId);
     }
     
     public static class MapInfo {

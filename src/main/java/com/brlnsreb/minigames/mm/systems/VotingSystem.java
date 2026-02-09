@@ -7,7 +7,7 @@ import java.util.*;
 
 public class VotingSystem {
     
-    private final Map<String, String> mapVotes;      // playerName -> mapName
+    private final Map<String, String> mapVotes;      // playerName -> mapId
     private final Map<String, String> timeVotes;     // playerName -> time
     
     private List<String> availableMaps;
@@ -26,8 +26,8 @@ public class VotingSystem {
         return new ArrayList<>(availableMaps);
     }
     
-    public void voteMap(Player player, String mapName) {
-        mapVotes.put(player.getName(), mapName);
+    public void voteMap(Player player, String mapId) {
+        mapVotes.put(player.getName(), mapId);
     }
     
     public void voteTime(Player player, String time) {
@@ -42,8 +42,8 @@ public class VotingSystem {
         return timeVotes.getOrDefault(player.getName(), "None");
     }
     
-    public int getMapVoteCount(String mapName) {
-        return (int) mapVotes.values().stream().filter(m -> m.equals(mapName)).count();
+    public int getMapVoteCount(String mapId) {
+        return (int) mapVotes.values().stream().filter(m -> m.equals(mapId)).count();
     }
     
     public int getTimeVoteCount(String time) {

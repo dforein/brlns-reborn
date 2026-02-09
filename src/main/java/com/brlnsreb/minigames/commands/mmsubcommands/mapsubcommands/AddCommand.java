@@ -1,0 +1,164 @@
+package com.brlnsreb.minigames.commands.mmsubcommands.mapsubcommands;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+
+import com.brlnsreb.minigames.MinigameCore;
+import com.brlnsreb.minigames.commands.MMCommand;
+import com.brlnsreb.minigames.commands.subcommands.SubCommand;
+import com.brlnsreb.minigames.mm.MurderMysteryGame;
+
+import cn.nukkit.Player;
+import cn.nukkit.command.CommandSender;
+import cn.nukkit.command.data.CommandParamType;
+import cn.nukkit.command.data.CommandParameter;
+import cn.nukkit.utils.Config;
+import cn.nukkit.utils.TextFormat;
+
+public class AddCommand extends SubCommand {
+    
+    private final MinigameCore plugin;
+    private final MurderMysteryGame game;
+    private final MMCommand mmCommand;
+    private LinkedList<String> levelNames;
+    
+    public AddCommand(MinigameCore plugin, MurderMysteryGame game, MMCommand fatherCommand) {
+        super("add");
+        this.setAliases(new String[] {
+				"add"
+		});
+
+        this.plugin = plugin;
+        this.game = game;
+        this.mmCommand = fatherCommand;
+        levelNames = getAllLevelNames();
+    }
+
+    @Override
+	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
+
+        if (args.length < 11) {
+            sender.sendMessage(TextFormat.RED + "Usage: /mm map add <mapId> <minCoords> <maxCoords> <worldFolder> <mapName>");
+            return true;
+        }
+        
+        String mapId = args[2].toLowerCase();
+
+        if (Arrays.asList(game.getConfig().getMaps()).contains(mapId)) {
+            sender.sendMessage(TextFormat.RED + "Map ID already exists!");
+            return true;
+        }
+
+        if (!levelNames.contains(args[9])) {
+            sender.sendMessage(TextFormat.RED + "World doesn't exist!");
+            return true;
+        }
+
+        Config config = plugin.getConfig();
+        Player player = (Player) sender;
+        String path = "world.arena-regions." + mapId + ".";
+
+        String mapName = args[10];
+
+        for (int i = 11; i < args.length; i++) {
+            mapName = mapName + " " + args[i];
+        }
+
+        int[] minCoords = new int[3];
+        int[] maxCoords = new int[3];
+
+        try {
+            minCoords[0] = parseCoordinate(args[3], player.getFloorX());
+            minCoords[1] = parseCoordinate(args[4], player.getFloorY());
+            minCoords[2] = parseCoordinate(args[5], player.getFloorZ());
+
+            maxCoords[0] = parseCoordinate(args[6], player.getFloorX());
+            maxCoords[1] = parseCoordinate(args[7], player.getFloorY());
+            maxCoords[2] = parseCoordinate(args[8], player.getFloorZ());
+
+        } catch (NumberFormatException e) {
+            sender.sendMessage(TextFormat.RED + "Invalid coordinates!");
+        }
+
+        for(int i = 0; i < 3; i++) {
+            if (minCoords[i] > maxCoords[i]){
+                int tmp = minCoords[i];
+                minCoords[i] = maxCoords[i];
+                maxCoords[i] = tmp;
+            }
+        }
+
+        config.set(path + "name", mapName);
+        config.set(path + "world", args[9]);
+        config.set(path + "min", coordsToString(minCoords));
+        config.set(path + "max", coordsToString(maxCoords));
+        config.set(path + "night-vision", false);
+        config.set(path + "weather", "Clear");
+        config.set(path + "builders", new ArrayList<String>());
+        config.set(path + "spawns", new ArrayList<int[]>());
+
+        config.save();
+        
+        refreshCommandsParams();
+
+        sender.sendMessage(TextFormat.GREEN + "New map added successfully!");
+
+        return true;
+
+    }
+
+    @Override
+    public LinkedList<CommandParameter> getParametersList() {
+		LinkedList<CommandParameter> parameters = new LinkedList<>();
+
+		parameters.add(CommandParameter.newEnum(this.getName(), this.getAliases()));
+        parameters.add(CommandParameter.newType("mapId", CommandParamType.STRING));
+        parameters.add(CommandParameter.newType("min", CommandParamType.POSITION));
+        parameters.add(CommandParameter.newType("max", CommandParamType.POSITION));
+        parameters.add(CommandParameter.newEnum("worldFolder", levelNames.toArray(new String[levelNames.size()])));
+        parameters.add(CommandParameter.newType("mapName", CommandParamType.TEXT));
+
+		return parameters;
+	}
+
+    public LinkedList<String> getAllLevelNames() {
+        LinkedList<String> worldNames = new LinkedList<>();
+
+        File worldsFolder = new File(plugin.getServer().getDataPath() + "/worlds");
+
+        if (worldsFolder.exists() && worldsFolder.isDirectory()) {
+            File[] files = worldsFolder.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        File levelDat = new File(file, "level.dat");
+                        if (levelDat.exists()) {
+                            worldNames.add(file.getName());
+                        }
+                    }
+                }
+            }
+        }
+
+        return worldNames;
+    }
+
+    private int parseCoordinate(String arg, int currentPos) {
+        if (arg.startsWith("~")) {
+            if (arg.length() == 1) return currentPos;
+            return currentPos + Integer.parseInt(arg.substring(1));
+        }
+        return Integer.parseInt(arg);
+    }
+
+    private String coordsToString(int[] coords) {
+        return coords[0] + " " + coords[1] + " " + coords[2];
+    }
+
+    private void refreshCommandsParams() {
+        mmCommand.refreshCommandsParams();
+    }
+
+}

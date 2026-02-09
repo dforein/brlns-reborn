@@ -111,13 +111,13 @@ public class GoldSystem {
         }
     }
 
-    public void loadSpawns(GoldSpawnMapper mapper, String mapName) {
-        this.validSpawns = mapper.getSpawns(mapName);
+    public void loadSpawns(GoldSpawnMapper mapper, String mapId) {
+        this.validSpawns = mapper.getSpawns(mapId);
         
         if (validSpawns.isEmpty()) {
-            plugin.getLogger().warning("No gold spawns found for map: " + mapName);
+            plugin.getLogger().warning("No gold spawns found for map: " + mapId);
         } else {
-            plugin.getLogger().info("Loaded " + validSpawns.size() + " gold spawns for " + mapName);
+            plugin.getLogger().info("Loaded " + validSpawns.size() + " gold spawns for " + mapId);
         }
     }
 }

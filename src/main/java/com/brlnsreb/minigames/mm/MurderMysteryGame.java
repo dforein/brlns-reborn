@@ -10,6 +10,7 @@ import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.scheduler.Task;
+import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.core.Arena;
@@ -517,51 +518,47 @@ public class MurderMysteryGame {
     }
 
     private void loadArena(String selectedMap) {
+
+        int X = 0;
+        int Y = 1;
+        int Z = 2;
+        Config pConfig = plugin.getConfig();
+        String path = "world.arena-regions." + selectedMap + ".";
+
         String worldName;
-        if (plugin.getConfig().exists("world.arena-regions." + selectedMap + ".world")) {
-            worldName = plugin.getConfig().getString("world.arena-regions." + selectedMap + ".world");
+
+        if (pConfig.exists(path + "world")) {
+            worldName = pConfig.getString(path + "world");
         } else {
-            worldName = plugin.getConfig().getString("world.default-world");
+            worldName = pConfig.getString("world.default-world");
         }
         
         Level level = plugin.getServer().getLevelByName(worldName);
         
         //min & max coords
-        List<?> rawMinCoords = plugin.getConfig().getList("world.arena-regions." + selectedMap + ".min");
-        List<?> rawMaxCoords = plugin.getConfig().getList("world.arena-regions." + selectedMap + ".max");
-        List<Integer> minCoords = (List<Integer>) rawMinCoords;
-        List<Integer> maxCoords = (List<Integer>) rawMaxCoords;
-        
+        String rawMinCoords = pConfig.getString(path + "min");
+        String rawMaxCoords = pConfig.getString(path + "max");
+
         Vector3 min = new Vector3(
-            minCoords.get(0).doubleValue(), 
-            minCoords.get(1).doubleValue(), 
-            minCoords.get(2).doubleValue()
+            getCoordinate(rawMinCoords, X),
+            getCoordinate(rawMinCoords, Y),
+            getCoordinate(rawMinCoords, Z)
         );
         Vector3 max = new Vector3(
-            maxCoords.get(0).doubleValue(), 
-            maxCoords.get(1).doubleValue(), 
-            maxCoords.get(2).doubleValue()
+            getCoordinate(rawMaxCoords, X),
+            getCoordinate(rawMaxCoords, Y),
+            getCoordinate(rawMaxCoords, Z)
         );
 
         //spawns
-        Object spawnsRaw = plugin.getConfig().getList("world.arena-regions." + selectedMap + ".spawns");
-        List<List<?>> spawnsRawList = (List<List<?>>) spawnsRaw;
-        List<List<Double>> spawnsList = new ArrayList<>();
-        for (int i = 0; i < spawnsRawList.size(); i++) {
-            List<?> coords = spawnsRawList.get(i);
-            spawnsList.add(Arrays.asList(
-                ((Number) coords.get(0)).doubleValue(),
-                ((Number) coords.get(1)).doubleValue(),
-                ((Number) coords.get(2)).doubleValue()
-            ));
-        }
-        
+        List<String> spawnsRawList = plugin.getConfig().getStringList(path + "spawns");
         List<Vector3> spawns = new ArrayList<>();
-        for (List<Double> coords : spawnsList) {
+
+        for (String coords : spawnsRawList) {
             spawns.add(new Vector3(
-                coords.get(0),
-                coords.get(1), 
-                coords.get(2)
+                getCoordinate(coords, X),
+                getCoordinate(coords, Y),
+                getCoordinate(coords, Z)
             ));
         }
 
@@ -611,20 +608,31 @@ public class MurderMysteryGame {
         }
 
         
-        arena = new Arena(plugin.getConfig().getString("world.arena-regions." + selectedMap + ".name"), level, min, max, spawns);
+        arena = new Arena(pConfig.getString(path + "name"), level, min, max, spawns);
+    }
+
+    private double getCoordinate(String rawCoords, int coord) {
+        return Double.parseDouble(
+            rawCoords.split("\\s+") [coord]
+        );
     }
 
     private void teleportPlayers() {
         List<Vector3> spawns = arena.getSpawns();
         List<Player> onlinePlayers = getOnlinePlayers();
+
+        if (spawns.isEmpty()) {
+            forceStop();
+            broadcast("&cError: no spawns available!");
+            return;
+        }
         
         for (int i = 0; i < onlinePlayers.size(); i++) {
             Player player = onlinePlayers.get(i);
-            if (!player.isOnline()) continue;
-            
+
             Vector3 spawn = spawns.get(i % spawns.size());
             Location loc = new Location(spawn.x, spawn.y, spawn.z, arena.getLevel());
-
+            
             try {
                 player.teleport(loc);
             } catch (Exception e) {

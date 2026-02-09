@@ -9,6 +9,7 @@ import com.brlnsreb.minigames.mm.entities.ThrownSwordEntity;
 import com.brlnsreb.minigames.mm.listeners.*;
 import com.brlnsreb.minigames.commands.MMCommand;
 import com.brlnsreb.minigames.commands.PingCommand;
+import com.brlnsreb.minigames.commands.ReloadConfigCommand;
 
 public class MinigameCore extends PluginBase {
     
@@ -40,6 +41,7 @@ public class MinigameCore extends PluginBase {
         
         getServer().getCommandMap().register("mm", new MMCommand(this, mmGame));
         getServer().getCommandMap().register("ping", new PingCommand());
+        getServer().getCommandMap().register("reloadconfig", new ReloadConfigCommand(this));
         
         getServer().getPluginManager().registerEvents(new MMPlayerInteractListener(mmGame), this);
         getServer().getPluginManager().registerEvents(new MMProjectileHitListener(mmGame), this);
@@ -50,7 +52,6 @@ public class MinigameCore extends PluginBase {
         getServer().getPluginManager().registerEvents(new MMFormResponseListener(mmGame), this);
         getServer().getPluginManager().registerEvents(new MMPlayerInventoryListener(mmGame), this);
 
-        
         
         this.getLogger().info(TextFormat.DARK_GREEN + "brlnsreb Minigames enabled!");
     }

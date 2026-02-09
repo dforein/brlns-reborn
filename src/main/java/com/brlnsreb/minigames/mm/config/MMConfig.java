@@ -1,6 +1,7 @@
 package com.brlnsreb.minigames.mm.config;
 
 import cn.nukkit.utils.Config;
+import cn.nukkit.utils.ConfigSection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,7 +122,7 @@ public class MMConfig {
         return config.getString("murderer.sword-name", "&cMurderer's Sword");
     }
 
-     public String getMurdererBlazeRodName() {
+    public String getMurdererBlazeRodName() {
         return config.getString("murderer.blaze-rod-name", "&o&l&6Lights Out");
     }
 
@@ -131,7 +132,6 @@ public class MMConfig {
 
     public List<String> getEnabledMaps() {
         List<String> maps = new ArrayList<>();
-        
 
         Object mapsObj = config.get("world.enabled-maps");
         if (mapsObj instanceof List) {
@@ -144,6 +144,13 @@ public class MMConfig {
         }
         
         return maps;
+    }
+
+    public String[] getMaps() {
+        ConfigSection section = config.getSection("world.arena-regions");
+        if (section == null) return new String[0];
+        
+        return section.getKeys(false).toArray(new String[0]);
     }
 
     public String getCountdownBossbar() {
