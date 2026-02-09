@@ -17,9 +17,9 @@ public class SaveNewSpawnCommand  extends SubCommand {
     private final MinigameCore plugin;
 
     public SaveNewSpawnCommand(MinigameCore plugin) {
-        super("savenewspawn");
+        super("newspawn");
         this.setAliases(new String[] {
-				"savenewspawn"
+				"newspawn"
 		});
 
         this.plugin = plugin;
@@ -29,7 +29,7 @@ public class SaveNewSpawnCommand  extends SubCommand {
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         
         if (args.length < 3) {
-            sender.sendMessage(TextFormat.RED + "Usage: /mm map spawn <mapId>");
+            sender.sendMessage(TextFormat.RED + "Usage: /mm map newspawn <mapId>");
             return true;
         }
 

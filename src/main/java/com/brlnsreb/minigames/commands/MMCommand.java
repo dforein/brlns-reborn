@@ -28,7 +28,7 @@ public class MMCommand extends Command {
     private final List<SimpleSubCommand> simpleSubCommandsList = new ArrayList<>();
     private final List<ComplexSubCommand> complexSubCommandsList = new ArrayList<>();
 
-    private final MinigameCore plugin;
+    //private final MinigameCore plugin;
     
     public MMCommand(MinigameCore plugin, MurderMysteryGame game) {
 
@@ -51,7 +51,7 @@ public class MMCommand extends Command {
             new MMMapCommand(plugin, game, this)
         };
 
-        this.plugin = plugin;
+        //this.plugin = plugin;
 
 
         this.getCommandParameters().clear();
@@ -100,7 +100,8 @@ public class MMCommand extends Command {
 
         //args lenght == 0 or wrong subcommand
         sender.sendMessage(TextFormat.RED + "Game:   /mm <join|joinall|leave|start|stop>");
-        sender.sendMessage(TextFormat.RED + "Map:   /mm <map|setrules>");
+        sender.sendMessage(TextFormat.RED + "Map:    /mm <map|setrules>");
+        sender.sendMessage(TextFormat.RED + "Debug:  /mm <debug>");
 
         return true;
     }
@@ -119,11 +120,6 @@ public class MMCommand extends Command {
                 i++;
             }
         };
-
-        for (Player p : plugin.getServer().getOnlinePlayers().values()) {
-            //TODO: update params
-            
-        }
     }
 
 }

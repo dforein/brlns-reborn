@@ -13,15 +13,15 @@ import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 
-public class EnableCommand extends SubCommand {
+public class DisableCommand extends SubCommand {
     
     private final MurderMysteryGame game;
     private final MMCommand mmCommand;
     
-    public EnableCommand(MurderMysteryGame game, MMCommand mmCommand) {
-        super("enable");
+    public DisableCommand(MurderMysteryGame game, MMCommand mmCommand) {
+        super("disable");
         this.setAliases(new String[] {
-				"enable"
+				"disable"
 		});
 
         this.game = game;
@@ -32,7 +32,7 @@ public class EnableCommand extends SubCommand {
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
 
         if (args.length < 3) {
-            sender.sendMessage(TextFormat.RED + "Usage: /mm map enable <mapId>");
+            sender.sendMessage(TextFormat.RED + "Usage: /mm map disable <mapId>");
             return true;
         }
         
@@ -69,9 +69,10 @@ public class EnableCommand extends SubCommand {
     @Override
     public LinkedList<CommandParameter> getParametersList() {
 		LinkedList<CommandParameter> parameters = new LinkedList<>();
+        List<String> enabledMaps = game.getConfig().getEnabledMaps();
 
 		parameters.add(CommandParameter.newEnum(this.getName(), this.getAliases()));
-        parameters.add(CommandParameter.newEnum("mapId", game.getConfig().getMaps()));
+        parameters.add(CommandParameter.newEnum("mapId", enabledMaps.toArray(new String[enabledMaps.size()])));
 
 		return parameters;
 	}

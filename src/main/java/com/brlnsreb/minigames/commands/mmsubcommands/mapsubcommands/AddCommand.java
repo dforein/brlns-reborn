@@ -101,9 +101,11 @@ public class AddCommand extends SubCommand {
 
         config.save();
         
-        refreshCommandsParams();
+        mmCommand.refreshCommandsParams();
 
         sender.sendMessage(TextFormat.GREEN + "New map added successfully!");
+        sender.sendMessage(TextFormat.GRAY + "Command parameters autocomplete is not updated, however the server has already recognized the changes.");
+        sender.sendMessage(TextFormat.GRAY + "To see the new suggestions, you have to rejoin the server (no need to restart).");
 
         return true;
 
@@ -155,10 +157,6 @@ public class AddCommand extends SubCommand {
 
     private String coordsToString(int[] coords) {
         return coords[0] + " " + coords[1] + " " + coords[2];
-    }
-
-    private void refreshCommandsParams() {
-        mmCommand.refreshCommandsParams();
     }
 
 }

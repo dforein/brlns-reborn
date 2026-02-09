@@ -10,6 +10,7 @@ import com.brlnsreb.minigames.commands.MMCommand;
 import com.brlnsreb.minigames.commands.mmsubcommands.mapsubcommands.AddCommand;
 import com.brlnsreb.minigames.commands.mmsubcommands.mapsubcommands.AddVolumeCommand;
 import com.brlnsreb.minigames.commands.mmsubcommands.mapsubcommands.CountBarriersCommand;
+import com.brlnsreb.minigames.commands.mmsubcommands.mapsubcommands.DisableCommand;
 import com.brlnsreb.minigames.commands.mmsubcommands.mapsubcommands.EditCommand;
 import com.brlnsreb.minigames.commands.mmsubcommands.mapsubcommands.EnableCommand;
 import com.brlnsreb.minigames.commands.mmsubcommands.mapsubcommands.InfoCommand;
@@ -49,7 +50,8 @@ public class MMMapCommand extends ComplexSubCommand {
             new ReloadCommand(game),
             new ReloadBarriersCommand(game),
             new SaveNewSpawnCommand(plugin),
-            new EnableCommand(game),
+            new EnableCommand(game, fatherCommand),
+            new DisableCommand(game, fatherCommand),
             new AddCommand(plugin, game, fatherCommand),
             new EditCommand(plugin)
         };

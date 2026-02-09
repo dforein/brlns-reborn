@@ -34,9 +34,9 @@ public class AddVolumeCommand extends SubCommand {
         Player player = (Player) sender;
 
         if (args.length < 4) {
-            player.sendMessage(TextFormat.RED + "Usage: /mm map add <mapId> <from> <to>");
-            player.sendMessage(TextFormat.RED + "Usage: /mm map add <mapId> savecurrentpos");
-            player.sendMessage(TextFormat.RED + "Usage: /mm map add <mapId> usesavedpos");
+            player.sendMessage(TextFormat.RED + "Usage: /mm map addvolume <mapId> <from> <to>");
+            player.sendMessage(TextFormat.RED + "Usage: /mm map addvolume <mapId> savecurrentpos");
+            player.sendMessage(TextFormat.RED + "Usage: /mm map addvolume <mapId> usesavedpos");
             return true;
         }
 
@@ -59,9 +59,9 @@ public class AddVolumeCommand extends SubCommand {
         }
 
         if (args.length < 9) {
-            player.sendMessage(TextFormat.RED + "Usage: /mm map add <mapId> <from> <to>");
-            player.sendMessage(TextFormat.RED + "Usage: /mm map add <mapId> savecurrentpos");
-            player.sendMessage(TextFormat.RED + "Usage: /mm map add <mapId> usesavedpos");
+            player.sendMessage(TextFormat.RED + "Usage: /mm map addvolume <mapId> <from> <to>");
+            player.sendMessage(TextFormat.RED + "Usage: /mm map addvolume <mapId> savecurrentpos");
+            player.sendMessage(TextFormat.RED + "Usage: /mm map addvolume <mapId> usesavedpos");
             return true;
         }
         

@@ -43,42 +43,50 @@ world:
 
 ## Commands and usage
 ### Overview
-```/mm <join|leave|start|stop|listworlds|world|map|setrules>```
+```/mm <join|joinall|leave|start|stop|map|setrules|debug>```
 
-```/mm join``` - Join a game: after ```{minPlayers}``` players joined, the countdown will start and you will be able to vote for a map and the time of the day  
+```/mm join``` - Join a game: after ```{minPlayers}``` players joined, the countdown will start and you will be able to vote for a map and the time of the day 
+```/mm joinall``` - Make all online players join a game
 ```/mm leave``` - Leave a game  
 ```/mm start``` - Force the game to start for all joined players, skipping the countdowns  
-```/mm stop``` - Force the game to stop for all players  
-```/mm listworld``` - Returns a list of the worlds (folders)  
-```/mm world <worldFolder>``` - Teleports you to into the selected world  
+```/mm stop``` - Force the game to stop for all players
 ```/mm map <subcommand> <args>``` - Subcommands for gold mapper (check next paragraph and next section for more details)  
-```/mm setrules``` - Set all the gamerules instantly in a optimal way for a mm game inside the world/level you are in (e.g. no pvp, no fall damage, no mobspawing, etc.)  
+```/mm setrules``` - Set all the gamerules instantly in a optimal way for a mm game inside the world/level you are in (e.g. no pvp, no fall damage, no mobspawing, etc.)
+```/mm debug``` - Command class for developers in order to test features
 
 ```/ping``` - Returns ping  
 ```/ping <player>``` - Returns a player's ping  
 
-### Mapper subcommands
-```/mm map list``` - Returns a list of the available maps  
-```/mm map scan <mapName> [true]``` - Scan map for valid gold spawn blocks and save locally, from min to max coords written in config.yml; add 'true' to treat saved whitelisted barriers as valid spawn blocks  
-```/mm map scanforbarriers <mapName>``` - Scan and save locally barriers blocks, in order to whitelist them when scanning, if [true] enabled  
-```/mm map countbarriers <mapName>``` - Count barriers present in the map (no save)  
-```/mm map savepos1``` - Save current coordinates in internal variable ```position1``` (and resets ```position2``` for safety)  
-```/mm map savepos2``` - Save current coordinates in internal variable ```position2```  
-```/mm map remove <mapName> <x1> <y1> <z1> <x2> <y2> <z2>``` - Remove a volume of blocks from pos1 to pos2  
-```/mm map remove <mapName> sp``` - Use s.aved p.ositions coords in the internal variables (need both)  
-```/mm map add <mapName> <x1> <y1> <z1> <x2> <y2> <z2>``` - Add a volume of blocks from pos1 to pos2 (same as scan: checking for valid blocks, but in a restricted volume)  
-```/mm map reload <mapName>``` - Reload the saved scan in cache  
-```/mm map reloadbarriers <mapName>``` - Reload the saved barriers scan in cache  
-```/mm map info <mapName>``` - Returns info about a certain map  
+```/reloadconfig``` - Reload config.yml after external edits
 
-*Note*: ```<mapName>``` is the main internal name (not the one shown ingame) e.g. ```map1```, not ```Test Map```.  
+### Mapper subcommands
+```/mm map add <mapId> <minCoords> <maxCoords> <worldFolder> <mapName>``` - Add a new map to config.yml
+```/mm map edit <mapId> <field> <args>``` - Edit a map settings in config.yml (editable fields: name, world, night-vision, weather, builders; for other fields you have to edit them manually in config.yml)
+```/mm map enable <mapId>``` - Enable a map in config.yml, in order to be able to play the game in it
+```/mm map disable <mapId>``` - Disable a map in config.yml
+```/mm map newspawn <mapId>``` - Save your current position as a new spawn, in the spawns list of the map, in config.yml
+```/mm map scan <mapId> <useBarriersWhitelist>``` - Scan map for valid gold spawn blocks and save locally, from min to max coords written in config.yml; add 'true' to treat saved whitelisted barriers as valid spawn blocks  
+```/mm map scanforbarriers <mapId>``` - Scan and save locally barriers blocks, in order to whitelist them when scanning, if ```<useBarriersWhitelist>``` is true
+```/mm map countbarriers <mapId>``` - Count barriers present in the map (no save)  
+```/mm map addvolume <mapId> <from> <to>``` - Add a volume of blocks from coordinates1 to coordinates2 (same as scan: checking for valid blocks, but in a restricted volume)
+```/mm map addvolume <mapId> savecurrentpos``` - Save your position in pos1/pos2 variables in order to use them later (first time: pos1 = yourPosition, pos2 = null; second time: pos2 = yourPosition; third time -> first time)
+```/mm map addvolume <mapId> usesavedpos``` - Add a volume of blocks from pos1 to pos2 saved in variables (won't do anything if one of the variables is null)
+```/mm map removevolume <mapId> <from> <to>``` - Remove a volume of blocks from coordinates1 to coordinates2 (same as scan: checking for valid blocks, but in a restricted volume)  
+```/mm map removevolume <mapId> savecurrentpos``` - Save your position in pos1/pos2 variables in order to use them later (first time: pos1 = yourPosition, pos2 = null; second time: pos2 = yourPosition; usesavedpos; third time = first time; ...)
+```/mm map removevolume <mapId> usesavedpos``` - Remove a volume of blocks from pos1 to pos2 saved in variables (won't do anything if one of the variables is null)
+```/mm map reload <mapId>``` - Reload the saved scan in cache
+```/mm map reloadbarriers <mapId>``` - Reload the saved barriers scan in cache
+```/mm map listmaps``` - Returns a list of the available maps from the gold spawn mapper 
+```/mm map info <mapId>``` - Returns info about a certain map from the gold spawn mapper
+
+*Note*: ```<mapId>``` is the main internal name (not shown), ```<worldFolder>``` is the world folder name, ```<mapName>``` is the name displayed to players. It's better (but not necessary) to set a new mapId the same as the world folder name.
 
 ## Making gold spawn in maps
 In order to make mm gold system work, you need to use the ```/mm map``` commands to **scan each map** you are going to use, so the plugin understands where it's possible to spawn golds and saves locally the results to use them later during the games.
 
-However, the mapper scans **every block** of the volume, starting from the **min** to the **max** coords you specified in the config.yml, so it could find more valid spawn blocks than necessary (for example outside the map itself, but still inside the mix-max coords).
+However, the mapper scans **every block** of the volume, starting from the **min** to the **max** coords you specified in the config.yml, so it could find more "valid" spawn blocks than necessary (for example outside the map itself, but still inside the mix-max coords).
 
-Therefore, to **exclude** these blocks, you need to 1) place **barriers blocks** on top of them (only one per block is enough), 2) or use ```/mm map remove [etc..]``` to **remove a volume** of blocks from the gold spawn blocks list; or both methods together of course.
-Don't worry if the volume you selected contains already excluded blocks, these are ignored.
+Therefore, to **exclude** these blocks, you have two options: 1) place **barriers blocks** on top of them (only one per block is enough), or alternatively 2) use ```/mm map remove [etc..]``` to **remove a volume** of blocks from the gold spawn blocks list; or both methods together of course.
+Don't worry if the volume you selected contains already excluded blocks, these will be ignored.
 
-If you want to **include** certain **barriers blocks** as valid spawn blocks, use first ```/mm map scanforbarriers <mapName>``` to save them before the mapper's scanning, then ```/mm map scan <mapName> true``` to include those barriers scanned before as well.
+If you want to **include** certain **barriers blocks** as valid spawn blocks, use first ```/mm map scanforbarriers <mapId>``` to save them before the mapper's scanning, then ```/mm map scan <mapId> true``` to include those barriers scanned before as well.
