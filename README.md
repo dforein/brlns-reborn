@@ -12,6 +12,8 @@ This project is not affiliated with official BrokenLens.
 
 ## config.yml settings and adding maps
 After starting the plugin for the first time, the plugin will generate a **config.yml** file, where you can edit the **settings** of the plugin and **add valid maps**.
+You can use ```/mm map add [etc...]``` to add new maps, ```/mm map edit [etc...]``` to edit certain settings, ```/mm map newspawn <mapId>``` to add new map spawns.
+You have to manually delete maps.
 Here an example of how to set up a mm map inside config.yml:
 
 ```
@@ -19,14 +21,14 @@ world:
   lobby: "lobby"                        # folder name of the lobby world 
   default-world: "world"                # folder name of the default map world
   enabled-maps:                         # which maps are enabled ingame for vote/selection
-    - "map1"
-    - "map2"
+    - "testworld"
+    - "museum"
   arena-regions:
-    map1:
+    testworld:                          # map ID (better -but not necessary- to use the same name of the folder of the world) (it has to be lowercase)
       name: "Test Map"                  # whatever name you want to show ingame
-      world: "world"                    # folder name of the map world
-      min: [0, 80, 0]                   # min-max coordinates to select the total volume of the map
-      max: [100, 80, 100]
+      world: "testworld"                # folder name of the map world
+      min: "-20 0 21"                   # min-max coordinates (x y z) to select the total volume of the map
+      max: "323 84 152"
       night-vision: true                # true/false = on/off
       weather: "Clear"                  # "Clear"/"Rain"/"Storm"
       builders:
@@ -34,10 +36,10 @@ world:
         - "@BrokenLensTeam"
 
       spawns:                           # List of the possible players' spawns when starting a match
-        - [50, 80, 50]
-        - [20, 80, 20]
-        - [80, 80, 80]
-    map2:
+        - "50 5 23"
+        - "11 5 42"
+        - "64 3 80"
+    museum:
       # ...
 ```
 
