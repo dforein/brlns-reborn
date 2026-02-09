@@ -45,41 +45,41 @@ world:
 ### Overview
 ```/mm <join|joinall|leave|start|stop|map|setrules|debug>```
 
-```/mm join``` - Join a game: after ```{minPlayers}``` players joined, the countdown will start and you will be able to vote for a map and the time of the day 
-```/mm joinall``` - Make all online players join a game
+```/mm join``` - Join a game: after ```{minPlayers}``` players joined, the countdown will start and you will be able to vote for a map and the time of the day  
+```/mm joinall``` - Make all online players join a game  
 ```/mm leave``` - Leave a game  
 ```/mm start``` - Force the game to start for all joined players, skipping the countdowns  
-```/mm stop``` - Force the game to stop for all players
+```/mm stop``` - Force the game to stop for all players  
 ```/mm map <subcommand> <args>``` - Subcommands for gold mapper (check next paragraph and next section for more details)  
-```/mm setrules``` - Set all the gamerules instantly in a optimal way for a mm game inside the world/level you are in (e.g. no pvp, no fall damage, no mobspawing, etc.)
-```/mm debug``` - Command class for developers in order to test features
+```/mm setrules``` - Set all the gamerules instantly in a optimal way for a mm game inside the world/level you are in (e.g. no pvp, no fall damage, no mobspawing, etc.)  
+```/mm debug``` - Command class for developers in order to test features  
 
 ```/ping``` - Returns ping  
 ```/ping <player>``` - Returns a player's ping  
 
-```/reloadconfig``` - Reload config.yml after external edits
+```/reloadconfig``` - Reload config.yml after external edits  
 
 ### Mapper subcommands
-```/mm map add <mapId> <minCoords> <maxCoords> <worldFolder> <mapName>``` - Add a new map to config.yml
-```/mm map edit <mapId> <field> <args>``` - Edit a map settings in config.yml (editable fields: name, world, night-vision, weather, builders; for other fields you have to edit them manually in config.yml)
-```/mm map enable <mapId>``` - Enable a map in config.yml, in order to be able to play the game in it
-```/mm map disable <mapId>``` - Disable a map in config.yml
-```/mm map newspawn <mapId>``` - Save your current position as a new spawn, in the spawns list of the map, in config.yml
+```/mm map add <mapId> <minCoords> <maxCoords> <worldFolder> <mapName>``` - Add a new map to config.yml  
+```/mm map edit <mapId> <field> <args>``` - Edit a map settings in config.yml (editable fields: name, world, night-vision, weather, builders; for other fields you have to edit them manually in config.yml)  
+```/mm map enable <mapId>``` - Enable a map in config.yml, in order to be able to play the game in it  
+```/mm map disable <mapId>``` - Disable a map in config.yml  
+```/mm map newspawn <mapId>``` - Save your current position as a new spawn, in the spawns list of the map, in config.yml  
 ```/mm map scan <mapId> <useBarriersWhitelist>``` - Scan map for valid gold spawn blocks and save locally, from min to max coords written in config.yml; add 'true' to treat saved whitelisted barriers as valid spawn blocks  
 ```/mm map scanforbarriers <mapId>``` - Scan and save locally barriers blocks, in order to whitelist them when scanning, if ```<useBarriersWhitelist>``` is true
 ```/mm map countbarriers <mapId>``` - Count barriers present in the map (no save)  
-```/mm map addvolume <mapId> <from> <to>``` - Add a volume of blocks from coordinates1 to coordinates2 (same as scan: checking for valid blocks, but in a restricted volume)
-```/mm map addvolume <mapId> savecurrentpos``` - Save your position in pos1/pos2 variables in order to use them later (first time: pos1 = yourPosition, pos2 = null; second time: pos2 = yourPosition; third time -> first time)
-```/mm map addvolume <mapId> usesavedpos``` - Add a volume of blocks from pos1 to pos2 saved in variables (won't do anything if one of the variables is null)
+```/mm map addvolume <mapId> <from> <to>``` - Add a volume of blocks from coordinates1 to coordinates2 (same as scan: checking for valid blocks, but in a restricted volume)  
+```/mm map addvolume <mapId> savecurrentpos``` - Save your position in pos1/pos2 variables in order to use them later (first time: pos1 = yourPosition, pos2 = null; second time: pos2 = yourPosition; third time -> first time)  
+```/mm map addvolume <mapId> usesavedpos``` - Add a volume of blocks from pos1 to pos2 saved in variables (won't do anything if one of the variables is null)  
 ```/mm map removevolume <mapId> <from> <to>``` - Remove a volume of blocks from coordinates1 to coordinates2 (same as scan: checking for valid blocks, but in a restricted volume)  
-```/mm map removevolume <mapId> savecurrentpos``` - Save your position in pos1/pos2 variables in order to use them later (first time: pos1 = yourPosition, pos2 = null; second time: pos2 = yourPosition; usesavedpos; third time = first time; ...)
-```/mm map removevolume <mapId> usesavedpos``` - Remove a volume of blocks from pos1 to pos2 saved in variables (won't do anything if one of the variables is null)
-```/mm map reload <mapId>``` - Reload the saved scan in cache
-```/mm map reloadbarriers <mapId>``` - Reload the saved barriers scan in cache
-```/mm map listmaps``` - Returns a list of the available maps from the gold spawn mapper 
-```/mm map info <mapId>``` - Returns info about a certain map from the gold spawn mapper
+```/mm map removevolume <mapId> savecurrentpos``` - Save your position in pos1/pos2 variables in order to use them later (first time: pos1 = yourPosition, pos2 = null; second time: pos2 = yourPosition; usesavedpos; third time = first time; ...)  
+```/mm map removevolume <mapId> usesavedpos``` - Remove a volume of blocks from pos1 to pos2 saved in variables (won't do anything if one of the variables is null)  
+```/mm map reload <mapId>``` - Reload the saved scan in cache  
+```/mm map reloadbarriers <mapId>``` - Reload the saved barriers scan in cache  
+```/mm map listmaps``` - Returns a list of the available maps from the gold spawn mapper  
+```/mm map info <mapId>``` - Returns info about a certain map from the gold spawn mapper  
 
-*Note*: ```<mapId>``` is the main internal name (not shown), ```<worldFolder>``` is the world folder name, ```<mapName>``` is the name displayed to players. It's better (but not necessary) to set a new mapId the same as the world folder name.
+*Note*: ```<mapId>``` is the main internal name (not shown), ```<worldFolder>``` is the world folder name, ```<mapName>``` is the name displayed to players. It's better (but not necessary) to set a new mapId the same as the world folder name.  
 
 ## Making gold spawn in maps
 In order to make mm gold system work, you need to use the ```/mm map``` commands to **scan each map** you are going to use, so the plugin understands where it's possible to spawn golds and saves locally the results to use them later during the games.
