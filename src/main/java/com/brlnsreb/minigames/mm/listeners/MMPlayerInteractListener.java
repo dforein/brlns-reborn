@@ -89,11 +89,13 @@ public class MMPlayerInteractListener implements Listener {
                 blockId.contains("cake")) {
 
                 event.setCancelled(true);
+                return;
             }
 
             if (event.getAction() == PlayerInteractEvent.Action.PHYSICAL) {
                 if (blockId.equals(Block.FARMLAND)) {
                     event.setCancelled(true);
+                    return;
                 }
             }
 
