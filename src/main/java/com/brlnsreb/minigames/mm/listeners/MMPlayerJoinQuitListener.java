@@ -57,15 +57,14 @@ public class MMPlayerJoinQuitListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player =  event.getPlayer();
+        
+        game.refreshPlayerState(player, true);
+        game.returnToLobby(player);
+
         QuitTracker quitTracker = game.getQuitTracker();
 
         if (quitTracker.hasQuitted(player.getName())) {
-            game.refreshPlayerState(player, true);
-            game.returnToLobby(player);
-
-            if (quitTracker.hasQuitted(player.getName())) {
-                quitTracker.removePlayer(player.getName());
-            }
+            quitTracker.removePlayer(player.getName());
         }
     }
 }

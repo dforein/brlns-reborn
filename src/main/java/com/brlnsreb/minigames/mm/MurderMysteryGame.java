@@ -831,7 +831,12 @@ public class MurderMysteryGame {
     }
 
     public void refreshPlayerState(Player p, Boolean leaving) {
-        if (p == null || !p.isOnline()) return;
+        if (p == null) return;
+        
+        if (!p.isOnline()) {
+            scoreboard.remove(p);
+            return;
+        }
 
         ItemManager.clearInventory(p);
         
