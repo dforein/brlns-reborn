@@ -96,11 +96,6 @@ public class MurderMysteryGame {
             return false;
         }
 
-        if (quitTracker.hasQuitted(player.getName())) {
-            joinAsSpectator(player);
-            return false;
-        }
-
         if (state != GameState.LOBBY && state != GameState.COUNTDOWN) {
             joinAsSpectator(player);
             return false;
@@ -807,6 +802,8 @@ public class MurderMysteryGame {
         selectedTime = null;
         countdownShortened = false;
         firstKill = true;
+        redstonePositions.clear();
+        deadBodies.clear();
     }
 
     private void cleanupOfflinePlayers() {
@@ -906,9 +903,7 @@ public class MurderMysteryGame {
     }
     
     private void startScoreboardUpdates() {
-        if (updateTask != null) {
-            return;
-        }
+        if (updateTask != null) return;
 
         updateTask = new Task() {
             @Override
@@ -935,7 +930,7 @@ public class MurderMysteryGame {
 
         if (state == GameState.PREGAME_COUNTDOWN) {
             for (Player p : getOnlinePlayers()) {
-                scoreboard.show(p, timeStr, 0, false, MMRole.INNOCENT, true);
+                scoreboard.update(p, timeStr, 0, false, MMRole.INNOCENT, true);
             }
             return;
         } else if (state == GameState.IN_GAME) {
@@ -953,7 +948,7 @@ public class MurderMysteryGame {
                 Player p = gp.getPlayer();
                 if (!p.isOnline()) continue;
 
-                scoreboard.show(p, timeStr, innocents, sheriffAlive, gp.getRole(), false);
+                scoreboard.update(p, timeStr, innocents, sheriffAlive, gp.getRole(), false);
                 updatePlayerBossBar(p, gp, trackingActive);
             }
         }

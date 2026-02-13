@@ -85,9 +85,10 @@ public class MMPlayerInteractListener implements Listener {
     
         if (block != null) {
             String blockId = block.getId();
-            if (INTERACT_BLOCKS.contains(blockId)) {
+            if (INTERACT_BLOCKS.contains(blockId) ||
+                blockId.contains("cake")) {
 
-            event.setCancelled(true);
+                event.setCancelled(true);
             }
 
             if (event.getAction() == PlayerInteractEvent.Action.PHYSICAL) {

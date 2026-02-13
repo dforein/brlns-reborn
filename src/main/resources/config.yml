@@ -9,10 +9,10 @@ game:
   end-time: 10
 lobby:
   spawn:
-    x: 0
-    y: 81
-    z: 0
-    world: lobby
+    x: -5
+    y: 15
+    z: -35
+    world: lobby1
   rules-book:
     item-name: '&o&l&fRules &r&7- Hold / Right Click'
     title: Murder Mystery Rules
@@ -70,8 +70,8 @@ death:
   redstone-drop: 2
   blindness-duration: 2
 gold:
-  spawn-interval-min: 2
-  spawn-interval-max: 3
+  spawn-interval-min: 3
+  spawn-interval-max: 4
 exp:
   per-gold: 10
   per-kill: 15

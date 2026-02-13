@@ -26,7 +26,7 @@ public class MMPlayerPickupListener implements Listener {
     
     @EventHandler(priority = EventPriority.HIGH)
     public void onInventoryPickup(InventoryPickupItemEvent event) {
-        if (game.getState() != GameState.IN_GAME) return;
+        if (game.getState() != GameState.IN_GAME || game.getState() != GameState.ENDING) return;
 
         EntityItem itemEntity = event.getItem();
 
@@ -58,12 +58,12 @@ public class MMPlayerPickupListener implements Listener {
     }
     
     private void handleGoldPickup(Player player, EntityItem itemEntity) {
+        if (game.getState() != GameState.IN_GAME) return;
+
         GamePlayer gp = game.getRoleManager().getGamePlayer(player);
 
         if (gp == null || !gp.isAlive()) return;
-        if (gp.getRole() != MMRole.INNOCENT) {
-            return;
-        }
+        if (gp.getRole() != MMRole.INNOCENT) return;
         
         itemEntity.close();
         gp.addGold(1);
@@ -81,6 +81,8 @@ public class MMPlayerPickupListener implements Listener {
     }
     
     private void handleSheriffHoePickup(Player player, EntityItem itemEntity) {
+        if (game.getState() != GameState.IN_GAME) return;
+        
         GamePlayer gp = game.getRoleManager().getGamePlayer(player);
         if (gp == null || !gp.isAlive() || gp.getRole() != MMRole.INNOCENT) return;
         
