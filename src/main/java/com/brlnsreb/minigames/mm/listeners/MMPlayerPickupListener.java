@@ -26,7 +26,7 @@ public class MMPlayerPickupListener implements Listener {
     
     @EventHandler(priority = EventPriority.HIGH)
     public void onInventoryPickup(InventoryPickupItemEvent event) {
-        if (game.getState() != GameState.IN_GAME || game.getState() != GameState.ENDING) return;
+        if (game.getState() != GameState.IN_GAME && game.getState() != GameState.ENDING) return;
 
         EntityItem itemEntity = event.getItem();
 

@@ -79,25 +79,30 @@ public class MMPlayerInteractListener implements Listener {
         Item item = event.getItem();
         Block block = event.getBlock();
         Player player = event.getPlayer();
-        GamePlayer gp = game.getRoleManager().getGamePlayer(player);
-
-        if (gp == null) return;
     
         if (block != null) {
             String blockId = block.getId();
-            if (INTERACT_BLOCKS.contains(blockId) ||
-                blockId.contains("cake")) {
+
+            if (INTERACT_BLOCKS.contains(blockId) || blockId.contains("cake")) {
 
                 event.setCancelled(true);
                 return;
             }
 
             if (event.getAction() == PlayerInteractEvent.Action.PHYSICAL) {
-                if (blockId.equals(Block.FARMLAND)) {
+                if (blockId.equals(Block.FARMLAND) || blockId.contains("pressure_plate")) {
+
                     event.setCancelled(true);
                     return;
                 }
             }
+        }
+
+        GamePlayer gp = game.getRoleManager().getGamePlayer(player);
+        if (gp == null) return;
+
+        if (block != null) {
+            String blockId = block.getId();
 
             if (gp.getRole() == MMRole.SPECTATOR) {
                 if (blockId.contains("door")

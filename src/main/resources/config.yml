@@ -10,7 +10,7 @@ game:
 lobby:
   spawn:
     x: -5
-    y: 15
+    y: 12
     z: -35
     world: lobby1
   rules-book:
@@ -145,8 +145,7 @@ messages:
   teleported-to: '&aYou have been teleported to &e{player}&a!'
   player-not-available: '&cPlayer is no longer available!'
 world:
-  lobby: lobby
-  default-world: world
+  default-world: school_n
   enabled-maps:
   - world
   - museum
@@ -191,7 +190,7 @@ world:
       - 1 13 -26
       - 71 6 -44
     village:
-      name: Village
+      name: Minetown
       world: village
       min: -10 -1 -71
       max: 124 15 143
@@ -245,3 +244,33 @@ world:
       - 2435 32 2433
       - 2456 33 2428
       - 2447 32 2411
+    thegrandhotel:
+      name: The Grand Hotel
+      world: thegrandhotel
+      min: 2435 33 2368
+      max: 2513 68 2430
+      night-vision: true
+      weather: Clear
+      builders:
+      - TrenzKGM
+      spawns:
+      - 2457 32 2419
+      - 2486 34 2411
+      - 2467 32 2405
+      - 2464 33 2378
+      - 2483 33 2373
+      - 2501 33 2373
+      - 2506 42 2387
+      - 2490 42 2383
+      - 2484 50 2369
+      - 2482 50 2382
+      - 2499 50 2382
+      - 2485 46 2361
+      - 2484 34 2364
+      - 2504 58 2376
+      - 2481 66 2367
+      - 2494 67 2382
+      - 2470 67 2387
+      - 2484 32 2418
+      - 2505 33 2410
+      - 2444 32 2384
