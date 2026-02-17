@@ -240,7 +240,7 @@ public class MurderMysteryGame {
         
         for (Player p : players) {
             String message = config.getCountdownBossbar().replace("{seconds}", String.valueOf(duration));
-            bossBar.showCountdown(p, duration, TextFormat.colorize(message));
+            bossBar.showCountdown(p, TextFormat.colorize(message));
         }
         
         timer.startCountdown(duration, this::startGame, () -> {
@@ -808,6 +808,10 @@ public class MurderMysteryGame {
         deadBodies.clear();
 
         refreshPlayersState();
+
+        for (Player p : players) {
+            ItemManager.clearInventory(p);
+        }
     }
 
     private void cleanupOfflinePlayers() {

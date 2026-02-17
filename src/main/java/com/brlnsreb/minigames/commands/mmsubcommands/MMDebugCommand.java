@@ -1,17 +1,17 @@
 package com.brlnsreb.minigames.commands.mmsubcommands;
 
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.UUID;
 
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
+import com.brlnsreb.minigames.mm.systems.BossBarSystem;
 
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
-import cn.nukkit.entity.data.EntityFlag;
+import cn.nukkit.utils.BossBarColor;
+import cn.nukkit.utils.DummyBossBar;
 import cn.nukkit.utils.TextFormat;
 
 public class MMDebugCommand extends SimpleSubCommand {
@@ -31,34 +31,50 @@ public class MMDebugCommand extends SimpleSubCommand {
         //everything needing debug
         //reminder: args start from args[1] ("/mm debug {args[1]} {args[2]} ...")
 
-        Map<UUID, Player> players = plugin.getServer().getOnlinePlayers();
+        //Map<UUID, Player> players = plugin.getServer().getOnlinePlayers();
+        //for (Map.Entry<UUID, Player> p : players.entrySet())
+
+        BossBarSystem bossBarSys = new BossBarSystem();
 
         if (args.length > 1)
             switch (args[1]) {
-                case "hide":
-                    for (Map.Entry<UUID, Player> p : players.entrySet())
-                        p.getValue().setDataFlag(EntityFlag.INVISIBLE, true);
-                    player.sendMessage("hidden");
+                case "show1":
+                    DummyBossBar bossBar = new DummyBossBar.Builder(player)
+                        .text("§l§7ewqeqwe")
+                        .length(100.0f)
+                        .color(BossBarColor.PURPLE)
+                        .build();
+                    
+                    player.createBossBar(bossBar);
                     break;
-
-                case "hide2":
-                    for (Map.Entry<UUID, Player> p : players.entrySet())
-                        p.getValue().setNameTag("");
-                    player.sendMessage("totally hidden");
-                    break;
-
-                case "show":
-                    for (Map.Entry<UUID, Player> p : players.entrySet())
-                        p.getValue().setDataFlag(EntityFlag.INVISIBLE, false);
-                    player.sendMessage("visible");
-                    break;
-
+                
                 case "show2":
-                    for (Map.Entry<UUID, Player> p : players.entrySet())
-                        p.getValue().setNameTag("test");
-                    player.sendMessage("totally visible");
+                    DummyBossBar bossBar2 = new DummyBossBar.Builder(player)
+                        .text("§l§7- §a23 EXP §7¦ §e24 GOLD §7-")
+                        .length(100.0f)
+                        .color(BossBarColor.PURPLE)
+                        .build();
+                    
+                    player.createBossBar(bossBar2);
+                    break;
+                
+                case "show3":
+                    DummyBossBar bossBar3 = new DummyBossBar.Builder(player)
+                        .text("§l§7- §a GOLD §7-")
+                        .length(100.0f)
+                        .color(BossBarColor.PURPLE)
+                        .build();
+                    
+                    player.createBossBar(bossBar3);
+                    break;
+                
+                case "clear":
+                    bossBarSys.clearAll(player);
                     break;
 
+                case "controlCase_un2c9r8eyn2cr8yq8294cyrq9o":
+                    player.sendMessage("ERROR: control case activated");
+                    break;
                 default:
                     player.sendMessage("no args");
                     break;

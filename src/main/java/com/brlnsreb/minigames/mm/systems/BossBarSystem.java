@@ -19,47 +19,50 @@ public class BossBarSystem {
     }
     
     public void showExpAndGold(Player player, int goldCount, int expCount) {
-        clearAll(player);
-        DummyBossBar bossBar = new DummyBossBar.Builder(player)
-            .text("§l§7- §a" + expCount + " §2EXP §7¦ §e" + goldCount + " GOLD §7-")
-            .length(100.0f)
-            .color(BossBarColor.PURPLE)
-            .build();
-        
-        long bossBarId = player.createBossBar(bossBar);
-        bossBarIds.put(player.getName(), bossBarId);
+        newBossBar(player,
+            "§l§7- §a" + expCount + " EXP §7¦ §e" + goldCount + " GOLD §7-"
+        );
+
     }
 
     public void showExp(Player player, int expCount) {
+        newBossBar(player,
+            "§l§7- §a" + expCount + " EXP §7-"
+        );
+    }
+
+    public void showExpAndDistance(Player player, int expCount, double distance) {
+        newBossBar(player,
+            String.format("§l§7- §aNEAREST: %.2fm §7¦ §a%d EXP §7-", distance, expCount)
+        );
+    }
+
+    public void showCountdown(Player player, String message) {
+        newBossBar(player, message);
+    }
+
+    private void newBossBar(Player player, String text) {
         clearAll(player);
-        DummyBossBar bossBar = new DummyBossBar.Builder(player)
-            .text("§l§7- §a" + expCount + " §2EXP §7-")
-            .length(100.0f)
-            .color(BossBarColor.PURPLE)
-            .build();
-        
+
+        DummyBossBar bossBar = buildBossBar(player, text);
+
         long bossBarId = player.createBossBar(bossBar);
         bossBarIds.put(player.getName(), bossBarId);
     }
 
-    public void showExpAndDistance(Player player, int expCount, double distance) {
-        clearAll(player);
-        DummyBossBar bossBar = new DummyBossBar.Builder(player)
-            .text(String.format("§l§7- §aNEAREST: %.2fm §7¦ §a%d §2EXP §7-", distance, expCount))
+    private DummyBossBar buildBossBar(Player player, String text) {
+        return new DummyBossBar.Builder(player)
+            .text(text)
             .length(100.0f)
             .color(BossBarColor.PURPLE)
             .build();
-        
-        long bossBarId = player.createBossBar(bossBar);
-        bossBarIds.put(player.getName(), bossBarId);
     }
     
     public void updateExpAndGold(Player player, int goldCount, int expCount) {
-        clearAll(player);
         Long bossBarId = bossBarIds.get(player.getName());
         if (bossBarId != null) {
             player.updateBossBar(
-                "§l§7- §a" + expCount + " §2EXP §7¦ §e" + goldCount + " GOLD §7-", 
+                "§l§7- §a" + expCount + " EXP §7¦ §e" + goldCount + " GOLD §7-", 
                 100, 
                 bossBarId
             );
@@ -72,7 +75,7 @@ public class BossBarSystem {
         Long bossBarId = bossBarIds.get(player.getName());
         if (bossBarId != null) {
             player.updateBossBar(
-                "§l§7- §a" + expCount + " §2EXP §7-", 
+                "§l§7- §a" + expCount + " EXP §7-", 
                 100, 
                 bossBarId
             );
@@ -85,7 +88,7 @@ public class BossBarSystem {
         Long bossBarId = bossBarIds.get(player.getName());
         if (bossBarId != null) {
             player.updateBossBar(
-                String.format("§l§7- §aNEAREST: %.2fm §7¦ §a%d §2EXP §7-", distance, expCount),
+                String.format("§l§7- §aNEAREST: %.2fm §7¦ §a%d EXP §7-", distance, expCount),
                 100,
                 bossBarId
             );
@@ -94,24 +97,13 @@ public class BossBarSystem {
         }
     }
 
-    public void showCountdown(Player player, int seconds, String message) {
-        DummyBossBar bossBar = new DummyBossBar.Builder(player)
-            .text(message)
-            .length(100.0f)
-            .color(BossBarColor.PURPLE)
-            .build();
-        
-        long id = player.createBossBar(bossBar);
-        bossBarIds.put(player.getName(), id);
-    }
-
     public void updateCountdown(Player player, String message, int seconds, int maxSeconds) {
         Long bossBarId = bossBarIds.get(player.getName());
         if (bossBarId != null) {
             float progress = (maxSeconds > 0) ? (float) seconds / maxSeconds : 0;
             player.updateBossBar(message, (int)(progress * 100), bossBarId);
         } else {
-            showCountdown(player, seconds, message);
+            showCountdown(player, message);
         }
     }
     
@@ -122,7 +114,7 @@ public class BossBarSystem {
         }
     }
 
-    private void clearAll(Player player) {
+    public void clearAll(Player player) {
         if (!player.getDummyBossBars().isEmpty()) {
             for (DummyBossBar bar : player.getDummyBossBars().values()) {
                 bar.destroy(); 
