@@ -99,15 +99,15 @@ public class ItemManager {
         player.getInventory().setItem(1, hoe);
     }
 
-    public static void giveSpectatorItems(Player player, String netherStarName) {
-        Item netherStar = Item.get(Item.NETHER_STAR);
-        netherStar.setCustomName(TextFormat.colorize(netherStarName));
+    public static void giveSpectatorItems(Player player, String compassName) {
+        Item compass = Item.get(Item.COMPASS);
+        compass.setCustomName(TextFormat.colorize(compassName));
 
-        if (player.getInventory().contains(netherStar)) return;
+        if (player.getInventory().contains(compass)) return;
 
         clearInventory(player);
         
-        player.getInventory().setItem(4, netherStar);
+        player.getInventory().setItem(4, compass);
         player.getInventory().setHeldItemIndex(0);
 
         player.getInventory().sendContents(player);
@@ -118,10 +118,13 @@ public class ItemManager {
         
         player.getInventory().clearAll();
         player.getCursorInventory().clearAll();
+
+        player.getInventory().sendContents(player);
+        player.getCursorInventory().sendContents(player);
     }
 
     public static void giveYellowDye(Player player, String dyeName) {
-        Item dye = Item.get(Item.DYE, 11, 1);
+        Item dye = Item.get(Item.YELLOW_DYE);
         dye.setCustomName(TextFormat.colorize(dyeName));
         
         if (player.getInventory().contains(dye) 

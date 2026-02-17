@@ -14,11 +14,11 @@ import com.brlnsreb.minigames.mm.entities.DeadBodyEntity;
 import com.brlnsreb.minigames.mm.roles.GamePlayer;
 import com.brlnsreb.minigames.mm.roles.MMRole;
 
-public class MMPlayerDeathListener implements Listener {
+public class MMPlayerAttackListener implements Listener {
     
     private final MurderMysteryGame game;
     
-    public MMPlayerDeathListener(MurderMysteryGame game) {
+    public MMPlayerAttackListener(MurderMysteryGame game) {
         this.game = game;
     }
     
@@ -35,11 +35,10 @@ public class MMPlayerDeathListener implements Listener {
         
         Player victim = (Player) event.getEntity();
         GamePlayer gp = game.getRoleManager().getGamePlayer(victim);
+
+        event.setCancelled(true);
         
-        if (gp == null || !gp.isAlive()) {
-            event.setCancelled(true);
-            return;
-        }
+        if (gp == null || !gp.isAlive()) return;
         
         if (event instanceof EntityDamageByEntityEvent) {
             EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
@@ -49,15 +48,11 @@ public class MMPlayerDeathListener implements Listener {
             Player attacker = (Player) e.getDamager();
             GamePlayer attackerGp = game.getRoleManager().getGamePlayer(attacker);
             
-            if (attackerGp == null || !attackerGp.isAlive()) {
-                event.setCancelled(true);
-                return;
-            }
+            if (attackerGp == null || !attackerGp.isAlive()) return;
             
             Item weapon = attacker.getInventory().getItemInHand();
             
             if (weapon.getId() == Item.IRON_SWORD && attackerGp.getRole() == MMRole.MURDERER) {
-                event.setCancelled(true);
 
                 MMConfig config = game.getConfig();
                 
@@ -96,11 +91,7 @@ public class MMPlayerDeathListener implements Listener {
                 }
                 
                 game.checkWinCondition();
-            } else {
-                event.setCancelled(true);
             }
-        } else {
-            event.setCancelled(true);
         }
     }
 }

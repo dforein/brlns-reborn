@@ -2,6 +2,7 @@ package com.brlnsreb.minigames.mm.systems;
 
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
+import cn.nukkit.block.BlockRedstoneWire;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.data.EntityFlag;
 import cn.nukkit.entity.effect.Effect;
@@ -13,7 +14,6 @@ import cn.nukkit.level.Position;
 import cn.nukkit.level.format.IChunk;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.network.protocol.AnimateEntityPacket.Animation;
 import cn.nukkit.utils.TextFormat;
 
 import java.util.List;
@@ -47,7 +47,8 @@ public class DeathSystem {
         Block.WHEAT, Block.CARROTS, Block.POTATOES, Block.BEETROOT,
         Block.OAK_SAPLING, Block.BIRCH_SAPLING, Block.SPRUCE_SAPLING, Block.ACACIA_SAPLING,
         Block.CHERRY_SAPLING, Block.JUNGLE_SAPLING, Block.DARK_OAK_SAPLING, Block.PALE_OAK_SAPLING,
-        Block.LADDER
+        Block.LADDER,
+        Block.GRASS_PATH
     );
 
     
@@ -65,9 +66,9 @@ public class DeathSystem {
         victim.noClip = false;
         victim.setFlying(true);
         victim.setAllowFlight(true);
-        victim.setNameTagVisible(false);
         victim.setDataFlag(EntityFlag.INVISIBLE, true);
         victim.setDataFlag(EntityFlag.COLLIDABLE, false);
+        victim.fireProof = true;
 
         ItemManager.giveSpectatorItems(victim, config.getSpectatorItemName());
         
@@ -142,13 +143,7 @@ public class DeathSystem {
         DeadBodyEntity body = new DeadBodyEntity(chunk, Entity.getDefaultNBT(pos));
 
         boolean fallForward = new java.util.Random().nextBoolean();
-        Animation selectedAnimation = Animation.builder()
-            .animation(fallForward ? "animation.corpse.fall_forward" : "animation.corpse.fall_backward") 
-            .nextState(fallForward ? "animation.corpse.fall_forward" : "animation.corpse.fall_backward")
-            .stopExpression("0")
-            .stopExpressionVersion(16777216)
-            .controller("__runtime_controller")
-            .build();
+        body.setFallForward(fallForward);
         
         double yaw = victim.getYaw();
         double pitch = game.getConfig().getHeadPitchOffset();
@@ -164,7 +159,7 @@ public class DeathSystem {
             body.setDataFlag(EntityFlag.INVISIBLE, false);
         }, 2);
         plugin.getServer().getScheduler().scheduleDelayedTask(game.getPlugin(), () -> {
-            body.playAnimation(selectedAnimation);
+            body.playAnimation(body.getAnimation());
         }, 3);
 
         game.getDeadBodies().add(body);
@@ -208,8 +203,11 @@ public class DeathSystem {
         while (placed < amount && !validPositions.isEmpty()) {
             int index = random.nextInt(validPositions.size());
             Position targetPos = validPositions.remove(index);
+
+            BlockRedstoneWire redstone = new BlockRedstoneWire();
+            redstone.setRedStoneSignal(15);
             
-            targetPos.getLevel().setBlock(targetPos, Block.get(Block.REDSTONE_WIRE));
+            targetPos.getLevel().setBlock(targetPos, redstone, true, false);
             game.addTrackedRedstone(targetPos);
 
             placed++;

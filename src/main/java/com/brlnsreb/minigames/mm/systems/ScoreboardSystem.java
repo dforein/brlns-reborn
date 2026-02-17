@@ -28,7 +28,6 @@ public class ScoreboardSystem {
         Scoreboard sb = playerBoards.computeIfAbsent(name, k -> {
             Scoreboard newSb = new Scoreboard(OBJECTIVE_NAME, DISPLAY_TITLE);
             newSb.addViewer(player, DisplaySlot.SIDEBAR);
-            player.setNameTagVisible(false);
             return newSb;
         });
 
@@ -72,17 +71,14 @@ public class ScoreboardSystem {
         
         FakeScorer oldScorer = playerMap.get(score);
         
-        // Se il testo è lo stesso, non facciamo nulla (ottimizzazione estrema)
         if (oldScorer != null && oldScorer.getName().equals(colorText)) {
             return;
         }
 
-        // Aggiungiamo la nuova riga
         FakeScorer newScorer = new FakeScorer(colorText);
         sb.addLine(newScorer, score);
         playerMap.put(score, newScorer);
 
-        // Ora che la nuova è stata aggiunta, rimuoviamo quella vecchia (se esisteva)
         if (oldScorer != null) {
             sb.removeLine(oldScorer);
         }

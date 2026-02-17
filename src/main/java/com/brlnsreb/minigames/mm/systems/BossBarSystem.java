@@ -5,6 +5,7 @@ import cn.nukkit.utils.BossBarColor;
 import cn.nukkit.utils.DummyBossBar;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 // TODO: bossbar astraction into Utils
@@ -18,6 +19,7 @@ public class BossBarSystem {
     }
     
     public void showExpAndGold(Player player, int goldCount, int expCount) {
+        clearAll(player);
         DummyBossBar bossBar = new DummyBossBar.Builder(player)
             .text("§l§7- §a" + expCount + " §2EXP §7¦ §e" + goldCount + " GOLD §7-")
             .length(100.0f)
@@ -29,6 +31,7 @@ public class BossBarSystem {
     }
 
     public void showExp(Player player, int expCount) {
+        clearAll(player);
         DummyBossBar bossBar = new DummyBossBar.Builder(player)
             .text("§l§7- §a" + expCount + " §2EXP §7-")
             .length(100.0f)
@@ -40,6 +43,7 @@ public class BossBarSystem {
     }
 
     public void showExpAndDistance(Player player, int expCount, double distance) {
+        clearAll(player);
         DummyBossBar bossBar = new DummyBossBar.Builder(player)
             .text(String.format("§l§7- §aNEAREST: %.2fm §7¦ §a%d §2EXP §7-", distance, expCount))
             .length(100.0f)
@@ -51,6 +55,7 @@ public class BossBarSystem {
     }
     
     public void updateExpAndGold(Player player, int goldCount, int expCount) {
+        clearAll(player);
         Long bossBarId = bossBarIds.get(player.getName());
         if (bossBarId != null) {
             player.updateBossBar(
@@ -58,6 +63,8 @@ public class BossBarSystem {
                 100, 
                 bossBarId
             );
+        } else {
+            showExpAndGold(player, goldCount, expCount);
         }
     }
 
@@ -69,6 +76,8 @@ public class BossBarSystem {
                 100, 
                 bossBarId
             );
+        } else {
+            showExp(player, expCount);
         }
     }
 
@@ -80,6 +89,8 @@ public class BossBarSystem {
                 100,
                 bossBarId
             );
+        } else {
+            showExpAndDistance(player, expCount, distance);
         }
     }
 
@@ -95,11 +106,13 @@ public class BossBarSystem {
     }
 
     public void updateCountdown(Player player, String message, int seconds, int maxSeconds) {
-        Long id = bossBarIds.get(player.getName());
-        if (id == null) return;
-        
-        float progress = (maxSeconds > 0) ? (float) seconds / maxSeconds : 0;
-        player.updateBossBar(message, (int)(progress * 100), id);
+        Long bossBarId = bossBarIds.get(player.getName());
+        if (bossBarId != null) {
+            float progress = (maxSeconds > 0) ? (float) seconds / maxSeconds : 0;
+            player.updateBossBar(message, (int)(progress * 100), bossBarId);
+        } else {
+            showCountdown(player, seconds, message);
+        }
     }
     
     public void hide(Player player) {
@@ -108,8 +121,20 @@ public class BossBarSystem {
             player.removeBossBar(bossBarId);
         }
     }
+
+    private void clearAll(Player player) {
+        if (!player.getDummyBossBars().isEmpty()) {
+            for (DummyBossBar bar : player.getDummyBossBars().values()) {
+                bar.destroy(); 
+            }
+        }
+    }
     
-    public void clear() {
+    public void clear(List<Player> players) {
         bossBarIds.clear();
+
+        for (Player p : players) {
+            clearAll(p);
+        }
     }
 }

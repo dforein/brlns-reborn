@@ -10,10 +10,12 @@ import cn.nukkit.entity.custom.CustomEntityDefinition;
 import cn.nukkit.entity.data.EntityFlag;
 import cn.nukkit.level.format.IChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
+import cn.nukkit.network.protocol.AnimateEntityPacket.Animation;
 
 public class DeadBodyEntity extends EntityHuman implements CustomEntity {
 
     public static final String IDENTIFIER = "mm:dead_body";
+    private boolean fallForward;
 
     public DeadBodyEntity(IChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
@@ -82,4 +84,23 @@ public class DeadBodyEntity extends EntityHuman implements CustomEntity {
     public boolean canBeMovedByCurrents() {
         return false;
     }
+
+    public boolean getFallForward() {
+        return fallForward;
+    }
+
+    public Animation getAnimation() {
+        return Animation.builder()
+            .animation(fallForward ? "animation.corpse.fall_forward" : "animation.corpse.fall_backward") 
+            .nextState(fallForward ? "animation.corpse.fall_forward" : "animation.corpse.fall_backward")
+            .stopExpression("0")
+            .stopExpressionVersion(16777216)
+            .controller("__runtime_controller")
+            .build();
+    }
+
+    public void setFallForward(boolean fallForward) {
+        this.fallForward = fallForward;
+    }
+    
 }

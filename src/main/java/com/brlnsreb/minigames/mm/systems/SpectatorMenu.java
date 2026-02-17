@@ -35,10 +35,21 @@ public class SpectatorMenu {
                 Player player = gp.getPlayer();
                 String displayName = player.getName();
                 
-                if (gp.getRole() == MMRole.SHERIFF) {
-                    displayName += TextFormat.colorize(" &7(&l&9Sheriff&r&7)");
-                } else if (gp.getRole() == MMRole.MURDERER) {
-                    displayName += TextFormat.colorize(" &7(&l&cMurderer&r&7)");
+                switch (gp.getRole()) {
+                    case SHERIFF:
+                        displayName += TextFormat.colorize(" &7(&l&9SHERIFF&r&7)");
+                        break;
+
+                    case MURDERER:
+                        displayName += TextFormat.colorize(" &7(&l&cMURDERER&r&7)");
+                        break;
+
+                    case INNOCENT:
+                        displayName += TextFormat.colorize(" &a(&l&cINNOCENT&r&7)");
+                        break;
+                    
+                    default:
+                        break;
                 }
                 
                 menu.addButton(displayName);

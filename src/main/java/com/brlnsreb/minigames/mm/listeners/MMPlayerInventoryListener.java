@@ -32,7 +32,7 @@ public class MMPlayerInventoryListener implements Listener {
         int newSlot = event.getSlot();
         Item itemInNewSlot = player.getInventory().getItem(newSlot);
         
-        if (itemInNewSlot.getId().equals(Item.NETHER_STAR)) {
+        if (itemInNewSlot.getId().equals(Item.COMPASS)) {
             event.setCancelled(true);
             
             int previousSlot = event.getSlot() - 1;

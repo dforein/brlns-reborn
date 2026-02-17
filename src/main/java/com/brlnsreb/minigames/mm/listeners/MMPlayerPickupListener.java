@@ -58,6 +58,7 @@ public class MMPlayerPickupListener implements Listener {
     }
     
     private void handleGoldPickup(Player player, EntityItem itemEntity) {
+
         if (game.getState() != GameState.IN_GAME) return;
 
         GamePlayer gp = game.getRoleManager().getGamePlayer(player);
@@ -66,25 +67,31 @@ public class MMPlayerPickupListener implements Listener {
         if (gp.getRole() != MMRole.INNOCENT) return;
         
         itemEntity.close();
-        gp.addGold(1);
+
         MMConfig config = game.getConfig();
-        int expGained = config.getExpPerGold();
-        gp.addExp(expGained);
+
+        gp.addGold(1);
+        gp.addExp(config.getExpPerGold());
 
         String message = game.getConfig().getMessage("gold-collected");
         player.sendMessage(TextFormat.colorize(message));
         
         if (gp.canBecomeSheriff(config.getGoldForGun()) 
             && game.getRoleManager().isSheriffDead()) {
+
             ItemManager.giveYellowDye(player, config.getDyeName());
         }
+
     }
     
     private void handleSheriffHoePickup(Player player, EntityItem itemEntity) {
+
         if (game.getState() != GameState.IN_GAME) return;
         
         GamePlayer gp = game.getRoleManager().getGamePlayer(player);
-        if (gp == null || !gp.isAlive() || gp.getRole() != MMRole.INNOCENT) return;
+
+        if (gp == null || !gp.isAlive()) return;
+        if (gp.getRole() != MMRole.INNOCENT) return;
         
         itemEntity.close();
 
@@ -99,7 +106,7 @@ public class MMPlayerPickupListener implements Listener {
         for (GamePlayer otherGp : game.getRoleManager().getAllPlayers()) {
             if (otherGp.getRole() == MMRole.INNOCENT && otherGp.isAlive()) {
                 Player p = otherGp.getPlayer();
-                clearItem(p, Item.DYE, 11);
+                clearItem(p, Item.YELLOW_DYE);
             }
         }
 
@@ -111,16 +118,18 @@ public class MMPlayerPickupListener implements Listener {
         for (Player p : game.getPlayers()) {
             p.sendMessage(TextFormat.colorize(config.getMessage("new-sheriff-chosen")));
         }
+        
     }
 
-    private void clearItem(Player player, String itemId, int meta) {
+    private void clearItem(Player player, String itemId) {
         for (int i = 0; i < player.getInventory().getSize(); i++) {
             Item itemPointed = player.getInventory().getItem(i);
 
-            if (itemPointed.getId().equals(itemId) && itemPointed.getDamage() == meta) {
+            if (itemPointed.getId().equals(itemId)) {
                 player.getInventory().clear(i);
                 break;
             }
         }
     }
+
 }

@@ -16,6 +16,7 @@ import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.core.Arena;
 import com.brlnsreb.minigames.core.GameState;
 import com.brlnsreb.minigames.mm.config.MMConfig;
+import com.brlnsreb.minigames.mm.entities.DeadBodyEntity;
 import com.brlnsreb.minigames.mm.items.ItemManager;
 import com.brlnsreb.minigames.mm.roles.GamePlayer;
 import com.brlnsreb.minigames.mm.roles.MMRole;
@@ -106,6 +107,8 @@ public class MurderMysteryGame {
 
         cleanupOfflinePlayers();
 
+        refreshPlayerState(player);
+
         String message = config.getMessageNoPrefix("player-joined")
                         .replace("{name}", player.getName())
                         .replace("{playersNumber}", Integer.toString(players.size()))
@@ -123,8 +126,6 @@ public class MurderMysteryGame {
                     && !countdownShortened 
                     && onlineCount >= config.getMinPlayersStart()) {
             shortenCountdown();
-        } else {
-            refreshPlayerState(player);
         }
 
         return true;
@@ -154,9 +155,9 @@ public class MurderMysteryGame {
         player.setGamemode(Player.ADVENTURE);
         player.setFlying(true);
         player.setAllowFlight(true);
-        player.setNameTagVisible(false);
         player.setDataFlag(EntityFlag.INVISIBLE, true);
         player.setDataFlag(EntityFlag.COLLIDABLE, false);
+        player.fireProof = true;
 
         ItemManager.giveSpectatorItems(player, config.getSpectatorItemName());
 
@@ -170,6 +171,13 @@ public class MurderMysteryGame {
             Vector3 spawn = arena.getSpawns().get(0);
             player.teleport(new Location(spawn.x, spawn.y, spawn.z, arena.getLevel()));
         }
+
+        plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
+            for (Entity e : deadBodies) {
+                DeadBodyEntity body = (DeadBodyEntity) e;
+                body.playAnimation(body.getAnimation(), Collections.singleton(player));
+            }
+        }, 20);
     }
 
     public boolean leavePlayer(Player player) {
@@ -733,8 +741,10 @@ public class MurderMysteryGame {
             if (timer != null) timer.stop();
             gold.stop();
 
-            gold.cleanupGold(arena.getLevel());
-            death.cleanupSheriffHoe(arena.getLevel());
+            if (arena != null) {
+                gold.cleanupGold(arena.getLevel());
+                death.cleanupSheriffHoe(arena.getLevel());
+            }
             death.cleanupBodies(deadBodies);
             death.cleanupRedstone(redstonePositions);
             returnToLobby();
@@ -782,18 +792,10 @@ public class MurderMysteryGame {
         
     private void reset() {
         stopScoreboardUpdates();
-        
-        for (Player p : players) {
-            if (p.isOnline()) {
-                bossBar.hide(p);
-                scoreboard.remove(p);
-                ItemManager.clearInventory(p);
-            }
-        }
 
         roleManager.clear();
         cooldowns.clear();
-        bossBar.clear();
+        bossBar.clear(players);
         quitTracker.clear();
         votingSystem.clear();
 
@@ -804,6 +806,8 @@ public class MurderMysteryGame {
         firstKill = true;
         redstonePositions.clear();
         deadBodies.clear();
+
+        refreshPlayersState();
     }
 
     private void cleanupOfflinePlayers() {
@@ -844,11 +848,12 @@ public class MurderMysteryGame {
 
         p.setDataFlag(EntityFlag.INVISIBLE, false);
         p.setDataFlag(EntityFlag.COLLIDABLE, false);
+        p.fireProof = false;
         p.removeAllEffects();
 
         if (leaving) {
             ItemManager.clearInventory(p);
-            p.setNameTagVisible(true);
+            setNameTagVisible(p);
 
             switch (state) {
                 case LOBBY:
@@ -867,7 +872,7 @@ public class MurderMysteryGame {
         } else {
             switch (state) {
                 case LOBBY:
-                    p.setNameTagVisible(true);
+                    setNameTagVisible(p);
 
                     scoreboard.remove(p);
                     bossBar.hide(p);
@@ -878,7 +883,7 @@ public class MurderMysteryGame {
                     );
                     break;
                 case COUNTDOWN:
-                    p.setNameTagVisible(true);
+                    setNameTagVisible(p);
 
                     if (!countdownShortened) {
                         ItemManager.giveLobbyItems(
@@ -898,7 +903,7 @@ public class MurderMysteryGame {
                 case PREGAME_COUNTDOWN:
                 case IN_GAME:
                 case ENDING:
-                    p.setNameTagVisible(false);
+                    setNameTagsInvisible(p);
 
                     scoreboard.remove(p);
                     bossBar.hide(p);
@@ -1009,6 +1014,14 @@ public class MurderMysteryGame {
             return true;
         }
         return false;
+    }
+
+    public void setNameTagsInvisible(Player player) {
+        player.setNameTag("");
+    }
+
+    public void setNameTagVisible(Player player) {
+        player.setNameTag(player.getName());
     }
 
     public void addTrackedRedstone(Position pos) {

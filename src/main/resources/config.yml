@@ -62,7 +62,7 @@ innocents:
   gold-for-gun: 5
   dye-name: '&o&l&eCraft The Gun &r&7( Hold / Right Click )'
 spectator:
-  item-name: '&o&l&7Teleport to Player'
+  item-name: '&o&l&3Teleporter'
 death:
   animation-duration: 0.4167
   head-yaw-offset: -35
@@ -131,7 +131,7 @@ messages:
   lights-out-others: '&eThe Murderer &cput the lights out for &e{seconds} &cseconds'
   lights-out-murderer: '&cThe lights are now out to the other players for &e{seconds}
     &cseconds'
-  lights-out-murderer-warning: '&eBeware. The sheriff can easily discover you while
+  murderer-warning: '&eBeware. The sheriff can easily discover you while
     you are helding your weapon!'
   lights-out-over: '&cLights out is over!'
   murderer-won-title: '&cMURDERER WON'

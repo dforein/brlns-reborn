@@ -1,6 +1,8 @@
 package com.brlnsreb.minigames.commands.mmsubcommands;
 
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.UUID;
 
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
@@ -9,6 +11,7 @@ import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
+import cn.nukkit.entity.data.EntityFlag;
 import cn.nukkit.utils.TextFormat;
 
 public class MMDebugCommand extends SimpleSubCommand {
@@ -28,12 +31,38 @@ public class MMDebugCommand extends SimpleSubCommand {
         //everything needing debug
         //reminder: args start from args[1] ("/mm debug {args[1]} {args[2]} ...")
 
-        switch (args[1]) {
-            case "sword":
-                plugin.getMMGame().getProjectile().throwSword(player);
-            default:
-                break;
-        }
+        Map<UUID, Player> players = plugin.getServer().getOnlinePlayers();
+
+        if (args.length > 1)
+            switch (args[1]) {
+                case "hide":
+                    for (Map.Entry<UUID, Player> p : players.entrySet())
+                        p.getValue().setDataFlag(EntityFlag.INVISIBLE, true);
+                    player.sendMessage("hidden");
+                    break;
+
+                case "hide2":
+                    for (Map.Entry<UUID, Player> p : players.entrySet())
+                        p.getValue().setNameTag("");
+                    player.sendMessage("totally hidden");
+                    break;
+
+                case "show":
+                    for (Map.Entry<UUID, Player> p : players.entrySet())
+                        p.getValue().setDataFlag(EntityFlag.INVISIBLE, false);
+                    player.sendMessage("visible");
+                    break;
+
+                case "show2":
+                    for (Map.Entry<UUID, Player> p : players.entrySet())
+                        p.getValue().setNameTag("test");
+                    player.sendMessage("totally visible");
+                    break;
+
+                default:
+                    player.sendMessage("no args");
+                    break;
+            }
     }
 
     @Override

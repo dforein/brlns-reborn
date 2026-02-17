@@ -58,6 +58,10 @@ public class MMSetRulesCommand extends SimpleSubCommand {
         gameRules.setGameRule(GameRule.SHOW_COORDINATES, false);
         gameRules.setGameRule(GameRule.SHOW_DAYS_PLAYED, false);
         gameRules.setGameRule(GameRule.TNT_EXPLODES, false);
+        gameRules.setGameRule(GameRule.COMMAND_BLOCKS_ENABLED, true);
+        gameRules.setGameRule(GameRule.COMMAND_BLOCK_OUTPUT, false);
+        gameRules.setGameRule(GameRule.SEND_COMMAND_FEEDBACK, true);
+        gameRules.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
         
         player.sendMessage(TextFormat.GREEN + "Game rules set!");
 

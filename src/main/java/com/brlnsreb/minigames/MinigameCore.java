@@ -43,11 +43,12 @@ public class MinigameCore extends PluginBase {
         getServer().getCommandMap().register("ping", new PingCommand());
         getServer().getCommandMap().register("reloadconfig", new ReloadConfigCommand(this));
         
+        getServer().getPluginManager().registerEvents(new BlockUpdateListener(), this);
         getServer().getPluginManager().registerEvents(new MMPlayerInteractListener(mmGame), this);
         getServer().getPluginManager().registerEvents(new MMProjectileHitListener(mmGame), this);
         getServer().getPluginManager().registerEvents(new MMPlayerPickupListener(mmGame), this);
         getServer().getPluginManager().registerEvents(new MMPlayerJoinQuitListener(mmGame), this);
-        getServer().getPluginManager().registerEvents(new MMPlayerDeathListener(mmGame), this);
+        getServer().getPluginManager().registerEvents(new MMPlayerAttackListener(mmGame), this);
         getServer().getPluginManager().registerEvents(new MMPlayerChatListener(mmGame), this);
         getServer().getPluginManager().registerEvents(new MMFormResponseListener(mmGame), this);
         getServer().getPluginManager().registerEvents(new MMPlayerInventoryListener(mmGame), this);

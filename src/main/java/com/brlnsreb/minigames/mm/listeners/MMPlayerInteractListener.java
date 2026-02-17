@@ -133,7 +133,7 @@ public class MMPlayerInteractListener implements Listener {
                 }
             }
             
-            /*if (itemId == Item.NETHER_STAR && gp.getRole() == MMRole.SPECTATOR) {
+            /*if (itemId == Item.COMPASS && gp.getRole() == MMRole.SPECTATOR) {
                 game.getSpectatorMenu().openTeleportMenu(player);
                 event.setCancelled(true);
                 return;
@@ -159,7 +159,7 @@ public class MMPlayerInteractListener implements Listener {
                 event.setCancelled(true);
             }
             
-            else if (itemId.equals(Item.DYE) && item.getDamage() == 11) {
+            else if (itemId.equals(Item.YELLOW_DYE)) {
                 handleBecomeSheriff(player, gp, config);
                 event.setCancelled(true);
             }
@@ -292,7 +292,7 @@ public class MMPlayerInteractListener implements Listener {
         game.getRoleManager().setSheriff(gp);
         
         for (Player p : game.getPlayers()) {
-            clearItem(p, Item.DYE, 11);
+            clearItem(p, Item.YELLOW_DYE);
         }
 
         ItemManager.giveSheriffItems(player, config.getSheriffHoeName());
@@ -322,14 +322,4 @@ public class MMPlayerInteractListener implements Listener {
         }
     }
 
-    private void clearItem(Player player, String itemId, int meta) {
-        for (int i = 0; i < player.getInventory().getSize(); i++) {
-            Item itemPointed = player.getInventory().getItem(i);
-
-            if (itemPointed.getId().equals(itemId) && itemPointed.getDamage() == meta) {
-                player.getInventory().clear(i);
-                break;
-            }
-        }
-    }
 }

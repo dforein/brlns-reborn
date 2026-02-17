@@ -7,7 +7,7 @@ This project is not affiliated with official BrokenLens.
 - Follow the steps listed under the **Install** section, to install PowerNukkitX, at https://github.com/PowerNukkitX/PowerNukkitX
 - Start the server for the first time, in order to create the necessary folders
 - Download the plugin and put it in the plugins folder
-- Download the Resource Pack and extract the zip content in the resource_packs folder
+- Download the Resource Pack and put the zip file in the resourcepacks folder
 - Set up the plugin | next chapter
 
 ## config.yml settings and adding maps

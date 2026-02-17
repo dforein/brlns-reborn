@@ -92,11 +92,11 @@ public class MMConfig {
     }
     
     public String getMessage(String key) {
-        return config.getString("messages.prefix", "") + config.getString("messages." + key, "ERROR");
+        return config.getString("messages.prefix", "") + config.getString("messages." + key, "ERROR: " + key);
     }
 
     public String getMessageNoPrefix(String key) {
-        return config.getString("messages." + key, "ERROR");
+        return config.getString("messages." + key, "ERROR: " + key);
     }
 
     public Vector3 getLobbySpawn() {
