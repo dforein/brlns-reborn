@@ -45,7 +45,7 @@ public class SpectatorMenu {
                         break;
 
                     case INNOCENT:
-                        displayName += TextFormat.colorize(" &a(&l&cINNOCENT&r&7)");
+                        displayName += TextFormat.colorize(" &7(&l&aINNOCENT&r&7)");
                         break;
                     
                     default:

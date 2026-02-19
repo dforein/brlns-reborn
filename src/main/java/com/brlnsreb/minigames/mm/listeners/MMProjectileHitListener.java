@@ -32,21 +32,11 @@ public class MMProjectileHitListener implements Listener {
         if (!(hit instanceof Player)) return;
         if (game.getState() != GameState.IN_GAME) return;
 
-        //victim handling
         Player victim = (Player) hit;
         GamePlayer victimGp = game.getRoleManager().getGamePlayer(victim);
         MMConfig config = game.getConfig();
         
         if (victimGp == null || !victimGp.isAlive()) return;
-
-        victimGp.setAlive(false);
-
-        if (victimGp.getRole() == MMRole.SHERIFF) {
-            game.getDeath().kill(victim, true);
-            game.getRoleManager().checkGoldRewards(game);
-        } else if (victimGp.getRole() == MMRole.INNOCENT) {
-            game.getDeath().kill(victim, false);
-        }
         
         //murderer and game handling
         Player murderer = (Player) thrownSword.shootingEntity;
@@ -83,7 +73,17 @@ public class MMProjectileHitListener implements Listener {
                 murderer.sendMessage(TextFormat.colorize(message));
             }
         }
+
+        //victim handling
+        victimGp.setAlive(false);
+
+        if (victimGp.getRole() == MMRole.SHERIFF) {
+            game.getDeath().kill(victim, true);
+            game.getRoleManager().checkGoldRewards(game);
+        } else if (victimGp.getRole() == MMRole.INNOCENT) {
+            game.getDeath().kill(victim, false);
+        }
     
-    game.checkWinCondition();
+        game.checkWinCondition();
     }
 }

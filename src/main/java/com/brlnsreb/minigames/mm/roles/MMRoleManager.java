@@ -41,17 +41,14 @@ public class MMRoleManager {
     }
     
     public void assignRoles(List<Player> playerList) {
-        players.clear();
-        
         List<Player> shuffled = new ArrayList<>(playerList);
         Collections.shuffle(shuffled);
         int i = 0;
         
         for (Player p : shuffled) {
             GamePlayer gp = new GamePlayer(p);
-            if (gp.getRole() == MMRole.SPECTATOR) {
-                continue;
-            }
+
+            if (gp.getRole() == MMRole.SPECTATOR) continue;
             
             if (i == 0) {
                 gp.setRole(MMRole.MURDERER);

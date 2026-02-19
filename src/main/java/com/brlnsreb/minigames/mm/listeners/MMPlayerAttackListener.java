@@ -55,9 +55,6 @@ public class MMPlayerAttackListener implements Listener {
             if (weapon.getId() == Item.IRON_SWORD && attackerGp.getRole() == MMRole.MURDERER) {
 
                 MMConfig config = game.getConfig();
-                
-                gp.setAlive(false);
-                game.getDeath().kill(victim, gp.getRole() == MMRole.SHERIFF);
 
                 if (game.isFirstKill()) {
                     attacker.sendMessage(TextFormat.colorize(config.getMessage("murderer-warning")));
@@ -89,6 +86,9 @@ public class MMPlayerAttackListener implements Listener {
                     message = config.getMessage("murderer-kill").replace("{player}", victim.getName());
                     attacker.sendMessage(TextFormat.colorize(message));
                 }
+
+                gp.setAlive(false);
+                game.getDeath().kill(victim, gp.getRole() == MMRole.SHERIFF);
                 
                 game.checkWinCondition();
             }

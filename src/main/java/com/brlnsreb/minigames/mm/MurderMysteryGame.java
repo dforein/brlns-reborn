@@ -751,6 +751,10 @@ public class MurderMysteryGame {
             reset();
 
             players.clear();
+
+            for (Player p : players) {
+                ItemManager.clearInventory(p);
+            }
         }
     }
 
