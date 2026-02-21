@@ -46,7 +46,12 @@ public class MMRoleManager {
         int i = 0;
         
         for (Player p : shuffled) {
-            GamePlayer gp = new GamePlayer(p);
+            GamePlayer gp = getGamePlayer(p);
+
+            if (gp == null) {
+                gp = new GamePlayer(p);
+                players.put(p.getName(), gp);
+            }
 
             if (gp.getRole() == MMRole.SPECTATOR) continue;
             
@@ -60,7 +65,6 @@ public class MMRoleManager {
                 gp.setRole(MMRole.INNOCENT);
             }
             
-            players.put(p.getName(), gp);
             i++;
         }
     }

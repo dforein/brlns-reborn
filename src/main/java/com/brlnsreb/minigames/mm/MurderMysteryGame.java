@@ -440,6 +440,11 @@ public class MurderMysteryGame {
         timer.startGame(config.getGameDuration(), this::onTimeExpired);
         
         gold.startSpawning(arena);
+
+        plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
+            checkWinCondition();
+        }, 20);
+        
     }
 
     private void prepareMapVoting() {

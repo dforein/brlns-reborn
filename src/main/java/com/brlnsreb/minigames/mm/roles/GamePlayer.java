@@ -15,7 +15,7 @@ public class GamePlayer {
     
     public GamePlayer(Player player) {
         this.player = player;
-        this.role = MMRole.INNOCENT;
+        this.role = null;
         this.goldCollected = 0;
         this.alive = true;
         this.lastShotTime = 0;

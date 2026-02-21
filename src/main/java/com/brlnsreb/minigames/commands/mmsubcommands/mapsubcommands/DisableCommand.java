@@ -41,24 +41,24 @@ public class DisableCommand extends SubCommand {
 
         List<String> enabledMaps = game.getConfig().getEnabledMaps();
 
-        if (enabledMaps.contains(mapId)) {
-            sender.sendMessage(TextFormat.GOLD + "Map is already enabled");
-            return true;
-        }
-
         if (!(Arrays.asList(game.getConfig().getMaps()).contains(mapId))) {
             sender.sendMessage(TextFormat.RED + "Map doesn't exists!");
             return true;
         }
+
+        if (!enabledMaps.contains(mapId)) {
+            sender.sendMessage(TextFormat.GOLD + "Map is already disabled");
+            return true;
+        }
             
-        enabledMaps.add(mapId);
+        enabledMaps.remove(mapId);
 
         config.set("world.enabled-maps", enabledMaps);
         config.save();
 
         mmCommand.refreshCommandsParams();
 
-        sender.sendMessage(TextFormat.GREEN + "Map enabled!");
+        sender.sendMessage(TextFormat.GREEN + "Map disabled!");
         sender.sendMessage(TextFormat.GRAY + "Command parameters autocomplete is not updated, however the server has already recognized the changes.");
         sender.sendMessage(TextFormat.GRAY + "To see the new suggestions, you have to rejoin the server (no need to restart).");
 
