@@ -295,6 +295,8 @@ public class MMPlayerInteractListener implements Listener {
             clearItem(p, Item.YELLOW_DYE);
         }
 
+        game.getDeath().cleanupSheriffHoe(game.getArena().getLevel());
+
         ItemManager.giveSheriffItems(player, config.getSheriffHoeName());
 
         BossBarSystem bossBar = game.getBossBar();

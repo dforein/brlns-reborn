@@ -783,16 +783,13 @@ public class MurderMysteryGame {
             Location lobbySpawn = new Location(spawnPos.x, spawnPos.y, spawnPos.z, lobby);
             
             ItemManager.clearInventory(player);
-            player.setMotion(new Vector3(0, 0, 0));
-            player.teleport(lobbySpawn);
 
-            plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
-                if (player.isOnline()) {
-                    player.setMotion(new Vector3(0, 0, 0));
-                    player.setFlying(false);
-                    player.setAllowFlight(false);
-                }
-            }, 5);
+            player.setMotion(new Vector3(0, 0, 0));
+            player.setFlying(false);
+            player.setAllowFlight(false);
+            player.setMotion(new Vector3(0, 0, 0));
+
+            player.teleport(lobbySpawn);
 
         } catch (Exception e) {
             plugin.getLogger().error("Error returning player to lobby: " + e.getMessage());

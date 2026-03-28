@@ -37,15 +37,15 @@ public class SpectatorMenu {
                 
                 switch (gp.getRole()) {
                     case SHERIFF:
-                        displayName += TextFormat.colorize(" &7(&l&9SHERIFF&r&7)");
+                        displayName += TextFormat.colorize(" &8(&l&9SHERIFF&r&8)");
                         break;
 
                     case MURDERER:
-                        displayName += TextFormat.colorize(" &7(&l&cMURDERER&r&7)");
+                        displayName += TextFormat.colorize(" &8(&l&cMURDERER&r&8)");
                         break;
 
                     case INNOCENT:
-                        displayName += TextFormat.colorize(" &7(&l&aINNOCENT&r&7)");
+                        displayName += TextFormat.colorize(" &8(&l&aINNOCENT&r&8)");
                         break;
                     
                     default:

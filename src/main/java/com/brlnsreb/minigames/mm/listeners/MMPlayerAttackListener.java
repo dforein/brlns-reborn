@@ -60,6 +60,9 @@ public class MMPlayerAttackListener implements Listener {
                     attacker.sendMessage(TextFormat.colorize(config.getMessage("murderer-warning")));
                 }
 
+                gp.setAlive(false);
+                game.getDeath().kill(victim, gp.getRole() == MMRole.SHERIFF);
+
                 String message = config.getMessage("killed").replace("{killer}", config.getMessageNoPrefix("murderer"));
                 
                 if (gp.getRole() == MMRole.SHERIFF) {
@@ -86,9 +89,6 @@ public class MMPlayerAttackListener implements Listener {
                     message = config.getMessage("murderer-kill").replace("{player}", victim.getName());
                     attacker.sendMessage(TextFormat.colorize(message));
                 }
-
-                gp.setAlive(false);
-                game.getDeath().kill(victim, gp.getRole() == MMRole.SHERIFF);
                 
                 game.checkWinCondition();
             }
