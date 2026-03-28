@@ -31,7 +31,7 @@ public class DeadBodyEntity extends EntityHuman implements CustomEntity {
                 .eid(IDENTIFIER)
                 .hasSpawnEgg(false)
                 .isSummonable(true)
-                .maxHealth(5)
+                .health(5)
                 .physics(false, false, false)
                 .pushable(false, false)
                 .isPersistent(true)
@@ -50,7 +50,7 @@ public class DeadBodyEntity extends EntityHuman implements CustomEntity {
         this.setDataFlag(EntityFlag.COLLIDABLE, false);
         this.setDataFlag(EntityFlag.BODY_ROTATION_BLOCKED, false);
         
-        this.setHealth(5);
+        this.setHealthCurrent(5);
     }
 
     @Override
