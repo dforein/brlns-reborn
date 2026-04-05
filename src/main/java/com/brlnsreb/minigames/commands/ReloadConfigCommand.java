@@ -13,13 +13,15 @@ public class ReloadConfigCommand extends Command {
     public ReloadConfigCommand(MinigameCore plugin) {
         super("reloadconfig");
         this.setDescription("Reload config.yml");
-        this.setPermission("mm.admin");
+        this.setPermission("admin");
         
         this.plugin = plugin;
     }
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
+        if (!sender.isOp()) return true;
+
         plugin.reloadConfig();
         sender.sendMessage(TextFormat.GREEN + "Config file reloaded!");
         return true;

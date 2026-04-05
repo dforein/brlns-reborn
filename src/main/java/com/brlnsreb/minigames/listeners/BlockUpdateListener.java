@@ -1,4 +1,4 @@
-package com.brlnsreb.minigames.mm.listeners;
+package com.brlnsreb.minigames.listeners;
 
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;

@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.brlnsreb.minigames.commands.MMCommand;
+import com.brlnsreb.minigames.commands.MMOperatorCommand;
 import com.brlnsreb.minigames.commands.subcommands.SubCommand;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 
@@ -16,16 +16,16 @@ import cn.nukkit.utils.TextFormat;
 public class EnableCommand extends SubCommand {
     
     private final MurderMysteryGame game;
-    private final MMCommand mmCommand;
+    private final MMOperatorCommand mmOpCommand;
     
-    public EnableCommand(MurderMysteryGame game, MMCommand mmCommand) {
+    public EnableCommand(MurderMysteryGame game, MMOperatorCommand mmOpCommand) {
         super("enable");
         this.setAliases(new String[] {
 				"enable"
 		});
 
         this.game = game;
-        this.mmCommand = mmCommand;
+        this.mmOpCommand = mmOpCommand;
     }
 
     @Override
@@ -56,7 +56,7 @@ public class EnableCommand extends SubCommand {
         config.set("world.enabled-maps", enabledMaps);
         config.save();
 
-        mmCommand.refreshCommandsParams();
+        mmOpCommand.refreshCommandsParams();
 
         sender.sendMessage(TextFormat.GREEN + "Map enabled!");
         sender.sendMessage(TextFormat.GRAY + "Command parameters autocomplete is not updated, however the server has already recognized the changes.");

@@ -50,7 +50,7 @@ public class MMPlayerAttackListener implements Listener {
             
             if (attackerGp == null || !attackerGp.isAlive()) return;
             
-            Item weapon = attacker.getInventory().getItemInHand();
+            Item weapon = attacker.getInventory().getItemInMainHand();
             
             if (weapon.getId() == Item.IRON_SWORD && attackerGp.getRole() == MMRole.MURDERER) {
 

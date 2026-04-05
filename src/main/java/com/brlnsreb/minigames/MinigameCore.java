@@ -7,14 +7,19 @@ import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.entities.DeadBodyEntity;
 import com.brlnsreb.minigames.mm.entities.ThrownSwordEntity;
 import com.brlnsreb.minigames.mm.listeners.*;
+import com.brlnsreb.minigames.commands.GlobalChatCommand;
 import com.brlnsreb.minigames.commands.MMCommand;
+import com.brlnsreb.minigames.commands.MMOperatorCommand;
 import com.brlnsreb.minigames.commands.PingCommand;
 import com.brlnsreb.minigames.commands.ReloadConfigCommand;
+import com.brlnsreb.minigames.listeners.BlockUpdateListener;
+import com.brlnsreb.minigames.listeners.ChatListener;
 
 public class MinigameCore extends PluginBase {
     
     private static MinigameCore instance;
     private MurderMysteryGame mmGame;
+    private boolean globalChat;
     
     @Override
     public void onLoad() {
@@ -40,10 +45,14 @@ public class MinigameCore extends PluginBase {
         mmGame = new MurderMysteryGame(this);
         
         getServer().getCommandMap().register("mm", new MMCommand(this, mmGame));
+        getServer().getCommandMap().register("mmop", new MMOperatorCommand(this, mmGame));
         getServer().getCommandMap().register("ping", new PingCommand());
         getServer().getCommandMap().register("reloadconfig", new ReloadConfigCommand(this));
+        getServer().getCommandMap().register("globalchat", new GlobalChatCommand(this));
         
+        getServer().getPluginManager().registerEvents(new ChatListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockUpdateListener(), this);
+
         getServer().getPluginManager().registerEvents(new MMPlayerInteractListener(mmGame), this);
         getServer().getPluginManager().registerEvents(new MMProjectileHitListener(mmGame), this);
         getServer().getPluginManager().registerEvents(new MMPlayerPickupListener(mmGame), this);
@@ -52,6 +61,9 @@ public class MinigameCore extends PluginBase {
         getServer().getPluginManager().registerEvents(new MMPlayerChatListener(mmGame), this);
         getServer().getPluginManager().registerEvents(new MMFormResponseListener(mmGame), this);
         getServer().getPluginManager().registerEvents(new MMPlayerInventoryListener(mmGame), this);
+
+
+        globalChat = false;
 
         
         this.getLogger().info(TextFormat.DARK_GREEN + "brlnsreb Minigames enabled!");
@@ -71,5 +83,13 @@ public class MinigameCore extends PluginBase {
     
     public MurderMysteryGame getMMGame() {
         return mmGame;
+    }
+
+    public boolean getGlobalChat() {
+        return globalChat;
+    }
+
+    public void setGlobalChat(boolean value) {
+        globalChat = value;
     }
 }

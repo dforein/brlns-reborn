@@ -9,18 +9,34 @@ import com.brlnsreb.minigames.mm.config.MMConfig;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 // TODO: votingmenu astraction into Utils
 
 public class VotingMenu {
     
     private final MurderMysteryGame game;
+    private final Map<UUID, Long> openingCooldown;
     
     public VotingMenu(MurderMysteryGame game) {
         this.game = game;
+        this.openingCooldown = new ConcurrentHashMap<>();
     }
     
     public void openVotingMenu(Player player) {
+        long now = System.currentTimeMillis();
+        UUID uuid = player.getUniqueId();
+
+        //cooldown check, else reset cooldown
+        if (openingCooldown.containsKey(uuid)
+            && now - openingCooldown.get(uuid) < 500) {
+            return;
+        }
+
+        openingCooldown.put(uuid, now);
+
         MMConfig config = game.getConfig();
         VotingSystem voting = game.getVotingSystem();
         
@@ -92,7 +108,7 @@ public class VotingMenu {
                 config.getMessage("map-vote").replace("{mapName}", displayName)
             ));
         } else {
-            voting.removePlayerVotes(player);
+            voting.removeMapVote(player);
         }
         
         int timeIndex = window.response().getDropdownResponse(1).elementId();
@@ -103,6 +119,8 @@ public class VotingMenu {
             player.sendMessage(TextFormat.colorize(
                 config.getMessage("time-vote").replace("{time}", selectedTime)
             ));
+        } else {
+            voting.removeTimeVote(player);
         }
         
         // reopen menu

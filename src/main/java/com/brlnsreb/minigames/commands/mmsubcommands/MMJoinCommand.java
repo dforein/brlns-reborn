@@ -22,12 +22,22 @@ public class MMJoinCommand extends SimpleSubCommand {
 
     @Override
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-        if (game.joinPlayer((Player) sender)) {
-            sender.sendMessage(TextFormat.GREEN + "You joined the game!");
-        } else {
-            sender.sendMessage(TextFormat.RED + "Could not join game!");
+
+        int out = game.joinPlayer((Player) sender);
+
+        switch (out) {
+            case 0:
+                sender.sendMessage(TextFormat.GREEN + "You joined the game!");
+                break;
+            case -2:
+                sender.sendMessage(TextFormat.colorize(game.getConfig().getMessage("already-in-game")));
+                break;
+            case -3:
+                sender.sendMessage(TextFormat.colorize(game.getConfig().getMessage("no-slots-available")));
+                break;
         }
 
         return true;
+
     }
 }

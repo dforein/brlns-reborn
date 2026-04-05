@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.brlnsreb.minigames.MinigameCore;
-import com.brlnsreb.minigames.commands.MMCommand;
+import com.brlnsreb.minigames.commands.MMOperatorCommand;
 import com.brlnsreb.minigames.commands.mmsubcommands.mapsubcommands.AddCommand;
 import com.brlnsreb.minigames.commands.mmsubcommands.mapsubcommands.AddVolumeCommand;
 import com.brlnsreb.minigames.commands.mmsubcommands.mapsubcommands.CountBarriersCommand;
@@ -33,7 +33,7 @@ public class MMMapCommand extends ComplexSubCommand {
 
     private final List<SubCommand> subCommandsList = new ArrayList<>();
     
-    public MMMapCommand(MinigameCore plugin, MurderMysteryGame game, MMCommand fatherCommand) {
+    public MMMapCommand(MinigameCore plugin, MurderMysteryGame game, MMOperatorCommand fatherCommand) {
         super("map");
         this.setAliases(new String[] {
 				"map"

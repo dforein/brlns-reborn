@@ -4,14 +4,11 @@ import java.util.LinkedList;
 
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
-import com.brlnsreb.minigames.mm.systems.BossBarSystem;
 
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
-import cn.nukkit.utils.BossBarColor;
-import cn.nukkit.utils.DummyBossBar;
 import cn.nukkit.utils.TextFormat;
 
 public class MMDebugCommand extends SimpleSubCommand {
@@ -34,44 +31,16 @@ public class MMDebugCommand extends SimpleSubCommand {
         //Map<UUID, Player> players = plugin.getServer().getOnlinePlayers();
         //for (Map.Entry<UUID, Player> p : players.entrySet())
 
-        BossBarSystem bossBarSys = new BossBarSystem();
-
         if (args.length > 1)
             switch (args[1]) {
-                case "show1":
-                    DummyBossBar bossBar = new DummyBossBar.Builder(player)
-                        .text("§l§7ewqeqwe")
-                        .length(100.0f)
-                        .color(BossBarColor.PURPLE)
-                        .build();
-                    
-                    player.createBossBar(bossBar);
+                case "enable":
+                    plugin.getMMGame().checkEnoughPlayers = true;
                     break;
-                
-                case "show2":
-                    DummyBossBar bossBar2 = new DummyBossBar.Builder(player)
-                        .text("§l§7- §a23 EXP §7¦ §e24 GOLD §7-")
-                        .length(100.0f)
-                        .color(BossBarColor.PURPLE)
-                        .build();
-                    
-                    player.createBossBar(bossBar2);
-                    break;
-                
-                case "show3":
-                    DummyBossBar bossBar3 = new DummyBossBar.Builder(player)
-                        .text("§l§7- §a GOLD §7-")
-                        .length(100.0f)
-                        .color(BossBarColor.PURPLE)
-                        .build();
-                    
-                    player.createBossBar(bossBar3);
-                    break;
-                
-                case "clear":
-                    bossBarSys.clearAll(player);
+                case "disable":
+                    plugin.getMMGame().checkEnoughPlayers = false;
                     break;
 
+                //---
                 case "controlCase_un2c9r8eyn2cr8yq8294cyrq9o":
                     player.sendMessage("ERROR: control case activated");
                     break;

@@ -20,7 +20,7 @@ public class WorldCommand extends Command {
     public WorldCommand(MinigameCore plugin) {
         super("world");
         this.setDescription("Commands for world navigation");
-        this.setPermission("mm.admin");
+        this.setPermission("admin");
 
         this.getCommandParameters().clear();
 
@@ -37,6 +37,8 @@ public class WorldCommand extends Command {
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
+        if (!sender.isOp()) return true;
+
         Player player = (Player) sender;
         
         switch (args[0].toLowerCase()) {

@@ -62,7 +62,7 @@ innocents:
   gold-for-gun: 5
   dye-name: '&o&l&eCraft The Gun &r&7( Hold / Right Click )'
 spectator:
-  item-name: '&o&l&3Teleporter'
+  item-name: '&o&l&7Teleport to Player'
 death:
   animation-duration: 0.4167
   head-yaw-offset: -35
@@ -70,29 +70,29 @@ death:
   redstone-drop: 2
   blindness-duration: 2
 gold:
-  spawn-interval-min: 3
-  spawn-interval-max: 4
+  spawn-interval-min: 2
+  spawn-interval-max: 3
 exp:
   per-gold: 10
   per-kill: 15
   sheriff-won: 600
   sheriff-kill: 100
 scoreboard:
-  title: '&l§aMurder§2Mystery'
+  title: '&l&aMurder&2Mystery'
   update-interval: 10
 messages:
-  prefix: §l§aM§r§l§2M §r
+  prefix: '&l&aM&rl&2M &r'
   spectator-in-game: '&aThe match has already started. You joined as spectator!'
   countdown-bossbar-long: '&l&eStarting in &6{minutes}m {seconds}s'
   countdown-bossbar-medium: '&l&eStarting in &6{seconds}s'
   countdown-bossbar-short: '&l&eStarting in &c{seconds}s'
-  pregame-countdown: §aMatch begins in §6{seconds}§e seconds...
+  pregame-countdown: '&aMatch begins in &6{seconds}&e seconds...'
   game-start: '&aThe game has now started!'
-  game-start2: §cYou are no longer invicible!
-  gold-collected: §aCollected +1 §r§eGOLD
-  not-enough-players: §cAt least {min} players are required!
-  already-in-game: §cYou are already in a game!
-  teleported-to-arena: §aMatch will begin soon...
+  game-start2: '&cYou are no longer invicible!'
+  gold-collected: '&aCollected +1 &r&eGOLD'
+  not-enough-players: '&cAt least {min} players are required!'
+  already-in-game: '&cYou are already in a game!'
+  teleported-to-arena: '&aMatch will begin soon...'
   map-vote: '&aYou voted for map: &e{mapName}'
   time-vote: '&aYou voted for time: &e{time}'
   player-joined: '&3{name} &7joined (&a{playersNumber}&7/&a{maxPlayers}&7)'
@@ -131,8 +131,8 @@ messages:
   lights-out-others: '&eThe Murderer &cput the lights out for &e{seconds} &cseconds'
   lights-out-murderer: '&cThe lights are now out to the other players for &e{seconds}
     &cseconds'
-  murderer-warning: '&eBeware. The sheriff can easily discover you while
-    you are helding your weapon!'
+  murderer-warning: '&eBeware. The sheriff can easily discover you while you are helding
+    your weapon!'
   lights-out-over: '&cLights out is over!'
   murderer-won-title: '&cMURDERER WON'
   innocents-won-title: '&aINNOCENTS WON'
@@ -147,10 +147,12 @@ messages:
 world:
   default-world: school_n
   enabled-maps:
-  - world
   - museum
   - village
   - school_n
+  - thegrandhotel
+  - fnaf6
+  - abandonedschool
   arena-regions:
     world:
       name: Test
@@ -274,3 +276,89 @@ world:
       - 2484 32 2418
       - 2505 33 2410
       - 2444 32 2384
+    fnaf6:
+      name: FNAF 6
+      world: fnaf6
+      min: 2384 22 2392
+      max: 2435 40 2459
+      night-vision: true
+      weather: Clear
+      builders:
+      - TrenzKGM
+      - KhrizKGM
+      spawns:
+      - 2409 25 2446
+      - 2390 27 2450
+      - 2406 27 2456
+      - 2416 25 2457
+      - 2415 25 2446
+      - 2430 28 2439
+      - 2442 25 2443
+      - 2445 26 2436
+      - 2447 23 2424
+      - 2445 26 2412
+      - 2441 25 2405
+      - 2429 25 2407
+      - 2422 25 2438
+      - 2422 25 2428
+      - 2422 25 2417
+      - 2417 25 2404
+      - 2405 25 2404
+      - 2396 25 2408
+      - 2403 25 2415
+      - 2409 25 2411
+      - 2409 25 2422
+      - 2401 25 2425
+      - 2396 25 2431
+      - 2404 25 2435
+      - 2416 32 2423
+      - 2426 28 2425
+      - 2429 28 2428
+      - 2428 28 2423
+      - 2431 28 2426
+      - 2387 25 2401
+      - 2388 27 2411
+      - 2387 27 2423
+      - 2389 27 2436
+      - 2416 29 2410
+    abandonedschool:
+      name: Abandoned School
+      world: abandonedschool
+      min: -22 5 -23
+      max: 57 27 27
+      night-vision: false
+      weather: Rain
+      builders:
+      - TrenzKGM
+      - KhrizKGM
+      spawns:
+      - 13 21 16
+      - 27 21 9
+      - 1 21 18
+      - -7 14 9
+      - -8 14 0
+      - 0 14 8
+      - 8 14 8
+      - -1 14 -8
+      - 9 14 19
+      - 16 14 6
+      - 26 14 -1
+      - 38 14 8
+      - 26 14 21
+      - 52 14 7
+      - 49 14 -5
+      - 41 14 19
+      - 50 14 22
+      - -8 10 -11
+      - -1 5 -9
+      - 8 5 -2
+      - 16 5 7
+      - 8 5 18
+      - -7 5 17
+      - 25 10 7
+      - 26 5 15
+      - 35 5 10
+      - 28 5 -2
+      - 41 5 -1
+      - 25 5 -16
+      - 44 5 -15

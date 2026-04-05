@@ -29,15 +29,20 @@ public class MMJoinAllCommand extends SimpleSubCommand {
     @Override
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
 
+        /*
         if (!sender.isOp()) {
             sender.sendMessage(TextFormat.RED + "No permission!");
             return true;
-        }
+        }*/
 
         Map<UUID, Player> playersJoining = plugin.getServer().getOnlinePlayers();
 
         for (Map.Entry<UUID, Player> entry : playersJoining.entrySet()) {
-            game.joinPlayer(entry.getValue());
+            int out = game.joinPlayer(entry.getValue());
+
+            if (out == 0) {
+                sender.sendMessage(TextFormat.GREEN + "You joined the game!");
+            }
         }
 
         return true;

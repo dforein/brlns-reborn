@@ -2,6 +2,7 @@ package com.brlnsreb.minigames.mm.systems;
 
 import cn.nukkit.Player;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 // TODO: votingsystem astraction into Utils
 
@@ -13,8 +14,8 @@ public class VotingSystem {
     private List<String> availableMaps;
     
     public VotingSystem() {
-        this.mapVotes = new HashMap<>();
-        this.timeVotes = new HashMap<>();
+        this.mapVotes = new ConcurrentHashMap<>();
+        this.timeVotes = new ConcurrentHashMap<>();
         this.availableMaps = new ArrayList<>();
     }
     
@@ -92,8 +93,11 @@ public class VotingSystem {
         return winners.get(new Random().nextInt(winners.size()));
     }
     
-    public void removePlayerVotes(Player player) {
+    public void removeMapVote(Player player) {
         mapVotes.remove(player.getName());
+    }
+
+    public void removeTimeVote(Player player) {
         timeVotes.remove(player.getName());
     }
     

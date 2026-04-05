@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 import com.brlnsreb.minigames.MinigameCore;
-import com.brlnsreb.minigames.commands.MMCommand;
+import com.brlnsreb.minigames.commands.MMOperatorCommand;
 import com.brlnsreb.minigames.commands.subcommands.SubCommand;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 
@@ -21,10 +21,10 @@ public class AddCommand extends SubCommand {
     
     private final MinigameCore plugin;
     private final MurderMysteryGame game;
-    private final MMCommand mmCommand;
+    private final MMOperatorCommand mmOpCommand;
     private LinkedList<String> levelNames;
     
-    public AddCommand(MinigameCore plugin, MurderMysteryGame game, MMCommand fatherCommand) {
+    public AddCommand(MinigameCore plugin, MurderMysteryGame game, MMOperatorCommand fatherCommand) {
         super("add");
         this.setAliases(new String[] {
 				"add"
@@ -32,7 +32,7 @@ public class AddCommand extends SubCommand {
 
         this.plugin = plugin;
         this.game = game;
-        this.mmCommand = fatherCommand;
+        this.mmOpCommand = fatherCommand;
         levelNames = getAllLevelNames();
     }
 
@@ -101,7 +101,7 @@ public class AddCommand extends SubCommand {
 
         config.save();
         
-        mmCommand.refreshCommandsParams();
+        mmOpCommand.refreshCommandsParams();
 
         sender.sendMessage(TextFormat.GREEN + "New map added successfully!");
         sender.sendMessage(TextFormat.GRAY + "Command parameters autocomplete is not updated, however the server has already recognized the changes.");

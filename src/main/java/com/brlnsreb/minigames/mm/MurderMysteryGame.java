@@ -58,6 +58,7 @@ public class MurderMysteryGame {
     private int initialCountdown;
     
     private boolean firstKill;
+    public boolean checkEnoughPlayers;
 
     private final Set<Entity> deadBodies = new HashSet<>();
     private final List<Position> redstonePositions = new ArrayList<>();
@@ -68,6 +69,7 @@ public class MurderMysteryGame {
         this.roleManager = new MMRoleManager();
         this.state = GameState.LOBBY;
         this.players = new ArrayList<>();
+        this.checkEnoughPlayers = true;
         
         this.scoreboard = new ScoreboardSystem();
         this.raycast = new RaycastSystem(config);
@@ -84,22 +86,20 @@ public class MurderMysteryGame {
         this.votingMenu = new VotingMenu(this);
     }
     
-    public boolean joinPlayer(Player player) {
-        if (player == null || !player.isOnline()) return false;
-
-        if (players.size() >= config.getMaxPlayers()) {
-            player.sendMessage(TextFormat.colorize(config.getMessage("no-slots-available")));
-            return false;
-        }
+    public int joinPlayer(Player player) {
+        if (player == null || !player.isOnline()) return -1;
 
         if (players.contains(player)) {
-            player.sendMessage(TextFormat.colorize(config.getMessage("already-in-game")));
-            return false;
+            return -2;
+        }
+
+        if (players.size() >= config.getMaxPlayers()) {
+            return -3;
         }
 
         if (state != GameState.LOBBY && state != GameState.COUNTDOWN) {
             joinAsSpectator(player);
-            return false;
+            return 1;
         }
         
         players.add(player);
@@ -128,7 +128,7 @@ public class MurderMysteryGame {
             shortenCountdown();
         }
 
-        return true;
+        return 0;
     }
 
     private void playersRejoin() {
@@ -440,10 +440,12 @@ public class MurderMysteryGame {
         timer.startGame(config.getGameDuration(), this::onTimeExpired);
         
         gold.startSpawning(arena);
-
-        plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
-            checkWinCondition();
-        }, 20);
+        
+        if(checkEnoughPlayers) {
+            plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
+                checkWinCondition();
+            }, 20);
+        }
         
     }
 
