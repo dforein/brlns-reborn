@@ -8,6 +8,7 @@ import cn.nukkit.entity.effect.EffectType;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
+import cn.nukkit.level.Sound;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.Config;
@@ -22,8 +23,14 @@ import com.brlnsreb.minigames.mm.roles.GamePlayer;
 import com.brlnsreb.minigames.mm.roles.MMRole;
 import com.brlnsreb.minigames.mm.roles.MMRoleManager;
 import com.brlnsreb.minigames.mm.systems.*;
+import com.brlnsreb.minigames.mm.ui.BossBarSystem;
+import com.brlnsreb.minigames.mm.ui.ScoreboardSystem;
+import com.brlnsreb.minigames.mm.ui.SpectatorMenu;
+import com.brlnsreb.minigames.mm.ui.VotingMenu;
+import com.brlnsreb.minigames.utils.CustomPlaySoundPacket;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MurderMysteryGame {
     
@@ -169,15 +176,33 @@ public class MurderMysteryGame {
 
         if (arena != null) {
             Vector3 spawn = arena.getSpawns().get(0);
+            int viewDistance = player.getViewDistance();
+
+            player.setViewDistance(2);
+            player.despawnFromAll();
+
             player.teleport(new Location(spawn.x, spawn.y, spawn.z, arena.getLevel()));
+
+            plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
+                if (player.isOnline()) { 
+                    player.setViewDistance(viewDistance);
+                }
+            }, 20);
         }
 
         plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
             for (Entity e : deadBodies) {
                 DeadBodyEntity body = (DeadBodyEntity) e;
-                body.playAnimation(body.getAnimation(), Collections.singleton(player));
+                body.playAnimation(body.getStaticAnimation(), Collections.singleton(player));
             }
         }, 20);
+
+        plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
+            for (Entity e : deadBodies) {
+                DeadBodyEntity body = (DeadBodyEntity) e;
+                body.playAnimation(body.getStaticAnimation(), Collections.singleton(player));
+            }
+        }, 60);
     }
 
     public boolean leavePlayer(Player player) {
@@ -246,15 +271,20 @@ public class MurderMysteryGame {
         timer.startCountdown(duration, this::startGame, () -> {
             int remaining = timer.getSecondsRemaining();
 
-            for (Player p : players) {
-                String message = formatCountdownMessage(remaining);
-                bossBar.updateCountdown(p, message, remaining, initialCountdown);
-            }
-
             if (remaining == config.getShortenedCountdown()) {
                 countdownShortened = true;
                 refreshPlayersState();
                 finalizeVoting();
+            }
+
+            for (Player p : players) {
+                String message = formatCountdownMessage(remaining);
+                bossBar.updateCountdown(p, message, remaining, initialCountdown);
+
+                if (countdownShortened) {
+                    float pitch = ThreadLocalRandom.current().nextFloat(0.9f, 1.01f);
+                    p.getLevel().addSound(p, Sound.RANDOM_CLICK, 1.0f, pitch, p);
+                }
             }
         });
     }
@@ -275,6 +305,8 @@ public class MurderMysteryGame {
         String message = formatCountdownMessage(shortenedTime);
         for (Player p : players) {
             bossBar.updateCountdown(p, message, shortenedTime, initialCountdown);
+            float pitch = ThreadLocalRandom.current().nextFloat(0.9f, 1.01f);
+            p.getLevel().addSound(p, Sound.RANDOM_CLICK, 1.0f, pitch, p);
         }
         
         timer.startCountdown(shortenedTime, this::startGame, () -> {
@@ -283,6 +315,8 @@ public class MurderMysteryGame {
             String message2 = formatCountdownMessage(remaining);
             for (Player p : players) {
                 bossBar.updateCountdown(p, message2, remaining, initialCountdown);
+                float pitch = ThreadLocalRandom.current().nextFloat(0.9f, 1.01f);
+                p.getLevel().addSound(p, Sound.RANDOM_CLICK, 1.0f, pitch, p);
             }
         });
 
@@ -327,7 +361,7 @@ public class MurderMysteryGame {
                 reset();
                 return;
             }
-            selectedMap = enabledMaps.get(new Random().nextInt(enabledMaps.size()));
+            selectedMap = enabledMaps.get(ThreadLocalRandom.current().nextInt(enabledMaps.size()));
             loadArena(selectedMap);
         }
 
@@ -367,7 +401,7 @@ public class MurderMysteryGame {
         }
     
         timer.startCountdown(pregameDuration, this::startInGameState, () -> {
-            int remaining = timer.getSecondsRemaining() - 1;
+            int remaining = timer.getSecondsRemaining();
 
             for (Player p : players) {
                 switch (remaining) {
@@ -638,13 +672,25 @@ public class MurderMysteryGame {
         }
         
         for (int i = 0; i < onlinePlayers.size(); i++) {
-            Player player = onlinePlayers.get(i);
+            Player p = onlinePlayers.get(i);
 
             Vector3 spawn = spawns.get(i % spawns.size());
             Location loc = new Location(spawn.x, spawn.y, spawn.z, arena.getLevel());
             
             try {
-                player.teleport(loc);
+                int viewDistance = p.getViewDistance();
+
+                p.setViewDistance(2);
+                p.despawnFromAll();
+
+                p.teleport(loc);
+
+                plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
+                    if (p.isOnline()) { 
+                        p.spawnToAll(); 
+                        p.setViewDistance(viewDistance);
+                    }
+                }, 20);
             } catch (Exception e) {
                 plugin.getLogger().error("Error teleporting player: " + e.getMessage());
             }
@@ -712,9 +758,13 @@ public class MurderMysteryGame {
             config.getMessageNoPrefix("murderer-won-title") : 
             config.getMessageNoPrefix("innocents-won-title");
         
+        CustomPlaySoundPacket packet = new CustomPlaySoundPacket();
         for (Player p : getOnlinePlayers()) {
             p.sendTitle(TextFormat.colorize(titleMsg), "",
                         10, 60, 10);
+
+            p.getLevel().addSound(p, Sound.RANDOM_CLICK, 1.0f, 1.0f, p);
+            packet.sendDirectionalSoundTo(p, "random.fizz");
         }
         
         String chatMsg = murdererWin ? 
@@ -726,6 +776,24 @@ public class MurderMysteryGame {
 
         broadcast(chatMsg, true);
         broadcast(chatMsg2, false);
+
+
+        Level lobby = plugin.getServer().getLevelByName(config.getLobbyWorld());
+        
+        if (lobby == null) {
+            plugin.getLogger().warning("Lobby world not found: " + config.getLobbyWorld());
+        } else {
+            Vector3 spawnPos = config.getLobbySpawn();
+
+            int cx = spawnPos.getFloorX() >> 4;
+            int cz = spawnPos.getFloorZ() >> 4;
+
+            for (int x = cx - 1; x <= cx + 1; x++) {
+                for (int z = cz - 1; z <= cz + 1; z++) {
+                    lobby.loadChunk(x, z);
+                }
+            }
+        }
 
         plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
             gold.cleanupGold(arena.getLevel());
@@ -771,8 +839,8 @@ public class MurderMysteryGame {
         }
     }
 
-    public void returnToLobby(Player player) {
-        if (player == null || !player.isOnline()) return;
+    public void returnToLobby(Player p) {
+        if (p == null || !p.isOnline()) return;
 
         try {
             Level lobby = plugin.getServer().getLevelByName(config.getLobbyWorld());
@@ -783,15 +851,33 @@ public class MurderMysteryGame {
             
             Vector3 spawnPos = config.getLobbySpawn();
             Location lobbySpawn = new Location(spawnPos.x, spawnPos.y, spawnPos.z, lobby);
+            int viewDistance = p.getViewDistance();
             
-            ItemManager.clearInventory(player);
+            ItemManager.clearInventory(p);
 
-            player.setMotion(new Vector3(0, 0, 0));
-            player.setFlying(false);
-            player.setAllowFlight(false);
-            player.setMotion(new Vector3(0, 0, 0));
+            p.setCheckMovement(false);
 
-            player.teleport(lobbySpawn);
+            p.setViewDistance(2);
+            p.despawnFromAll();
+            
+            p.setMotion(new Vector3(0, 0, 0));
+            p.setFlying(false);
+            p.setAllowFlight(false);
+            p.setMotion(new Vector3(0, 0, 0));
+
+            p.teleport(lobbySpawn);
+            p.getLevel().addSound(p, Sound.PORTAL_TRAVEL, 0.4f, 1.0f, p);
+
+            plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
+                if (p.isOnline()) { 
+                    p.spawnToAll(); 
+                    p.setViewDistance(viewDistance);
+                }
+            }, 20);
+
+            plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
+                if (p.isOnline()) { p.setCheckMovement(true); }
+            }, 80);
 
         } catch (Exception e) {
             plugin.getLogger().error("Error returning player to lobby: " + e.getMessage());
@@ -846,7 +932,7 @@ public class MurderMysteryGame {
         refreshPlayerState(player, false);
     }
 
-    public void refreshPlayerState(Player p, Boolean leaving) {
+    public void refreshPlayerState(Player p, Boolean isLeavingOrJoining) {
         if (p == null) return;
         
         if (!p.isOnline()) {
@@ -862,10 +948,16 @@ public class MurderMysteryGame {
         p.setDataFlag(EntityFlag.COLLIDABLE, false);
         p.fireProof = false;
         p.removeAllEffects();
+        p.getFoodData().setFood(18);
 
-        if (leaving) {
+        //ps: "Or" as logical or, not xor
+        if (isLeavingOrJoining) {
             ItemManager.clearInventory(p);
             setNameTagVisible(p);
+
+            plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
+                if (p.isOnline()) { p.setCheckMovement(true); }
+            }, 80);
 
             switch (state) {
                 case LOBBY:
@@ -893,6 +985,10 @@ public class MurderMysteryGame {
                         config.getRulesItemName(), 
                         plugin
                     );
+
+                    plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
+                        if (p.isOnline()) { p.setCheckMovement(true); }
+                    }, 80);
                     break;
                 case COUNTDOWN:
                     setNameTagVisible(p);

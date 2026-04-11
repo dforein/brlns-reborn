@@ -5,7 +5,10 @@ import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.player.PlayerQuitEvent;
+import cn.nukkit.level.Level;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.event.player.PlayerKickEvent;
+import cn.nukkit.event.player.PlayerLoginEvent;
 import cn.nukkit.event.player.PlayerJoinEvent;
 
 import com.brlnsreb.minigames.mm.roles.GamePlayer;
@@ -55,11 +58,26 @@ public class MMPlayerJoinQuitListener implements Listener {
     }
 
     @EventHandler
+    public void onPreJoin(PlayerLoginEvent event) {
+        Level lobby = game.getPlugin().getServer().getLevelByName(game.getConfig().getLobbyWorld());
+        Vector3 pos = game.getConfig().getLobbySpawn();
+
+        int cx = pos.getFloorX() >> 4;
+        int cz = pos.getFloorZ() >> 4;
+        
+        if (!lobby.isChunkLoaded(cx, cz)) {
+            lobby.loadChunk(cx, cz);
+        }
+    }
+
+    @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player =  event.getPlayer();
         
         game.refreshPlayerState(player, true);
         game.returnToLobby(player);
+
+        player.getFoodData().setEnabled(false);
 
         QuitTracker quitTracker = game.getQuitTracker();
 

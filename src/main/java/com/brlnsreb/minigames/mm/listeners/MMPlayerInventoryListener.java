@@ -7,6 +7,7 @@ import cn.nukkit.event.Listener;
 import cn.nukkit.event.player.PlayerItemHeldEvent;
 import cn.nukkit.event.player.PlayerDropItemEvent;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemCompass;
 
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.roles.GamePlayer;
@@ -32,7 +33,7 @@ public class MMPlayerInventoryListener implements Listener {
         int newSlot = event.getSlot();
         Item itemInNewSlot = player.getInventory().getItem(newSlot);
         
-        if (itemInNewSlot.getId().equals(Item.COMPASS)) {
+        if (itemInNewSlot instanceof ItemCompass) {
             event.setCancelled(true);
             
             int previousSlot = event.getSlot() - 1;

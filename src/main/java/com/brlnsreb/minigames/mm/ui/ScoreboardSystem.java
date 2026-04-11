@@ -1,4 +1,4 @@
-package com.brlnsreb.minigames.mm.systems;
+package com.brlnsreb.minigames.mm.ui;
 
 import cn.nukkit.Player;
 import cn.nukkit.scoreboard.Scoreboard;

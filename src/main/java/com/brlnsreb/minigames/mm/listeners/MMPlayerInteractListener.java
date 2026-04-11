@@ -2,12 +2,28 @@ package com.brlnsreb.minigames.mm.listeners;
 
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
+import cn.nukkit.block.BlockBirchPressurePlate;
+import cn.nukkit.block.BlockButton;
+import cn.nukkit.block.BlockCake;
+import cn.nukkit.block.BlockCandleCake;
+import cn.nukkit.block.BlockDoor;
+import cn.nukkit.block.BlockFarmland;
+import cn.nukkit.block.BlockFenceGate;
+import cn.nukkit.block.BlockLever;
+import cn.nukkit.block.BlockPressurePlateBase;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.ItemFrameUseEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
+import cn.nukkit.event.player.PlayerInteractEvent.Action;
 import cn.nukkit.event.player.PlayerInteractEntityEvent;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemBlazeRod;
+import cn.nukkit.item.ItemGoldenHoe;
+import cn.nukkit.item.ItemIronSword;
+import cn.nukkit.item.ItemNetherStar;
+import cn.nukkit.item.ItemYellowDye;
+import cn.nukkit.level.Sound;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.item.EntityArmorStand;
 import cn.nukkit.entity.effect.Effect;
@@ -21,33 +37,34 @@ import com.brlnsreb.minigames.mm.config.MMConfig;
 import com.brlnsreb.minigames.mm.items.ItemManager;
 import com.brlnsreb.minigames.mm.roles.GamePlayer;
 import com.brlnsreb.minigames.mm.roles.MMRole;
-import com.brlnsreb.minigames.mm.systems.BossBarSystem;
+import com.brlnsreb.minigames.mm.ui.BossBarSystem;
 
 import java.util.*;
 
 public class MMPlayerInteractListener implements Listener {
     
     private final MurderMysteryGame game;
-    private static final List<String> INTERACT_BLOCKS = Arrays.asList(
-        Block.CHEST, Block.TRAPPED_CHEST, Block.ENDER_CHEST, Block.COPPER_CHEST,
-        Block.FURNACE, Block.BLAST_FURNACE, Block.SMOKER,
-        Block.HOPPER, 
-        Block.BARREL, 
-        Block.BEACON, 
-        Block.BREWING_STAND,
-        Block.ANVIL, Block.CHIPPED_ANVIL, Block.DAMAGED_ANVIL,
-        Block.CARTOGRAPHY_TABLE, 
-        Block.CRAFTING_TABLE, 
-        Block.CRAFTER,
-        Block.DISPENSER, Block.DROPPER, 
-        Block.ENCHANTING_TABLE,
-        Block.GRINDSTONE, 
-        Block.LECTERN,
-        Block.LOOM,
-        Block.WALL_SIGN, Block.STANDING_SIGN,
-        Block.SMITHING_TABLE,
-        Block.STONECUTTER,
-        Block.DRAGON_EGG
+    private static final HashSet<String> INTERACT_BLOCKS = new HashSet<>(Arrays.asList(
+            Block.CHEST, Block.TRAPPED_CHEST, Block.ENDER_CHEST, Block.COPPER_CHEST,
+            Block.FURNACE, Block.BLAST_FURNACE, Block.SMOKER,
+            Block.HOPPER, 
+            Block.BARREL, 
+            Block.BEACON, 
+            Block.BREWING_STAND,
+            Block.ANVIL, Block.CHIPPED_ANVIL, Block.DAMAGED_ANVIL,
+            Block.CARTOGRAPHY_TABLE, 
+            Block.CRAFTING_TABLE, 
+            Block.CRAFTER,
+            Block.DISPENSER, Block.DROPPER, 
+            Block.ENCHANTING_TABLE,
+            Block.GRINDSTONE, 
+            Block.LECTERN,
+            Block.LOOM,
+            Block.WALL_SIGN, Block.STANDING_SIGN,
+            Block.SMITHING_TABLE,
+            Block.STONECUTTER,
+            Block.DRAGON_EGG
+        )
     );
     
     public MMPlayerInteractListener(MurderMysteryGame game) {
@@ -56,41 +73,45 @@ public class MMPlayerInteractListener implements Listener {
     
     @EventHandler
     public void onArmorStandInteract(PlayerInteractEntityEvent event) {
+
         Entity entity = event.getEntity();
         Player player = event.getPlayer();
 
         if (entity instanceof EntityArmorStand) {
-            if (player.getGamemode() == Player.ADVENTURE || !player.isOp()) {
+            if (player != null && (player.getGamemode() == Player.ADVENTURE || !player.isOp())) {
                 event.setCancelled(true);
             }
         }
+
     }
 
     @EventHandler
     public void onItemFrameInteract(ItemFrameUseEvent event) {
+
         Player player = event.getPlayer();
 
-        if (player != null && (player.getGamemode() == Player.ADVENTURE || !player.isOp()))
-                event.setCancelled(true);
+        if (player != null && (player.getGamemode() == Player.ADVENTURE || !player.isOp())) {
+            event.setCancelled(true);
+        }
+
     }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        Item item = event.getItem();
+
         Block block = event.getBlock();
-        Player player = event.getPlayer();
     
         if (block != null) {
-            String blockId = block.getId();
-
-            if (INTERACT_BLOCKS.contains(blockId) || blockId.contains("cake")) {
+            if (INTERACT_BLOCKS.contains(block.getId()) 
+                || block instanceof BlockCake 
+                || block instanceof BlockCandleCake) {
 
                 event.setCancelled(true);
                 return;
             }
 
-            if (event.getAction() == PlayerInteractEvent.Action.PHYSICAL) {
-                if (blockId.equals(Block.FARMLAND) || blockId.contains("pressure_plate")) {
+            if (event.getAction() == Action.PHYSICAL) {
+                if (block instanceof BlockFarmland || block instanceof BlockPressurePlateBase) {
 
                     event.setCancelled(true);
                     return;
@@ -98,17 +119,16 @@ public class MMPlayerInteractListener implements Listener {
             }
         }
 
+        Player player = event.getPlayer();
         GamePlayer gp = game.getRoleManager().getGamePlayer(player);
         if (gp == null) return;
 
         if (block != null) {
-            String blockId = block.getId();
-
             if (gp.getRole() == MMRole.SPECTATOR) {
-                if (blockId.contains("door")
-                    || blockId.contains("fence_gate")
-                    || blockId.contains("button")
-                    || blockId.contains("lever")) {
+                if (block instanceof BlockDoor
+                    || block instanceof BlockFenceGate
+                    || block instanceof BlockButton
+                    || block instanceof BlockLever) {
                     
                     event.setCancelled(true);
                     return;
@@ -116,54 +136,55 @@ public class MMPlayerInteractListener implements Listener {
             }
         }
 
-        if (item != null) {
-            String itemId = item.getId();
+        Item item = event.getItem();
+        if (item == null) return;
 
-            if (game.getState() == GameState.LOBBY || game.getState() == GameState.COUNTDOWN) {
-                if (game.getPlayers().contains(player)) {
-                    //game poll
-                    if (itemId.equals(Item.NETHER_STAR)) {
-                        String customName = item.getCustomName();
-                        if (customName != null && customName.contains("Game Poll")) {
-                            event.setCancelled(true);
-                            game.getVotingMenu().openVotingMenu(player);
-                            return;
-                        }
+        if (game.getState() == GameState.LOBBY || game.getState() == GameState.COUNTDOWN) {
+            if (game.getPlayers().contains(player)) {
+                //game poll
+                if (item instanceof ItemNetherStar) {
+                    String customName = item.getCustomName();
+                    if (customName != null && customName.contains("Game Poll")) {
+                        event.setCancelled(true);
+                        game.getVotingMenu().openVotingMenu(player);
                     }
                 }
-            }
-            
-            /*if (itemId == Item.COMPASS && gp.getRole() == MMRole.SPECTATOR) {
-                game.getSpectatorMenu().openTeleportMenu(player);
-                event.setCancelled(true);
+
                 return;
-            }*/         //new system
-            
-            if (game.getState() != GameState.IN_GAME && game.getState() != GameState.ENDING) return;
-            if (!gp.isAlive()) return;
-
-            MMConfig config = game.getConfig();
-
-            if (itemId.equals(Item.GOLDEN_HOE)) {
-                handleSheriffShoot(player, gp, config);
-                event.setCancelled(true);
-            }
-            
-            else if (itemId.equals(Item.IRON_SWORD) && event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_AIR) {
-                handleMurdererThrow(player, gp, config);
-                event.setCancelled(true);
-            }
-            
-            else if (itemId.equals(Item.BLAZE_ROD)) {
-                handleFlash(player, gp, config);
-                event.setCancelled(true);
-            }
-            
-            else if (itemId.equals(Item.YELLOW_DYE)) {
-                handleBecomeSheriff(player, gp, config);
-                event.setCancelled(true);
             }
         }
+        
+        /*if (itemId == Item.COMPASS && gp.getRole() == MMRole.SPECTATOR) {
+            game.getSpectatorMenu().openTeleportMenu(player);
+            event.setCancelled(true);
+            return;
+        }*/         //new system
+
+        
+        //else game state is PREGAME_COUNTDOWN or IN_GAME or ENDING, and item is not null
+        if (!gp.isAlive()) return;
+        MMConfig config = game.getConfig();
+
+        if (item instanceof ItemGoldenHoe && event.getAction() == Action.RIGHT_CLICK_AIR) {
+            handleSheriffShoot(player, gp, config);
+            event.setCancelled(true);
+        }
+        
+        else if (item instanceof ItemIronSword && event.getAction() == Action.RIGHT_CLICK_AIR) {
+            handleMurdererThrow(player, gp, config);
+            event.setCancelled(true);
+        }
+        
+        else if (item instanceof ItemBlazeRod) {
+            handleFlash(player, gp, config);
+            event.setCancelled(true);
+        }
+        
+        else if (item instanceof ItemYellowDye) {
+            handleBecomeSheriff(player, gp, config);
+            event.setCancelled(true);
+        }
+
     }
     
     private void handleSheriffShoot(Player shooter, GamePlayer gp, MMConfig config) {
@@ -175,6 +196,7 @@ public class MMPlayerInteractListener implements Listener {
         }
         
         Player target = game.getRaycast().shoot(shooter);
+        shooter.getLevel().addSound(shooter, Sound.RANDOM_FIZZ, 0.8f, 0.9f);
         
         if (game.getState() == GameState.ENDING) return;
 
@@ -240,6 +262,8 @@ public class MMPlayerInteractListener implements Listener {
         }
         
         game.getProjectile().throwSword(murderer);
+        murderer.getLevel().addSound(murderer, Sound.RANDOM_BOW, 0.8f, 0.5f);
+        
         game.getCooldowns().recordUse(cooldownKey);
     }
     
@@ -287,7 +311,17 @@ public class MMPlayerInteractListener implements Listener {
     private void handleBecomeSheriff(Player player, GamePlayer gp, MMConfig config) {
         if (gp == null || !gp.isAlive() || gp.getRole() != MMRole.INNOCENT) return;
         if (!game.getRoleManager().isSheriffDead()) return;
-        if (!gp.canBecomeSheriff(config.getGoldForGun())) return;
+        
+        if (!gp.canBecomeSheriff(config.getGoldForGun())) {
+            String message = config.getMessage("not-enough-gold");
+            player.sendMessage(TextFormat.colorize(
+                message.replace(
+                    "{gold}", 
+                    String.valueOf(gp.getGoldCollected())
+                )
+            ));
+            return;
+        }
         
         game.getRoleManager().setSheriff(gp);
         

@@ -5,7 +5,7 @@ import java.util.List;
 
 // TODO: implement and refine this astraction
 
-public abstract class Minigame {
+public abstract class MinigameMatch {
     
     protected String name;
     protected GameState state;
@@ -15,8 +15,8 @@ public abstract class Minigame {
     // Lifecycle
     public abstract void onGameStart();
     public abstract void onGameEnd();
-    public abstract void onPlayerJoin(Player player);
-    public abstract void onPlayerLeave(Player player);
+    public abstract void joinPlayer(Player player);
+    public abstract void leavePlayer(Player player);
     
     // Win conditions
     public abstract boolean checkWinCondition();

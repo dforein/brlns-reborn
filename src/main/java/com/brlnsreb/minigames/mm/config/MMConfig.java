@@ -13,10 +13,14 @@ import cn.nukkit.math.Vector3;
 
 public class MMConfig {
     
-    private final Config config;
+    private Config config;
     
     public MMConfig(Config config) {
         this.config = config;
+    }
+
+    public void updateConfig(Config newConfig) {
+        this.config = newConfig;
     }
     
     public int getMinPlayers() {

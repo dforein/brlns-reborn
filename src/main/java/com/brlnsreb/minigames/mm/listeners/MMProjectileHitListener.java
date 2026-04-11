@@ -3,6 +3,7 @@ package com.brlnsreb.minigames.mm.listeners;
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.event.EventHandler;
+import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.entity.ProjectileHitEvent;
 import cn.nukkit.utils.TextFormat;
@@ -22,7 +23,7 @@ public class MMProjectileHitListener implements Listener {
         this.game = game;
     }
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onProjectileHit(ProjectileHitEvent event) {
         if (!(event.getEntity() instanceof ThrownSwordEntity)) return;
 

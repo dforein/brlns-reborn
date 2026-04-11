@@ -14,20 +14,18 @@ import com.brlnsreb.minigames.mm.config.MMConfig;
 import com.brlnsreb.minigames.core.Arena;
 
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GoldSystem {
     
     private final MinigameCore plugin;
     private final MMConfig config;
-    private final Random random;
     private Task spawnTask;
     private List<Vector3> validSpawns;
     
     public GoldSystem(MinigameCore plugin, MMConfig config) {
         this.plugin = plugin;
         this.config = config;
-        this.random = new Random();
     }
     
     public void startSpawning(Arena arena) {
@@ -40,7 +38,7 @@ public class GoldSystem {
     }
     
     private void scheduleNext(Arena arena, int min, int max) {
-        int delay = (min + random.nextInt(max - min + 1)) * 20;
+        int delay = (min + ThreadLocalRandom.current().nextInt(max - min + 1)) * 20;
         
         spawnTask = new Task() {
             @Override
@@ -59,7 +57,7 @@ public class GoldSystem {
             return;
         }
         
-        Vector3 randomSpawn = validSpawns.get(random.nextInt(validSpawns.size()));
+        Vector3 randomSpawn = validSpawns.get(ThreadLocalRandom.current().nextInt(validSpawns.size()));
         Position spawnPos = new Position(
             randomSpawn.x, 
             randomSpawn.y, 
@@ -76,6 +74,7 @@ public class GoldSystem {
         CompoundTag nbt = Entity.getDefaultNBT(pos);
         nbt.putCompound("Item", NBTIO.putItemHelper(gold));
         nbt.putBoolean("mm_gold", true);
+        nbt.putBoolean("Mergeable", false);
         nbt.putShort("Health", 5);
         
         int cx = pos.getFloorX() >> 4;
@@ -104,11 +103,17 @@ public class GoldSystem {
     }
 
     public void cleanupGold(Level level) {
+        long startTime = System.currentTimeMillis();
+
         for (Entity entity : level.getEntities()) {
             if (entity instanceof EntityItem && entity.namedTag != null && entity.namedTag.getBoolean("mm_gold")) {
                 entity.close();
             }
         }
+
+        plugin.getLogger().info("Cleaned golds in "
+                                + ((startTime - System.currentTimeMillis()) / 1000.0) 
+                                + "s");
     }
 
     public void loadSpawns(GoldSpawnMapper mapper, String mapId) {

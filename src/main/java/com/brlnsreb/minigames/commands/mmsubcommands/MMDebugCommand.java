@@ -4,11 +4,24 @@ import java.util.LinkedList;
 
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
+import com.brlnsreb.minigames.lobby.entities.NPCEntity;
+import com.brlnsreb.minigames.mm.config.MMConfig;
 
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
+import cn.nukkit.entity.Entity;
+import cn.nukkit.entity.data.EntityFlag;
+import cn.nukkit.entity.item.EntityItem;
+import cn.nukkit.item.Item;
+import cn.nukkit.level.Level;
+import cn.nukkit.level.Location;
+import cn.nukkit.level.Position;
+import cn.nukkit.level.format.IChunk;
+import cn.nukkit.math.Vector3;
+import cn.nukkit.nbt.NBTIO;
+import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.TextFormat;
 
 public class MMDebugCommand extends SimpleSubCommand {
@@ -24,6 +37,7 @@ public class MMDebugCommand extends SimpleSubCommand {
         this.plugin = plugin;
     }
 
+    //private void runDebug(CommandSender player, String[] args) {
     private void runDebug(Player player, String[] args) {
         //everything needing debug
         //reminder: args start from args[1] ("/mm debug {args[1]} {args[2]} ...")
@@ -31,7 +45,188 @@ public class MMDebugCommand extends SimpleSubCommand {
         //Map<UUID, Player> players = plugin.getServer().getOnlinePlayers();
         //for (Map.Entry<UUID, Player> p : players.entrySet())
 
-        if (args.length > 1)
+        //if (player instanceof Player) { player = (Player) player; }
+        boolean done = true;
+
+        
+        if (args.length > 1) {
+
+            //ARGS HERE
+            MMConfig config = plugin.getMMGame().getConfig();
+            switch (args[1]) {
+                case "1":
+                    Item gold = Item.get(Item.GOLD_INGOT, 0, 1);
+                    Position pos = player.getPosition().add(3, 0, 0);
+
+                    CompoundTag nbt = Entity.getDefaultNBT(pos);
+                    nbt.putCompound("Item", NBTIO.putItemHelper(gold));
+                    nbt.putBoolean("mm_gold", true);
+                    nbt.putBoolean("Mergeable", false);
+                    nbt.putShort("Health", 5);
+
+                    int cx = pos.getFloorX() >> 4;
+                    int cz = pos.getFloorZ() >> 4;
+
+                    EntityItem entity = (EntityItem) Entity.createEntity(
+                        Entity.ITEM, 
+                        pos.getLevel().getChunk(cx, cz), 
+                        nbt
+                    );
+
+                    if (entity != null) {
+                        entity.spawnToAll();
+                    }
+
+                    break;
+                case "2":
+                    for (Entity entity2 : player.getLevel().getEntities()) {
+                        if (entity2 instanceof EntityItem && entity2.namedTag != null && entity2.namedTag.getBoolean("mm_gold")) {
+                            entity2.close();
+                        }
+                    }
+                    break;
+                case "3":
+                    player.setDataFlag(EntityFlag.HAS_GRAVITY, false);
+                    break;
+                case "4":
+                    player.setDataFlag(EntityFlag.HAS_GRAVITY, true);
+                    break;
+                case "5":
+                    try {
+                        Level lobby = plugin.getServer().getLevelByName(config.getLobbyWorld());
+                        
+                        Vector3 spawnPos = config.getLobbySpawn();
+                        Location lobbySpawn = new Location(spawnPos.x, spawnPos.y, spawnPos.z, lobby);
+
+                        int spawnX = spawnPos.getFloorX() >> 4;
+                        int spawnZ = spawnPos.getFloorZ() >> 4;
+
+                        for (int x = spawnX - 1; x <= spawnX + 1; x++) {
+                            for (int z = spawnZ - 1; z <= spawnZ + 1; z++) {
+                                lobby.loadChunk(x, z);
+                            }
+                        }
+
+                        player.setMotion(new Vector3(0, 0, 0));
+                        player.setFlying(false);
+                        player.setAllowFlight(false);
+                        player.setCheckMovement(false); //add to refreshplayerstate as true but delayed
+                        player.setMotion(new Vector3(0, 0, 0));
+
+                        player.teleport(lobbySpawn);
+
+                        plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
+                            if (player.isOnline()) { player.setCheckMovement(true); }
+                        }, 80);
+                        
+
+                    } catch (Exception e) {
+                        plugin.getLogger().error("Error returning player to lobby: " + e.getMessage());
+                    }
+                    break;
+                
+                case "6":
+                    try {
+                        Level lobby = plugin.getServer().getLevelByName(config.getLobbyWorld());
+                        
+                        Vector3 spawnPos = config.getLobbySpawn();
+                        Location lobbySpawn = new Location(spawnPos.x, spawnPos.y, spawnPos.z, lobby);
+
+                        player.setMotion(new Vector3(0, 0, 0));
+                        player.setFlying(false);
+                        player.setAllowFlight(false);
+                        player.setCheckMovement(false);
+                        player.setMotion(new Vector3(0, 0, 0));
+
+                        player.teleport(lobbySpawn);
+
+                        plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
+                            if (player.isOnline()) { player.setCheckMovement(true); }
+                        }, 80);
+                        
+
+                    } catch (Exception e) {
+                        plugin.getLogger().error("Error returning player to lobby: " + e.getMessage());
+                    }
+                    break;
+                case "7":
+                    if (args.length > 3) {
+                    player.setMovementSpeed(Float.parseFloat(args[2])); }
+                    player.getFoodData().setFood(Integer.parseInt(args[3]));
+                    player.setSprinting(false);
+                    break;
+                case "8":
+                    if (args.length > 2) {
+                    player.setMovementSpeed(Float.parseFloat(args[2])); }
+                    break;
+                case "9":
+                    Level lobby = plugin.getServer().getLevelByName(config.getLobbyWorld());
+                    
+                    Vector3 spawnPos = config.getLobbySpawn();
+
+                    int spawnX = spawnPos.getFloorX() >> 4;
+                    int spawnZ = spawnPos.getFloorZ() >> 4;
+
+                    for (int x = spawnX - 1; x <= spawnX + 1; x++) {
+                        for (int z = spawnZ - 1; z <= spawnZ + 1; z++) {
+                            lobby.unloadChunk(x, z);
+                        }
+                    }
+                    break;
+                case "10":
+                    Level lobby1 = plugin.getServer().getLevelByName(config.getLobbyWorld());
+                        
+                    Vector3 spawnPos1 = config.getLobbySpawn();
+
+                    int spawnX1 = spawnPos1.getFloorX() >> 4;
+                    int spawnZ1 = spawnPos1.getFloorZ() >> 4;
+
+                    for (int x = spawnX1 - 1; x <= spawnX1 + 1; x++) {
+                        for (int z = spawnZ1 - 1; z <= spawnZ1 + 1; z++) {
+                            lobby1.loadChunk(x, z);
+                        }
+                    }
+                    break;
+                case "11":
+                    plugin.getMMGame().getDeath().createBody(player, player.getNextPosition());
+                    break;
+                case "13":
+                    Position pos2 = player.getPosition();
+                    int cx2 = pos2.getFloorX() >> 4;
+                    int cz2 = pos2.getFloorZ() >> 4;
+
+                    if (!pos2.getLevel().isChunkLoaded(cx2, cz2)) {
+                        pos2.getLevel().loadChunk(cx2, cz2);
+                    }
+
+                    IChunk chunk = (IChunk) pos2.getLevel().getChunk(cx2, cz2);
+                    NPCEntity npc = new NPCEntity(chunk, Entity.getDefaultNBT(pos2));
+
+                    npc.setSkin(player.getSkin());
+                    npc.spawnToAll();
+                    if (plugin.getDebugVar() == 1) npc.despawnFrom(player);
+                    break;
+                case "14":
+                    player.despawnFromAll();
+                    break;
+                case "15":
+                    player.spawnToAll();
+                    break;
+                case "16":
+                    
+                
+                //--- control case (when forgetting break) and continue
+                case "controlCase_un2c9r8eyn2cr8yq8294cyrq9o":
+                    player.sendMessage("ERROR: control case activated");
+                    break;
+                default:
+                    done = false;
+            }
+
+
+
+            //--- always useful
+            if (done) return;
             switch (args[1]) {
                 case "enable":
                     plugin.getMMGame().checkEnoughPlayers = true;
@@ -39,15 +234,18 @@ public class MMDebugCommand extends SimpleSubCommand {
                 case "disable":
                     plugin.getMMGame().checkEnoughPlayers = false;
                     break;
-
-                //---
-                case "controlCase_un2c9r8eyn2cr8yq8294cyrq9o":
-                    player.sendMessage("ERROR: control case activated");
+                case "set":
+                    plugin.setDebugVar(Integer.parseInt(args[2]));
+                    player.sendMessage("debugVar = " + plugin.getDebugVar());
+                    break;
+                case "get":
+                    player.sendMessage("debugVar = " + plugin.getDebugVar());
                     break;
                 default:
                     player.sendMessage("no args");
                     break;
             }
+        }
     }
 
     @Override
@@ -58,6 +256,8 @@ public class MMDebugCommand extends SimpleSubCommand {
         }
 
         runDebug((Player) sender, args);
+        //runDebug(sender, args);
+
         return true;
     }
 

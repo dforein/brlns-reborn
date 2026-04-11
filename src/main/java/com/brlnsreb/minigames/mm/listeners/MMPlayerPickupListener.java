@@ -7,6 +7,8 @@ import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.inventory.InventoryPickupItemEvent;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemGoldIngot;
+import cn.nukkit.item.ItemGoldenHoe;
 import cn.nukkit.utils.TextFormat;
 import com.brlnsreb.minigames.core.GameState;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
@@ -14,7 +16,7 @@ import com.brlnsreb.minigames.mm.config.MMConfig;
 import com.brlnsreb.minigames.mm.items.ItemManager;
 import com.brlnsreb.minigames.mm.roles.GamePlayer;
 import com.brlnsreb.minigames.mm.roles.MMRole;
-import com.brlnsreb.minigames.mm.systems.BossBarSystem;
+import com.brlnsreb.minigames.mm.ui.BossBarSystem;
 
 public class MMPlayerPickupListener implements Listener {
     
@@ -41,7 +43,7 @@ public class MMPlayerPickupListener implements Listener {
         Item item = itemEntity.getItem();
 
         // Golds
-        if (item.getId().equals(Item.GOLD_INGOT) && itemEntity.namedTag.contains("mm_gold")) {
+        if (item instanceof ItemGoldIngot && itemEntity.namedTag.contains("mm_gold")) {
             event.setCancelled(true);
             
             handleGoldPickup(player, itemEntity);
@@ -49,7 +51,7 @@ public class MMPlayerPickupListener implements Listener {
         }
 
         // Sheriff Hoe
-        if (item.getId().equals(Item.GOLDEN_HOE) && itemEntity.namedTag.contains("mm_sheriff_hoe")) {
+        if (item instanceof ItemGoldenHoe && itemEntity.namedTag.contains("mm_sheriff_hoe")) {
             event.setCancelled(true);
             
             handleSheriffHoePickup(player, itemEntity);

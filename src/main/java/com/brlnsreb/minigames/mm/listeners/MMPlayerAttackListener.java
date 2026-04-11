@@ -2,15 +2,16 @@ package com.brlnsreb.minigames.mm.listeners;
 
 import cn.nukkit.Player;
 import cn.nukkit.event.EventHandler;
+import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemIronSword;
 import cn.nukkit.utils.TextFormat;
 import com.brlnsreb.minigames.core.GameState;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.config.MMConfig;
-import com.brlnsreb.minigames.mm.entities.DeadBodyEntity;
 import com.brlnsreb.minigames.mm.roles.GamePlayer;
 import com.brlnsreb.minigames.mm.roles.MMRole;
 
@@ -22,12 +23,8 @@ public class MMPlayerAttackListener implements Listener {
         this.game = game;
     }
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onDamage(EntityDamageEvent event) {
-        if (event.getEntity() instanceof DeadBodyEntity) {
-            event.setCancelled();
-            return;
-        }
 
         if (game.getState() != GameState.IN_GAME) return;
 
@@ -52,7 +49,7 @@ public class MMPlayerAttackListener implements Listener {
             
             Item weapon = attacker.getInventory().getItemInMainHand();
             
-            if (weapon.getId() == Item.IRON_SWORD && attackerGp.getRole() == MMRole.MURDERER) {
+            if (weapon instanceof ItemIronSword && attackerGp.getRole() == MMRole.MURDERER) {
 
                 MMConfig config = game.getConfig();
 

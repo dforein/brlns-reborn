@@ -3,6 +3,7 @@ package com.brlnsreb.minigames.mm.systems;
 import cn.nukkit.Player;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 // TODO: votingsystem astraction into Utils
 
@@ -53,7 +54,7 @@ public class VotingSystem {
     
     public String getMostVotedMap() {
         if (mapVotes.isEmpty()) {
-            return availableMaps.isEmpty() ? null : availableMaps.get(new Random().nextInt(availableMaps.size()));
+            return availableMaps.isEmpty() ? null : availableMaps.get(ThreadLocalRandom.current().nextInt(availableMaps.size()));
         }
         
         Map<String, Integer> voteCounts = new HashMap<>();
@@ -69,12 +70,12 @@ public class VotingSystem {
             }
         }
         
-        return winners.get(new Random().nextInt(winners.size()));
+        return winners.get(ThreadLocalRandom.current().nextInt(winners.size()));
     }
     
     public String getMostVotedTime(List<String> availableTimes) {
         if (timeVotes.isEmpty()) {
-            return availableTimes.get(new Random().nextInt(availableTimes.size()));
+            return availableTimes.get(ThreadLocalRandom.current().nextInt(availableTimes.size()));
         }
         
         Map<String, Integer> voteCounts = new HashMap<>();
@@ -90,7 +91,7 @@ public class VotingSystem {
             }
         }
         
-        return winners.get(new Random().nextInt(winners.size()));
+        return winners.get(ThreadLocalRandom.current().nextInt(winners.size()));
     }
     
     public void removeMapVote(Player player) {
