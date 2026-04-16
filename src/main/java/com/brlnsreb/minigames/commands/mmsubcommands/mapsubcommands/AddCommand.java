@@ -40,7 +40,7 @@ public class AddCommand extends SubCommand {
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
 
         if (args.length < 11) {
-            sender.sendMessage(TextFormat.RED + "Usage: /mm map add <mapId> <minCoords> <maxCoords> <worldFolder> <mapName>");
+            sender.sendMessage(TextFormat.RED + "Usage: /mmop map add <mapId> <minCoords> <maxCoords> <worldFolder> <mapName>");
             return true;
         }
         

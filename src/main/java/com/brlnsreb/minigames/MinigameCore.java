@@ -18,10 +18,10 @@ import com.brlnsreb.minigames.commands.MMCommand;
 import com.brlnsreb.minigames.commands.MMOperatorCommand;
 import com.brlnsreb.minigames.commands.PingCommand;
 import com.brlnsreb.minigames.commands.ReloadConfigCommand;
+import com.brlnsreb.minigames.commands.SetRulesCommand;
 import com.brlnsreb.minigames.commands.ToggleSaveCommand;
 import com.brlnsreb.minigames.listeners.BlockUpdateListener;
 import com.brlnsreb.minigames.listeners.ChatListener;
-import com.brlnsreb.minigames.listeners.PunchAnimationListener;
 
 public class MinigameCore extends PluginBase {
     
@@ -68,6 +68,7 @@ public class MinigameCore extends PluginBase {
         cm.register("reloadconfig", new ReloadConfigCommand(this));
         cm.register("globalchat", new GlobalChatCommand(this));
         cm.register("togglesave", new ToggleSaveCommand(this));
+        cm.register("setrules", new SetRulesCommand(this));
         
         pm.registerEvents(new ChatListener(this), this);
         pm.registerEvents(new BlockUpdateListener(), this);

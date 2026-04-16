@@ -79,7 +79,7 @@ public class MMMapCommand extends ComplexSubCommand {
             }
         }
 
-        sender.sendMessage(TextFormat.RED + "Usage:   /mm map <subcommand> <args>");
+        sender.sendMessage(TextFormat.RED + "Usage:   /mmop map <subcommand> <args>");
         sender.sendMessage(TextFormat.RED + "More info on README.md on github");
 
         return true;

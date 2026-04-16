@@ -14,6 +14,7 @@ import cn.nukkit.Player;
 import cn.nukkit.level.Level;
 
 public class WorldCommand extends Command {
+    //UNUSED COMMAND (just for practice, and blueprint)
 
     MinigameCore plugin;
     
@@ -64,7 +65,7 @@ public class WorldCommand extends Command {
                 }
                 
                 if (args.length < 2) {
-                    player.sendMessage(TextFormat.RED + "Usage: /mm world <world_name>");
+                    player.sendMessage(TextFormat.RED + "Usage: /world <world_name>");
                     player.sendMessage(TextFormat.GRAY + "Loaded worlds:");
                     for (Level l : plugin.getServer().getLevels().values()) {
                         player.sendMessage(TextFormat.GRAY + "- " + l.getName());

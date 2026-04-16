@@ -1,7 +1,5 @@
 package com.brlnsreb.minigames.mm.entities;
 
-import java.util.Collections;
-
 import org.jetbrains.annotations.NotNull;
 
 import cn.nukkit.Player;

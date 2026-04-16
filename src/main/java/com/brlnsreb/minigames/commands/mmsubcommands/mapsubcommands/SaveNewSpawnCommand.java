@@ -29,7 +29,7 @@ public class SaveNewSpawnCommand  extends SubCommand {
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         
         if (args.length < 3) {
-            sender.sendMessage(TextFormat.RED + "Usage: /mm map newspawn <mapId>");
+            sender.sendMessage(TextFormat.RED + "Usage: /mmop map newspawn <mapId>");
             return true;
         }
 

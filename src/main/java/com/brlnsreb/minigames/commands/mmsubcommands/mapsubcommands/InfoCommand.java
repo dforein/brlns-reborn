@@ -28,7 +28,7 @@ public class InfoCommand extends SubCommand {
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
 
         if (args.length < 3) {
-            sender.sendMessage(TextFormat.RED + "Usage: /mm map info <mapId>");
+            sender.sendMessage(TextFormat.RED + "Usage: /mmop map info <mapId>");
             return true;
         }
         

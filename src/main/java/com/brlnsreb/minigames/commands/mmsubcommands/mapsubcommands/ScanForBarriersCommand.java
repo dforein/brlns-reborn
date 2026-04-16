@@ -35,7 +35,7 @@ public class ScanForBarriersCommand extends SubCommand {
         Player player = (Player) sender;
 
         if (args.length < 3) {
-            player.sendMessage(TextFormat.RED + "Usage: /mm map scanforbarriers <mapId>");
+            player.sendMessage(TextFormat.RED + "Usage: /mmop map scanforbarriers <mapId>");
             return true;
         }
 

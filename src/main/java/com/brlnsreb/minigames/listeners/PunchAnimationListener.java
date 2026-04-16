@@ -10,8 +10,8 @@ import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.utils.CustomPlaySoundPacket;
 import java.util.HashSet;
 
-//unused
 public class PunchAnimationListener implements Listener {
+    //UNUSED LISTENER (here just for future development)
 
     private final MinigameCore plugin;
     private final HashSet<String> hitSoundCooldowns = new HashSet<>();

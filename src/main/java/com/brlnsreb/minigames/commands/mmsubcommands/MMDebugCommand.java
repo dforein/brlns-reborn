@@ -37,7 +37,6 @@ public class MMDebugCommand extends SimpleSubCommand {
         this.plugin = plugin;
     }
 
-    //private void runDebug(CommandSender player, String[] args) {
     private void runDebug(Player player, String[] args) {
         //everything needing debug
         //reminder: args start from args[1] ("/mm debug {args[1]} {args[2]} ...")
@@ -203,6 +202,7 @@ public class MMDebugCommand extends SimpleSubCommand {
                     NPCEntity npc = new NPCEntity(chunk, Entity.getDefaultNBT(pos2));
 
                     npc.setSkin(player.getSkin());
+                    npc.updateLabel("&l&aAmasdihai", "123 sfss sd");
                     npc.spawnToAll();
                     if (plugin.getDebugVar() == 1) npc.despawnFrom(player);
                     break;
@@ -213,7 +213,37 @@ public class MMDebugCommand extends SimpleSubCommand {
                     player.spawnToAll();
                     break;
                 case "16":
+                    Position pos3 = player.getPosition();
+                    Item hoe = Item.get(Item.GOLDEN_HOE, 0, 1);
+                    hoe.setCustomName(TextFormat.colorize(config.getSheriffHoeName()));
                     
+                    CompoundTag nbt2 = Entity.getDefaultNBT(pos3);
+                    nbt2.putCompound("Item", NBTIO.putItemHelper(hoe));
+                    nbt2.putShort("Health", 5);
+                    nbt2.putShort("Age", -32768);
+
+                    int cx3 = pos3.getFloorX() >> 4;
+                    int cz3 = pos3.getFloorZ() >> 4;
+
+                    if (!pos3.getLevel().isChunkLoaded(cx3, cz3)) {
+                        pos3.getLevel().loadChunk(cx3, cz3);
+                    }
+
+                    EntityItem drop = (EntityItem) Entity.createEntity(
+                        Entity.ITEM,
+                        pos3.getLevel().getChunk(cx3, cz3),
+                        nbt2
+                    );
+                    
+                    if (drop != null) {
+                        drop.setNameTagVisible(true);
+                        drop.setNameTagAlwaysVisible(true);
+                        drop.setNameTag(TextFormat.colorize(config.getSheriffHoeName()));
+                        drop.setScale(1.2f);
+                        
+                        drop.spawnToAll();
+                    }
+                    break;
                 
                 //--- control case (when forgetting break) and continue
                 case "controlCase_un2c9r8eyn2cr8yq8294cyrq9o":
@@ -221,29 +251,6 @@ public class MMDebugCommand extends SimpleSubCommand {
                     break;
                 default:
                     done = false;
-            }
-
-
-
-            //--- always useful
-            if (done) return;
-            switch (args[1]) {
-                case "enable":
-                    plugin.getMMGame().checkEnoughPlayers = true;
-                    break;
-                case "disable":
-                    plugin.getMMGame().checkEnoughPlayers = false;
-                    break;
-                case "set":
-                    plugin.setDebugVar(Integer.parseInt(args[2]));
-                    player.sendMessage("debugVar = " + plugin.getDebugVar());
-                    break;
-                case "get":
-                    player.sendMessage("debugVar = " + plugin.getDebugVar());
-                    break;
-                default:
-                    player.sendMessage("no args");
-                    break;
             }
         }
     }
@@ -255,8 +262,12 @@ public class MMDebugCommand extends SimpleSubCommand {
             return true;
         }
 
+        if (!sender.isPlayer()) {
+            sender.sendMessage(TextFormat.RED + "Only players can run this cmd, try instead /mmop debugconsole");
+            return true;
+        }
+
         runDebug((Player) sender, args);
-        //runDebug(sender, args);
 
         return true;
     }

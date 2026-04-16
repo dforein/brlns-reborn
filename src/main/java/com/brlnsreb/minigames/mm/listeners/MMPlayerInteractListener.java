@@ -2,7 +2,6 @@ package com.brlnsreb.minigames.mm.listeners;
 
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
-import cn.nukkit.block.BlockBirchPressurePlate;
 import cn.nukkit.block.BlockButton;
 import cn.nukkit.block.BlockCake;
 import cn.nukkit.block.BlockCandleCake;
@@ -103,8 +102,8 @@ public class MMPlayerInteractListener implements Listener {
     
         if (block != null) {
             if (INTERACT_BLOCKS.contains(block.getId()) 
-                || block instanceof BlockCake 
-                || block instanceof BlockCandleCake) {
+                || block instanceof BlockCake               //TODO: remove later (cake)
+                || block instanceof BlockCandleCake) {      //TODO: remove later (cake)
 
                 event.setCancelled(true);
                 return;

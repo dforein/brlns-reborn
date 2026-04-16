@@ -33,7 +33,7 @@ public class EditCommand extends SubCommand {
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
 
         if (args.length < 5) {
-            sender.sendMessage(TextFormat.RED + "Usage: /mm map edit <mapId> <field> <args>");
+            sender.sendMessage(TextFormat.RED + "Usage: /mmop map edit <mapId> <field> <args>");
             return true;
         }
         

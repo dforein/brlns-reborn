@@ -35,7 +35,7 @@ public class CountBarriersCommand extends SubCommand {
         Player player = (Player) sender;
 
         if (args.length < 3) {
-            player.sendMessage(TextFormat.RED + "Usage: /mm map countbarriers <mapId>");
+            player.sendMessage(TextFormat.RED + "Usage: /mmop map countbarriers <mapId>");
             return true;
         }
 

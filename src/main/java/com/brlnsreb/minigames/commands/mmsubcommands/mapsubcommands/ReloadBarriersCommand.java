@@ -26,7 +26,7 @@ public class ReloadBarriersCommand extends SubCommand {
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
 
         if (args.length < 3) {
-            sender.sendMessage(TextFormat.RED + "Usage: /mm map reloadbarriers <mapId>");
+            sender.sendMessage(TextFormat.RED + "Usage: /mmop map reloadbarriers <mapId>");
             return true;
         }
         

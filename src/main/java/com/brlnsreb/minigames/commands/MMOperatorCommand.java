@@ -13,8 +13,8 @@ import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.commands.subcommands.ComplexSubCommand;
 import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
 import com.brlnsreb.minigames.commands.mmsubcommands.MMDebugCommand;
+import com.brlnsreb.minigames.commands.mmsubcommands.MMDebugConsoleCommand;
 import com.brlnsreb.minigames.commands.mmsubcommands.MMMapCommand;
-import com.brlnsreb.minigames.commands.mmsubcommands.MMSetRulesCommand;
 import com.brlnsreb.minigames.commands.mmsubcommands.MMStartCommand;
 import com.brlnsreb.minigames.commands.mmsubcommands.MMStopCommand;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
@@ -36,8 +36,8 @@ public class MMOperatorCommand extends Command {
         SimpleSubCommand[] simpleSubCommands = new SimpleSubCommand[] {
             new MMStartCommand(game),
             new MMStopCommand(game),
-            new MMSetRulesCommand(plugin),
-            new MMDebugCommand(plugin)
+            new MMDebugCommand(plugin),
+            new MMDebugConsoleCommand(plugin)
         };
 
         ComplexSubCommand[] complexSubCommands = new ComplexSubCommand[] {
@@ -88,9 +88,7 @@ public class MMOperatorCommand extends Command {
         }
 
         //args lenght == 0 or wrong subcommand
-        sender.sendMessage(TextFormat.RED + "Game:   /mm <start|stop>");
-        sender.sendMessage(TextFormat.RED + "Map/World:    /mm <map|setrules>");
-        sender.sendMessage(TextFormat.RED + "Debug:  /mm <debug>");
+        sender.sendMessage(TextFormat.RED + "Game:   /mm <start|stop|map|debug|debugconsole>");
 
         return true;
     }

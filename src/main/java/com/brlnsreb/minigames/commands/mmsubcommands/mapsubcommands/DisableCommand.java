@@ -32,7 +32,7 @@ public class DisableCommand extends SubCommand {
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
 
         if (args.length < 3) {
-            sender.sendMessage(TextFormat.RED + "Usage: /mm map disable <mapId>");
+            sender.sendMessage(TextFormat.RED + "Usage: /mmop map disable <mapId>");
             return true;
         }
         

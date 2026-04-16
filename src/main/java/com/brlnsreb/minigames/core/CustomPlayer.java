@@ -20,9 +20,7 @@ public class CustomPlayer extends Player {
 
     @Override
     public void spawnTo(Player player) {
-        if (this.isSpectator) {
-            return;
-        }
+        if (this.isSpectator) return;
         super.spawnTo(player);
     }
 
