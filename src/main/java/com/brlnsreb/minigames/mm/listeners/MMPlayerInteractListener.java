@@ -30,7 +30,7 @@ import cn.nukkit.entity.effect.EffectType;
 import cn.nukkit.utils.TextFormat;
 
 import com.brlnsreb.minigames.MinigameCore;
-import com.brlnsreb.minigames.core.GameState;
+import com.brlnsreb.minigames.core.minigame.GameState;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.config.MMConfig;
 import com.brlnsreb.minigames.mm.items.ItemManager;
@@ -138,7 +138,7 @@ public class MMPlayerInteractListener implements Listener {
         Item item = event.getItem();
         if (item == null) return;
 
-        if (game.getState() == GameState.LOBBY || game.getState() == GameState.COUNTDOWN) {
+        if (game.getState() == GameState.WAITING_LOBBY || game.getState() == GameState.LOBBY_COUNTDOWN) {
             if (game.getPlayers().contains(player)) {
                 //game poll
                 if (item instanceof ItemNetherStar) {

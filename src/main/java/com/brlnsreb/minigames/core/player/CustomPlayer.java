@@ -1,4 +1,4 @@
-package com.brlnsreb.minigames.core;
+package com.brlnsreb.minigames.core.player;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -16,6 +16,8 @@ public class CustomPlayer extends Player {
 
     public CustomPlayer(@NotNull BedrockSession session, @NotNull PlayerInfo info) {
         super(session, info);
+
+        //search player data in db through DatabaseManager and save in a PlayerData instance
     }
 
     @Override

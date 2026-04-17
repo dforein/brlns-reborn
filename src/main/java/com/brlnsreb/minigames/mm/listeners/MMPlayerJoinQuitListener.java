@@ -12,7 +12,7 @@ import cn.nukkit.event.player.PlayerLoginEvent;
 import cn.nukkit.event.player.PlayerJoinEvent;
 
 import com.brlnsreb.minigames.mm.roles.GamePlayer;
-import com.brlnsreb.minigames.core.GameState;
+import com.brlnsreb.minigames.core.minigame.GameState;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.roles.MMRole;
 import com.brlnsreb.minigames.mm.systems.QuitTracker;

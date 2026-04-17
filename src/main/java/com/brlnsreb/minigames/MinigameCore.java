@@ -22,6 +22,7 @@ import com.brlnsreb.minigames.commands.SetRulesCommand;
 import com.brlnsreb.minigames.commands.ToggleSaveCommand;
 import com.brlnsreb.minigames.listeners.BlockUpdateListener;
 import com.brlnsreb.minigames.listeners.ChatListener;
+import com.brlnsreb.minigames.listeners.PlayerCreationListener;
 
 public class MinigameCore extends PluginBase {
     
@@ -70,6 +71,7 @@ public class MinigameCore extends PluginBase {
         cm.register("togglesave", new ToggleSaveCommand(this));
         cm.register("setrules", new SetRulesCommand(this));
         
+        pm.registerEvents(new PlayerCreationListener(), this);
         pm.registerEvents(new ChatListener(this), this);
         pm.registerEvents(new BlockUpdateListener(), this);
 

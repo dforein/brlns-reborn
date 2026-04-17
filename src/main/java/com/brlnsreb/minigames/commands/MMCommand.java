@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.brlnsreb.minigames.MinigameCore;
-import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
+import com.brlnsreb.minigames.commands.subcommands.BasicSubCommand;
 import com.brlnsreb.minigames.commands.mmsubcommands.MMJoinCommand;
 import com.brlnsreb.minigames.commands.mmsubcommands.MMJoinAllCommand;
 import com.brlnsreb.minigames.commands.mmsubcommands.MMLeaveCommand;
@@ -17,7 +17,7 @@ import com.brlnsreb.minigames.mm.MurderMysteryGame;
 
 public class MMCommand extends Command {
 
-    private final List<SimpleSubCommand> simpleSubCommandsList = new ArrayList<>();
+    private final List<BasicSubCommand> simpleSubCommandsList = new ArrayList<>();
 
     //private final MinigameCore plugin;
     
@@ -27,7 +27,7 @@ public class MMCommand extends Command {
         this.setDescription("Murder Mystery commands");
 
         
-        SimpleSubCommand[] simpleSubCommands = new SimpleSubCommand[] {
+        BasicSubCommand[] simpleSubCommands = new BasicSubCommand[] {
             new MMJoinCommand(game),
             new MMJoinAllCommand(plugin, game),
             new MMLeaveCommand(game)
@@ -38,7 +38,7 @@ public class MMCommand extends Command {
 
         this.getCommandParameters().clear();
 
-        for(SimpleSubCommand subCommand : simpleSubCommands) {
+        for(BasicSubCommand subCommand : simpleSubCommands) {
             simpleSubCommandsList.add(subCommand);
 		    this.addCommandParameters(subCommand.getName(), subCommand.getParameters());
         };
@@ -51,7 +51,7 @@ public class MMCommand extends Command {
         if(args.length > 0) {
             String subCommandName = args[0].toLowerCase();
 
-            for(SimpleSubCommand subCommand : simpleSubCommandsList) {
+            for(BasicSubCommand subCommand : simpleSubCommandsList) {
                 if(Arrays.asList(subCommand.getAliases()).contains(subCommandName)) {
                     subCommand.execute(sender, commandLabel, args);
                     return true;
@@ -70,7 +70,7 @@ public class MMCommand extends Command {
     public void refreshCommandsParams() {
         this.getCommandParameters().clear();
 
-        for(SimpleSubCommand subCommand : simpleSubCommandsList) {
+        for(BasicSubCommand subCommand : simpleSubCommandsList) {
 		    this.addCommandParameters(subCommand.getName(), subCommand.getParameters());
         };
 

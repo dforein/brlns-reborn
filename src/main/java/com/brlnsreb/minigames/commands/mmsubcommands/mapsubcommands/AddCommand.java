@@ -7,7 +7,7 @@ import java.util.LinkedList;
 
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.commands.MMOperatorCommand;
-import com.brlnsreb.minigames.commands.subcommands.SubCommand;
+import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 
 import cn.nukkit.Player;
@@ -17,7 +17,7 @@ import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 
-public class AddCommand extends SubCommand {
+public class AddCommand extends SimpleSubCommand {
     
     private final MinigameCore plugin;
     private final MurderMysteryGame game;

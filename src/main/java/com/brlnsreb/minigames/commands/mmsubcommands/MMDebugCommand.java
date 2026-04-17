@@ -3,7 +3,7 @@ package com.brlnsreb.minigames.commands.mmsubcommands;
 import java.util.LinkedList;
 
 import com.brlnsreb.minigames.MinigameCore;
-import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
+import com.brlnsreb.minigames.commands.subcommands.BasicSubCommand;
 import com.brlnsreb.minigames.lobby.entities.NPCEntity;
 import com.brlnsreb.minigames.mm.config.MMConfig;
 
@@ -24,7 +24,7 @@ import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.TextFormat;
 
-public class MMDebugCommand extends SimpleSubCommand {
+public class MMDebugCommand extends BasicSubCommand {
     
     private final MinigameCore plugin;
     
@@ -45,8 +45,6 @@ public class MMDebugCommand extends SimpleSubCommand {
         //for (Map.Entry<UUID, Player> p : players.entrySet())
 
         //if (player instanceof Player) { player = (Player) player; }
-        boolean done = true;
-
         
         if (args.length > 1) {
 
@@ -249,8 +247,6 @@ public class MMDebugCommand extends SimpleSubCommand {
                 case "controlCase_un2c9r8eyn2cr8yq8294cyrq9o":
                     player.sendMessage("ERROR: control case activated");
                     break;
-                default:
-                    done = false;
             }
         }
     }

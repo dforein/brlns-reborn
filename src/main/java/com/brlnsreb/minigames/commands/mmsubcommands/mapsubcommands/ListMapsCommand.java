@@ -2,13 +2,13 @@ package com.brlnsreb.minigames.commands.mmsubcommands.mapsubcommands;
 
 import java.util.List;
 
-import com.brlnsreb.minigames.commands.subcommands.SubCommand;
+import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.utils.TextFormat;
 
-public class ListMapsCommand extends SubCommand {
+public class ListMapsCommand extends SimpleSubCommand {
     
     private final MurderMysteryGame game;
     

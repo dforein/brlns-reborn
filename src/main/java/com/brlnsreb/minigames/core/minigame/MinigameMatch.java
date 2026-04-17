@@ -1,4 +1,4 @@
-package com.brlnsreb.minigames.core;
+package com.brlnsreb.minigames.core.minigame;
 
 import cn.nukkit.Player;
 import java.util.List;

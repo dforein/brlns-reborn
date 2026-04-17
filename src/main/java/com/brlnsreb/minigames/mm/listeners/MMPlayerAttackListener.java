@@ -9,7 +9,8 @@ import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemIronSword;
 import cn.nukkit.utils.TextFormat;
-import com.brlnsreb.minigames.core.GameState;
+
+import com.brlnsreb.minigames.core.minigame.GameState;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.config.MMConfig;
 import com.brlnsreb.minigames.mm.roles.GamePlayer;

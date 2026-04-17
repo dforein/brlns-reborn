@@ -10,8 +10,8 @@ import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.scheduler.Task;
 import com.brlnsreb.minigames.MinigameCore;
+import com.brlnsreb.minigames.core.minigame.Arena;
 import com.brlnsreb.minigames.mm.config.MMConfig;
-import com.brlnsreb.minigames.core.Arena;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;

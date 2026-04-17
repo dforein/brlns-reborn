@@ -1,6 +1,6 @@
 package com.brlnsreb.minigames.listeners;
 
-import com.brlnsreb.minigames.core.CustomPlayer;
+import com.brlnsreb.minigames.core.player.CustomPlayer;
 
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;

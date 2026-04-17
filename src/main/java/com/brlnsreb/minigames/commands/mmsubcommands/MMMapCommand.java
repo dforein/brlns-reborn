@@ -22,7 +22,7 @@ import com.brlnsreb.minigames.commands.mmsubcommands.mapsubcommands.SaveNewSpawn
 import com.brlnsreb.minigames.commands.mmsubcommands.mapsubcommands.ScanCommand;
 import com.brlnsreb.minigames.commands.mmsubcommands.mapsubcommands.ScanForBarriersCommand;
 import com.brlnsreb.minigames.commands.subcommands.ComplexSubCommand;
-import com.brlnsreb.minigames.commands.subcommands.SubCommand;
+import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 
 import cn.nukkit.command.CommandSender;
@@ -31,7 +31,7 @@ import cn.nukkit.utils.TextFormat;
 
 public class MMMapCommand extends ComplexSubCommand {
 
-    private final List<SubCommand> subCommandsList = new ArrayList<>();
+    private final List<SimpleSubCommand> subCommandsList = new ArrayList<>();
     
     public MMMapCommand(MinigameCore plugin, MurderMysteryGame game, MMOperatorCommand fatherCommand) {
         super("map");
@@ -39,7 +39,7 @@ public class MMMapCommand extends ComplexSubCommand {
 				"map"
 		});
 
-        SubCommand[] subCommands = new SubCommand[] {
+        SimpleSubCommand[] subCommands = new SimpleSubCommand[] {
             new ScanCommand(plugin),
             new ScanForBarriersCommand(plugin),
             new CountBarriersCommand(plugin),
@@ -56,7 +56,7 @@ public class MMMapCommand extends ComplexSubCommand {
             new EditCommand(plugin)
         };
 
-        for (SubCommand subCommand : subCommands) {
+        for (SimpleSubCommand subCommand : subCommands) {
             subCommandsList.add(subCommand);
         }
     }
@@ -71,7 +71,7 @@ public class MMMapCommand extends ComplexSubCommand {
         if(args.length > 1) {
             String subCommandName = args[1].toLowerCase();
 
-            for(SubCommand subCommand : subCommandsList) {
+            for(SimpleSubCommand subCommand : subCommandsList) {
                 if(Arrays.asList(subCommand.getAliases()).contains(subCommandName)) {
                     subCommand.execute(sender, commandLabel, args);
                     return true;
@@ -88,7 +88,7 @@ public class MMMapCommand extends ComplexSubCommand {
     public LinkedList<CommandParameter[]> getComplexParametersList() {
         LinkedList<CommandParameter[]> parametersList = new LinkedList<>();
 
-        for (SubCommand subCommand : subCommandsList) {
+        for (SimpleSubCommand subCommand : subCommandsList) {
 
             List<List<CommandParameter>> overloadsToProcess = new LinkedList<>();
 

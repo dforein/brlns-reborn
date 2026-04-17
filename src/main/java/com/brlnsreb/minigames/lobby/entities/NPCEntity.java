@@ -218,9 +218,9 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
         hologram.spawnToAll();*/
 
         if (this.label1 == null) {
-            this.label1 = hologram;
+            //this.label1 = hologram;
         } else {
-            this.label2 = hologram;
+            //this.label2 = hologram;
         }
     }
 

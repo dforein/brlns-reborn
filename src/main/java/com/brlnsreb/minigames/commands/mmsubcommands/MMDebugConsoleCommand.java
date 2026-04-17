@@ -3,7 +3,7 @@ package com.brlnsreb.minigames.commands.mmsubcommands;
 import java.util.LinkedList;
 
 import com.brlnsreb.minigames.MinigameCore;
-import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
+import com.brlnsreb.minigames.commands.subcommands.BasicSubCommand;
 import com.brlnsreb.minigames.mm.config.MMConfig;
 
 import cn.nukkit.command.CommandSender;
@@ -11,7 +11,7 @@ import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.utils.TextFormat;
 
-public class MMDebugConsoleCommand extends SimpleSubCommand {
+public class MMDebugConsoleCommand extends BasicSubCommand {
     
     private final MinigameCore plugin;
     
@@ -40,7 +40,11 @@ public class MMDebugConsoleCommand extends SimpleSubCommand {
             //ARGS HERE
             MMConfig config = plugin.getMMGame().getConfig();
             switch (args[1]) {
-                case "1":
+                case "load":
+                    plugin.getServer().loadLevel("museum");
+                    break;
+                case "unload":
+                    plugin.getServer().unloadLevel(plugin.getServer().getLevelByName("museum"));
                     break;
                     
                 

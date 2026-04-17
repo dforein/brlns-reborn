@@ -10,7 +10,8 @@ import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemGoldIngot;
 import cn.nukkit.item.ItemGoldenHoe;
 import cn.nukkit.utils.TextFormat;
-import com.brlnsreb.minigames.core.GameState;
+
+import com.brlnsreb.minigames.core.minigame.GameState;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.config.MMConfig;
 import com.brlnsreb.minigames.mm.items.ItemManager;

@@ -1,12 +1,12 @@
 package com.brlnsreb.minigames.commands.mmsubcommands;
 
-import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
+import com.brlnsreb.minigames.commands.subcommands.BasicSubCommand;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.utils.TextFormat;
 
-public class MMStopCommand extends SimpleSubCommand {
+public class MMStopCommand extends BasicSubCommand {
 
     private final MurderMysteryGame game;
     
