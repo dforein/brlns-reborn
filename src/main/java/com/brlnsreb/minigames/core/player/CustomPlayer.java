@@ -1,8 +1,5 @@
 package com.brlnsreb.minigames.core.player;
 
-import java.util.ArrayList;
-import java.util.Map;
-
 import org.jetbrains.annotations.NotNull;
 
 import cn.nukkit.Player;
@@ -12,7 +9,7 @@ import cn.nukkit.network.protocol.types.PlayerInfo;
 
 public class CustomPlayer extends Player {
 
-    public boolean isSpectator = false;
+    public boolean isGameSpectator = false;
 
     public CustomPlayer(@NotNull BedrockSession session, @NotNull PlayerInfo info) {
         super(session, info);
@@ -20,9 +17,27 @@ public class CustomPlayer extends Player {
         //search player data in db through DatabaseManager and save in a PlayerData instance
     }
 
+    public boolean isGameSpectator() {
+        return isGameSpectator;
+    }
+
+    public void setGameSpectator(boolean value) {
+        this.setGameSpectator(value, false);
+    }
+    
+    public void setGameSpectator(boolean value, boolean spawnToAll) {
+        this.isGameSpectator = value;
+
+        if (value) {
+            this.despawnFromAll();
+        } else if (spawnToAll) {
+            this.spawnToAll();
+        }
+    }
+
     @Override
     public void spawnTo(Player player) {
-        if (this.isSpectator) return;
+        if (this.isGameSpectator) return;
         super.spawnTo(player);
     }
 
@@ -30,41 +45,6 @@ public class CustomPlayer extends Player {
     public boolean attack(EntityDamageEvent source) {
         source.setCancelled();
         return false;
-    }
-
-    @Override
-    protected void checkChunks() {
-        if (this.chunk == null || (this.chunk.getX() != ((int) this.x >> 4) || this.chunk.getZ() != ((int) this.z >> 4))) {
-            if (this.chunk != null) {
-                this.chunk.removeEntity(this);
-            }
-            this.chunk = this.level.getChunk((int) this.x >> 4, (int) this.z >> 4, true);
-
-            if (!this.justCreated) {
-                Map<Integer, Player> newChunk = this.level.getChunkPlayers((int) this.x >> 4, (int) this.z >> 4);
-                newChunk.remove(this.getLoaderId());
-
-                for (Player player : new ArrayList<>(this.hasSpawned.values())) {
-                    if (!newChunk.containsKey(player.getLoaderId())) {
-                        this.despawnFrom(player);
-                    } else {
-                        newChunk.remove(player.getLoaderId());
-                    }
-                }
-
-                if (!isSpectator) {
-                    for (Player player : newChunk.values()) {
-                        this.spawnTo(player);
-                    }
-                }
-            }
-
-            if (this.chunk == null) {
-                return;
-            }
-
-            this.chunk.addEntity(this);
-        }
     }
 
 }

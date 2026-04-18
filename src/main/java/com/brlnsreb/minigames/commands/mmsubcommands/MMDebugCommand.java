@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.commands.subcommands.BasicSubCommand;
+import com.brlnsreb.minigames.core.player.CustomPlayer;
 import com.brlnsreb.minigames.lobby.entities.NPCEntity;
 import com.brlnsreb.minigames.mm.config.MMConfig;
 
@@ -89,105 +90,9 @@ public class MMDebugCommand extends BasicSubCommand {
                     player.setDataFlag(EntityFlag.HAS_GRAVITY, true);
                     break;
                 case "5":
-                    try {
-                        Level lobby = plugin.getServer().getLevelByName(config.getLobbyWorld());
-                        
-                        Vector3 spawnPos = config.getLobbySpawn();
-                        Location lobbySpawn = new Location(spawnPos.x, spawnPos.y, spawnPos.z, lobby);
-
-                        int spawnX = spawnPos.getFloorX() >> 4;
-                        int spawnZ = spawnPos.getFloorZ() >> 4;
-
-                        for (int x = spawnX - 1; x <= spawnX + 1; x++) {
-                            for (int z = spawnZ - 1; z <= spawnZ + 1; z++) {
-                                lobby.loadChunk(x, z);
-                            }
-                        }
-
-                        player.setMotion(new Vector3(0, 0, 0));
-                        player.setFlying(false);
-                        player.setAllowFlight(false);
-                        player.setCheckMovement(false); //add to refreshplayerstate as true but delayed
-                        player.setMotion(new Vector3(0, 0, 0));
-
-                        player.teleport(lobbySpawn);
-
-                        plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
-                            if (player.isOnline()) { player.setCheckMovement(true); }
-                        }, 80);
-                        
-
-                    } catch (Exception e) {
-                        plugin.getLogger().error("Error returning player to lobby: " + e.getMessage());
-                    }
-                    break;
-                
-                case "6":
-                    try {
-                        Level lobby = plugin.getServer().getLevelByName(config.getLobbyWorld());
-                        
-                        Vector3 spawnPos = config.getLobbySpawn();
-                        Location lobbySpawn = new Location(spawnPos.x, spawnPos.y, spawnPos.z, lobby);
-
-                        player.setMotion(new Vector3(0, 0, 0));
-                        player.setFlying(false);
-                        player.setAllowFlight(false);
-                        player.setCheckMovement(false);
-                        player.setMotion(new Vector3(0, 0, 0));
-
-                        player.teleport(lobbySpawn);
-
-                        plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
-                            if (player.isOnline()) { player.setCheckMovement(true); }
-                        }, 80);
-                        
-
-                    } catch (Exception e) {
-                        plugin.getLogger().error("Error returning player to lobby: " + e.getMessage());
-                    }
-                    break;
-                case "7":
-                    if (args.length > 3) {
-                    player.setMovementSpeed(Float.parseFloat(args[2])); }
-                    player.getFoodData().setFood(Integer.parseInt(args[3]));
-                    player.setSprinting(false);
-                    break;
-                case "8":
-                    if (args.length > 2) {
-                    player.setMovementSpeed(Float.parseFloat(args[2])); }
-                    break;
-                case "9":
-                    Level lobby = plugin.getServer().getLevelByName(config.getLobbyWorld());
-                    
-                    Vector3 spawnPos = config.getLobbySpawn();
-
-                    int spawnX = spawnPos.getFloorX() >> 4;
-                    int spawnZ = spawnPos.getFloorZ() >> 4;
-
-                    for (int x = spawnX - 1; x <= spawnX + 1; x++) {
-                        for (int z = spawnZ - 1; z <= spawnZ + 1; z++) {
-                            lobby.unloadChunk(x, z);
-                        }
-                    }
-                    break;
-                case "10":
-                    Level lobby1 = plugin.getServer().getLevelByName(config.getLobbyWorld());
-                        
-                    Vector3 spawnPos1 = config.getLobbySpawn();
-
-                    int spawnX1 = spawnPos1.getFloorX() >> 4;
-                    int spawnZ1 = spawnPos1.getFloorZ() >> 4;
-
-                    for (int x = spawnX1 - 1; x <= spawnX1 + 1; x++) {
-                        for (int z = spawnZ1 - 1; z <= spawnZ1 + 1; z++) {
-                            lobby1.loadChunk(x, z);
-                        }
-                    }
-                    break;
-                case "11":
                     plugin.getMMGame().getDeath().createBody(player, player.getNextPosition());
                     break;
-                case "13":
+                case "6":
                     Position pos2 = player.getPosition();
                     int cx2 = pos2.getFloorX() >> 4;
                     int cz2 = pos2.getFloorZ() >> 4;
@@ -204,13 +109,7 @@ public class MMDebugCommand extends BasicSubCommand {
                     npc.spawnToAll();
                     if (plugin.getDebugVar() == 1) npc.despawnFrom(player);
                     break;
-                case "14":
-                    player.despawnFromAll();
-                    break;
-                case "15":
-                    player.spawnToAll();
-                    break;
-                case "16":
+                case "7":
                     Position pos3 = player.getPosition();
                     Item hoe = Item.get(Item.GOLDEN_HOE, 0, 1);
                     hoe.setCustomName(TextFormat.colorize(config.getSheriffHoeName()));
@@ -241,6 +140,12 @@ public class MMDebugCommand extends BasicSubCommand {
                         
                         drop.spawnToAll();
                     }
+                    break;
+                case "8":
+                    ((CustomPlayer) player).setGameSpectator(true);
+                    break;
+                case "9":
+                    ((CustomPlayer) player).setGameSpectator(false, true);
                     break;
                 
                 //--- control case (when forgetting break) and continue

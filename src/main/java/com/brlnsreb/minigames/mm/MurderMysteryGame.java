@@ -2,7 +2,6 @@ package com.brlnsreb.minigames.mm;
 
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.data.EntityFlag;
 import cn.nukkit.entity.effect.Effect;
 import cn.nukkit.entity.effect.EffectType;
 import cn.nukkit.level.Level;
@@ -16,6 +15,7 @@ import cn.nukkit.utils.TextFormat;
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.core.minigame.Arena;
 import com.brlnsreb.minigames.core.minigame.GameState;
+import com.brlnsreb.minigames.core.player.CustomPlayer;
 import com.brlnsreb.minigames.mm.config.MMConfig;
 import com.brlnsreb.minigames.mm.entities.DeadBodyEntity;
 import com.brlnsreb.minigames.mm.items.ItemManager;
@@ -159,12 +159,9 @@ public class MurderMysteryGame {
             gp.setRole(MMRole.SPECTATOR);
         }
 
-        player.setGamemode(Player.ADVENTURE);
-        player.setFlying(true);
+        ((CustomPlayer) player).setGameSpectator(true);
         player.setAllowFlight(true);
-        player.setDataFlag(EntityFlag.INVISIBLE, true);
-        player.setDataFlag(EntityFlag.COLLIDABLE, false);
-        player.fireProof = true;
+        player.setFlying(true);
 
         ItemManager.giveSpectatorItems(player, config.getSpectatorItemName());
 
@@ -210,7 +207,6 @@ public class MurderMysteryGame {
 
         players.remove(player);
         roleManager.removePlayer(player);
-        refreshPlayerState(player, true);
 
         switch (state) {
             case WAITING_LOBBY:
@@ -235,6 +231,8 @@ public class MurderMysteryGame {
                 returnToLobby(player);
                 break;
             }
+        
+        refreshPlayerState(player, true);
         
         if (players.size() < config.getMinPlayers() && state == GameState.LOBBY_COUNTDOWN) {
             cancelCountdown();
@@ -932,7 +930,7 @@ public class MurderMysteryGame {
         refreshPlayerState(player, false);
     }
 
-    public void refreshPlayerState(Player p, Boolean isLeavingOrJoining) {
+    public void refreshPlayerState(Player p, boolean isLeavingOrJoining) {
         if (p == null) return;
         
         if (!p.isOnline()) {
@@ -944,9 +942,6 @@ public class MurderMysteryGame {
         
         p.setGamemode(Player.ADVENTURE);
 
-        p.setDataFlag(EntityFlag.INVISIBLE, false);
-        p.setDataFlag(EntityFlag.COLLIDABLE, false);
-        p.fireProof = false;
         p.removeAllEffects();
         p.getFoodData().setFood(18);
 
@@ -954,6 +949,7 @@ public class MurderMysteryGame {
         if (isLeavingOrJoining) {
             ItemManager.clearInventory(p);
             setNameTagVisible(p);
+            ((CustomPlayer) p).setGameSpectator(false, true);
 
             plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
                 if (p.isOnline()) { p.setCheckMovement(true); }
@@ -976,6 +972,7 @@ public class MurderMysteryGame {
         } else {
             switch (state) {
                 case WAITING_LOBBY:
+                    ((CustomPlayer) p).setGameSpectator(false, true);
                     setNameTagVisible(p);
 
                     scoreboard.remove(p);
@@ -991,6 +988,7 @@ public class MurderMysteryGame {
                     }, 80);
                     break;
                 case LOBBY_COUNTDOWN:
+                    ((CustomPlayer) p).setGameSpectator(false, true);
                     setNameTagVisible(p);
 
                     if (!countdownShortened) {
@@ -1011,7 +1009,7 @@ public class MurderMysteryGame {
                 case PREGAME_COUNTDOWN:
                 case IN_GAME:
                 case ENDING:
-                    setNameTagsInvisible(p);
+                    setNameTagInvisible(p);
 
                     scoreboard.remove(p);
                     bossBar.hide(p);
@@ -1124,7 +1122,7 @@ public class MurderMysteryGame {
         return false;
     }
 
-    public void setNameTagsInvisible(Player player) {
+    public void setNameTagInvisible(Player player) {
         player.setNameTag("");
     }
 

@@ -20,17 +20,17 @@ import com.brlnsreb.minigames.commands.PingCommand;
 import com.brlnsreb.minigames.commands.ReloadConfigCommand;
 import com.brlnsreb.minigames.commands.SetRulesCommand;
 import com.brlnsreb.minigames.commands.ToggleSaveCommand;
-import com.brlnsreb.minigames.listeners.BlockUpdateListener;
-import com.brlnsreb.minigames.listeners.ChatListener;
-import com.brlnsreb.minigames.listeners.PlayerCreationListener;
+import com.brlnsreb.minigames.listeners.general.BlockUpdateListener;
+import com.brlnsreb.minigames.listeners.general.ChatListener;
+import com.brlnsreb.minigames.listeners.general.PlayerCreationListener;
 
 public class MinigameCore extends PluginBase {
     
     private static MinigameCore instance;
     private MurderMysteryGame mmGame;
-    private boolean globalChat;
-    private boolean saveAtShutdown;
-    private int debugVar;
+    private boolean globalChat = false;
+    private boolean saveAtShutdown = false;
+    private int debugVar = 0;
     
     @Override
     public void onLoad() {
@@ -47,16 +47,13 @@ public class MinigameCore extends PluginBase {
             this.getLogger().error("Error during DeadBodyEntity registration: " + e.getMessage());
             throw new RuntimeException(e);
         }
-
-        debugVar = 0;
     }
     
     @Override
     public void onEnable() {
         saveDefaultConfig();
         
-        globalChat = false;
-        saveAtShutdown = false;
+
         mmGame = new MurderMysteryGame(this);
 
 

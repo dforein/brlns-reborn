@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.brlnsreb.minigames.MinigameCore;
+import com.brlnsreb.minigames.core.player.CustomPlayer;
 import com.brlnsreb.minigames.mm.items.ItemManager;
 import com.brlnsreb.minigames.mm.roles.MMRole;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
@@ -65,13 +66,9 @@ public class DeathSystem {
         
         game.getRoleManager().getGamePlayer(victim).setRole(MMRole.SPECTATOR);
 
-        victim.setGamemode(Player.ADVENTURE);
-        victim.noClip = false;
-        victim.setFlying(true);
+        ((CustomPlayer) victim).setGameSpectator(true);
         victim.setAllowFlight(true);
-        victim.setDataFlag(EntityFlag.INVISIBLE, true);
-        victim.setDataFlag(EntityFlag.COLLIDABLE, false);
-        victim.fireProof = true;
+        victim.setFlying(true);
 
         ItemManager.giveSpectatorItems(victim, config.getSpectatorItemName());
         
