@@ -75,7 +75,6 @@ public class MMPlayerJoinQuitListener implements Listener {
         Player player =  event.getPlayer();
         
         game.refreshPlayerState(player, true);
-        game.returnToLobby(player);
 
         player.getFoodData().setEnabled(false);
 

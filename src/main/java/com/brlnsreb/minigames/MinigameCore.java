@@ -2,6 +2,7 @@ package com.brlnsreb.minigames;
 
 import cn.nukkit.command.SimpleCommandMap;
 import cn.nukkit.level.Level;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.plugin.PluginManager;
 import cn.nukkit.registry.Registries;
@@ -52,6 +53,25 @@ public class MinigameCore extends PluginBase {
     @Override
     public void onEnable() {
         saveDefaultConfig();
+
+
+        getServer().setDefaultLevel(
+            getServer().getLevelByName(
+                getConfig().getString("lobby.spawn.world")
+            )
+        );
+
+        getServer().getDefaultLevel().setSpawnLocation(new Vector3(
+            getConfig().getDouble("lobby.spawn.x"),
+            getConfig().getDouble("lobby.spawn.y"),
+            getConfig().getDouble("lobby.spawn.z")
+        ));
+
+        getServer().getDefaultLevel().save();
+
+        for (Level level : getServer().getLevels().values()) {
+            level.setAutoSave(false);
+        }
         
 
         mmGame = new MurderMysteryGame(this);
@@ -80,11 +100,6 @@ public class MinigameCore extends PluginBase {
         pm.registerEvents(new MMPlayerChatListener(mmGame), this);
         pm.registerEvents(new MMFormResponseListener(mmGame), this);
         pm.registerEvents(new MMPlayerInventoryListener(mmGame), this);
-
-
-        for (Level level : getServer().getLevels().values()) {
-            level.setAutoSave(false);
-        }
 
         
         this.getLogger().info(TextFormat.DARK_GREEN + "brlnsreb Minigames enabled!");

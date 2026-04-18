@@ -1046,7 +1046,7 @@ public class MurderMysteryGame {
 
         if (state == GameState.PREGAME_COUNTDOWN) {
             for (Player p : getOnlinePlayers()) {
-                scoreboard.update(p, timeStr, 0, false, MMRole.INNOCENT, true);
+                scoreboard.updatePregame(p, timeStr);
             }
             return;
         } else if (state == GameState.IN_GAME) {
@@ -1064,7 +1064,7 @@ public class MurderMysteryGame {
                 Player p = gp.getPlayer();
                 if (!p.isOnline()) continue;
 
-                scoreboard.update(p, timeStr, innocents, sheriffAlive, gp.getRole(), false);
+                scoreboard.updateInGame(p, timeStr, innocents, sheriffAlive, gp.getRole());
                 updatePlayerBossBar(p, gp, trackingActive);
             }
         }

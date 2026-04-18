@@ -14,6 +14,7 @@ import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.data.EntityFlag;
+import cn.nukkit.entity.item.EntityArmorStand;
 import cn.nukkit.entity.item.EntityItem;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
@@ -28,6 +29,7 @@ import cn.nukkit.utils.TextFormat;
 public class MMDebugCommand extends BasicSubCommand {
     
     private final MinigameCore plugin;
+    private EntityArmorStand holo;
     
     public MMDebugCommand(MinigameCore plugin) {
         super("debug");
@@ -51,10 +53,13 @@ public class MMDebugCommand extends BasicSubCommand {
 
             //ARGS HERE
             MMConfig config = plugin.getMMGame().getConfig();
+            Position pos = player.getPosition();
+            int cx = pos.getFloorX() >> 4;
+            int cz = pos.getFloorZ() >> 4;
             switch (args[1]) {
                 case "1":
                     Item gold = Item.get(Item.GOLD_INGOT, 0, 1);
-                    Position pos = player.getPosition().add(3, 0, 0);
+                    pos = pos.add(3, 0, 0);
 
                     CompoundTag nbt = Entity.getDefaultNBT(pos);
                     nbt.putCompound("Item", NBTIO.putItemHelper(gold));
@@ -62,8 +67,8 @@ public class MMDebugCommand extends BasicSubCommand {
                     nbt.putBoolean("Mergeable", false);
                     nbt.putShort("Health", 5);
 
-                    int cx = pos.getFloorX() >> 4;
-                    int cz = pos.getFloorZ() >> 4;
+                    cx = pos.getFloorX() >> 4;
+                    cz = pos.getFloorZ() >> 4;
 
                     EntityItem entity = (EntityItem) Entity.createEntity(
                         Entity.ITEM, 
@@ -146,6 +151,43 @@ public class MMDebugCommand extends BasicSubCommand {
                     break;
                 case "9":
                     ((CustomPlayer) player).setGameSpectator(false, true);
+                    break;
+                case "10":
+                    holo = new EntityArmorStand(
+                        (IChunk) pos.getLevel().getChunk(cx, cz), 
+                        Entity.getDefaultNBT(pos)
+                    );
+                    holo.spawnToAll();
+                    break;
+                case "11":
+                    holo.setScale(Float.parseFloat(args[2]));
+                    break;
+                case "12":
+                    holo.setNameTag(args[2]);
+                    break;
+                case "13a":
+                    holo.setNameTagVisible(true);
+                    break;
+                case "13b":
+                    holo.setNameTagVisible(false);
+                    break;
+                case "14a":
+                    holo.setNameTagAlwaysVisible(true);
+                    break;
+                case "14b":
+                    holo.setNameTagAlwaysVisible(false);
+                    break;
+                case "15a":
+                    holo.setImmobile(true);
+                    break;
+                case "15b":
+                    holo.setImmobile(false);
+                    break;
+                case "16a":
+                    holo.setDataFlag(EntityFlag.INVISIBLE, true);
+                    break;
+                case "16b":
+                    holo.setDataFlag(EntityFlag.INVISIBLE, false);
                     break;
                 
                 //--- control case (when forgetting break) and continue
