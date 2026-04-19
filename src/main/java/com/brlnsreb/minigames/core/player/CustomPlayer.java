@@ -59,6 +59,8 @@ public class CustomPlayer extends Player {
 
     @Override
     public boolean attack(EntityDamageEvent source) {
+        //when working on this later, consider sources like cactus damage, player attacks, lava, etc. for different games
+
         if (takeDamage) {
             return super.attack(source);
         }

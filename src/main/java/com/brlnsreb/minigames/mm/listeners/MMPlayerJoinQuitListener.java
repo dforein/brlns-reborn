@@ -40,7 +40,7 @@ public class MMPlayerJoinQuitListener implements Listener {
 
         if (gp != null) {
             if (game.getState() == GameState.IN_GAME || game.getState() == GameState.PREGAME_COUNTDOWN) {
-                game.getQuitTracker().markAsQuitted(player.getName());
+                game.getQuitTracker().markAsQuitted(player.getUniqueId());
                 
                 if (gp.getRole() == MMRole.SHERIFF) {
                     game.getDeath().dropSheriffHoe(player.getLocation());
@@ -80,8 +80,8 @@ public class MMPlayerJoinQuitListener implements Listener {
 
         QuitTracker quitTracker = game.getQuitTracker();
 
-        if (quitTracker.hasQuitted(player.getName())) {
-            quitTracker.removePlayer(player.getName());
+        if (quitTracker.hasQuitted(player.getUniqueId())) {
+            quitTracker.removePlayer(player.getUniqueId());
         }
     }
 }

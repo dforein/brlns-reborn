@@ -8,6 +8,7 @@ import java.util.List;
 public abstract class MinigameMatch {
     
     protected String name;
+    protected int id;
     protected GameState state;
     protected Arena arena;
     protected List<Player> players;
@@ -15,8 +16,9 @@ public abstract class MinigameMatch {
     // Lifecycle
     public abstract void onGameStart();
     public abstract void onGameEnd();
-    public abstract void joinPlayer(Player player);
-    public abstract void leavePlayer(Player player);
+    public abstract void onJoin(Player player);
+    public abstract void onLeave(Player player);
+    public abstract void onJoinAsSpectator(Player player);
     
     // Win conditions
     public abstract boolean checkWinCondition();
@@ -28,5 +30,6 @@ public abstract class MinigameMatch {
     
     // Getters
     public String getName() { return name; }
+    public int getId() { return id; }
     public GameState getState() { return state; }
 }

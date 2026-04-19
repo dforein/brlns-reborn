@@ -97,6 +97,7 @@ public class AddCommand extends SimpleSubCommand {
         config.set(path + "night-vision", false);
         config.set(path + "weather", "Clear");
         config.set(path + "builders", new ArrayList<String>());
+        config.set(path + "builders-team", "");
         config.set(path + "spawns", new ArrayList<int[]>());
 
         config.save();

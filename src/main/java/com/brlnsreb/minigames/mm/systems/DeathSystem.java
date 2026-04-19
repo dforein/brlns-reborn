@@ -128,7 +128,7 @@ public class DeathSystem {
         }
     }
     
-    public void createBody(Player victim, Position pos) {
+    private void createBody(Player victim, Position pos) {
         pos = pos.add(0, -0.4, 0);
 
         int cx = pos.getFloorX() >> 4;
@@ -173,18 +173,17 @@ public class DeathSystem {
     }
     
     private void dropRedstone(Position pos) {
-        MMConfig config = game.getConfig();
 
-        int amount = config.getRedstoneDrop();
-        
         List<Position> validPositions = new ArrayList<>();
         
-        for (int offsetX = -1; offsetX <= 1; offsetX++) {
-            for (int offsetZ = -1; offsetZ <= 1; offsetZ++) {
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                if ((i * i + j * j) != 1) continue;
+
                 Position checkPos = new Position(
-                    pos.getFloorX() + offsetX,
+                    pos.getFloorX() + i,
                     pos.getFloorY(),
-                    pos.getFloorZ() + offsetZ,
+                    pos.getFloorZ() + j,
                     pos.getLevel()
                 );
                 
@@ -205,18 +204,14 @@ public class DeathSystem {
             }
         }
         
-        int placed = 0;
-        while (placed < amount && !validPositions.isEmpty()) {
-            int index = ThreadLocalRandom.current().nextInt(validPositions.size());
-            Position targetPos = validPositions.remove(index);
+        while (!validPositions.isEmpty()) {
+            Position targetPos = validPositions.removeLast();
 
             BlockRedstoneWire redstone = new BlockRedstoneWire();
             redstone.setRedStoneSignal(15);
-            
             targetPos.getLevel().setBlock(targetPos, redstone, true, false);
+            
             game.addTrackedRedstone(targetPos);
-
-            placed++;
         }
     }
 

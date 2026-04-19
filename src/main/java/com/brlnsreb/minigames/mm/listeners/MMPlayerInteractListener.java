@@ -18,6 +18,7 @@ import cn.nukkit.event.player.PlayerInteractEvent.Action;
 import cn.nukkit.event.player.PlayerInteractEntityEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlazeRod;
+import cn.nukkit.item.ItemCompass;
 import cn.nukkit.item.ItemGoldenHoe;
 import cn.nukkit.item.ItemIronSword;
 import cn.nukkit.item.ItemNetherStar;
@@ -153,11 +154,11 @@ public class MMPlayerInteractListener implements Listener {
             }
         }
         
-        /*if (itemId == Item.COMPASS && gp.getRole() == MMRole.SPECTATOR) {
+        if (item instanceof ItemCompass && gp.getRole() == MMRole.SPECTATOR) {
             game.getSpectatorMenu().openTeleportMenu(player);
             event.setCancelled(true);
             return;
-        }*/         //new system
+        }
 
         
         //else game state is PREGAME_COUNTDOWN or IN_GAME or ENDING, and item is not null
@@ -189,7 +190,7 @@ public class MMPlayerInteractListener implements Listener {
     private void handleSheriffShoot(Player shooter, GamePlayer gp, MMConfig config) {
         if (gp.getRole() != MMRole.SHERIFF) return;
         
-        String cooldownKey = "sheriff_shoot_" + shooter.getName();
+        String cooldownKey = "mmsht:" + shooter.getName();
         if (!game.getCooldowns().canUse(cooldownKey, config.getShootCooldown())) {
             return;
         }
@@ -254,7 +255,7 @@ public class MMPlayerInteractListener implements Listener {
     private void handleMurdererThrow(Player murderer, GamePlayer gp, MMConfig config) {
         if (gp.getRole() != MMRole.MURDERER) return;
         
-        String cooldownKey = "sword_throw_" + murderer.getName();
+        String cooldownKey = "mmthrw:" + murderer.getName();
         if (!game.getCooldowns().canUse(cooldownKey, config.getSwordThrowCooldown())) {
             murderer.sendMessage(TextFormat.colorize(config.getMessage("sword-cooldown")));
             return;

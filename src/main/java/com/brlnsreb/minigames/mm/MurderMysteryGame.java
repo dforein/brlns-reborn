@@ -392,9 +392,12 @@ public class MurderMysteryGame {
 
         List<String> builders = config.getMapBuilders(selectedMap);
         if (!builders.isEmpty()) {
-            String buildersStr = String.join(" &7/ &d", builders);
-            String creditsMsg = config.getMessage("map-credits")
-                                        .replace("{builders}", buildersStr);
+            String buildersStr = String.join("&7, &d", builders);
+            
+            String buildersTeam = config.getMapBuildersTeam(selectedMap);
+            if (buildersTeam.length() > 0) buildersStr = buildersStr + " &7/ &d" + buildersTeam;
+
+            String creditsMsg = config.getMessage("map-credits").replace("{builders}", buildersStr);
             broadcast(creditsMsg);
         }
     

@@ -14,14 +14,11 @@ import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.data.EntityFlag;
-import cn.nukkit.entity.item.EntityArmorStand;
 import cn.nukkit.entity.item.EntityItem;
 import cn.nukkit.item.Item;
-import cn.nukkit.level.Level;
-import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.format.IChunk;
-import cn.nukkit.math.Vector3;
+import cn.nukkit.level.particle.FloatingTextParticle;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.TextFormat;
@@ -29,7 +26,7 @@ import cn.nukkit.utils.TextFormat;
 public class MMDebugCommand extends BasicSubCommand {
     
     private final MinigameCore plugin;
-    private EntityArmorStand holo;
+    private FloatingTextParticle holo;
     
     public MMDebugCommand(MinigameCore plugin) {
         super("debug");
@@ -95,7 +92,7 @@ public class MMDebugCommand extends BasicSubCommand {
                     player.setDataFlag(EntityFlag.HAS_GRAVITY, true);
                     break;
                 case "5":
-                    plugin.getMMGame().getDeath().createBody(player, player.getNextPosition());
+                    //plugin.getMMGame().getDeath().createBody(player, player.getNextPosition());
                     break;
                 case "6":
                     Position pos2 = player.getPosition();
@@ -109,10 +106,25 @@ public class MMDebugCommand extends BasicSubCommand {
                     IChunk chunk = (IChunk) pos2.getLevel().getChunk(cx2, cz2);
                     NPCEntity npc = new NPCEntity(chunk, Entity.getDefaultNBT(pos2));
 
+                    npc.setTask(p -> { p.sendMessage("Yea you joined bro or sum like dat"); });
                     npc.setSkin(player.getSkin());
-                    npc.updateLabel("&l&aAmasdihai", "123 sfss sd");
+                    npc.updateText("§l§cQuickPlay", "§dJoin: §amm0 §e0§7/§e24");
                     npc.spawnToAll();
                     if (plugin.getDebugVar() == 1) npc.despawnFrom(player);
+                    break;
+                case "6b":
+                    if (!pos.getLevel().isChunkLoaded(cx, cz)) {
+                        pos.getLevel().loadChunk(cx, cz);
+                    }
+
+                    IChunk chunk2 = (IChunk) pos.getLevel().getChunk(cx, cz);
+                    NPCEntity npc2 = new NPCEntity(chunk2, Entity.getDefaultNBT(pos));
+
+                    npc2.setSkin(player.getSkin());
+                    npc2.setTextVerticalOffset(Double.parseDouble(args[2]), Double.parseDouble(args[3]));
+                    npc2.updateText("§l§cQuickPlay", "§dJoin: §amm0 §e0§7/§e24");
+                    npc2.spawnToAll();
+                    if (plugin.getDebugVar() == 1) npc2.despawnFrom(player);
                     break;
                 case "7":
                     Position pos3 = player.getPosition();
@@ -153,43 +165,19 @@ public class MMDebugCommand extends BasicSubCommand {
                     ((CustomPlayer) player).setGameSpectator(false, true);
                     break;
                 case "10":
-                    holo = new EntityArmorStand(
-                        (IChunk) pos.getLevel().getChunk(cx, cz), 
-                        Entity.getDefaultNBT(pos)
+                    holo = new FloatingTextParticle(
+                        player,
+                        args[2]
                     );
-                    holo.spawnToAll();
-                    break;
-                case "11":
-                    holo.setScale(Float.parseFloat(args[2]));
+                    player.getLevel().addParticle(holo);
                     break;
                 case "12":
-                    holo.setNameTag(args[2]);
+                    holo.setTitle(args[2]);
                     break;
-                case "13a":
-                    holo.setNameTagVisible(true);
+                case "13":
+                    holo.setInvisible();
                     break;
-                case "13b":
-                    holo.setNameTagVisible(false);
-                    break;
-                case "14a":
-                    holo.setNameTagAlwaysVisible(true);
-                    break;
-                case "14b":
-                    holo.setNameTagAlwaysVisible(false);
-                    break;
-                case "15a":
-                    holo.setImmobile(true);
-                    break;
-                case "15b":
-                    holo.setImmobile(false);
-                    break;
-                case "16a":
-                    holo.setDataFlag(EntityFlag.INVISIBLE, true);
-                    break;
-                case "16b":
-                    holo.setDataFlag(EntityFlag.INVISIBLE, false);
-                    break;
-                
+
                 //--- control case (when forgetting break) and continue
                 case "controlCase_un2c9r8eyn2cr8yq8294cyrq9o":
                     player.sendMessage("ERROR: control case activated");

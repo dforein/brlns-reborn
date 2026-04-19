@@ -67,7 +67,6 @@ death:
   animation-duration: 0.4167
   head-yaw-offset: -35
   head-pitch-offset: -40
-  redstone-drop: 3
   blindness-duration: 2
 gold:
   spawn-interval-min: 2
@@ -82,7 +81,7 @@ scoreboard:
   update-interval: 10
 messages:
   test: t1
-  prefix: '&l&aM&rl&2M &r'
+  prefix: '&l&aM&2M &r'
   spectator-in-game: '&aThe match has already started. You joined as spectator!'
   countdown-bossbar-long: '&l&eStarting in &6{minutes}m {seconds}s'
   countdown-bossbar-medium: '&l&eStarting in &6{seconds}s'
@@ -120,7 +119,7 @@ messages:
   sheriff-gun-dropped: '&eThe &9Sheriff''s &egun is now dropped.'
   sheriff-dead-instructions: '&aYou can collect the &9Sheriff''s &agun, or craft a
     gun by using &eGOLD &ato become the sheriff!'
-  not-enough-gold: '&cYou don''t have enough &eGOLD &cto craft the &9Sheriff''s &cgun (need: 5 you have: {gold})''
+  not-enough-gold: '&cYou don''t have enough &eGOLD &cto craft the &9Sheriff''s &cgun (need: 5 you have: {gold})'
   new-sheriff-chosen: '&aA new &9Sheriff &ahas been chosen'
   killed: '{killer} &ckilled &a{killed}'
   murderer: '&eThe Murderer'
@@ -165,6 +164,7 @@ world:
       weather: Clear
       builders:
       - ItzDS35
+      builders-team: '@BrokenLens Community'
       spawns:
       - 50 80 50
       - 20 80 20
@@ -178,6 +178,7 @@ world:
       weather: Clear
       builders:
       - Lesz
+      builders-team: '@BrokenLens BuildTeam'
       spawns:
       - 12 5 0
       - 30 5 -23
@@ -201,6 +202,7 @@ world:
       builders:
       - Yoursenpaiisme
       - Amphinous
+      builders-team: '@Community'
       spawns:
       - 13 4 5
       - 63 6 20
@@ -227,6 +229,7 @@ world:
       builders:
       - TrenzKGM
       - KhrizKGM
+      builders-team: '@BrokenLens BuildTeam'
       spawns:
       - 2446 56 2438
       - 2436 52 2441
@@ -255,6 +258,7 @@ world:
       weather: Clear
       builders:
       - TrenzKGM
+      builders-team: '@BrokenLens BuildTeam'
       spawns:
       - 2457 32 2419
       - 2486 34 2411
@@ -286,6 +290,7 @@ world:
       builders:
       - TrenzKGM
       - KhrizKGM
+      builders-team: '@BrokenLens BuildTeam'
       spawns:
       - 2409 25 2446
       - 2390 27 2450
@@ -331,6 +336,7 @@ world:
       builders:
       - TrenzKGM
       - KhrizKGM
+      builders-team: '@BrokenLens BuildTeam'
       spawns:
       - 13 21 16
       - 27 21 9

@@ -9,14 +9,15 @@ import cn.nukkit.utils.TextFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 public abstract class ScoreboardAbstract {
     
     protected static final String OBJECTIVE_NAME = "scoreboard";
     protected static final String DISPLAY_TITLE = "";
 
-    protected final Map<String, Scoreboard> playerBoards = new HashMap<>();
-    protected final Map<String, Map<Integer, FakeScorer>> activeScorers = new HashMap<>();
+    protected final Map<UUID, Scoreboard> playerBoards = new HashMap<>();
+    protected final Map<UUID, Map<Integer, FakeScorer>> activeScorers = new HashMap<>();
 
     //implement the updateLogic in a separate public update method(s)
     //also implement drawInGame and others in the update method(s)
@@ -24,8 +25,7 @@ public abstract class ScoreboardAbstract {
     protected Scoreboard getScoreboard(Player player) {
         if (player == null || !player.isOnline()) return null;
 
-        String name = player.getName();
-        Scoreboard sb = playerBoards.computeIfAbsent(name, k -> {
+        Scoreboard sb = playerBoards.computeIfAbsent(player.getUniqueId(), k -> {
             Scoreboard newSb = new Scoreboard(OBJECTIVE_NAME, DISPLAY_TITLE);
             newSb.addViewer(player, DisplaySlot.SIDEBAR);
             return newSb;
@@ -38,7 +38,7 @@ public abstract class ScoreboardAbstract {
         return sb;
     }
 
-    protected void drawPregame(Scoreboard sb, String playerName, String timer) {
+    protected void drawPregame(Scoreboard sb, UUID playerId, String timer) {
         //lower score = higher position, NOT the reverse
         int score = 0;
         String[] lines = {
@@ -50,16 +50,16 @@ public abstract class ScoreboardAbstract {
 
         for (String line : lines) {
             score++;
-            setLine(sb, playerName, line, score);
+            setLine(sb, playerId, line, score);
         }
 
-        clearUnusedLines(sb, playerName, score);      //it's needed, to remove the older lower lines
+        clearUnusedLines(sb, playerId, score);      //it's needed, to remove the older lower lines
     }
 
-    protected void setLine(Scoreboard sb, String playerName, String text, int score) {
+    protected void setLine(Scoreboard sb, UUID playerId, String text, int score) {
 
         String colorText = TextFormat.colorize(text);
-        Map<Integer, FakeScorer> playerMap = activeScorers.computeIfAbsent(playerName, k -> new HashMap<>());
+        Map<Integer, FakeScorer> playerMap = activeScorers.computeIfAbsent(playerId, k -> new HashMap<>());
         
         FakeScorer oldScorer = playerMap.get(score);
         
@@ -77,8 +77,8 @@ public abstract class ScoreboardAbstract {
 
     }
 
-    protected void clearUnusedLines(Scoreboard sb, String playerName, int maxScore) {
-        Map<Integer, FakeScorer> playerMap = activeScorers.get(playerName);
+    protected void clearUnusedLines(Scoreboard sb, UUID playerId, int maxScore) {
+        Map<Integer, FakeScorer> playerMap = activeScorers.get(playerId);
         if (playerMap == null) return;
 
         playerMap.entrySet().removeIf(entry -> {
@@ -91,15 +91,15 @@ public abstract class ScoreboardAbstract {
     }
 
     public void remove(Player player) {
-        String name = player.getName();
-        Scoreboard sb = playerBoards.remove(name);
+        UUID playerId = player.getUniqueId();
+        Scoreboard sb = playerBoards.remove(playerId);
         if (sb != null && player.isOnline()) {
             sb.removeViewer(player, DisplaySlot.SIDEBAR);
         }
-        activeScorers.remove(name);
+        activeScorers.remove(playerId);
     }
 
-    public Set<String> getActivePlayerNames() {
+    public Set<UUID> getActivePlayerNames() {
         return playerBoards.keySet();
     }
 

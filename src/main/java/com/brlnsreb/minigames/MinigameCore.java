@@ -1,5 +1,6 @@
 package com.brlnsreb.minigames;
 
+import cn.nukkit.Player;
 import cn.nukkit.command.SimpleCommandMap;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.Vector3;
@@ -24,6 +25,7 @@ import com.brlnsreb.minigames.commands.ToggleSaveCommand;
 import com.brlnsreb.minigames.listeners.general.BlockUpdateListener;
 import com.brlnsreb.minigames.listeners.general.ChatListener;
 import com.brlnsreb.minigames.listeners.general.PlayerCreationListener;
+import com.brlnsreb.minigames.lobby.entities.NPCEntity;
 
 public class MinigameCore extends PluginBase {
     
@@ -41,11 +43,12 @@ public class MinigameCore extends PluginBase {
         try {
             Registries.ENTITY.registerCustomEntity(this, DeadBodyEntity.class);
             Registries.ENTITY.registerCustomEntity(this, ThrownSwordEntity.class);
+            Registries.ENTITY.registerCustomEntity(this, NPCEntity.class);
             Registries.ENTITY.rebuildTag();
             this.getLogger().info("§aCustom entities registered successfully.");
             
         } catch (cn.nukkit.registry.RegisterException e) {
-            this.getLogger().error("Error during DeadBodyEntity registration: " + e.getMessage());
+            this.getLogger().error("Error during entities registration: " + e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -53,7 +56,6 @@ public class MinigameCore extends PluginBase {
     @Override
     public void onEnable() {
         saveDefaultConfig();
-
 
         getServer().setDefaultLevel(
             getServer().getLevelByName(
@@ -99,7 +101,6 @@ public class MinigameCore extends PluginBase {
         pm.registerEvents(new MMPlayerAttackListener(mmGame), this);
         pm.registerEvents(new MMPlayerChatListener(mmGame), this);
         pm.registerEvents(new MMFormResponseListener(mmGame), this);
-        pm.registerEvents(new MMPlayerInventoryListener(mmGame), this);
 
         
         this.getLogger().info(TextFormat.DARK_GREEN + "brlnsreb Minigames enabled!");

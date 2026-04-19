@@ -9,12 +9,13 @@ import cn.nukkit.network.protocol.AnimatePacket;
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.utils.CustomPlaySoundPacket;
 import java.util.HashSet;
+import java.util.UUID;
 
 public class PunchAnimationListener implements Listener {
     //UNUSED LISTENER (here just for future development)
 
     private final MinigameCore plugin;
-    private final HashSet<String> hitSoundCooldowns = new HashSet<>();
+    private final HashSet<UUID> hitSoundCooldowns = new HashSet<>();
 
     public PunchAnimationListener(MinigameCore plugin) {
         this.plugin = plugin;
@@ -26,15 +27,15 @@ public class PunchAnimationListener implements Listener {
 
         if (player != null 
             && event.getAnimationType() == AnimatePacket.Action.SWING_ARM 
-            && !this.hitSoundCooldowns.contains(player.getName())) {
+            && !this.hitSoundCooldowns.contains(player.getUniqueId())) {
 
             CustomPlaySoundPacket packet = new CustomPlaySoundPacket();
 
             packet.sendDirectionalSoundTo(player, "game.player.attack.nodamage");
 
-            this.hitSoundCooldowns.add(player.getName());
+            this.hitSoundCooldowns.add(player.getUniqueId());
             this.plugin.getServer().getScheduler().scheduleDelayedTask(() -> {
-                this.hitSoundCooldowns.remove(player.getName());
+                this.hitSoundCooldowns.remove(player.getUniqueId());
             }, 4);
         }
     }

@@ -9,8 +9,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class VotingSystem {
     
-    private final Map<String, String> mapVotes;      // playerName -> mapId
-    private final Map<String, String> timeVotes;     // playerName -> time
+    private final Map<UUID, String> mapVotes;
+    private final Map<UUID, String> timeVotes;
     
     private List<String> availableMaps;
     
@@ -29,19 +29,19 @@ public class VotingSystem {
     }
     
     public void voteMap(Player player, String mapId) {
-        mapVotes.put(player.getName(), mapId);
+        mapVotes.put(player.getUniqueId(), mapId);
     }
     
     public void voteTime(Player player, String time) {
-        timeVotes.put(player.getName(), time);
+        timeVotes.put(player.getUniqueId(), time);
     }
     
     public String getPlayerMapVote(Player player) {
-        return mapVotes.getOrDefault(player.getName(), "None");
+        return mapVotes.getOrDefault(player.getUniqueId(), "None");
     }
     
     public String getPlayerTimeVote(Player player) {
-        return timeVotes.getOrDefault(player.getName(), "None");
+        return timeVotes.getOrDefault(player.getUniqueId(), "None");
     }
     
     public int getMapVoteCount(String mapId) {
@@ -95,11 +95,11 @@ public class VotingSystem {
     }
     
     public void removeMapVote(Player player) {
-        mapVotes.remove(player.getName());
+        mapVotes.remove(player.getUniqueId());
     }
 
     public void removeTimeVote(Player player) {
-        timeVotes.remove(player.getName());
+        timeVotes.remove(player.getUniqueId());
     }
     
     public void clear() {

@@ -103,17 +103,11 @@ public class GoldSystem {
     }
 
     public void cleanupGold(Level level) {
-        long startTime = System.currentTimeMillis();
-
         for (Entity entity : level.getEntities()) {
             if (entity instanceof EntityItem && entity.namedTag != null && entity.namedTag.getBoolean("mm_gold")) {
                 entity.close();
             }
         }
-
-        plugin.getLogger().info("Cleaned golds in "
-                                + ((startTime - System.currentTimeMillis()) / 1000.0) 
-                                + "s");
     }
 
     public void loadSpawns(GoldSpawnMapper mapper, String mapId) {
@@ -121,8 +115,6 @@ public class GoldSystem {
         
         if (validSpawns.isEmpty()) {
             plugin.getLogger().warning("No gold spawns found for map: " + mapId);
-        } else {
-            plugin.getLogger().info("Loaded " + validSpawns.size() + " gold spawns for " + mapId);
         }
     }
 }

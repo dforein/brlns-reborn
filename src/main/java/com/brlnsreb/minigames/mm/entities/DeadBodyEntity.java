@@ -43,8 +43,8 @@ public class DeadBodyEntity extends EntityHuman implements CustomEntity {
     protected void initEntity() {
         super.initEntity();
         
-        this.invulnerable = true;
-        this.fireProof = true;
+        this.setFireImmune(true);
+        this.setInvulnerable(true);
         this.setNameTagVisible(false);
         this.setCanClimb(false);
         this.setDataFlag(EntityFlag.SILENT, true);

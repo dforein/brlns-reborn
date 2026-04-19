@@ -14,7 +14,7 @@ import com.brlnsreb.minigames.mm.roles.GamePlayer;
 import com.brlnsreb.minigames.mm.roles.MMRole;
 
 public class MMPlayerInventoryListener implements Listener {
-    
+    //UNUSED: replaced with old mechanics due to new features
     private final MurderMysteryGame game;
     
     public MMPlayerInventoryListener(MurderMysteryGame game) {

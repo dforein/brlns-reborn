@@ -1,28 +1,46 @@
 package com.brlnsreb.minigames.mm.ui;
 
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.form.window.SimpleForm;
+import cn.nukkit.scheduler.TaskHandler;
 import cn.nukkit.utils.TextFormat;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.roles.GamePlayer;
 import com.brlnsreb.minigames.mm.roles.MMRole;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SpectatorMenu {
     
     private final MurderMysteryGame game;
-    private final Map<String, List<Player>> pendingMenus;
+    private final Map<UUID, List<Player>> pendingMenus;
+    private final Map<UUID, Long> openingCooldown;
+    private final Map<UUID, TaskHandler> handlers;
     
     public SpectatorMenu(MurderMysteryGame game) {
         this.game = game;
-        this.pendingMenus = new HashMap<>();
+        this.pendingMenus = new ConcurrentHashMap<>();
+        this.openingCooldown = new ConcurrentHashMap<>();
+        this.handlers = new ConcurrentHashMap<>();
     }
     
     public void openTeleportMenu(Player spectator) {
+        long now = System.currentTimeMillis();
+        UUID uuid = spectator.getUniqueId();
+
+        //cooldown check, else reset cooldown
+        if (openingCooldown.containsKey(uuid)
+            && now - openingCooldown.get(uuid) < 500) {
+            return;
+        }
+
+        openingCooldown.put(uuid, now);
+
         SimpleForm menu = new SimpleForm(
             TextFormat.colorize(game.getConfig().getSpectatorItemName()),
             TextFormat.colorize("Select a player to teleport")
@@ -62,12 +80,12 @@ public class SpectatorMenu {
             return;
         }
         
-        pendingMenus.put(spectator.getName(), alivePlayers);
+        pendingMenus.put(spectator.getUniqueId(), alivePlayers);
         menu.send(spectator);
     }
     
     public void handleResponse(Player spectator, int buttonId) {
-        List<Player> alivePlayers = pendingMenus.remove(spectator.getName());
+        List<Player> alivePlayers = pendingMenus.remove(spectator.getUniqueId());
         
         if (alivePlayers == null) return;
         
@@ -77,9 +95,30 @@ public class SpectatorMenu {
             if (target != null && target.isOnline()) {
                 spectator.teleport(target.getLocation());
 
-                String message = game.getConfig().getMessage("teleported-to")
-                                                    .replace("{player}", target.getName());
+                String message = game.getConfig().getMessage("teleported-to").replace("{player}", target.getName());
                 spectator.sendMessage(TextFormat.colorize(message));
+
+                TaskHandler oldHandler = handlers.remove(spectator.getUniqueId());
+                if (oldHandler != null) oldHandler.cancel();
+
+                final TaskHandler[] currHandler = new TaskHandler[1];
+                currHandler[0] = Server.getInstance().getScheduler().scheduleRepeatingTask(() -> {      //TODO: test
+                    if (target == null || !target.isOnline() || !game.getRoleManager().getGamePlayer(target).isAlive() || !game.getPlayers().contains(target)
+                        || spectator == null || !spectator.isOnline() || !game.getPlayers().contains(spectator)) {
+
+                        if (currHandler[0] != null) currHandler[0].cancel();
+                        handlers.remove(spectator.getUniqueId());
+                        return;
+                    }
+
+                    String actionBarMsg = "&l&aTarget: &e"+ target.getName() +" &aDistance: &d%.2f";
+                    spectator.sendActionBar(TextFormat.colorize(
+                        actionBarMsg.formatted(spectator.distance(target))
+                    ));
+                }, 20);
+
+                handlers.put(spectator.getUniqueId(), currHandler[0]);
+
             } else {
                 spectator.sendMessage(TextFormat.colorize(game.getConfig().getMessage("player-not-available")));
             }

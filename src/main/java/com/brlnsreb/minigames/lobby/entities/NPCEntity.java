@@ -1,6 +1,14 @@
 package com.brlnsreb.minigames.lobby.entities;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.function.Consumer;
+
+import javax.imageio.ImageIO;
+
 import org.jetbrains.annotations.NotNull;
+
+import com.brlnsreb.minigames.MinigameCore;
 
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
@@ -8,18 +16,19 @@ import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.entity.custom.CustomEntity;
 import cn.nukkit.entity.custom.CustomEntityDefinition;
 import cn.nukkit.entity.data.EntityFlag;
-import cn.nukkit.entity.item.EntityArmorStand;
+import cn.nukkit.entity.data.Skin;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Position;
 import cn.nukkit.level.format.IChunk;
+import cn.nukkit.level.particle.FloatingTextParticle;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.TextFormat;
 
 public class NPCEntity extends EntityHuman implements CustomEntity {
 
     public static final String IDENTIFIER = "brlnsreb:npc";
-
     private static final double lookDistance = 10;
     private static final double distSqThreshold = lookDistance * lookDistance;
     private static final double rotationThreshold = 30;
@@ -28,66 +37,53 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
     private double lastBodyYaw = 0;
     private double lerpSpeed = 0.25;
 
-    private Runnable task = null;
-    private EntityArmorStand label1 = null;
-    private EntityArmorStand label2 = null;
+    private Consumer<Player> task = null;
+    private FloatingTextParticle text1 = null;
+    private FloatingTextParticle text2 = null;
+    private double verticalOffset1 = 0.6;
+    private double verticalOffset2 = 0.25;
 
     public NPCEntity(IChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
     }
 
-    @Override
-    public @NotNull String getIdentifier() {
-        return IDENTIFIER;
-    }
-
-    public static CustomEntityDefinition definition() {
-        return CustomEntityDefinition.simpleBuilder(IDENTIFIER)
-                .eid(IDENTIFIER)
-                .hasSpawnEgg(false)
-                .isSummonable(true)
-                .health(5)
-                .physics(false, false, false)
-                .pushable(false, false)
-                .isPersistent(true)
-                .build();
-    }
-
-    @Override
-    protected void initEntity() {
-        super.initEntity();
-        
-        this.invulnerable = true;
-        this.fireProof = true;
-        this.setNameTagVisible(false);
-        this.setImmobile(false);
-        this.setDataFlag(EntityFlag.SILENT, true);
-        this.setDataFlag(EntityFlag.COLLIDABLE, false);
-        
-        this.setHealthCurrent(5);
-    }
-
-    @Override
-    public boolean attack(EntityDamageEvent source) {
-        if (source instanceof EntityDamageByEntityEvent
-            && ((EntityDamageByEntityEvent) source).getDamager() instanceof Player
-            && task != null) {
-
-                task.run();
-                //Server.getInstance().getLogger().info("NPC: attack");
+    public void updateText(String line) {
+        if (text1 == null) {
+            createHologram(verticalOffset1, line);
         }
-        source.setCancelled(true);
-    
-        return false;
+
+        text1.setTitle(TextFormat.colorize(line));
     }
 
-    @Override
-    public boolean onInteract(Player player, Item item) {
-        if (task == null) return true;
+    public void updateText(String line1, String line2) {
+        if (text1 == null || text2 == null) {
+            createHologram(verticalOffset1, line1);
+            createHologram(verticalOffset2, line2);
+            return;
+        }
 
-        task.run();
-        //Server.getInstance().getLogger().info("NPC: interact");
-        return true;
+        text1.setTitle(TextFormat.colorize(line1));
+        text2.setTitle(TextFormat.colorize(line2));
+    }
+
+    private void createHologram(double verticalOffset, String title) {
+        if (this.text1 != null && this.text2 != null) return;
+        
+        Position pos = new Position(
+            this.getX(),
+            this.getY() + 2.25 + verticalOffset,
+            this.getZ(),
+            this.getLevel()
+        );
+
+        FloatingTextParticle text = new FloatingTextParticle(pos, title);
+        this.getLevel().addParticle(text);
+
+        if (this.text1 == null) {
+            this.text1 = text;
+        } else {
+            this.text2 = text;
+        }
     }
 
     @Override
@@ -152,18 +148,46 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
     }
 
     @Override
-    public float getGravity() {
-        return 0;
+    public boolean attack(EntityDamageEvent source) {
+        if (source instanceof EntityDamageByEntityEvent
+            && ((EntityDamageByEntityEvent) source).getDamager() instanceof Player
+            && task != null) {
+
+                task.accept((Player) ((EntityDamageByEntityEvent) source).getDamager());
+                //Server.getInstance().getLogger().info("NPC: attack");
+        }
+        source.setCancelled(true);
+    
+        return false;
     }
 
     @Override
-    public boolean canCollideWith(Entity entity) {
-        return false;
+    public boolean onInteract(Player player, Item item) {
+        if (task == null) return true;
+
+        task.accept(player);
+        //Server.getInstance().getLogger().info("NPC: interact");
+        return true;
     }
-    
-    @Override
-    public boolean canBeMovedByCurrents() {
-        return false;
+
+    public void setSkin(String skinFileName) {
+        this.setSkin(loadSkin(skinFileName));
+    }
+
+    public Skin loadSkin(String skinFileName) {
+        try {
+            BufferedImage img = ImageIO.read(new File(
+                MinigameCore.getInstance().getDataFolder(), 
+                "skins/" + skinFileName + ".png"
+            ));
+            Skin skin = new Skin();
+            skin.setSkinData(img);
+            skin.setSkinId(skinFileName);
+            return skin;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public void setDefaultPose(double yaw) {
@@ -179,57 +203,71 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
         this.lerpSpeed = lerpSpeed;
     }
 
-    public void setTask(Runnable task) {
+    public void setTask(Consumer<Player> task) {
         this.task = task;
     }
 
-    public void updateLabel(String label) {
-        if (label1 == null) {
-            createHologram(0.2);
-        }
-
-        label1.setNameTag(TextFormat.colorize(label));
+    public FloatingTextParticle getText1() {
+        return text1;
     }
 
-    public void updateLabel(String line1, String line2) {
-        if (label1 == null || label2 == null) {
-            createHologram(1.0);
-            createHologram(0.5);
-        }
-
-        label1.setNameTag(TextFormat.colorize(line1));
-        label2.setNameTag(TextFormat.colorize(line2));
+    public FloatingTextParticle getText2() {
+        return text2;
     }
 
-    private void createHologram(double verticalOffSet) {
-        if (this.label1 != null && this.label2 != null) return;
-        /*
-        CompoundTag nbt = Entity.getDefaultNBT(this.getPosition().add(0, 1.0 + verticalOffSet, 0))
-                            .putBoolean("Invisible", true)
-                            .putBoolean("NoGravity", true)
-                            .putBoolean("Invulnerable", true)
-                            .putInt("DisabledSlots", 0x1F1F1F);
+    public void setTextVerticalOffset(double offset) {
+        this.verticalOffset1 = offset;
+    }
 
-        EntityArmorStand hologram = new EntityArmorStand(this.chunk, nbt);
+    public void setTextVerticalOffset(double offsetText1, double offsetText2) {
+        this.verticalOffset1 = offsetText1;
+        this.verticalOffset2 = offsetText2;
+    }
+    
+    @Override
+    public @NotNull String getIdentifier() {
+        return IDENTIFIER;
+    }
 
-        hologram.setNameTagVisible(true);
-        hologram.setNameTagAlwaysVisible(true);
+    public static CustomEntityDefinition definition() {
+        return CustomEntityDefinition.simpleBuilder(IDENTIFIER)
+                .eid(IDENTIFIER)
+                .hasSpawnEgg(false)
+                .isSummonable(true)
+                .health(5)
+                .physics(false, false, false)
+                .pushable(false, false)
+                .isPersistent(true)
+                .build();
+    }
+
+    @Override
+    protected void initEntity() {
+        super.initEntity();
         
-        hologram.spawnToAll();*/
+        this.setFireImmune(true);
+        this.setInvulnerable(true);
+        this.setNameTagVisible(false);
+        this.setImmobile(false);
+        this.setDataFlag(EntityFlag.SILENT, true);
+        this.setDataFlag(EntityFlag.COLLIDABLE, false);
 
-        if (this.label1 == null) {
-            //this.label1 = hologram;
-        } else {
-            //this.label2 = hologram;
-        }
+        this.setHealthCurrent(5);
     }
 
-    public EntityArmorStand getLabel1() {
-        return label1;
+    @Override
+    public float getGravity() {
+        return 0.0f;
     }
 
-    public EntityArmorStand getLabel2() {
-        return label2;
+    @Override
+    public boolean canCollideWith(Entity entity) {
+        return false;
+    }
+    
+    @Override
+    public boolean canBeMovedByCurrents() {
+        return false;
     }
 
 }

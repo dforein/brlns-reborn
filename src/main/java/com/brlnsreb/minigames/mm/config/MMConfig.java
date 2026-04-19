@@ -83,10 +83,6 @@ public class MMConfig {
         return (float)config.getDouble("death.head-pitch-offset", 40);
     }
     
-    public int getRedstoneDrop() {
-        return config.getInt("death.redstone-drop", 2);
-    }
-    
     public int getGoldSpawnIntervalMin() {
         return config.getInt("gold.spawn-interval-min", 5);
     }
@@ -223,6 +219,10 @@ public class MMConfig {
 
     public List<String> getMapBuilders(String mapKey) {
         return config.getStringList("world.arena-regions." + mapKey + ".builders");
+    }
+
+    public String getMapBuildersTeam(String mapKey) {
+        return config.getString("world.arena-regions." + mapKey + ".builders-team");
     }
     
     public String getMapWeather(String mapKey) {

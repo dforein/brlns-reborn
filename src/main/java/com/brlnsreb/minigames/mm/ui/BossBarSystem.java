@@ -7,12 +7,13 @@ import cn.nukkit.utils.DummyBossBar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 // TODO: bossbar astraction into Utils
 
 public class BossBarSystem {
     
-    private final Map<String, Long> bossBarIds;
+    private final Map<UUID, Long> bossBarIds;
     
     public BossBarSystem() {
         this.bossBarIds = new HashMap<>();
@@ -47,7 +48,7 @@ public class BossBarSystem {
         DummyBossBar bossBar = buildBossBar(player, text);
 
         long bossBarId = player.createBossBar(bossBar);
-        bossBarIds.put(player.getName(), bossBarId);
+        bossBarIds.put(player.getUniqueId(), bossBarId);
     }
 
     private DummyBossBar buildBossBar(Player player, String text) {
@@ -59,7 +60,7 @@ public class BossBarSystem {
     }
     
     public void updateExpAndGold(Player player, int goldCount, int expCount) {
-        Long bossBarId = bossBarIds.get(player.getName());
+        Long bossBarId = bossBarIds.get(player.getUniqueId());
         if (bossBarId != null) {
             player.updateBossBar(
                 "§l§7- §a" + expCount + " EXP §7¦ §e" + goldCount + " GOLD §7-", 
@@ -72,7 +73,7 @@ public class BossBarSystem {
     }
 
     public void updateExp(Player player, int expCount) {
-        Long bossBarId = bossBarIds.get(player.getName());
+        Long bossBarId = bossBarIds.get(player.getUniqueId());
         if (bossBarId != null) {
             player.updateBossBar(
                 "§l§7- §a" + expCount + " EXP §7-", 
@@ -85,7 +86,7 @@ public class BossBarSystem {
     }
 
     public void updateExpWithDistance(Player player, int expCount, double distance) {
-        Long bossBarId = bossBarIds.get(player.getName());
+        Long bossBarId = bossBarIds.get(player.getUniqueId());
         if (bossBarId != null) {
             player.updateBossBar(
                 String.format("§l§7- §aNEAREST: %.2fm §7¦ §a%d EXP §7-", distance, expCount),
@@ -98,7 +99,7 @@ public class BossBarSystem {
     }
 
     public void updateCountdown(Player player, String message, int seconds, int maxSeconds) {
-        Long bossBarId = bossBarIds.get(player.getName());
+        Long bossBarId = bossBarIds.get(player.getUniqueId());
         if (bossBarId != null) {
             float progress = (maxSeconds > 0) ? (float) seconds / maxSeconds : 0;
             player.updateBossBar(message, (int)(progress * 100), bossBarId);
@@ -108,7 +109,7 @@ public class BossBarSystem {
     }
     
     public void hide(Player player) {
-        Long bossBarId = bossBarIds.remove(player.getName());
+        Long bossBarId = bossBarIds.remove(player.getUniqueId());
         if (bossBarId != null) {
             player.removeBossBar(bossBarId);
         }
