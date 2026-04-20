@@ -114,7 +114,7 @@ public class CustomPlayer extends Player {
             CompoundTag skinTag = (new CompoundTag()).putByteArray("Data", skin.getSkinData().data).putInt("SkinImageWidth", skin.getSkinData().width).putInt("SkinImageHeight", skin.getSkinData().height).putString("ModelId", skin.getSkinId()).putString("CapeId", skin.getCapeId()).putByteArray("CapeData", skin.getCapeData().data).putInt("CapeImageWidth", skin.getCapeData().width).putInt("CapeImageHeight", skin.getCapeData().height).putByteArray("SkinResourcePatch", skin.getSkinResourcePatch().getBytes(StandardCharsets.UTF_8)).putByteArray("GeometryData", skin.getGeometryData().getBytes(StandardCharsets.UTF_8)).putByteArray("SkinAnimationData", skin.getAnimationData().getBytes(StandardCharsets.UTF_8)).putBoolean("PremiumSkin", skin.isPremium()).putBoolean("PersonaSkin", skin.isPersona()).putBoolean("CapeOnClassicSkin", skin.isCapeOnClassic()).putString("ArmSize", skin.getArmSize()).putString("SkinColor", skin.getSkinColor()).putBoolean("IsTrustedSkin", skin.isTrusted());
             List<SkinAnimation> animations = skin.getAnimations();
             if (!animations.isEmpty()) {
-                ListTag<CompoundTag> animationsTag = new ListTag();
+                ListTag<CompoundTag> animationsTag = new ListTag<>();
 
                 for(SkinAnimation animation : animations) {
                 animationsTag.add((new CompoundTag()).putFloat("Frames", animation.frames).putInt("Type", animation.type).putInt("ImageWidth", animation.image.width).putInt("ImageHeight", animation.image.height).putInt("AnimationExpression", animation.expression).putByteArray("Image", animation.image.data));
@@ -125,7 +125,7 @@ public class CustomPlayer extends Player {
 
             List<PersonaPiece> personaPieces = skin.getPersonaPieces();
             if (!personaPieces.isEmpty()) {
-                ListTag<CompoundTag> piecesTag = new ListTag();
+                ListTag<CompoundTag> piecesTag = new ListTag<>();
 
                 for(PersonaPiece piece : personaPieces) {
                 piecesTag.add((new CompoundTag()).putString("PieceId", piece.id).putString("PieceType", piece.type).putString("PackId", piece.packId).putBoolean("IsDefault", piece.isDefault).putString("ProductId", piece.productId));
@@ -136,10 +136,10 @@ public class CustomPlayer extends Player {
 
             List<PersonaPieceTint> tints = skin.getTintColors();
             if (!tints.isEmpty()) {
-                ListTag<CompoundTag> tintsTag = new ListTag();
+                ListTag<CompoundTag> tintsTag = new ListTag<>();
 
                 for(PersonaPieceTint tint : tints) {
-                ListTag<StringTag> colors = new ListTag();
+                ListTag<StringTag> colors = new ListTag<>();
                 colors.setAll((List)tint.colors.stream().map(StringTag::new).collect(Collectors.toList()));
                 tintsTag.add((new CompoundTag()).putString("PieceType", tint.pieceType).putList("Colors", colors));
                 }

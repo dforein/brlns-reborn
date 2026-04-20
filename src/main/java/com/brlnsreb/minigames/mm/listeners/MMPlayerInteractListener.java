@@ -334,8 +334,7 @@ public class MMPlayerInteractListener implements Listener {
         ItemManager.giveSheriffItems(player, config.getSheriffHoeName());
 
         BossBarSystem bossBar = game.getBossBar();
-        bossBar.hide(player);
-        bossBar.showExp(player, game.getRoleManager().getGamePlayer(player).getExpEarned());
+        bossBar.updateExp(player, game.getRoleManager().getGamePlayer(player).getExpEarned());
 
         player.sendTitle(
             TextFormat.colorize(config.getMessageNoPrefix("sheriff-title")),

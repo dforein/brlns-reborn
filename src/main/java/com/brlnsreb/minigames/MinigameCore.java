@@ -1,6 +1,5 @@
 package com.brlnsreb.minigames;
 
-import cn.nukkit.Player;
 import cn.nukkit.command.SimpleCommandMap;
 import cn.nukkit.level.Level;
 import cn.nukkit.math.Vector3;

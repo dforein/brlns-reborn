@@ -263,7 +263,7 @@ public class MurderMysteryGame {
         
         for (Player p : players) {
             String message = config.getCountdownBossbar().replace("{seconds}", String.valueOf(duration));
-            bossBar.showCountdown(p, TextFormat.colorize(message));
+            bossBar.updateCountdown(p, TextFormat.colorize(message), initialCountdown, initialCountdown);
         }
         
         timer.startCountdown(duration, this::startGame, () -> {
@@ -334,7 +334,7 @@ public class MurderMysteryGame {
     
     private void startGame() {
         for (Player p : getOnlinePlayers()) {
-            bossBar.hide(p);
+            bossBar.remove(p);
         }
 
         cleanupOfflinePlayers();
@@ -382,12 +382,13 @@ public class MurderMysteryGame {
 
         refreshPlayersState();
         
+        boolean nightVisionEnabled = plugin.getConfig().getBoolean("world.arena-regions." + selectedMap + ".night-vision");
         for (Player p : players) {
-            if (plugin.getConfig().getBoolean("world.arena-regions." + selectedMap + ".night-vision")) {
+            if (nightVisionEnabled) {
                 giveNightVision(p);
             }
 
-            bossBar.showExp(p, 0);
+            bossBar.updateExp(p, 0);
         }
 
         List<String> builders = config.getMapBuilders(selectedMap);
@@ -426,7 +427,7 @@ public class MurderMysteryGame {
         state = GameState.IN_GAME;
 
         for (Player p : getOnlinePlayers()) {
-            bossBar.hide(p);
+            bossBar.remove(p);
         }
 
         roleManager.assignRoles(getOnlinePlayers());
@@ -441,7 +442,7 @@ public class MurderMysteryGame {
 
             switch (gp.getRole()) {
                 case INNOCENT:
-                    bossBar.showExpAndGold(player, 0, 0);
+                    bossBar.updateExpAndGold(player, 0, 0);
                     player.sendTitle(
                         TextFormat.colorize(config.getMessageNoPrefix("innocent-title")), 
                         TextFormat.colorize(config.getMessageNoPrefix("innocent-subtitle")),
@@ -449,7 +450,7 @@ public class MurderMysteryGame {
                     );
                     break;
                 case SHERIFF:
-                    bossBar.showExp(player, 0);
+                    bossBar.updateExp(player, 0);
                     player.sendTitle(
                         TextFormat.colorize(config.getMessageNoPrefix("sheriff-title")), 
                         TextFormat.colorize(config.getMessageNoPrefix("sheriff-subtitle")),
@@ -458,7 +459,7 @@ public class MurderMysteryGame {
                     player.sendMessage(TextFormat.colorize(config.getMessage("sheriff-advice")));
                     break;
                 case MURDERER:
-                    bossBar.showExp(player, 0);
+                    bossBar.updateExp(player, 0);
                     player.sendTitle(
                         TextFormat.colorize(config.getMessageNoPrefix("murderer-title")), 
                         TextFormat.colorize(config.getMessageNoPrefix("murderer-subtitle")),
@@ -962,12 +963,12 @@ public class MurderMysteryGame {
                 case WAITING_LOBBY:
                     break;
                 case LOBBY_COUNTDOWN:
-                    bossBar.hide(p);
+                    bossBar.remove(p);
                     break;
                 case PREGAME_COUNTDOWN:
                 case IN_GAME:
                 case ENDING:
-                    bossBar.hide(p);
+                    bossBar.remove(p);
                     scoreboard.remove(p);
                     break;
             }
@@ -979,7 +980,7 @@ public class MurderMysteryGame {
                     setNameTagVisible(p);
 
                     scoreboard.remove(p);
-                    bossBar.hide(p);
+                    bossBar.remove(p);
                     ItemManager.giveLobbyItems(
                         p, 
                         config.getRulesItemName(), 
@@ -1015,7 +1016,7 @@ public class MurderMysteryGame {
                     setNameTagInvisible(p);
 
                     scoreboard.remove(p);
-                    bossBar.hide(p);
+                    bossBar.remove(p);
                     break;
             }
         }
@@ -1078,7 +1079,7 @@ public class MurderMysteryGame {
             case MURDERER:
                 if (trackingActive) {
                     double dist = trackerSystem.getNearestDistance(p, roleManager.getAllPlayers());
-                    bossBar.updateExpWithDistance(p, gp.getExpEarned(), dist);
+                    bossBar.updateExpAndDistance(p, gp.getExpEarned(), dist);
                 } else {
                     bossBar.updateExp(p, gp.getExpEarned());
                 }

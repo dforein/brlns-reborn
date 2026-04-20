@@ -114,8 +114,7 @@ public class MMPlayerPickupListener implements Listener {
         }
 
         BossBarSystem bossBar = game.getBossBar();
-        bossBar.hide(player);
-        bossBar.showExp(player, game.getRoleManager().getGamePlayer(player).getExpEarned());
+        bossBar.updateExp(player, game.getRoleManager().getGamePlayer(player).getExpEarned());
         
         MMConfig config = game.getConfig();
         for (Player p : game.getPlayers()) {
