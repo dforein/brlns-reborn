@@ -65,7 +65,7 @@ public class CustomPlayer extends Player {
             return super.attack(source);
         }
         
-        source.setCancelled();
+        //source.setCancelled();
         return false;
     }
 

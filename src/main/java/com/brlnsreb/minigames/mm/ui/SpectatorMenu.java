@@ -5,6 +5,8 @@ import cn.nukkit.Server;
 import cn.nukkit.form.window.SimpleForm;
 import cn.nukkit.scheduler.TaskHandler;
 import cn.nukkit.utils.TextFormat;
+
+import com.brlnsreb.minigames.core.minigame.GameState;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.roles.GamePlayer;
 import com.brlnsreb.minigames.mm.roles.MMRole;
@@ -102,16 +104,17 @@ public class SpectatorMenu {
                 if (oldHandler != null) oldHandler.cancel();
 
                 final TaskHandler[] currHandler = new TaskHandler[1];
-                currHandler[0] = Server.getInstance().getScheduler().scheduleRepeatingTask(() -> {      //TODO: test
-                    if (target == null || !target.isOnline() || !game.getRoleManager().getGamePlayer(target).isAlive() || !game.getPlayers().contains(target)
-                        || spectator == null || !spectator.isOnline() || !game.getPlayers().contains(spectator)) {
+                currHandler[0] = Server.getInstance().getScheduler().scheduleRepeatingTask(() -> {
+                    if ((target == null || !target.isOnline() || !game.getRoleManager().getGamePlayer(target).isAlive() || !game.getPlayers().contains(target)
+                        || spectator == null || !spectator.isOnline() || !game.getPlayers().contains(spectator)) 
+                        || !(game.getState() == GameState.IN_GAME || game.getState() == GameState.ENDING)) {
 
                         if (currHandler[0] != null) currHandler[0].cancel();
                         handlers.remove(spectator.getUniqueId());
                         return;
                     }
 
-                    String actionBarMsg = "&l&aTarget: &e"+ target.getName() +" &aDistance: &d%.2f";
+                    String actionBarMsg = "&l&aTarget: &e"+ target.getName() +" &aDistance: &d%.2fm";
                     spectator.sendActionBar(TextFormat.colorize(
                         actionBarMsg.formatted(spectator.distance(target))
                     ));

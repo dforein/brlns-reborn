@@ -1,5 +1,5 @@
 package com.brlnsreb.minigames.core.minigame;
 
-public class Minigame {
+public abstract class MinigameAbstract {
     
 }

@@ -5,7 +5,7 @@ import java.util.List;
 
 // TODO: implement and refine this astraction
 
-public abstract class MinigameMatch {
+public abstract class MinigameMatchAbstract {
     
     protected String name;
     protected int id;
