@@ -828,10 +828,6 @@ public class MurderMysteryGame {
             reset();
 
             players.clear();
-
-            for (Player p : players) {
-                ItemManager.clearInventory(p);
-            }
         }
     }
 
@@ -953,10 +949,13 @@ public class MurderMysteryGame {
         if (isLeavingOrJoining) {
             ItemManager.clearInventory(p);
             setNameTagVisible(p);
-            ((CustomPlayer) p).setGameSpectator(false, true);
+            ((CustomPlayer) p).setGameSpectator(false);
 
             plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
-                if (p.isOnline()) { p.setCheckMovement(true); }
+                if (p.isOnline()) { 
+                    p.setCheckMovement(true);
+                    p.spawnToAll(); 
+                }
             }, 80);
 
             switch (state) {

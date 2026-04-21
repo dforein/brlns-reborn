@@ -94,6 +94,7 @@ public class CustomPlayer extends Player {
         this.namedTag.putBoolean("Invulnerable", this.invulnerable);
         this.namedTag.putFloat("Scale", this.scale);
         this.namedTag.putFloat("Health", 20.0f);
+        this.namedTag.putInt("playerGameType", Player.ADVENTURE);
 
         this.namedTag.remove("ActiveEffects");
         this.namedTag.remove("Attributes");
@@ -140,7 +141,7 @@ public class CustomPlayer extends Player {
 
                 for(PersonaPieceTint tint : tints) {
                 ListTag<StringTag> colors = new ListTag<>();
-                colors.setAll((List)tint.colors.stream().map(StringTag::new).collect(Collectors.toList()));
+                colors.setAll((List<StringTag>)tint.colors.stream().map(StringTag::new).collect(Collectors.toList()));
                 tintsTag.add((new CompoundTag()).putString("PieceType", tint.pieceType).putList("Colors", colors));
                 }
 

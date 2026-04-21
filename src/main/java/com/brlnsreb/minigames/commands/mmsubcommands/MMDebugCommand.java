@@ -94,7 +94,7 @@ public class MMDebugCommand extends BasicSubCommand {
                 case "5":
                     //plugin.getMMGame().getDeath().createBody(player, player.getNextPosition());
                     break;
-                case "6":
+                case "npc":
                     Position pos2 = player.getPosition();
                     int cx2 = pos2.getFloorX() >> 4;
                     int cz2 = pos2.getFloorZ() >> 4;

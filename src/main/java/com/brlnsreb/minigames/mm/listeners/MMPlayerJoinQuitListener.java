@@ -76,6 +76,11 @@ public class MMPlayerJoinQuitListener implements Listener {
         
         game.refreshPlayerState(player, true);
 
+        Vector3 pos = game.getConfig().getLobbySpawn();
+        if (pos.distanceSquared(player) > 16) {
+            game.returnToLobby(player);
+        }
+
         player.getFoodData().setEnabled(false);
 
         QuitTracker quitTracker = game.getQuitTracker();

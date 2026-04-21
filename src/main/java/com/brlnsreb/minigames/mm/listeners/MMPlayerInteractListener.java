@@ -24,7 +24,6 @@ import cn.nukkit.item.ItemIronSword;
 import cn.nukkit.item.ItemNetherStar;
 import cn.nukkit.item.ItemYellowDye;
 import cn.nukkit.level.Sound;
-import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.item.EntityArmorStand;
 import cn.nukkit.entity.effect.Effect;
 import cn.nukkit.entity.effect.EffectType;
@@ -72,20 +71,6 @@ public class MMPlayerInteractListener implements Listener {
     }
     
     @EventHandler
-    public void onArmorStandInteract(PlayerInteractEntityEvent event) {
-
-        Entity entity = event.getEntity();
-        Player player = event.getPlayer();
-
-        if (entity instanceof EntityArmorStand) {
-            if (player != null && (player.getGamemode() == Player.ADVENTURE || !player.isOp())) {
-                event.setCancelled(true);
-            }
-        }
-
-    }
-
-    @EventHandler
     public void onItemFrameInteract(ItemFrameUseEvent event) {
 
         Player player = event.getPlayer();
@@ -93,6 +78,26 @@ public class MMPlayerInteractListener implements Listener {
         if (player != null && (player.getGamemode() == Player.ADVENTURE || !player.isOp())) {
             event.setCancelled(true);
         }
+
+    }
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEntityEvent event) {
+        Player player = event.getPlayer();
+
+        if (event.getEntity() instanceof EntityArmorStand) {
+            if (player != null && (player.getGamemode() == Player.ADVENTURE || !player.isOp())) {
+                event.setCancelled(true);
+            }
+        }
+
+        GamePlayer gp = game.getRoleManager().getGamePlayer(player);
+        if (gp == null) return;
+
+        Item item = event.getItem();
+        if (item == null) return;
+        
+        if (handleItemInteraction(player, item, gp)) event.setCancelled();
 
     }
 
@@ -139,52 +144,58 @@ public class MMPlayerInteractListener implements Listener {
         Item item = event.getItem();
         if (item == null) return;
 
+        if ((item instanceof ItemIronSword || item instanceof ItemGoldenHoe) 
+            && event.getAction() != Action.RIGHT_CLICK_AIR) return;
+        
+        if (handleItemInteraction(player, item, gp)) event.setCancelled();
+
+    }
+
+    private boolean handleItemInteraction(Player player, Item item, GamePlayer gp) {
         if (game.getState() == GameState.WAITING_LOBBY || game.getState() == GameState.LOBBY_COUNTDOWN) {
             if (game.getPlayers().contains(player)) {
                 //game poll
                 if (item instanceof ItemNetherStar) {
                     String customName = item.getCustomName();
                     if (customName != null && customName.contains("Game Poll")) {
-                        event.setCancelled(true);
                         game.getVotingMenu().openVotingMenu(player);
+                        return true;
                     }
                 }
-
-                return;
             }
+
+            return false;
         }
         
         if (item instanceof ItemCompass && gp.getRole() == MMRole.SPECTATOR) {
             game.getSpectatorMenu().openTeleportMenu(player);
-            event.setCancelled(true);
-            return;
+            return true;
         }
 
-        
-        //else game state is PREGAME_COUNTDOWN or IN_GAME or ENDING, and item is not null
-        if (!gp.isAlive()) return;
+        if (!gp.isAlive()) return false;
         MMConfig config = game.getConfig();
 
-        if (item instanceof ItemGoldenHoe && event.getAction() == Action.RIGHT_CLICK_AIR) {
+        if (item instanceof ItemGoldenHoe) {
             handleSheriffShoot(player, gp, config);
-            event.setCancelled(true);
+            return true;
         }
-        
-        else if (item instanceof ItemIronSword && event.getAction() == Action.RIGHT_CLICK_AIR) {
+
+        else if (item instanceof ItemIronSword) {
             handleMurdererThrow(player, gp, config);
-            event.setCancelled(true);
+            return true;
         }
         
         else if (item instanceof ItemBlazeRod) {
             handleFlash(player, gp, config);
-            event.setCancelled(true);
+            return true;
         }
         
         else if (item instanceof ItemYellowDye) {
             handleBecomeSheriff(player, gp, config);
-            event.setCancelled(true);
+            return true;
         }
 
+        return false;
     }
     
     private void handleSheriffShoot(Player shooter, GamePlayer gp, MMConfig config) {
