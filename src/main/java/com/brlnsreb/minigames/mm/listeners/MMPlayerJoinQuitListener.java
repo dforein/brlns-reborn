@@ -1,6 +1,7 @@
 package com.brlnsreb.minigames.mm.listeners;
 
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
@@ -76,8 +77,9 @@ public class MMPlayerJoinQuitListener implements Listener {
         
         game.refreshPlayerState(player, true);
 
-        Vector3 pos = game.getConfig().getLobbySpawn();
-        if (pos.distanceSquared(player) > 16) {
+        if (player.getLevel().getId() != Server.getInstance().getDefaultLevel().getId()
+            || game.getConfig().getLobbySpawn().distanceSquared(player) > 16) {
+            
             game.returnToLobby(player);
         }
 
