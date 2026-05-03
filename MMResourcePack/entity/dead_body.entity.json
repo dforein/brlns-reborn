@@ -19,7 +19,9 @@
       },
       "animations": {
         "fall_forward": "animation.corpse.fall_forward",
-        "fall_backward": "animation.corpse.fall_backward"
+        "fall_backward": "animation.corpse.fall_backward",
+        "lying_forward": "animation.corpse.lying_forward",
+        "lying_backward": "animation.corpse.lying_backward"
       },
       "render_controllers": [
         "controller.render.dead_body"

@@ -8,6 +8,7 @@ import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.entity.custom.CustomEntity;
 import cn.nukkit.entity.custom.CustomEntityDefinition;
 import cn.nukkit.entity.data.EntityFlag;
+import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.level.format.IChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.network.protocol.AnimateEntityPacket.Animation;
@@ -42,8 +43,8 @@ public class DeadBodyEntity extends EntityHuman implements CustomEntity {
     protected void initEntity() {
         super.initEntity();
         
-        this.invulnerable = true;
-        this.fireProof = true;
+        this.setFireImmune(true);
+        this.setInvulnerable(true);
         this.setNameTagVisible(false);
         this.setCanClimb(false);
         this.setDataFlag(EntityFlag.SILENT, true);
@@ -68,6 +69,12 @@ public class DeadBodyEntity extends EntityHuman implements CustomEntity {
         this.motionZ = 0;
         
         return super.onUpdate(currentTick);
+    }
+
+    @Override
+    public boolean attack(EntityDamageEvent source) {
+        source.setCancelled(true);
+        return false;
     }
     
     @Override
@@ -99,6 +106,16 @@ public class DeadBodyEntity extends EntityHuman implements CustomEntity {
             .build();
     }
 
+    public Animation getStaticAnimation() {
+        return Animation.builder()
+            .animation(fallForward ? "animation.corpse.lying_forward" : "animation.corpse.lying_backward") 
+            .nextState(fallForward ? "animation.corpse.lying_forward" : "animation.corpse.lying_backward")
+            .stopExpression("0")
+            .stopExpressionVersion(16777216)
+            .controller("__runtime_controller")
+            .build();
+    }
+    
     public void setFallForward(boolean fallForward) {
         this.fallForward = fallForward;
     }

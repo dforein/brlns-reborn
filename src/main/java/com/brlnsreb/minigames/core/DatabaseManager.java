@@ -1,4 +1,4 @@
-package com.brlnsreb.minigames.database;
+package com.brlnsreb.minigames.core;
 
 // TODO: database
 

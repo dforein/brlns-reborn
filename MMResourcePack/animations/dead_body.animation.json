@@ -60,6 +60,24 @@
 					}
 				}
 			}
+		},
+		"animation.corpse.lying_forward": {
+			"loop": true,
+			"bones": {
+				"head": { "rotation": [90, 0, 0] },
+				"waist": { "rotation": [90, 0, 0] },
+				"rightLeg": { "rotation": [90, 0, 0] },
+				"leftLeg": { "rotation": [90, 0, 0] }
+			}
+		},
+		"animation.corpse.lying_backward": {
+			"loop": true,
+			"bones": {
+				"head": { "rotation": [-90, 0, 0] },
+				"waist": { "rotation": [-90, 0, 0] },
+				"rightLeg": { "rotation": [-90, 0, 0] },
+				"leftLeg": { "rotation": [-90, 0, 0] }
+			}
 		}
 	}
 }

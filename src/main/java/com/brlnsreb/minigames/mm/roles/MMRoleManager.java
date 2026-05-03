@@ -9,22 +9,22 @@ import java.util.*;
 
 public class MMRoleManager {
     
-    private final Map<String, GamePlayer> players;
+    private final Map<UUID, GamePlayer> gamePlayers;
     private GamePlayer murderer;
     private GamePlayer sheriff;
     
     public MMRoleManager() {
-        this.players = new HashMap<>();
+        this.gamePlayers = new HashMap<>();
     }
     
     public void addPlayer(Player player) {
-        players.put(player.getName(), new GamePlayer(player));
+        gamePlayers.put(player.getUniqueId(), new GamePlayer(player));
     }
 
     public void removePlayer(IPlayer player) {
         if (player == null) return;
 
-        GamePlayer gp = players.remove(player.getName());
+        GamePlayer gp = gamePlayers.remove(player.getUniqueId());
 
         if (gp != null) {
             if (gp == murderer) {
@@ -37,7 +37,7 @@ public class MMRoleManager {
     }
     
     public GamePlayer getGamePlayer(Player player) {
-        return players.get(player.getName());
+        return gamePlayers.get(player.getUniqueId());
     }
     
     public void assignRoles(List<Player> playerList) {
@@ -50,7 +50,7 @@ public class MMRoleManager {
 
             if (gp == null) {
                 gp = new GamePlayer(p);
-                players.put(p.getName(), gp);
+                gamePlayers.put(p.getUniqueId(), gp);
             }
 
             if (gp.getRole() == MMRole.SPECTATOR) continue;
@@ -84,7 +84,7 @@ public class MMRoleManager {
     
     public List<GamePlayer> getInnocents() {
         List<GamePlayer> innocents = new ArrayList<>();
-        for (GamePlayer gp : players.values()) {
+        for (GamePlayer gp : gamePlayers.values()) {
             if (gp.getRole() == MMRole.INNOCENT && 
                 gp.isAlive() && 
                 gp.getPlayer().isOnline()) {
@@ -96,7 +96,7 @@ public class MMRoleManager {
     
     public int getAliveInnocentsCount() {
         int count = 0;
-        for (GamePlayer gp : players.values()) {
+        for (GamePlayer gp : gamePlayers.values()) {
             if (gp.getRole() == MMRole.INNOCENT && 
                 gp.isAlive() && 
                 gp.getPlayer().isOnline()) {
@@ -119,11 +119,11 @@ public class MMRoleManager {
     }
     
     public Collection<GamePlayer> getAllPlayers() {
-        return players.values();
+        return gamePlayers.values();
     }
 
     public Collection<GamePlayer> getOnlinePlayers() {
-        return players.values().stream()
+        return gamePlayers.values().stream()
             .filter(gp -> gp.getPlayer().isOnline())
             .toList();
     }
@@ -134,7 +134,7 @@ public class MMRoleManager {
         MMConfig config = game.getConfig();
         int goldRequired = config.getGoldForGun();
         
-        for (GamePlayer gp : players.values()) {
+        for (GamePlayer gp : gamePlayers.values()) {
             if (gp.isAlive() && 
                 gp.getRole() == MMRole.INNOCENT && 
                 gp.getPlayer().isOnline()) {
@@ -147,7 +147,7 @@ public class MMRoleManager {
     }
     
     public void clear() {
-        players.clear();
+        gamePlayers.clear();
         murderer = null;
         sheriff = null;
     }

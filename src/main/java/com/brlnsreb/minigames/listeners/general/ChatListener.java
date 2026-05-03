@@ -1,4 +1,4 @@
-package com.brlnsreb.minigames.listeners;
+package com.brlnsreb.minigames.listeners.general;
 
 import com.brlnsreb.minigames.MinigameCore;
 

@@ -2,12 +2,13 @@ package com.brlnsreb.minigames.mm.systems;
 
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
+import cn.nukkit.block.BlockBarrier;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.TextFormat;
 import com.brlnsreb.minigames.MinigameCore;
-import com.brlnsreb.minigames.core.Arena;
+import com.brlnsreb.minigames.core.minigame.Arena;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -24,26 +25,27 @@ public class GoldSpawnMapper {
     private final File barriersFolder;
     private final Gson gson;
     
-    private static final List<String> SAFE_PASSABLE = Arrays.asList(
-        Block.AIR,
-        Block.TALL_GRASS, Block.TALL_DRY_GRASS,
-        Block.SHORT_GRASS, Block.SHORT_DRY_GRASS,
-        Block.RED_CARPET, Block.CYAN_CARPET,
-        Block.BLUE_CARPET, Block.GRAY_CARPET, Block.LIME_CARPET,Block.MOSS_CARPET, 
-        Block.PINK_CARPET, Block.BLACK_CARPET, Block.BROWN_CARPET, Block.GREEN_CARPET,
-        Block.WHITE_CARPET, Block.ORANGE_CARPET, Block.PURPLE_CARPET, Block.YELLOW_CARPET, 
-        Block.MAGENTA_CARPET, Block.PALE_MOSS_CARPET, Block.LIGHT_BLUE_CARPET, Block.LIGHT_GRAY_CARPET,
-        Block.DANDELION, Block.POPPY, Block.BLUE_ORCHID, Block.ALLIUM, Block.AZURE_BLUET, Block.NETHER_SPROUTS,
-        Block.RED_TULIP, Block.ORANGE_TULIP, Block.WHITE_TULIP, Block.PINK_TULIP, Block.OXEYE_DAISY, 
-        Block.BROWN_MUSHROOM, Block.RED_MUSHROOM, Block.SUNFLOWER, Block.ROSE_BUSH, Block.PEONY, Block.LARGE_FERN, 
-        Block.CORNFLOWER, Block.LILY_OF_THE_VALLEY, Block.CRIMSON_FUNGUS, Block.WARPED_FUNGUS, Block.WARPED_ROOTS,
-        Block.WATER, Block.FLOWING_WATER,
-        Block.SNOW_LAYER,
-        Block.VINE,
-        Block.WHEAT, Block.CARROTS, Block.POTATOES, Block.BEETROOT,
-        Block.OAK_SAPLING, Block.BIRCH_SAPLING, Block.SPRUCE_SAPLING, Block.ACACIA_SAPLING,
-        Block.CHERRY_SAPLING, Block.JUNGLE_SAPLING, Block.DARK_OAK_SAPLING, Block.PALE_OAK_SAPLING,
-        Block.LADDER
+    private static final HashSet<String> SAFE_PASSABLE = new HashSet<>(Arrays.asList(
+            Block.AIR,
+            Block.TALL_GRASS, Block.TALL_DRY_GRASS,
+            Block.SHORT_GRASS, Block.SHORT_DRY_GRASS,
+            Block.RED_CARPET, Block.CYAN_CARPET,
+            Block.BLUE_CARPET, Block.GRAY_CARPET, Block.LIME_CARPET,Block.MOSS_CARPET, 
+            Block.PINK_CARPET, Block.BLACK_CARPET, Block.BROWN_CARPET, Block.GREEN_CARPET,
+            Block.WHITE_CARPET, Block.ORANGE_CARPET, Block.PURPLE_CARPET, Block.YELLOW_CARPET, 
+            Block.MAGENTA_CARPET, Block.PALE_MOSS_CARPET, Block.LIGHT_BLUE_CARPET, Block.LIGHT_GRAY_CARPET,
+            Block.DANDELION, Block.POPPY, Block.BLUE_ORCHID, Block.ALLIUM, Block.AZURE_BLUET, Block.NETHER_SPROUTS,
+            Block.RED_TULIP, Block.ORANGE_TULIP, Block.WHITE_TULIP, Block.PINK_TULIP, Block.OXEYE_DAISY, 
+            Block.BROWN_MUSHROOM, Block.RED_MUSHROOM, Block.SUNFLOWER, Block.ROSE_BUSH, Block.PEONY, Block.LARGE_FERN, 
+            Block.CORNFLOWER, Block.LILY_OF_THE_VALLEY, Block.CRIMSON_FUNGUS, Block.WARPED_FUNGUS, Block.WARPED_ROOTS,
+            Block.WATER, Block.FLOWING_WATER,
+            Block.SNOW_LAYER,
+            Block.VINE,
+            Block.WHEAT, Block.CARROTS, Block.POTATOES, Block.BEETROOT,
+            Block.OAK_SAPLING, Block.BIRCH_SAPLING, Block.SPRUCE_SAPLING, Block.ACACIA_SAPLING,
+            Block.CHERRY_SAPLING, Block.JUNGLE_SAPLING, Block.DARK_OAK_SAPLING, Block.PALE_OAK_SAPLING,
+            Block.LADDER
+        )
     );
     
     public GoldSpawnMapper(MinigameCore plugin) {
@@ -150,7 +152,7 @@ public class GoldSpawnMapper {
                     Position pos = new Position(x, y, z, level);
                     Block block = level.getBlock(pos);
                     
-                    if (block.getId().equals(Block.BARRIER)) {
+                    if (block instanceof BlockBarrier) {
                         barriers.add(new Vector3(x, y, z));
                     }
                     
@@ -191,7 +193,7 @@ public class GoldSpawnMapper {
                     Position pos = new Position(x, y, z, level);
                     Block block = level.getBlock(pos);
                     
-                    if (block.getId().equals(Block.BARRIER)) {
+                    if (block instanceof BlockBarrier) {
                         barrierCount++;
                     }
                 }

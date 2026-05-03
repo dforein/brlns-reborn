@@ -2,14 +2,14 @@ package com.brlnsreb.minigames.commands.mmsubcommands.mapsubcommands;
 
 import java.util.LinkedList;
 
-import com.brlnsreb.minigames.commands.subcommands.SubCommand;
+import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.utils.TextFormat;
 
-public class ReloadBarriersCommand extends SubCommand {
+public class ReloadBarriersCommand extends SimpleSubCommand {
     
     private final MurderMysteryGame game;
     
@@ -26,7 +26,7 @@ public class ReloadBarriersCommand extends SubCommand {
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
 
         if (args.length < 3) {
-            sender.sendMessage(TextFormat.RED + "Usage: /mm map reloadbarriers <mapId>");
+            sender.sendMessage(TextFormat.RED + "Usage: /mmop map reloadbarriers <mapId>");
             return true;
         }
         

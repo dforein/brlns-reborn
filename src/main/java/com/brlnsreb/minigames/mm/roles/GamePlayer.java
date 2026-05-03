@@ -1,10 +1,14 @@
 package com.brlnsreb.minigames.mm.roles;
 
+import java.util.UUID;
+
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 
 public class GamePlayer {
+    //TODO: abstract to interface, so that it can be put inside customplayer in a mutable variable
     
-    private final Player player;
+    private final UUID playerUUID;
     private MMRole role;
     private int goldCollected;
     private boolean alive;
@@ -14,7 +18,7 @@ public class GamePlayer {
     private int expEarned;
     
     public GamePlayer(Player player) {
-        this.player = player;
+        this.playerUUID = player.getUniqueId();
         this.role = null;
         this.goldCollected = 0;
         this.alive = true;
@@ -23,9 +27,13 @@ public class GamePlayer {
         this.usedFlash = false;
         this.expEarned = 0;
     }
-    
+
     public Player getPlayer() {
-        return player;
+        return Server.getInstance().getPlayer(playerUUID).orElse(null);
+    }
+    
+    public UUID getUUID() {
+        return playerUUID;
     }
     
     public MMRole getRole() {

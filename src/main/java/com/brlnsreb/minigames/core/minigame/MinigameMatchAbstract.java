@@ -1,13 +1,14 @@
-package com.brlnsreb.minigames.core;
+package com.brlnsreb.minigames.core.minigame;
 
 import cn.nukkit.Player;
 import java.util.List;
 
 // TODO: implement and refine this astraction
 
-public abstract class Minigame {
+public abstract class MinigameMatchAbstract {
     
     protected String name;
+    protected int id;
     protected GameState state;
     protected Arena arena;
     protected List<Player> players;
@@ -15,8 +16,9 @@ public abstract class Minigame {
     // Lifecycle
     public abstract void onGameStart();
     public abstract void onGameEnd();
-    public abstract void onPlayerJoin(Player player);
-    public abstract void onPlayerLeave(Player player);
+    public abstract void onJoin(Player player);
+    public abstract void onLeave(Player player);
+    public abstract void onJoinAsSpectator(Player player);
     
     // Win conditions
     public abstract boolean checkWinCondition();
@@ -28,5 +30,6 @@ public abstract class Minigame {
     
     // Getters
     public String getName() { return name; }
+    public int getId() { return id; }
     public GameState getState() { return state; }
 }

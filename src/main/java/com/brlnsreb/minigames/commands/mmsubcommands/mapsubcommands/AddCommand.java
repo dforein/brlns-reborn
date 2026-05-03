@@ -7,7 +7,7 @@ import java.util.LinkedList;
 
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.commands.MMOperatorCommand;
-import com.brlnsreb.minigames.commands.subcommands.SubCommand;
+import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 
 import cn.nukkit.Player;
@@ -17,7 +17,7 @@ import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 
-public class AddCommand extends SubCommand {
+public class AddCommand extends SimpleSubCommand {
     
     private final MinigameCore plugin;
     private final MurderMysteryGame game;
@@ -40,7 +40,7 @@ public class AddCommand extends SubCommand {
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
 
         if (args.length < 11) {
-            sender.sendMessage(TextFormat.RED + "Usage: /mm map add <mapId> <minCoords> <maxCoords> <worldFolder> <mapName>");
+            sender.sendMessage(TextFormat.RED + "Usage: /mmop map add <mapId> <minCoords> <maxCoords> <worldFolder> <mapName>");
             return true;
         }
         
@@ -97,6 +97,7 @@ public class AddCommand extends SubCommand {
         config.set(path + "night-vision", false);
         config.set(path + "weather", "Clear");
         config.set(path + "builders", new ArrayList<String>());
+        config.set(path + "builders-team", "");
         config.set(path + "spawns", new ArrayList<int[]>());
 
         config.save();

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.brlnsreb.minigames.commands.subcommands.SubCommand;
-import com.brlnsreb.minigames.core.Arena;
+import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
+import com.brlnsreb.minigames.core.minigame.Arena;
 import com.brlnsreb.minigames.MinigameCore;
 
 import cn.nukkit.Player;
@@ -16,7 +16,7 @@ import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 
-public class CountBarriersCommand extends SubCommand {
+public class CountBarriersCommand extends SimpleSubCommand {
     
     private final MinigameCore plugin;
     
@@ -35,7 +35,7 @@ public class CountBarriersCommand extends SubCommand {
         Player player = (Player) sender;
 
         if (args.length < 3) {
-            player.sendMessage(TextFormat.RED + "Usage: /mm map countbarriers <mapId>");
+            player.sendMessage(TextFormat.RED + "Usage: /mmop map countbarriers <mapId>");
             return true;
         }
 

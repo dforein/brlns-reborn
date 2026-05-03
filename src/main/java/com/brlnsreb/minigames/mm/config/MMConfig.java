@@ -13,10 +13,14 @@ import cn.nukkit.math.Vector3;
 
 public class MMConfig {
     
-    private final Config config;
+    private Config config;
     
     public MMConfig(Config config) {
         this.config = config;
+    }
+
+    public void updateConfig(Config newConfig) {
+        this.config = newConfig;
     }
     
     public int getMinPlayers() {
@@ -77,10 +81,6 @@ public class MMConfig {
     
     public float getHeadPitchOffset() {
         return (float)config.getDouble("death.head-pitch-offset", 40);
-    }
-    
-    public int getRedstoneDrop() {
-        return config.getInt("death.redstone-drop", 2);
     }
     
     public int getGoldSpawnIntervalMin() {
@@ -219,6 +219,10 @@ public class MMConfig {
 
     public List<String> getMapBuilders(String mapKey) {
         return config.getStringList("world.arena-regions." + mapKey + ".builders");
+    }
+
+    public String getMapBuildersTeam(String mapKey) {
+        return config.getString("world.arena-regions." + mapKey + ".builders-team");
     }
     
     public String getMapWeather(String mapKey) {

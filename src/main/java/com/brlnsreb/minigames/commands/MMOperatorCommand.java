@@ -11,17 +11,17 @@ import java.util.List;
 
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.commands.subcommands.ComplexSubCommand;
-import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
+import com.brlnsreb.minigames.commands.subcommands.BasicSubCommand;
 import com.brlnsreb.minigames.commands.mmsubcommands.MMDebugCommand;
+import com.brlnsreb.minigames.commands.mmsubcommands.MMDebugConsoleCommand;
 import com.brlnsreb.minigames.commands.mmsubcommands.MMMapCommand;
-import com.brlnsreb.minigames.commands.mmsubcommands.MMSetRulesCommand;
 import com.brlnsreb.minigames.commands.mmsubcommands.MMStartCommand;
 import com.brlnsreb.minigames.commands.mmsubcommands.MMStopCommand;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 
 public class MMOperatorCommand extends Command {
 
-    private final List<SimpleSubCommand> simpleSubCommandsList = new ArrayList<>();
+    private final List<BasicSubCommand> simpleSubCommandsList = new ArrayList<>();
     private final List<ComplexSubCommand> complexSubCommandsList = new ArrayList<>();
 
     //private final MinigameCore plugin;
@@ -33,11 +33,11 @@ public class MMOperatorCommand extends Command {
         this.setPermission("admin");
 
         
-        SimpleSubCommand[] simpleSubCommands = new SimpleSubCommand[] {
+        BasicSubCommand[] simpleSubCommands = new BasicSubCommand[] {
             new MMStartCommand(game),
             new MMStopCommand(game),
-            new MMSetRulesCommand(plugin),
-            new MMDebugCommand(plugin)
+            new MMDebugCommand(plugin),
+            new MMDebugConsoleCommand(plugin)
         };
 
         ComplexSubCommand[] complexSubCommands = new ComplexSubCommand[] {
@@ -49,7 +49,7 @@ public class MMOperatorCommand extends Command {
 
         this.getCommandParameters().clear();
 
-        for(SimpleSubCommand subCommand : simpleSubCommands) {
+        for(BasicSubCommand subCommand : simpleSubCommands) {
             simpleSubCommandsList.add(subCommand);
 		    this.addCommandParameters(subCommand.getName(), subCommand.getParameters());
         };
@@ -72,7 +72,7 @@ public class MMOperatorCommand extends Command {
         if(args.length > 0) {
             String subCommandName = args[0].toLowerCase();
 
-            for(SimpleSubCommand subCommand : simpleSubCommandsList) {
+            for(BasicSubCommand subCommand : simpleSubCommandsList) {
                 if(Arrays.asList(subCommand.getAliases()).contains(subCommandName)) {
                     subCommand.execute(sender, commandLabel, args);
                     return true;
@@ -88,9 +88,7 @@ public class MMOperatorCommand extends Command {
         }
 
         //args lenght == 0 or wrong subcommand
-        sender.sendMessage(TextFormat.RED + "Game:   /mm <start|stop>");
-        sender.sendMessage(TextFormat.RED + "Map/World:    /mm <map|setrules>");
-        sender.sendMessage(TextFormat.RED + "Debug:  /mm <debug>");
+        sender.sendMessage(TextFormat.RED + "Game:   /mm <start|stop|map|debug|debugconsole>");
 
         return true;
     }
@@ -98,7 +96,7 @@ public class MMOperatorCommand extends Command {
     public void refreshCommandsParams() {
         this.getCommandParameters().clear();
 
-        for(SimpleSubCommand subCommand : simpleSubCommandsList) {
+        for(BasicSubCommand subCommand : simpleSubCommandsList) {
 		    this.addCommandParameters(subCommand.getName(), subCommand.getParameters());
         };
 

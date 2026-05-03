@@ -14,6 +14,7 @@ import cn.nukkit.Player;
 import cn.nukkit.level.Level;
 
 public class WorldCommand extends Command {
+    //UNUSED COMMAND (just for practice, and blueprint)
 
     MinigameCore plugin;
     
@@ -64,7 +65,7 @@ public class WorldCommand extends Command {
                 }
                 
                 if (args.length < 2) {
-                    player.sendMessage(TextFormat.RED + "Usage: /mm world <world_name>");
+                    player.sendMessage(TextFormat.RED + "Usage: /world <world_name>");
                     player.sendMessage(TextFormat.GRAY + "Loaded worlds:");
                     for (Level l : plugin.getServer().getLevels().values()) {
                         player.sendMessage(TextFormat.GRAY + "- " + l.getName());
@@ -102,19 +103,18 @@ public class WorldCommand extends Command {
         List<String> worldNames = new ArrayList<>();
 
         File worldsFolder = new File(plugin.getServer().getDataPath() + "/worlds");
+        if (!worldsFolder.exists() || !worldsFolder.isDirectory()) { return null; }
 
-        if (worldsFolder.exists() && worldsFolder.isDirectory()) {
-            File[] files = worldsFolder.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    if (file.isDirectory()) {
-                        File levelDat = new File(file, "level.dat");
-                        if (levelDat.exists()) {
-                            worldNames.add(file.getName());
-                        }
-                    }
-                }
-            }
+        File[] files = worldsFolder.listFiles();
+        if (files == null) { return null; }
+
+        for (File file : files) {
+            if (!file.isDirectory()) continue;
+            
+            File levelDat = new File(file, "level.dat");
+            if (!levelDat.exists()) continue;
+            
+            worldNames.add(file.getName());
         }
 
         return worldNames.toArray(new String[worldNames.size()]);

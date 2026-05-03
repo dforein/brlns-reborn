@@ -4,6 +4,8 @@ import cn.nukkit.Player;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.particle.DustParticle;
 import cn.nukkit.math.Vector3;
+
+import com.brlnsreb.minigames.core.player.CustomPlayer;
 import com.brlnsreb.minigames.mm.config.MMConfig;
 
 import java.util.Collection;
@@ -43,7 +45,7 @@ public class RaycastSystem {
             }
             
             for (Player target : potentialTargets) {
-                if (target.getGamemode() == 3) continue;
+                if (((CustomPlayer) target).isGameSpectator()) continue;
 
                 if (target.getBoundingBox().grow(0.1, 0.1, 0.1).isVectorInside(point)) {
                     return target;

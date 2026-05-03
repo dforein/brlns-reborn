@@ -3,7 +3,7 @@ package com.brlnsreb.minigames.commands.mmsubcommands.mapsubcommands;
 import java.util.Date;
 import java.util.LinkedList;
 
-import com.brlnsreb.minigames.commands.subcommands.SubCommand;
+import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.systems.GoldSpawnMapper;
 
@@ -11,7 +11,7 @@ import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.utils.TextFormat;
 
-public class InfoCommand extends SubCommand {
+public class InfoCommand extends SimpleSubCommand {
     
     private final MurderMysteryGame game;
     
@@ -28,7 +28,7 @@ public class InfoCommand extends SubCommand {
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
 
         if (args.length < 3) {
-            sender.sendMessage(TextFormat.RED + "Usage: /mm map info <mapId>");
+            sender.sendMessage(TextFormat.RED + "Usage: /mmop map info <mapId>");
             return true;
         }
         

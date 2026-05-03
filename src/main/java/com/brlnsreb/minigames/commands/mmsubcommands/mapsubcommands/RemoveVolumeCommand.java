@@ -2,7 +2,7 @@ package com.brlnsreb.minigames.commands.mmsubcommands.mapsubcommands;
 
 import java.util.LinkedList;
 
-import com.brlnsreb.minigames.commands.subcommands.SubCommand;
+import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 
 import cn.nukkit.Player;
@@ -12,7 +12,7 @@ import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.TextFormat;
 
-public class RemoveVolumeCommand extends SubCommand {
+public class RemoveVolumeCommand extends SimpleSubCommand {
     
     private final MurderMysteryGame game;
 
@@ -34,9 +34,9 @@ public class RemoveVolumeCommand extends SubCommand {
         Player player = (Player) sender;
 
         if (args.length < 4) {
-            player.sendMessage(TextFormat.RED + "Usage: /mm map removevolume <mapId> <from> <to>");
-            player.sendMessage(TextFormat.RED + "Usage: /mm map removevolume <mapId> savecurrentpos");
-            player.sendMessage(TextFormat.RED + "Usage: /mm map removevolume <mapId> usesavedpos");
+            player.sendMessage(TextFormat.RED + "Usage: /mmop map removevolume <mapId> <from> <to>");
+            player.sendMessage(TextFormat.RED + "Usage: /mmop map removevolume <mapId> savecurrentpos");
+            player.sendMessage(TextFormat.RED + "Usage: /mmop map removevolume <mapId> usesavedpos");
             return true;
         }
 
@@ -59,9 +59,9 @@ public class RemoveVolumeCommand extends SubCommand {
         }
 
         if (args.length < 9) {
-            player.sendMessage(TextFormat.RED + "Usage: /mm map removevolume <mapId> <from> <to>");
-            player.sendMessage(TextFormat.RED + "Usage: /mm map removevolume <mapId> savecurrentpos");
-            player.sendMessage(TextFormat.RED + "Usage: /mm map removevolume <mapId> usesavedpos");
+            player.sendMessage(TextFormat.RED + "Usage: /mmop map removevolume <mapId> <from> <to>");
+            player.sendMessage(TextFormat.RED + "Usage: /mmop map removevolume <mapId> savecurrentpos");
+            player.sendMessage(TextFormat.RED + "Usage: /mmop map removevolume <mapId> usesavedpos");
             return true;
         }
         

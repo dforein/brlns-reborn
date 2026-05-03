@@ -6,17 +6,18 @@ This project is not affiliated with official BrokenLens.
 ## First setup
 - Follow the steps listed under the **Install** section, to install PowerNukkitX, at https://github.com/PowerNukkitX/PowerNukkitX
 - Start the server for the first time, in order to create the necessary folders
-- Download the plugin and put it in the plugins folder
-- Download the Resource Pack and put the zip file in the resourcepacks folder
+- Download the plugin and put it in the **plugins** folder
+- Download the Resource Pack and put the zip file in the **resourcepacks** folder
 - Set up the plugin | next chapter
 
 ## config.yml settings and adding maps
 After starting the plugin for the first time, the plugin will generate a **config.yml** file, where you can edit the **settings** of the plugin and **add valid maps**.
 You can use ```/mmop map add [etc...]``` to add new maps, ```/mmop map edit [etc...]``` to edit certain settings, ```/mmop map newspawn <mapId>``` to add new map spawns.
-You have to manually delete maps.
+You have to manually delete maps: open **config.yml** and remove everything starting from "enabled-maps: " to the end. Change ```default-world``` later, when you have a first or favorite map world, to use as a fallback in case the other worlds give some errors.
+Set in **pnx.yml** ```loadAllLevels = true```, because the plugin needs all worlds already loaded.
 Here an example of how to set up a mm map inside config.yml:
 
-```
+```YML
 world:
   lobby: "lobby"                        # folder name of the lobby world 
   default-world: "world"                # folder name of the default map world

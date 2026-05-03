@@ -3,13 +3,14 @@ package com.brlnsreb.minigames.mm.systems;
 import cn.nukkit.Player;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 // TODO: votingsystem astraction into Utils
 
 public class VotingSystem {
     
-    private final Map<String, String> mapVotes;      // playerName -> mapId
-    private final Map<String, String> timeVotes;     // playerName -> time
+    private final Map<UUID, String> mapVotes;
+    private final Map<UUID, String> timeVotes;
     
     private List<String> availableMaps;
     
@@ -28,19 +29,19 @@ public class VotingSystem {
     }
     
     public void voteMap(Player player, String mapId) {
-        mapVotes.put(player.getName(), mapId);
+        mapVotes.put(player.getUniqueId(), mapId);
     }
     
     public void voteTime(Player player, String time) {
-        timeVotes.put(player.getName(), time);
+        timeVotes.put(player.getUniqueId(), time);
     }
     
     public String getPlayerMapVote(Player player) {
-        return mapVotes.getOrDefault(player.getName(), "None");
+        return mapVotes.getOrDefault(player.getUniqueId(), "None");
     }
     
     public String getPlayerTimeVote(Player player) {
-        return timeVotes.getOrDefault(player.getName(), "None");
+        return timeVotes.getOrDefault(player.getUniqueId(), "None");
     }
     
     public int getMapVoteCount(String mapId) {
@@ -53,7 +54,7 @@ public class VotingSystem {
     
     public String getMostVotedMap() {
         if (mapVotes.isEmpty()) {
-            return availableMaps.isEmpty() ? null : availableMaps.get(new Random().nextInt(availableMaps.size()));
+            return availableMaps.isEmpty() ? null : availableMaps.get(ThreadLocalRandom.current().nextInt(availableMaps.size()));
         }
         
         Map<String, Integer> voteCounts = new HashMap<>();
@@ -69,12 +70,12 @@ public class VotingSystem {
             }
         }
         
-        return winners.get(new Random().nextInt(winners.size()));
+        return winners.get(ThreadLocalRandom.current().nextInt(winners.size()));
     }
     
     public String getMostVotedTime(List<String> availableTimes) {
         if (timeVotes.isEmpty()) {
-            return availableTimes.get(new Random().nextInt(availableTimes.size()));
+            return availableTimes.get(ThreadLocalRandom.current().nextInt(availableTimes.size()));
         }
         
         Map<String, Integer> voteCounts = new HashMap<>();
@@ -90,15 +91,15 @@ public class VotingSystem {
             }
         }
         
-        return winners.get(new Random().nextInt(winners.size()));
+        return winners.get(ThreadLocalRandom.current().nextInt(winners.size()));
     }
     
     public void removeMapVote(Player player) {
-        mapVotes.remove(player.getName());
+        mapVotes.remove(player.getUniqueId());
     }
 
     public void removeTimeVote(Player player) {
-        timeVotes.remove(player.getName());
+        timeVotes.remove(player.getUniqueId());
     }
     
     public void clear() {

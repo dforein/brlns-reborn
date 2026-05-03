@@ -67,7 +67,6 @@ death:
   animation-duration: 0.4167
   head-yaw-offset: -35
   head-pitch-offset: -40
-  redstone-drop: 2
   blindness-duration: 2
 gold:
   spawn-interval-min: 2
@@ -81,7 +80,8 @@ scoreboard:
   title: '&l&aMurder&2Mystery'
   update-interval: 10
 messages:
-  prefix: '&l&aM&rl&2M &r'
+  test: t1
+  prefix: '&l&aM&2M &r'
   spectator-in-game: '&aThe match has already started. You joined as spectator!'
   countdown-bossbar-long: '&l&eStarting in &6{minutes}m {seconds}s'
   countdown-bossbar-medium: '&l&eStarting in &6{seconds}s'
@@ -98,8 +98,8 @@ messages:
   player-joined: '&3{name} &7joined (&a{playersNumber}&7/&a{maxPlayers}&7)'
   player-left: '&3{name} &7left (&a{playersNumber}&7/&a{maxPlayers}&7)'
   selected-map: '&eYou''re going to play on the map &d{selectedMap} &eat &d{selectedTime}
-    &7/ &d{weather}'
-  timer-shortened: '&aTimer shortened in {seconds} seconds'
+    &e/ &d{weather}'
+  timer-shortened: '&aTimer shortened to {seconds} seconds'
   map-credits: '&eMap created by &d{builders}'
   innocent-title: '&aYOU ARE INNOCENT'
   innocent-subtitle: |-
@@ -119,6 +119,7 @@ messages:
   sheriff-gun-dropped: '&eThe &9Sheriff''s &egun is now dropped.'
   sheriff-dead-instructions: '&aYou can collect the &9Sheriff''s &agun, or craft a
     gun by using &eGOLD &ato become the sheriff!'
+  not-enough-gold: '&cYou don''t have enough &eGOLD &cto craft the &9Sheriff''s &cgun (need: 5 you have: {gold})'
   new-sheriff-chosen: '&aA new &9Sheriff &ahas been chosen'
   killed: '{killer} &ckilled &a{killed}'
   murderer: '&eThe Murderer'
@@ -141,11 +142,11 @@ messages:
   innocents-won: '&aINNOCENT team WON!'
   innocents-won2: '&aCongratulations! You WON'
   sword-cooldown: '&cYou have to wait for the cooldown before throwing the sword again!'
-  no-chat: '&cYou can''t write in the chat!'
-  teleported-to: '&aYou have been teleported to &e{player}&a!'
+  no-chat: '&cSorry, {role} can''t use the chat'
+  teleported-to: '&aTeleported to &e{player}''s &alocation'
   player-not-available: '&cPlayer is no longer available!'
 world:
-  default-world: school_n
+  default-world: thegrandhotel
   enabled-maps:
   - museum
   - village
@@ -163,8 +164,7 @@ world:
       weather: Clear
       builders:
       - ItzDS35
-      - JoeMama
-      - BiggieKirk
+      builders-team: '@BrokenLens Community'
       spawns:
       - 50 80 50
       - 20 80 20
@@ -178,6 +178,7 @@ world:
       weather: Clear
       builders:
       - Lesz
+      builders-team: '@BrokenLens BuildTeam'
       spawns:
       - 12 5 0
       - 30 5 -23
@@ -201,6 +202,7 @@ world:
       builders:
       - Yoursenpaiisme
       - Amphinous
+      builders-team: '@Community'
       spawns:
       - 13 4 5
       - 63 6 20
@@ -227,6 +229,7 @@ world:
       builders:
       - TrenzKGM
       - KhrizKGM
+      builders-team: '@BrokenLens BuildTeam'
       spawns:
       - 2446 56 2438
       - 2436 52 2441
@@ -255,6 +258,7 @@ world:
       weather: Clear
       builders:
       - TrenzKGM
+      builders-team: '@BrokenLens BuildTeam'
       spawns:
       - 2457 32 2419
       - 2486 34 2411
@@ -286,6 +290,7 @@ world:
       builders:
       - TrenzKGM
       - KhrizKGM
+      builders-team: '@BrokenLens BuildTeam'
       spawns:
       - 2409 25 2446
       - 2390 27 2450
@@ -331,6 +336,7 @@ world:
       builders:
       - TrenzKGM
       - KhrizKGM
+      builders-team: '@BrokenLens BuildTeam'
       spawns:
       - 13 21 16
       - 27 21 9

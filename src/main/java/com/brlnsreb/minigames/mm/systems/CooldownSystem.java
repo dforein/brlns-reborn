@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 // TODO: cooldownsystem astraction/move into Utils
+// TODO: optimize
 
 public class CooldownSystem {
     

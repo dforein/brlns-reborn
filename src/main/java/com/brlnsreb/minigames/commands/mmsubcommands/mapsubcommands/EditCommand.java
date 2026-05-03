@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 import com.brlnsreb.minigames.MinigameCore;
-import com.brlnsreb.minigames.commands.subcommands.SubCommand;
+import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
 
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParamType;
@@ -14,7 +14,7 @@ import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 
-public class EditCommand extends SubCommand {
+public class EditCommand extends SimpleSubCommand {
     
     private final MinigameCore plugin;
     private LinkedList<String> levelNames;
@@ -33,7 +33,7 @@ public class EditCommand extends SubCommand {
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
 
         if (args.length < 5) {
-            sender.sendMessage(TextFormat.RED + "Usage: /mm map edit <mapId> <field> <args>");
+            sender.sendMessage(TextFormat.RED + "Usage: /mmop map edit <mapId> <field> <args>");
             return true;
         }
         
@@ -47,7 +47,7 @@ public class EditCommand extends SubCommand {
         Config config = plugin.getConfig();
         String path = "world.arena-regions." + mapId + ".";
 
-        //editable fields: name, world, night-vision, weather, builders
+        //editable fields: name, world, night-vision, weather, builders, builders-team
         switch (args[3]) {
             case "name":
                 String newName = args[4];
@@ -105,6 +105,14 @@ public class EditCommand extends SubCommand {
                 }
                 config.set(path + "builders", builders);
                 break;
+            
+            case "builders-team":
+                String buildersTeam = args[4];
+                for (int i = 5; i < args.length; i++) {
+                    buildersTeam = buildersTeam + " " + args[i];
+                }
+                config.set(path + "builders-team", buildersTeam);
+                break;
 
             default:
                 sender.sendMessage(TextFormat.RED + "Invalid field!");
@@ -125,6 +133,7 @@ public class EditCommand extends SubCommand {
         LinkedList<CommandParameter> parameters3 = new LinkedList<CommandParameter>();
         LinkedList<CommandParameter> parameters4 = new LinkedList<CommandParameter>();
         LinkedList<CommandParameter> parameters5 = new LinkedList<CommandParameter>();
+        LinkedList<CommandParameter> parameters6 = new LinkedList<CommandParameter>();
 
         CommandParameter param1 = CommandParameter.newEnum(this.getName(), this.getAliases());
         CommandParameter param2 = CommandParameter.newEnum("mapId", plugin.getMMGame().getConfig().getMaps());
@@ -158,6 +167,12 @@ public class EditCommand extends SubCommand {
         parameters5.add(CommandParameter.newEnum("builders", new String[] {"builders"}));
         parameters5.add(CommandParameter.newType("buildersNames", CommandParamType.TEXT));
         paramList.add(parameters5);
+
+        parameters6.add(param1);
+        parameters6.add(param2);
+        parameters6.add(CommandParameter.newEnum("builders-team", new String[] {"builders-team"}));
+        parameters6.add(CommandParameter.newType("buildersTeamName", CommandParamType.TEXT));
+        paramList.add(parameters1);
 
 		return paramList;
 	}

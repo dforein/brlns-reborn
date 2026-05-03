@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.brlnsreb.minigames.commands.MMOperatorCommand;
-import com.brlnsreb.minigames.commands.subcommands.SubCommand;
+import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 
 import cn.nukkit.command.CommandSender;
@@ -13,7 +13,7 @@ import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 
-public class DisableCommand extends SubCommand {
+public class DisableCommand extends SimpleSubCommand {
     
     private final MurderMysteryGame game;
     private final MMOperatorCommand mmOpCommand;
@@ -32,7 +32,7 @@ public class DisableCommand extends SubCommand {
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
 
         if (args.length < 3) {
-            sender.sendMessage(TextFormat.RED + "Usage: /mm map disable <mapId>");
+            sender.sendMessage(TextFormat.RED + "Usage: /mmop map disable <mapId>");
             return true;
         }
         

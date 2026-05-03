@@ -4,14 +4,14 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.brlnsreb.minigames.MinigameCore;
-import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
+import com.brlnsreb.minigames.commands.subcommands.BasicSubCommand;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.utils.TextFormat;
 import cn.nukkit.Player;
 
-public class MMJoinAllCommand extends SimpleSubCommand {
+public class MMJoinAllCommand extends BasicSubCommand {
 
     private final MinigameCore plugin;
     private final MurderMysteryGame game;

@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 import cn.nukkit.command.data.CommandParameter;
 
-public abstract class ComplexSubCommand extends SimpleSubCommand {
+public abstract class ComplexSubCommand extends BasicSubCommand {
     
     public ComplexSubCommand(String name) {
         super(name);
