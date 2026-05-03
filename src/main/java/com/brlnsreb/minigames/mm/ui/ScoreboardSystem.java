@@ -50,7 +50,7 @@ public class ScoreboardSystem extends ScoreboardAbstract {
     private String getRoleText(MMRole role) {
         switch (role) {
             case MURDERER:  return "&cmurderer";
-            case SHERIFF:   return "&1sheriff";
+            case SHERIFF:   return "&9sheriff";
             case INNOCENT:  return "&ainnocent";
             case SPECTATOR: return "&7spectator";
             default:        return "&cno role";
