@@ -6,6 +6,7 @@ import cn.nukkit.scoreboard.data.DisplaySlot;
 import cn.nukkit.scoreboard.scorer.FakeScorer;
 import cn.nukkit.utils.TextFormat;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -18,9 +19,6 @@ public abstract class ScoreboardAbstract {
 
     protected final Map<UUID, Scoreboard> playerBoards = new HashMap<>();
     protected final Map<UUID, Map<Integer, FakeScorer>> activeScorers = new HashMap<>();
-
-    //implement the updateLogic in a separate public update method(s)
-    //also implement drawInGame and others in the update method(s)
 
     protected Scoreboard getScoreboard(Player player) {
         if (player == null || !player.isOnline()) return null;
@@ -38,9 +36,7 @@ public abstract class ScoreboardAbstract {
         return sb;
     }
 
-    protected void drawPregame(Scoreboard sb, UUID playerId, String timer) {
-        //lower score = higher position, NOT the reverse
-        int score = 0;
+    public void updatePregame(Collection<Player> players, String timer) {
         String[] lines = {
             "&a",
             "  &l&dGame time:",
@@ -48,12 +44,30 @@ public abstract class ScoreboardAbstract {
             "&b"
         };
 
-        for (String line : lines) {
-            score++;
-            setLine(sb, playerId, line, score);
+        update(players, lines);
+    }
+
+    public void update(Collection<Player> players, String[] lines) {
+        for (Player p : players) {
+            update(p, lines);
+        }
+    }
+
+    public void update(Player player, String[] lines) {
+        Scoreboard sb = getScoreboard(player);
+        if (sb == null) return;
+
+        draw(sb, player.getUniqueId(), lines);
+    }
+
+    protected void draw(Scoreboard sb, UUID playerId, String[] lines) {
+        int i;
+
+        for (i = 0; i < lines.length; i++) {
+            setLine(sb, playerId, lines[i], i);
         }
 
-        clearUnusedLines(sb, playerId, score);      //it's needed, to remove the older lower lines
+        clearUnusedLines(sb, playerId, i);      //it's needed, to remove the older lower lines
     }
 
     protected void setLine(Scoreboard sb, UUID playerId, String text, int score) {

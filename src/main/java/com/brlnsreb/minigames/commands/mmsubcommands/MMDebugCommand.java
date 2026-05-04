@@ -4,8 +4,8 @@ import java.util.LinkedList;
 
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.commands.subcommands.BasicSubCommand;
+import com.brlnsreb.minigames.core.lobby.entities.NPCEntity;
 import com.brlnsreb.minigames.core.player.CustomPlayer;
-import com.brlnsreb.minigames.lobby.entities.NPCEntity;
 import com.brlnsreb.minigames.mm.config.MMConfig;
 
 import cn.nukkit.Player;

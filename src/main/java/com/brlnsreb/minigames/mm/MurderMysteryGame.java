@@ -40,7 +40,7 @@ public class MurderMysteryGame {
     
     private GameState state;
     private Arena arena;
-    private final List<Player> players;
+    private final HashSet<Player> players;
     private String selectedMap;
     private String selectedTime;
     
@@ -75,7 +75,7 @@ public class MurderMysteryGame {
         this.config = new MMConfig(plugin.getConfig());
         this.roleManager = new MMRoleManager();
         this.state = GameState.WAITING_LOBBY;
-        this.players = new ArrayList<>();
+        this.players = new HashSet<>();
         this.checkEnoughPlayers = true;
         
         this.scoreboard = new ScoreboardSystem();
@@ -1048,9 +1048,7 @@ public class MurderMysteryGame {
         int remainingSeconds = timer.getSecondsRemaining();
 
         if (state == GameState.PREGAME_COUNTDOWN) {
-            for (Player p : getOnlinePlayers()) {
-                scoreboard.updatePregame(p, timeStr);
-            }
+            scoreboard.updatePregame(getOnlinePlayers(), timeStr);
             return;
         } else if (state == GameState.IN_GAME) {
             int innocents = roleManager.getAliveInnocentsCount();

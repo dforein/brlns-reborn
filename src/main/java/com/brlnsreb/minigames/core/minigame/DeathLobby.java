@@ -1,5 +1,5 @@
 package com.brlnsreb.minigames.core.minigame;
 
-public abstract class MinigameAbstract {
+public abstract class DeathLobby {
     
 }

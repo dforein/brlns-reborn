@@ -1,5 +1,7 @@
 package com.brlnsreb.minigames.mm;
 
-public class MMLobby {
+import com.brlnsreb.minigames.core.lobby.Lobby;
+
+public class MMLobby extends Lobby {
     
 }

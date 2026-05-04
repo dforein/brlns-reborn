@@ -26,6 +26,7 @@ public class CustomPlayer extends Player {
 
     public boolean isGameSpectator = false;
     public boolean takeDamage = false;
+    private PlayerData data;
 
     public CustomPlayer(@NotNull BedrockSession session, @NotNull PlayerInfo info) {
         super(session, info);
@@ -49,6 +50,14 @@ public class CustomPlayer extends Player {
         } else if (spawnToAll) {
             this.spawnToAll();
         }
+    }
+
+    public PlayerData getPlayerData() {
+        return data;
+    }
+
+    public void setPlayerData(PlayerData data) {
+        this.data = data;
     }
 
     @Override

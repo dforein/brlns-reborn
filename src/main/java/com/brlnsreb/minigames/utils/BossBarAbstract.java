@@ -1,7 +1,7 @@
 package com.brlnsreb.minigames.utils;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -83,7 +83,7 @@ public abstract class BossBarAbstract {
         }
     }
     
-    public void clear(List<Player> players) {
+    public void clear(Collection<Player> players) {
         //reset function
         bossBarIds.clear();
 

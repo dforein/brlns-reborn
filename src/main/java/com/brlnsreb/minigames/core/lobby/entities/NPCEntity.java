@@ -1,4 +1,4 @@
-package com.brlnsreb.minigames.lobby.entities;
+package com.brlnsreb.minigames.core.lobby.entities;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
