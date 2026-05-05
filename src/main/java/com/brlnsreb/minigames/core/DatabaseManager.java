@@ -1,7 +1,7 @@
 package com.brlnsreb.minigames.core;
 
 import com.brlnsreb.minigames.MinigameCore;
-import com.brlnsreb.minigames.core.minigame.Minigames;
+import com.brlnsreb.minigames.core.minigame.MinigameType;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -16,16 +16,16 @@ public class DatabaseManager {
     
     private static HikariDataSource dataSource;
     private final MinigameCore plugin;
-    private boolean enabled;
+    private static boolean enabled;
 
     public DatabaseManager(MinigameCore plugin) {
         this.plugin = plugin;
-        this.enabled = initConnectionPool();
+        enabled = initConnectionPool();
     }
 
     public boolean retryInit() {
-        this.enabled = initConnectionPool();
-        return this.enabled;
+        enabled = initConnectionPool();
+        return enabled;
     }
 
     private boolean initConnectionPool() {
@@ -120,7 +120,7 @@ public class DatabaseManager {
                 stmt.execute(alterStmtCommand.formatted("players") + column);
             }
 
-            for (Minigames minigame : Minigames.values()) {
+            for (MinigameType minigame : MinigameType.values()) {
                 String mgNameTag = minigame.getNameTag();
                 stmt.execute(statsTable.formatted(mgNameTag));
 
@@ -147,7 +147,7 @@ public class DatabaseManager {
         return dataSource.getConnection();
     }
     
-    public boolean isEnabled() {
+    public static boolean isEnabled() {
         return enabled && dataSource != null && !dataSource.isClosed();
     }
     

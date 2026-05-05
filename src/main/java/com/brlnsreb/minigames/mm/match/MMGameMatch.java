@@ -1,4 +1,4 @@
-package com.brlnsreb.minigames.mm;
+package com.brlnsreb.minigames.mm.match;
 
 import com.brlnsreb.minigames.core.minigame.MinigameMatch;
 

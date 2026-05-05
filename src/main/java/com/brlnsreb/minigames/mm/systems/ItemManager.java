@@ -1,4 +1,4 @@
-package com.brlnsreb.minigames.mm.items;
+package com.brlnsreb.minigames.mm.systems;
 import com.brlnsreb.minigames.MinigameCore;
 
 import java.util.List;

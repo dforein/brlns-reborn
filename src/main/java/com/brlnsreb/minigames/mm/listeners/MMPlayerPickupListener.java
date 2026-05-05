@@ -11,12 +11,12 @@ import cn.nukkit.item.ItemGoldIngot;
 import cn.nukkit.item.ItemGoldenHoe;
 import cn.nukkit.utils.TextFormat;
 
-import com.brlnsreb.minigames.core.minigame.GameState;
+import com.brlnsreb.minigames.core.State;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.config.MMConfig;
-import com.brlnsreb.minigames.mm.items.ItemManager;
 import com.brlnsreb.minigames.mm.roles.GamePlayer;
 import com.brlnsreb.minigames.mm.roles.MMRole;
+import com.brlnsreb.minigames.mm.systems.ItemManager;
 import com.brlnsreb.minigames.mm.ui.BossBarSystem;
 
 public class MMPlayerPickupListener implements Listener {
@@ -29,7 +29,7 @@ public class MMPlayerPickupListener implements Listener {
     
     @EventHandler(priority = EventPriority.HIGH)
     public void onInventoryPickup(InventoryPickupItemEvent event) {
-        if (game.getState() != GameState.IN_GAME && game.getState() != GameState.ENDING) return;
+        if (game.getState() != State.IN_GAME && game.getState() != State.ENDING) return;
 
         EntityItem itemEntity = event.getItem();
 
@@ -62,7 +62,7 @@ public class MMPlayerPickupListener implements Listener {
     
     private void handleGoldPickup(Player player, EntityItem itemEntity) {
 
-        if (game.getState() != GameState.IN_GAME) return;
+        if (game.getState() != State.IN_GAME) return;
 
         GamePlayer gp = game.getRoleManager().getGamePlayer(player);
 
@@ -89,7 +89,7 @@ public class MMPlayerPickupListener implements Listener {
     
     private void handleSheriffHoePickup(Player player, EntityItem itemEntity) {
 
-        if (game.getState() != GameState.IN_GAME) return;
+        if (game.getState() != State.IN_GAME) return;
         
         GamePlayer gp = game.getRoleManager().getGamePlayer(player);
 

@@ -4,7 +4,8 @@ import cn.nukkit.Player;
 import cn.nukkit.IPlayer;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.config.MMConfig;
-import com.brlnsreb.minigames.mm.items.ItemManager;
+import com.brlnsreb.minigames.mm.systems.ItemManager;
+
 import java.util.*;
 
 public class MMRoleManager {

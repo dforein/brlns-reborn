@@ -3,12 +3,14 @@ package com.brlnsreb.minigames.core.minigame;
 import cn.nukkit.Player;
 import java.util.List;
 
+import com.brlnsreb.minigames.core.State;
+
 // TODO: implement and refine this astraction
 
 public abstract class MinigameMatch {
     
     protected int id;
-    protected GameState state;
+    protected State state;
     protected Arena arena;
     protected List<Player> players;
     
@@ -30,5 +32,5 @@ public abstract class MinigameMatch {
     
     // Getters
     public int getId() { return id; }
-    public GameState getState() { return state; }
+    public State getState() { return state; }
 }

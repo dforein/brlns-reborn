@@ -23,7 +23,7 @@ import com.brlnsreb.minigames.commands.SetRulesCommand;
 import com.brlnsreb.minigames.commands.ToggleSaveCommand;
 import com.brlnsreb.minigames.core.lobby.entities.NPCEntity;
 import com.brlnsreb.minigames.core.minigame.MinigameManager;
-import com.brlnsreb.minigames.listeners.general.NPCChunkListener;
+import com.brlnsreb.minigames.listeners.general.EntityChunkListener;
 import com.brlnsreb.minigames.listeners.general.BlockUpdateListener;
 import com.brlnsreb.minigames.listeners.general.ChatListener;
 import com.brlnsreb.minigames.listeners.general.PlayerCreationListener;
@@ -59,6 +59,13 @@ public class MinigameCore extends PluginBase {
     
     @Override
     public void onEnable() {
+
+        String[] resources = {
+            "database.yml"
+        };
+
+        for (String file : resources) { saveResource(file); }
+
 
         getServer().setDefaultLevel(
             getServer().getLevelByName(
@@ -123,7 +130,7 @@ public class MinigameCore extends PluginBase {
         pm.registerEvents(new PlayerCreationListener(), this);
         pm.registerEvents(new ChatListener(this), this);
         pm.registerEvents(new BlockUpdateListener(), this);
-        pm.registerEvents(new NPCChunkListener(), this);
+        pm.registerEvents(new EntityChunkListener(), this);
 
         pm.registerEvents(new MMPlayerInteractListener(mmGame), this);
         pm.registerEvents(new MMProjectileHitListener(mmGame), this);

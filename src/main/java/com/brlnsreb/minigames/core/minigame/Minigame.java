@@ -6,9 +6,10 @@ public abstract class Minigame {
     
     protected final int id;
     protected final String nameTag;
-    protected HashSet<MinigameMatch> matches;
+    protected final HashSet<? extends MinigameMatch> matches;
+    protected int currentPlayers = 0;
 
-    public Minigame(Minigames minigame) {
+    public Minigame(MinigameType minigame) {
         this.matches = new HashSet<>();
         this.id = minigame.getId();
         this.nameTag = minigame.getNameTag();
@@ -16,7 +17,7 @@ public abstract class Minigame {
 
     public abstract void createMatch();
 
-    public HashSet<MinigameMatch> getMatches() {
+    public HashSet<? extends MinigameMatch> getMatches() {
         return matches;
     }
 

@@ -1,0 +1,9 @@
+enabled: false
+
+database:
+  host:
+  port:
+  database:
+  username:
+  password:
+  pool-size: 10

@@ -1,4 +1,4 @@
-package com.brlnsreb.minigames.mm;
+package com.brlnsreb.minigames.mm.lobby;
 
 import com.brlnsreb.minigames.core.lobby.Lobby;
 

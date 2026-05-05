@@ -1,6 +1,6 @@
 name: brlnsreb minigames
 main: com.brlnsreb.minigames.MinigameCore
-version: "1.1.7"
+version: "1.2.0"
 api: "2.0.0"
 author: brlnsreb
 description: BrokenLens Reborn Minigames plugin

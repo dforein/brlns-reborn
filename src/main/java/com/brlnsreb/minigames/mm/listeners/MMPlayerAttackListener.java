@@ -10,7 +10,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemIronSword;
 import cn.nukkit.utils.TextFormat;
 
-import com.brlnsreb.minigames.core.minigame.GameState;
+import com.brlnsreb.minigames.core.State;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.config.MMConfig;
 import com.brlnsreb.minigames.mm.roles.GamePlayer;
@@ -27,7 +27,7 @@ public class MMPlayerAttackListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onDamage(EntityDamageEvent event) {
 
-        if (game.getState() != GameState.IN_GAME) return;
+        if (game.getState() != State.IN_GAME) return;
 
         if (!(event.getEntity() instanceof Player)) return;
         

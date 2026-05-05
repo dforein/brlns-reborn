@@ -25,7 +25,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.core.player.CustomPlayer;
-import com.brlnsreb.minigames.mm.items.ItemManager;
 import com.brlnsreb.minigames.mm.roles.MMRole;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.config.MMConfig;
