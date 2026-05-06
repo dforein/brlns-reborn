@@ -6,9 +6,9 @@ import com.brlnsreb.minigames.utils.MessageUtil;
 
 public class MurderMystery extends Minigame {
     
-    private final MessageUtil messages;
-
     public MurderMystery(MinigameType minigame) {
         super(minigame);
     }
+
+    
 }

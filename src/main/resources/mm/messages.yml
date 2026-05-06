@@ -1,0 +1,65 @@
+prefix: '&l&aM&2M &r'
+
+spectator-in-game: '&aThe match has already started. You joined as spectator!'
+countdown-bossbar-long: '&l&eStarting in &6{minutes}m {seconds}s'
+countdown-bossbar-medium: '&l&eStarting in &6{seconds}s'
+countdown-bossbar-short: '&l&eStarting in &c{seconds}s'
+pregame-countdown: '&aMatch begins in &6{seconds}&e seconds...'
+game-start: '&aThe game has now started!'
+game-start2: '&cYou are no longer invicible!'
+gold-collected: '&aCollected +1 &r&eGOLD'
+not-enough-players: '&cAt least {min} players are required!'
+already-in-game: '&cYou are already in a game!'
+teleported-to-arena: '&aMatch will begin soon...'
+map-vote: '&aYou voted for map: &e{mapName}'
+time-vote: '&aYou voted for time: &e{time}'
+player-joined: '&3{name} &7joined (&a{playersNumber}&7/&a{maxPlayers}&7)'
+player-left: '&3{name} &7left (&a{playersNumber}&7/&a{maxPlayers}&7)'
+selected-map: '&eYou''re going to play on the map &d{selectedMap} &eat &d{selectedTime}
+  &e/ &d{weather}'
+timer-shortened: '&aTimer shortened to {seconds} seconds'
+map-credits: '&eMap created by &d{builders}'
+innocent-title: '&aYOU ARE INNOCENT'
+innocent-subtitle: |-
+  &eStay away from the murderer
+  &eand collect gold to earn points
+murderer-title: '&cYOU ARE MURDERER'
+murderer-subtitle: |-
+  &eKill all the innocents, but be
+  &estealthy not to get caught by the sheriff
+sheriff-title: '&9YOU ARE SHERIFF'
+sheriff-subtitle: '&l&eProtect the innocents and kill the murderer'
+dead-title: '&cYOU ARE DEAD'
+dead-subtitle: '&6Oh no... too bad'
+sheriff-advice: '&eRight click or hold your screen to shoot your gun'
+murderer-advice: '&eRight click or hold your screen to throw your sword'
+sheriff-friendly-fire: The &9Sheriff &ckilled an innocent and is now DEAD.
+sheriff-gun-dropped: '&eThe &9Sheriff''s &egun is now dropped.'
+sheriff-dead-instructions: '&aYou can collect the &9Sheriff''s &agun, or craft a
+  gun by using &eGOLD &ato become the sheriff!'
+not-enough-gold: '&cYou don''t have enough &eGOLD &cto craft the &9Sheriff''s &cgun (need: 5 you have: {gold})'
+new-sheriff-chosen: '&aA new &9Sheriff &ahas been chosen'
+killed: '{killer} &ckilled &a{killed}'
+murderer: '&eThe Murderer'
+sheriff: '&cThe &9Sheriff'
+sheriff-lowercase: '&cthe &9Sheriff'
+murderer-kill: '&cYou hunted &e{player} &cdown! &7(&2+15E &e+25C &7)'
+murderer-kill-sheriff: '&cYou killed the &9Sheriff&c! &7(&2+100E &e+300C &7)'
+sheriff-kill: '&cYou killed &eThe Murderer&c! &7(&2+600E &e+800C &7)'
+murderer-dead: '&cThe Murderer is gone!'
+lights-out-others: '&eThe Murderer &cput the lights out for &e{seconds} &cseconds'
+lights-out-murderer: '&cThe lights are now out to the other players for &e{seconds}
+  &cseconds'
+murderer-warning: '&eBeware. The sheriff can easily discover you while you are helding
+  your weapon!'
+lights-out-over: '&cLights out is over!'
+murderer-won-title: '&cMURDERER WON'
+innocents-won-title: '&aINNOCENTS WON'
+murderer-won: '&cMURDERER WON'
+murderer-won2: '&cCongratulations! You WON'
+innocents-won: '&aINNOCENT team WON!'
+innocents-won2: '&aCongratulations! You WON'
+sword-cooldown: '&cYou have to wait for the cooldown before throwing the sword again!'
+no-chat: '&cSorry, {role} can''t use the chat'
+teleported-to: '&aTeleported to &e{player}''s &alocation'
+player-not-available: '&cPlayer is no longer available!'

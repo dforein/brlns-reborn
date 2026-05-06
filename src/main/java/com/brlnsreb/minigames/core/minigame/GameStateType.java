@@ -1,6 +1,6 @@
-package com.brlnsreb.minigames.core;
+package com.brlnsreb.minigames.core.minigame;
 
-public enum GameState {
+public enum GameStateType {
     WAITING_LOBBY,
     LOBBY_COUNTDOWN,
     PREGAME_COUNTDOWN,

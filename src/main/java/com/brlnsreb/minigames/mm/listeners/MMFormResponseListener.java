@@ -7,7 +7,7 @@ import cn.nukkit.event.player.PlayerFormRespondedEvent;
 import cn.nukkit.form.window.CustomForm;
 import cn.nukkit.form.response.SimpleResponse;
 
-import com.brlnsreb.minigames.core.GameState;
+import com.brlnsreb.minigames.core.minigame.GameStateType;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.roles.GamePlayer;
 import com.brlnsreb.minigames.mm.roles.MMRole;
@@ -28,7 +28,7 @@ public class MMFormResponseListener implements Listener {
             CustomForm window = (CustomForm) event.getWindow();
             
             if (window.title().contains("Game Poll")) {
-                if (game.getState() == GameState.WAITING_LOBBY || game.getState() == GameState.LOBBY_COUNTDOWN) {
+                if (game.getState() == GameStateType.WAITING_LOBBY || game.getState() == GameStateType.LOBBY_COUNTDOWN) {
                     game.getVotingMenu().handleVoteResponse(player, window);
                 }
                 return;

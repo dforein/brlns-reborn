@@ -23,4 +23,11 @@ public enum MinigameType {
         }
         return null;
     }
+
+    public static MinigameType fromNameTag(String nameTag) {
+        for (MinigameType mg : values()) {
+            if (mg.nameTag.equals(nameTag)) return mg;
+        }
+        return null;
+    }
 }

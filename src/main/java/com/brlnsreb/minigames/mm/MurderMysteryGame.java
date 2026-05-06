@@ -13,8 +13,8 @@ import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import com.brlnsreb.minigames.MinigameCore;
-import com.brlnsreb.minigames.core.GameState;
 import com.brlnsreb.minigames.core.minigame.Arena;
+import com.brlnsreb.minigames.core.minigame.GameStateType;
 import com.brlnsreb.minigames.core.player.CustomPlayer;
 import com.brlnsreb.minigames.mm.config.MMConfig;
 import com.brlnsreb.minigames.mm.entities.DeadBodyEntity;
@@ -37,7 +37,7 @@ public class MurderMysteryGame {
     private final MMConfig config;
     private final MMRoleManager roleManager;
     
-    private GameState state;
+    private GameStateType state;
     private Arena arena;
     private final HashSet<Player> players;
     private String selectedMap;
@@ -73,7 +73,7 @@ public class MurderMysteryGame {
         this.plugin = plugin;
         this.config = new MMConfig(plugin.getConfig());
         this.roleManager = new MMRoleManager();
-        this.state = GameState.WAITING_LOBBY;
+        this.state = GameStateType.WAITING_LOBBY;
         this.players = new HashSet<>();
         this.checkEnoughPlayers = true;
         
@@ -103,7 +103,7 @@ public class MurderMysteryGame {
             return -3;
         }
 
-        if (state != GameState.WAITING_LOBBY && state != GameState.LOBBY_COUNTDOWN) {
+        if (state != GameStateType.WAITING_LOBBY && state != GameStateType.LOBBY_COUNTDOWN) {
             joinAsSpectator(player);
             return 1;
         }
@@ -126,9 +126,9 @@ public class MurderMysteryGame {
 
         int onlineCount = getOnlinePlayers().size();
         
-        if (state == GameState.WAITING_LOBBY && onlineCount >= config.getMinPlayers()) {
+        if (state == GameStateType.WAITING_LOBBY && onlineCount >= config.getMinPlayers()) {
             startCountdown();
-        } else if (state == GameState.LOBBY_COUNTDOWN 
+        } else if (state == GameStateType.LOBBY_COUNTDOWN 
                     && !countdownShortened 
                     && onlineCount >= config.getMinPlayersStart()) {
             shortenCountdown();
@@ -233,7 +233,7 @@ public class MurderMysteryGame {
         
         refreshPlayerState(player, true);
         
-        if (players.size() < config.getMinPlayers() && state == GameState.LOBBY_COUNTDOWN) {
+        if (players.size() < config.getMinPlayers() && state == GameStateType.LOBBY_COUNTDOWN) {
             cancelCountdown();
         }
 
@@ -250,7 +250,7 @@ public class MurderMysteryGame {
     }
 
     private void startCountdown() {
-        state = GameState.LOBBY_COUNTDOWN;
+        state = GameStateType.LOBBY_COUNTDOWN;
 
         refreshPlayersState();
         prepareMapVoting();
@@ -327,7 +327,7 @@ public class MurderMysteryGame {
         
         countdownShortened = false;
 
-        state = GameState.WAITING_LOBBY;
+        state = GameStateType.WAITING_LOBBY;
         refreshPlayersState();
     }
     
@@ -339,7 +339,7 @@ public class MurderMysteryGame {
         cleanupOfflinePlayers();
 
         if (getOnlinePlayers().size() < config.getMinPlayers()) {
-            state = GameState.WAITING_LOBBY;
+            state = GameStateType.WAITING_LOBBY;
             countdownShortened = false;
             refreshPlayersState();
 
@@ -374,7 +374,7 @@ public class MurderMysteryGame {
     }
 
     private void startPreGameCountdown() {
-        state = GameState.PREGAME_COUNTDOWN;
+        state = GameStateType.PREGAME_COUNTDOWN;
 
         int pregameDuration = config.getPregameCountdown();
         timer = new TimerSystem(plugin, pregameDuration);
@@ -423,7 +423,7 @@ public class MurderMysteryGame {
     }
 
     private void startInState() {
-        state = GameState.IN_GAME;
+        state = GameStateType.IN_GAME;
 
         for (Player p : getOnlinePlayers()) {
             bossBar.remove(p);
@@ -664,14 +664,15 @@ public class MurderMysteryGame {
 
     private void teleportPlayers() {
         List<Vector3> spawns = arena.getSpawns();
-        List<Player> onlinePlayers = getOnlinePlayers();
-
         if (spawns.isEmpty()) {
             forceStop();
             broadcast("&cError: no spawns available!");
             return;
         }
         
+        List<Player> onlinePlayers = new LinkedList<>(getOnlinePlayers());
+        Collections.shuffle(onlinePlayers);
+
         for (int i = 0; i < onlinePlayers.size(); i++) {
             Player p = onlinePlayers.get(i);
 
@@ -727,7 +728,7 @@ public class MurderMysteryGame {
     }
     
     public void checkWinCondition() {
-        if (state != GameState.IN_GAME) return;
+        if (state != GameStateType.IN_GAME) return;
         
         cleanupOfflinePlayers();
 
@@ -739,7 +740,7 @@ public class MurderMysteryGame {
     }
 
     private void endGame(boolean murdererWin) {
-        state = GameState.ENDING;
+        state = GameStateType.ENDING;
         
         if (timer != null) timer.stop();
         
@@ -808,11 +809,11 @@ public class MurderMysteryGame {
     }
 
     public void forceStop() {
-        if (state == GameState.IN_GAME 
-            || state == GameState.LOBBY_COUNTDOWN 
-            || state == GameState.PREGAME_COUNTDOWN) {
+        if (state == GameStateType.IN_GAME 
+            || state == GameStateType.LOBBY_COUNTDOWN 
+            || state == GameStateType.PREGAME_COUNTDOWN) {
 
-            state = GameState.ENDING;
+            state = GameStateType.ENDING;
 
             if (timer != null) timer.stop();
             gold.stop();
@@ -890,7 +891,7 @@ public class MurderMysteryGame {
         quitTracker.clear();
         votingSystem.clear();
 
-        state = GameState.WAITING_LOBBY;
+        state = GameStateType.WAITING_LOBBY;
         selectedMap = null;
         selectedTime = null;
         countdownShortened = false;
@@ -1046,10 +1047,10 @@ public class MurderMysteryGame {
         String timeStr = timer.getFormattedTime();
         int remainingSeconds = timer.getSecondsRemaining();
 
-        if (state == GameState.PREGAME_COUNTDOWN) {
+        if (state == GameStateType.PREGAME_COUNTDOWN) {
             scoreboard.updatePregame(getOnlinePlayers(), timeStr);
             return;
-        } else if (state == GameState.IN_GAME) {
+        } else if (state == GameStateType.IN_GAME) {
             int innocents = roleManager.getAliveInnocentsCount();
             boolean sheriffAlive = !roleManager.isSheriffDead();
             int trackThreshold = config.getMurdererTrackThreshold();
@@ -1140,7 +1141,7 @@ public class MurderMysteryGame {
             .toList();
     }
     
-    public GameState getState() {
+    public GameStateType getState() {
         return state;
     }
     

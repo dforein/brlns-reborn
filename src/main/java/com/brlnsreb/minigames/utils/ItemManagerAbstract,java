@@ -1,0 +1,47 @@
+package com.brlnsreb.minigames.utils;
+
+import cn.nukkit.Player;
+import cn.nukkit.item.Item;
+import cn.nukkit.item.enchantment.Enchantment;
+import cn.nukkit.utils.TextFormat;
+
+public abstract class ItemManagerAbstract {
+
+    protected Config config;
+
+    public ItemManagerAbstract(Config config) {
+        this.config = config;
+    }
+
+    public static void giveItem(Player player, int itemId, String itemName, int slot) {
+        Item item = buildItem(itemId, itemName);
+        player.getInventory().setItem(slot, item);
+    }
+
+    public static void giveItem(Player player, int itemId, String itemName, int enchantmentId, int enchantmentLevel, int slot) {
+        Item item = buildItem(itemId, itemName, enchantmentId, enchantmentLevel);
+        player.getInventory().setItem(slot, item);
+    }
+
+    public static Item buildItem(int itemId, String itemName) {
+        Item item = Item.get(itemId);
+        item.setCustomName(TextFormat.colorize(itemName));
+    }
+
+    public static Item buildItem(int itemId, String itemName, int enchantmentId, int enchantmentLevel) {
+        Item item = Item.get(itemId);
+        item.setCustomName(TextFormat.colorize(itemName));
+        item.addEnchantment(Enchantment.get(enchantmentId).setLevel(enchantmentLevel));
+    }
+
+    public static void clearInventory(Player player) {
+        if (!player.isOnline()) return;
+        
+        player.getInventory().clearAll();
+        player.getCursorInventory().clearAll();
+
+        player.getInventory().sendContents(player);
+        player.getCursorInventory().sendContents(player);
+    }
+    
+}

@@ -7,7 +7,7 @@ import cn.nukkit.event.player.PlayerChatEvent;
 import cn.nukkit.event.player.PlayerCommandPreprocessEvent;
 import cn.nukkit.utils.TextFormat;
 
-import com.brlnsreb.minigames.core.GameState;
+import com.brlnsreb.minigames.core.minigame.GameStateType;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.roles.GamePlayer;
 import com.brlnsreb.minigames.mm.roles.MMRole;
@@ -30,7 +30,7 @@ public class MMPlayerChatListener implements Listener {
     @EventHandler
     public void onChat(PlayerChatEvent event) {
 
-        if (game.getState() != GameState.IN_GAME) return;
+        if (game.getState() != GameStateType.IN_GAME) return;
         
         Player player = event.getPlayer();
         GamePlayer gp = game.getRoleManager().getGamePlayer(player);
@@ -61,7 +61,7 @@ public class MMPlayerChatListener implements Listener {
     @EventHandler
     public void onCommandPreprocess(PlayerCommandPreprocessEvent event) {
 
-        if (game.getState() != GameState.IN_GAME) return;
+        if (game.getState() != GameStateType.IN_GAME) return;
 
         Player player = event.getPlayer();
         GamePlayer gp = game.getRoleManager().getGamePlayer(player);

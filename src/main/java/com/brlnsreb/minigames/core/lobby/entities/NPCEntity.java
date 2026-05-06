@@ -76,7 +76,7 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
             this.getLevel()
         );
 
-        FloatingTextParticle text = new FloatingTextParticle(pos, title);
+        FloatingTextParticle text = new FloatingTextParticle(pos, TextFormat.colorize(title));
         this.getLevel().addParticle(text);
 
         if (this.text1 == null) {

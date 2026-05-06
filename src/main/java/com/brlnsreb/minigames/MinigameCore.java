@@ -23,6 +23,7 @@ import com.brlnsreb.minigames.commands.SetRulesCommand;
 import com.brlnsreb.minigames.commands.ToggleSaveCommand;
 import com.brlnsreb.minigames.core.lobby.entities.NPCEntity;
 import com.brlnsreb.minigames.core.minigame.MinigameManager;
+import com.brlnsreb.minigames.core.minigame.MinigameType;
 import com.brlnsreb.minigames.listeners.general.EntityChunkListener;
 import com.brlnsreb.minigames.listeners.general.BlockUpdateListener;
 import com.brlnsreb.minigames.listeners.general.ChatListener;
@@ -61,10 +62,17 @@ public class MinigameCore extends PluginBase {
     public void onEnable() {
 
         String[] resources = {
-            "database.yml"
+            "database.yml",
+            "general-lobby/config.yml"
         };
 
-        for (String file : resources) { saveResource(file); }
+        for (String file : resources) { 
+            saveResource(file, false); 
+        }
+        for (MinigameType minigame : MinigameType.values()) {
+            saveResource(minigame.getNameTag() + "/config.yml", false);
+            saveResource(minigame.getNameTag() + "/messages.yml", false);
+        }
 
 
         getServer().setDefaultLevel(
@@ -97,9 +105,7 @@ public class MinigameCore extends PluginBase {
     
     @Override
     public void onDisable() {
-        if (mmGame != null) {
-            mmGame.forceStop();
-        }
+        minigameManager.forceStop();
 
         this.getLogger().info(TextFormat.DARK_RED + "brlnsreb Minigames disabled!");
 
@@ -143,10 +149,6 @@ public class MinigameCore extends PluginBase {
     
     public static MinigameCore getInstance() {
         return instance;
-    }
-    
-    public MurderMysteryGame getMMGame() {
-        return mmGame;
     }
 
     public boolean getGlobalChat() {

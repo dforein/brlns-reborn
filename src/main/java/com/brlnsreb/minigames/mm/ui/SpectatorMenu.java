@@ -6,7 +6,7 @@ import cn.nukkit.form.window.SimpleForm;
 import cn.nukkit.scheduler.TaskHandler;
 import cn.nukkit.utils.TextFormat;
 
-import com.brlnsreb.minigames.core.GameState;
+import com.brlnsreb.minigames.core.minigame.GameStateType;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.roles.GamePlayer;
 import com.brlnsreb.minigames.mm.roles.MMRole;
@@ -107,7 +107,7 @@ public class SpectatorMenu {
                 currHandler[0] = Server.getInstance().getScheduler().scheduleRepeatingTask(() -> {
                     if ((target == null || !target.isOnline() || !game.getRoleManager().getGamePlayer(target).isAlive() || !game.getPlayers().contains(target)
                         || spectator == null || !spectator.isOnline() || !game.getPlayers().contains(spectator)) 
-                        || !(game.getState() == GameState.IN_GAME || game.getState() == GameState.ENDING)) {
+                        || !(game.getState() == GameStateType.IN_GAME || game.getState() == GameStateType.ENDING)) {
 
                         if (currHandler[0] != null) currHandler[0].cancel();
                         handlers.remove(spectator.getUniqueId());

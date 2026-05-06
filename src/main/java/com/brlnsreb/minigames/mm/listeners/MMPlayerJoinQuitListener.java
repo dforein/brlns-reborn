@@ -13,7 +13,7 @@ import cn.nukkit.event.player.PlayerLoginEvent;
 import cn.nukkit.event.player.PlayerJoinEvent;
 
 import com.brlnsreb.minigames.mm.roles.GamePlayer;
-import com.brlnsreb.minigames.core.GameState;
+import com.brlnsreb.minigames.core.minigame.GameStateType;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.roles.MMRole;
 import com.brlnsreb.minigames.mm.systems.QuitTracker;
@@ -40,7 +40,7 @@ public class MMPlayerJoinQuitListener implements Listener {
         GamePlayer gp = game.getRoleManager().getGamePlayer(player);
 
         if (gp != null) {
-            if (game.getState() == GameState.IN_GAME || game.getState() == GameState.PREGAME_COUNTDOWN) {
+            if (game.getState() == GameStateType.IN_GAME || game.getState() == GameStateType.PREGAME_COUNTDOWN) {
                 game.getQuitTracker().markAsQuitted(player.getUniqueId());
                 
                 if (gp.getRole() == MMRole.SHERIFF) {
