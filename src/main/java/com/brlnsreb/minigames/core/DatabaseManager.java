@@ -10,13 +10,17 @@ import cn.nukkit.utils.TextFormat;
 
 import java.io.File;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.*;
 
 public class DatabaseManager {
     
     private static HikariDataSource dataSource;
-    private final MinigameCore plugin;
     private static boolean enabled;
+    private final MinigameCore plugin;
 
     public DatabaseManager(MinigameCore plugin) {
         this.plugin = plugin;
@@ -31,7 +35,7 @@ public class DatabaseManager {
     private boolean initConnectionPool() {
         Config config = new Config(new File(plugin.getDataFolder() + "database.yml"), Config.YAML);
 
-        if (config.getBoolean("enabled")) {
+        if (!config.getBoolean("enabled", false)) {
             plugin.getLogger().warning(TextFormat.GOLD + "Database disabled by settings.");
             return false;
         }
@@ -84,7 +88,7 @@ public class DatabaseManager {
         String playersTable = """
             CREATE TABLE IF NOT EXISTS players (
                 uuid VARCHAR(36) PRIMARY KEY,
-                player_name VARCHAR(32) NOT NULL,
+                player_name VARCHAR(32),
                 exp INT DEFAULT 0,
                 coins INT DEFAULT 0,
                 INDEX idx_name (player_name)
@@ -102,12 +106,7 @@ public class DatabaseManager {
 
         String alterStmtCommand = "ALTER TABLE %s ADD COLUMN IF NOT EXISTS";
 
-        String[] columnsPlayers = {
-            "player_name VARCHAR(32) NOT NULL",
-            "exp INT DEFAULT 0",
-            "coins INT DEFAULT 0",
-        };
-
+        String[] columnsPlayers = {};   //for updates, to add new columns
         String[] columnsStats = {};
         String pvpKillsColumn = "kills INT DEFAULT 0";
         
@@ -141,10 +140,56 @@ public class DatabaseManager {
     }
     
     public static Connection getConnection() throws SQLException {
-        if (dataSource == null || dataSource.isClosed()) {
+        if (!isEnabled()) {
             throw new SQLException("Database not initialized or already closed!");
         }
         return dataSource.getConnection();
+    }
+
+    public static int executeUpdate(String sql, Object... params) {
+        try (Connection conn = getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            for (int i = 0; i < params.length; i++) {
+                stmt.setObject(i + 1, params[i]);
+            }
+            
+            return stmt.executeUpdate();
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public static List<Map<String, Object>> executeSelect(String sql, Object... params) {
+        try (Connection conn = getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            for (int i = 0; i < params.length; i++) {
+                stmt.setObject(i + 1, params[i]);
+            }
+            
+            ResultSet rs = stmt.executeQuery();
+            ResultSetMetaData meta = rs.getMetaData();
+            int columnCount = meta.getColumnCount();
+
+            List<Map<String, Object>> results = new ArrayList<>();
+
+            while (rs.next()) {
+                HashMap<String, Object> row = new HashMap<>();
+                for (int i = 1; i <= columnCount; i++) {
+                    row.put(meta.getColumnName(i), rs.getObject(i));
+                }
+                results.add(row);
+            }
+
+            return results;
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     
     public static boolean isEnabled() {

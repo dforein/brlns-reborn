@@ -8,8 +8,8 @@ public class PlayerData {
     public int levelFloor = 0;
     public int coins = 0;
 
-    public void addExp(int dExp) {
-        this.setExp(this.exp + dExp);
+    public void addExp(int deltaExp) {
+        this.setExp(this.exp + deltaExp);
     }
 
     public void setExp(long exp) {

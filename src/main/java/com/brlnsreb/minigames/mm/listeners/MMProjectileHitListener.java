@@ -8,7 +8,7 @@ import cn.nukkit.event.Listener;
 import cn.nukkit.event.entity.ProjectileHitEvent;
 import cn.nukkit.utils.TextFormat;
 
-import com.brlnsreb.minigames.core.State;
+import com.brlnsreb.minigames.core.GameState;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.config.MMConfig;
 import com.brlnsreb.minigames.mm.entities.ThrownSwordEntity;
@@ -31,7 +31,7 @@ public class MMProjectileHitListener implements Listener {
         Entity hit = event.getMovingObjectPosition().entityHit;
 
         if (!(hit instanceof Player)) return;
-        if (game.getState() != State.IN_GAME) return;
+        if (game.getState() != GameState.IN_GAME) return;
 
         Player victim = (Player) hit;
         GamePlayer victimGp = game.getRoleManager().getGamePlayer(victim);

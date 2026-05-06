@@ -30,7 +30,7 @@ import cn.nukkit.entity.effect.EffectType;
 import cn.nukkit.utils.TextFormat;
 
 import com.brlnsreb.minigames.MinigameCore;
-import com.brlnsreb.minigames.core.State;
+import com.brlnsreb.minigames.core.GameState;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.config.MMConfig;
 import com.brlnsreb.minigames.mm.roles.GamePlayer;
@@ -152,7 +152,7 @@ public class MMPlayerInteractListener implements Listener {
     }
 
     private boolean handleItemInteraction(Player player, Item item, GamePlayer gp) {
-        if (game.getState() == State.WAITING_LOBBY || game.getState() == State.LOBBY_COUNTDOWN) {
+        if (game.getState() == GameState.WAITING_LOBBY || game.getState() == GameState.LOBBY_COUNTDOWN) {
             if (game.getPlayers().contains(player)) {
                 //game poll
                 if (item instanceof ItemNetherStar) {
@@ -209,7 +209,7 @@ public class MMPlayerInteractListener implements Listener {
         Player target = game.getRaycast().shoot(shooter);
         shooter.getLevel().addSound(shooter, Sound.RANDOM_FIZZ, 0.8f, 0.9f);
         
-        if (game.getState() == State.ENDING) return;
+        if (game.getState() == GameState.ENDING) return;
 
 
         if (target != null) {
@@ -308,7 +308,7 @@ public class MMPlayerInteractListener implements Listener {
         clearItem(murderer, Item.BLAZE_ROD);
         gp.setUsedFlash(true);
 
-        if (game.getState() == State.ENDING) return;
+        if (game.getState() == GameState.ENDING) return;
 
 
         MinigameCore plugin = game.getPlugin();
