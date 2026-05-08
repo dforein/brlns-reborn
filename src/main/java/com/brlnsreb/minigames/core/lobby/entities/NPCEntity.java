@@ -70,12 +70,13 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
         
         Position pos = new Position(
             this.getX(),
-            this.getY() + 2.25 + verticalOffset,
+            this.getY() + 2.25 + verticalOffset,        //test
             this.getZ(),
             this.getLevel()
         );
 
         HologramEntity text = new HologramEntity(pos.getChunk(), Entity.getDefaultNBT(pos));
+        text.spawnToAll();
 
         if (this.text1 == null) {
             this.text1 = text;
