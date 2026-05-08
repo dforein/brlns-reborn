@@ -48,7 +48,7 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
 
     public void updateText(String line) {
         if (text1 == null) {
-            createHologram(verticalOffset1, line);
+            createHologram(verticalOffset1);
         }
 
         text1.setText(line);
@@ -56,21 +56,20 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
 
     public void updateText(String line1, String line2) {
         if (text1 == null || text2 == null) {
-            createHologram(verticalOffset1, line1);
-            createHologram(verticalOffset2, line2);
-            return;
+            createHologram(verticalOffset1);
+            createHologram(verticalOffset2);
         }
 
         text1.setText(line1);
         text2.setText(line2);
     }
 
-    private void createHologram(double verticalOffset, String title) {
+    private void createHologram(double verticalOffset) {
         if (this.text1 != null && this.text2 != null) return;
         
         Position pos = new Position(
             this.getX(),
-            this.getY() + 2.25 + verticalOffset,        //test
+            this.getY() + 1.5 + verticalOffset,
             this.getZ(),
             this.getLevel()
         );
