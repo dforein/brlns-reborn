@@ -22,13 +22,12 @@ import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.format.IChunk;
-import cn.nukkit.level.particle.FloatingTextParticle;
 import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.utils.TextFormat;
 
 public class NPCEntity extends EntityHuman implements CustomEntity {
 
     public static final String IDENTIFIER = "brlnsreb:npc";
+
     private static final double lookDistance = 10;
     private static final double distSqThreshold = lookDistance * lookDistance;
     private static final double rotationThreshold = 30;
@@ -38,8 +37,8 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
     private double lerpSpeed = 0.25;
 
     private Consumer<Player> task = null;
-    private FloatingTextParticle text1 = null;
-    private FloatingTextParticle text2 = null;
+    private HologramEntity text1 = null;
+    private HologramEntity text2 = null;
     private double verticalOffset1 = 0.6;
     private double verticalOffset2 = 0.25;
 
@@ -52,7 +51,7 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
             createHologram(verticalOffset1, line);
         }
 
-        text1.setTitle(TextFormat.colorize(line));
+        text1.setText(line);
     }
 
     public void updateText(String line1, String line2) {
@@ -62,8 +61,8 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
             return;
         }
 
-        text1.setTitle(TextFormat.colorize(line1));
-        text2.setTitle(TextFormat.colorize(line2));
+        text1.setText(line1);
+        text2.setText(line2);
     }
 
     private void createHologram(double verticalOffset, String title) {
@@ -76,8 +75,7 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
             this.getLevel()
         );
 
-        FloatingTextParticle text = new FloatingTextParticle(pos, TextFormat.colorize(title));
-        this.getLevel().addParticle(text);
+        HologramEntity text = new HologramEntity(pos.getChunk(), Entity.getDefaultNBT(pos));
 
         if (this.text1 == null) {
             this.text1 = text;
@@ -207,11 +205,11 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
         this.task = task;
     }
 
-    public FloatingTextParticle getText1() {
+    public HologramEntity getText1() {
         return text1;
     }
 
-    public FloatingTextParticle getText2() {
+    public HologramEntity getText2() {
         return text2;
     }
 

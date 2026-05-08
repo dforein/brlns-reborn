@@ -22,11 +22,9 @@ public class ReloadConfigCommand extends Command {
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (!sender.isOp()) return true;
 
-        plugin.reloadConfig();
-        plugin.getMMGame().getConfig().updateConfig(plugin.getConfig());
+        //TODO: rewrite
 
         sender.sendMessage(TextFormat.GREEN + "Config file reloaded!");
-        sender.sendMessage(TextFormat.YELLOW + "Debug check: " + plugin.getMMGame().getConfig().getMessageNoPrefix("test"));
         return true;
     }
 }

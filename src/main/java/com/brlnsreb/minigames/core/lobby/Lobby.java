@@ -38,7 +38,7 @@ public abstract class Lobby {
 
     protected void createHologram(Position pos, String text) {
         FloatingTextParticle holo = new FloatingTextParticle(pos, TextFormat.colorize(text));
-        pos.getLevel().addParticle(holo);
+        this.level.addParticle(holo);
     }
 
 }
