@@ -8,6 +8,18 @@ public class PlayerData {
     private int levelFloor = -1;
     public int coins = -1;
 
+    public PlayerData() {
+        resetData();
+    }
+
+    public void resetData() {
+        name = null;
+        exp = -1;
+        level = -1.0;
+        levelFloor = -1;
+        coins = -1;
+    }
+
     public void addExp(int deltaExp) {
         this.setExp(this.exp + deltaExp);
     }

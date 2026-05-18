@@ -34,7 +34,7 @@ public class DatabaseManager {
     }
 
     private boolean initConnectionPool() {
-        Config config = new Config(new File(plugin.getDataFolder() + "general/database.yml"), Config.YAML);
+        Config config = new Config(new File(plugin.getDataFolder() + "database.yml"), Config.YAML);
 
         if (!config.getBoolean("enabled", false)) {
             plugin.getLogger().warning(TextFormat.GOLD + "Database disabled by settings.");

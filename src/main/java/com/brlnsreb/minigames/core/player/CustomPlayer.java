@@ -35,7 +35,7 @@ public class CustomPlayer extends Player {
     public CustomPlayer(@NotNull BedrockSession session, @NotNull PlayerInfo info) {
         super(session, info);
 
-        PlayerDataManager.newPlayer(this);
+        PlayerDataManager.initPlayer(this);
         updatePlayerNameTag();
     }
 
