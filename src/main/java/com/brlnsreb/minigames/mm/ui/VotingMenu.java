@@ -1,42 +1,29 @@
 package com.brlnsreb.minigames.mm.ui;
 
 import cn.nukkit.Player;
-import cn.nukkit.form.element.custom.ElementDropdown;
 import cn.nukkit.form.window.CustomForm;
 import cn.nukkit.utils.TextFormat;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.config.MMConfig;
 import com.brlnsreb.minigames.mm.systems.VotingSystem;
+import com.brlnsreb.minigames.utils.MenuAbstract;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 // TODO: votingmenu astraction into Utils
 
-public class VotingMenu {
+public class VotingMenu extends MenuAbstract {
     
     private final MurderMysteryGame game;
-    private final Map<UUID, Long> openingCooldown;
     
     public VotingMenu(MurderMysteryGame game) {
+        super();
         this.game = game;
-        this.openingCooldown = new ConcurrentHashMap<>();
     }
     
     public void openVotingMenu(Player player) {
-        long now = System.currentTimeMillis();
-        UUID uuid = player.getUniqueId();
-
-        //cooldown check, else reset cooldown
-        if (openingCooldown.containsKey(uuid)
-            && now - openingCooldown.get(uuid) < 500) {
-            return;
-        }
-
-        openingCooldown.put(uuid, now);
+        checkCooldown(player);
 
         MMConfig config = game.getConfig();
         VotingSystem voting = game.getVotingSystem();
@@ -60,12 +47,11 @@ public class VotingMenu {
             mapDefaultIndex = availableMaps.indexOf(currentMapVote) + 1;
         }
         
-        ElementDropdown mapDropdown = new ElementDropdown(
+        menu.addDropdown(
             TextFormat.colorize("Vote for map:"),
             mapOptions,
             mapDefaultIndex
         );
-        menu.addElement(mapDropdown);
         
         //time dropdown
         List<String> times = config.getAvailableTimes();
@@ -83,12 +69,11 @@ public class VotingMenu {
             timeDefaultIndex = times.indexOf(currentTimeVote) + 1;
         }
         
-        ElementDropdown timeDropdown = new ElementDropdown(
+        menu.addDropdown(
             TextFormat.colorize("Vote for time:"),
             timeOptions,
             timeDefaultIndex
         );
-        menu.addElement(timeDropdown);
         
         menu.send(player);
     }

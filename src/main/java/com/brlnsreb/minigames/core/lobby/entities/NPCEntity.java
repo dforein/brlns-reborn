@@ -46,12 +46,20 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
         super(chunk, nbt);
     }
 
-    public void updateText(String line) {
+    public void updateTitle(String line) {
         if (text1 == null) {
             createHologram(verticalOffset1);
         }
 
         text1.setText(line);
+    }
+
+    public void updateSubTitle(String line) {
+        if (text2 == null) {
+            createHologram(verticalOffset1);
+        }
+
+        text2.setText(line);
     }
 
     public void updateText(String line1, String line2) {

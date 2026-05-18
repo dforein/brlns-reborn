@@ -7,7 +7,6 @@ import com.brlnsreb.minigames.core.minigame.MinigameManager;
 import com.brlnsreb.minigames.core.minigame.MinigameType;
 
 import cn.nukkit.Player;
-import cn.nukkit.level.Position;
 import cn.nukkit.utils.Config;
 
 public class GeneralLobby extends Lobby {
@@ -18,43 +17,21 @@ public class GeneralLobby extends Lobby {
     }
 
     private void spawnAllNPCs() {
-        int X = 0;
-        int Y = 1;
-        int Z = 2;
-
         MinigameManager minigameManager = MinigameManager.getInstance();
 
         for (String gameNameTag : (List<String>) config.getList("npc.list")) {
-            String path = "npc." + gameNameTag + ".";
-            String rawCoords = config.getString(path + "pos");
+            String path = "npc." + gameNameTag;
             MinigameType minigame = MinigameType.fromNameTag(gameNameTag);
 
-            spawnNPC(
-                new Position(
-                    getCoordinate(rawCoords, X) + 0.5,
-                    getCoordinate(rawCoords, Y),
-                    getCoordinate(rawCoords, Z) + 0.5,
-                    this.level
-                ),
-                config.getString(path + "text1"),
-                config.getString(path + "text2"),
-                config.getDouble(path + "default-yaw"),
-                (Player player) -> {
-                    minigameManager.onJoin(player, minigame);
-                },
-                config.getString(path + "skin-file")
+            spawnNpc(
+                path,
+                (Player player) -> { minigameManager.onJoin(player, minigame); }
             );
         }
     }
 
     public boolean onJoin(Player player) {
 
-    }
-
-    private double getCoordinate(String rawCoords, int coord) {
-        return Double.parseDouble(
-            rawCoords.split("\\s+") [coord]
-        );
     }
     
 }

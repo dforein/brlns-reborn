@@ -4,6 +4,7 @@ import java.util.BitSet;
 import java.util.HashSet;
 
 import com.brlnsreb.minigames.MinigameCore;
+import com.brlnsreb.minigames.core.minigame.lobby.MinigameLobby;
 
 import cn.nukkit.Player;
 import cn.nukkit.utils.Config;
@@ -17,6 +18,7 @@ public abstract class Minigame {
     protected Config config;
     protected Config messages;
 
+    protected final MinigameLobby lobby;
     protected final HashSet<? extends MinigameMatch> matches;
     protected final BitSet busyMatchNumbers;
     protected MinigameMatch mainPendingMatch;
@@ -30,18 +32,29 @@ public abstract class Minigame {
         this.config = new Config(plugin.getDataFolder() + this.nameTag + "/config.yml", Config.YAML);
         this.messages = new Config(plugin.getDataFolder() + this.nameTag + "/messages.yml", Config.YAML);
 
+        this.lobby = createLobby();
         this.matches = new HashSet<>();
         this.busyMatchNumbers = new BitSet();
-        createMatch();
+        this.mainPendingMatch = createMatch();
     }
 
-    public boolean onJoin(Player player) {
-        
+    public boolean onLobbyJoin(Player player) {
+        return lobby.onJoin(player);
     }
 
-    public abstract void createMatch();
+    public boolean onMatchJoin(Player player) {
+        return mainPendingMatch.onJoin(player);
+    }
 
-    private int getMatchNumber() {                            //used in createMatch
+    protected abstract MinigameLobby createLobby();
+    public abstract MinigameMatch createMatch();
+
+    protected void replaceMainPendingMatch(MinigameMatch match) {      //used in createMatch
+        mainPendingMatch = match;
+        lobby.onReplaceMainPendingMatch(match.getNumber());
+    }
+
+    protected int getMatchNumber() {                            //used in createMatch
         int n = busyMatchNumbers.nextClearBit(1);
         busyMatchNumbers.set(n);
         return n;

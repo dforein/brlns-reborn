@@ -585,14 +585,14 @@ public class MurderMysteryGame {
         String rawMaxCoords = pConfig.getString(path + "max");
 
         Vector3 min = new Vector3(
-            getCoordinate(rawMinCoords, X),
-            getCoordinate(rawMinCoords, Y),
-            getCoordinate(rawMinCoords, Z)
+            parseCoordinate(rawMinCoords, X),
+            parseCoordinate(rawMinCoords, Y),
+            parseCoordinate(rawMinCoords, Z)
         );
         Vector3 max = new Vector3(
-            getCoordinate(rawMaxCoords, X),
-            getCoordinate(rawMaxCoords, Y),
-            getCoordinate(rawMaxCoords, Z)
+            parseCoordinate(rawMaxCoords, X),
+            parseCoordinate(rawMaxCoords, Y),
+            parseCoordinate(rawMaxCoords, Z)
         );
 
         //spawns
@@ -601,9 +601,9 @@ public class MurderMysteryGame {
 
         for (String coords : spawnsRawList) {
             spawns.add(new Vector3(
-                getCoordinate(coords, X),
-                getCoordinate(coords, Y),
-                getCoordinate(coords, Z)
+                parseCoordinate(coords, X),
+                parseCoordinate(coords, Y),
+                parseCoordinate(coords, Z)
             ));
         }
 
@@ -656,7 +656,7 @@ public class MurderMysteryGame {
         arena = new Arena(pConfig.getString(path + "name"), level, min, max, spawns);
     }
 
-    private double getCoordinate(String rawCoords, int coord) {
+    private double parseCoordinate(String rawCoords, int coord) {
         return Double.parseDouble(
             rawCoords.split("\\s+") [coord]
         );

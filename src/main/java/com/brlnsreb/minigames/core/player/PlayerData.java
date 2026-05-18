@@ -3,16 +3,16 @@ package com.brlnsreb.minigames.core.player;
 public class PlayerData {
 
     public String name = null;
-    private long exp = 0;
-    public double level = 0;
-    public int levelFloor = 0;
-    public int coins = 0;
+    private int exp = -1;
+    private double level = -1.0;
+    private int levelFloor = -1;
+    public int coins = -1;
 
     public void addExp(int deltaExp) {
         this.setExp(this.exp + deltaExp);
     }
 
-    public void setExp(long exp) {
+    public void setExp(int exp) {
         /**
          * the level growth functions are based on values gathered from different yt videos, 
          * at different levels (3-5, 40-60, 149, 7000+, 8000+), considering a more probable 
@@ -31,14 +31,14 @@ public class PlayerData {
             this.levelFloor = (int) this.level;
         } else {
             // using the derivative of lvl(exp) to get a linear constant growth
-            long temp = exp - expThreshold;
+            int temp = exp - expThreshold;
             this.level = levelThreshold + temp / expPerHighLevel;
             this.levelFloor = (int) this.level;
         }
     }
 
-    public long getExp() {
-        return this.exp;
-    }
+    public int getExp() { return this.exp; }
+    public double getLevel() { return this.level; }
+    public int getFloorLevel() { return this.levelFloor; }
 
 }

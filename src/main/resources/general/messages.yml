@@ -1,0 +1,72 @@
+# &3&o《》
+# &2▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+auth:
+  menu:
+    title: Login to your account
+    label0: Register an account or Login to save stats, coins and experience!
+    input1: Username &c(!)
+    input2: Password
+    toggle3: Register this username if available
+  register-outcome:
+    ok: 
+      title: Account registered successfully
+      content: |-
+        Welcome %s!
+        You are now a registered BrokenLens Reborn member
+        
+        Have fun!
+    invalid-name:
+      title: Error during account registration
+      content: |-
+        Sorry, you can't use that name: it's invalid!
+        Make sure you use only alphanumerical characters and the lenght of your name is between 3 and 26 characters. Other kinds of characters, except the underscore ("_"), are not valid.
+    name-already-in-use:
+      title: Error during account registration
+      content: |-
+        Sorry, you can't use that name: it's already in use!
+        Try a different name.
+    player-already-logged-in:
+      title: Error during account registration
+      content: |-
+        You are already logged in.
+        Either another player is using your account or you're already using your account.
+    db-error:
+      title: Error during account registration
+      content: |-
+        The server is having some trouble with the database, we will investigate the bug.
+        If you can, report this bug to staff members: AuthMenu::HandleResponse, database error.
+    error:
+      title: Error during account registration
+      content: |-
+        Something wrong happened, we will investigate the bug.
+        If you can, report this bug to staff members: AuthMenu::HandleResponse, invalid switch.
+  login-outcome:
+    ok: 
+      title: 
+      content: |-
+        Welcome back %s!
+        Have fun!
+    player-already-logged-in:
+      title: Error during account login
+      content: |-
+        You are already logged in.
+        Either another player is using your account or you're already using your account.
+    name-not-found:
+      title: Error during account login
+      content: |-
+        That name doesn't exist!
+        If you are new, toggle the "Register this username if available" button to register a new account.
+    wrong-password:
+      title: Error during account login
+      content: |-
+        Wrong password!
+    db-error:
+      title: Error during account login
+      content: |-
+        The server is having some trouble with the database, we will investigate the bug.
+        If you can, report this bug to staff members: "AuthMenu::HandleResponse, database error".
+    error:
+      title: Error during account login
+      content: |-
+        Something wrong happened, we will investigate the bug.
+        If you can, report this bug to staff members: "AuthMenu::HandleResponse, invalid switch".

@@ -10,6 +10,7 @@ import com.brlnsreb.minigames.core.minigame.GameStateType;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.roles.GamePlayer;
 import com.brlnsreb.minigames.mm.roles.MMRole;
+import com.brlnsreb.minigames.utils.MenuAbstract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,36 +18,25 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class SpectatorMenu {
+public class SpectatorMenu extends MenuAbstract {
     
     private final MurderMysteryGame game;
     private final Map<UUID, List<Player>> pendingMenus;
-    private final Map<UUID, Long> openingCooldown;
     private final Map<UUID, TaskHandler> handlers;
     
     public SpectatorMenu(MurderMysteryGame game) {
+        super();
         this.game = game;
         this.pendingMenus = new ConcurrentHashMap<>();
-        this.openingCooldown = new ConcurrentHashMap<>();
         this.handlers = new ConcurrentHashMap<>();
     }
     
     public void openTeleportMenu(Player spectator) {
-        long now = System.currentTimeMillis();
-        UUID uuid = spectator.getUniqueId();
+        checkCooldown(spectator);
 
-        //cooldown check, else reset cooldown
-        if (openingCooldown.containsKey(uuid)
-            && now - openingCooldown.get(uuid) < 500) {
-            return;
-        }
+        SimpleForm menu = new SimpleForm("Spectate player");
 
-        openingCooldown.put(uuid, now);
-
-        SimpleForm menu = new SimpleForm(
-            TextFormat.colorize(game.getConfig().getSpectatorItemName()),
-            TextFormat.colorize("Select a player to teleport")
-        );
+        //TODO: add "Random Player" first option
         
         List<Player> alivePlayers = new ArrayList<>();
         

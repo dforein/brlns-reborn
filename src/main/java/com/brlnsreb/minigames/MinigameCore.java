@@ -19,12 +19,12 @@ import com.brlnsreb.minigames.commands.MMCommand;
 import com.brlnsreb.minigames.commands.MMOperatorCommand;
 import com.brlnsreb.minigames.commands.PingCommand;
 import com.brlnsreb.minigames.commands.ReloadConfigCommand;
-import com.brlnsreb.minigames.commands.SetRulesCommand;
 import com.brlnsreb.minigames.commands.ToggleSaveCommand;
 import com.brlnsreb.minigames.core.lobby.entities.NPCEntity;
 import com.brlnsreb.minigames.core.minigame.MinigameManager;
 import com.brlnsreb.minigames.core.minigame.MinigameType;
 import com.brlnsreb.minigames.listeners.general.EntityChunkListener;
+import com.brlnsreb.minigames.listeners.general.FormResponseListener;
 import com.brlnsreb.minigames.listeners.general.BlockUpdateListener;
 import com.brlnsreb.minigames.listeners.general.ChatListener;
 import com.brlnsreb.minigames.listeners.general.PlayerCreationListener;
@@ -62,8 +62,10 @@ public class MinigameCore extends PluginBase {
     public void onEnable() {
 
         String[] resources = {
-            "database.yml",
-            "general-lobby/config.yml"
+            "general/database.yml",
+            "general/messages.yml",
+            "general-lobby/config.yml",
+            "general-lobby/messages.yml"
         };
 
         for (String file : resources) { 
@@ -124,7 +126,6 @@ public class MinigameCore extends PluginBase {
         cm.register("reloadconfig", new ReloadConfigCommand(this));
         cm.register("globalchat", new GlobalChatCommand(this));
         cm.register("togglesave", new ToggleSaveCommand(this));
-        cm.register("setrules", new SetRulesCommand(this));
 
         cm.register("mm", new MMCommand(this, mmGame));
         cm.register("mmop", new MMOperatorCommand(this, mmGame));
@@ -137,6 +138,7 @@ public class MinigameCore extends PluginBase {
         pm.registerEvents(new ChatListener(this), this);
         pm.registerEvents(new BlockUpdateListener(), this);
         pm.registerEvents(new EntityChunkListener(), this);
+        pm.registerEvents(new FormResponseListener(), this);
 
         pm.registerEvents(new MMPlayerInteractListener(mmGame), this);
         pm.registerEvents(new MMProjectileHitListener(mmGame), this);

@@ -1,6 +1,8 @@
 package com.brlnsreb.minigames.core.minigame;
 
+import com.brlnsreb.minigames.core.auth.AuthMenu;
 import com.brlnsreb.minigames.core.player.CustomPlayer;
+import com.brlnsreb.minigames.core.player.PlayerDataManager;
 import com.brlnsreb.minigames.mm.MurderMystery;
 
 import cn.nukkit.Player;
@@ -18,12 +20,14 @@ public class MinigameManager {
     };
 
     public boolean onJoin(Player player, MinigameType minigame) {
-        if (((CustomPlayer) player).getPlayerData().name == null) {
-            //auth
+        CustomPlayer p = (CustomPlayer) player;
+
+        if (p.getPlayerData().name == null) {
+            PlayerDataManager.getAuth().openMenu(p);
             return false;
         }
 
-        return this.getMinigame(minigame).onJoin(player);
+        return this.getMinigame(minigame).onLobbyJoin(p);
     }
 
     public void forceStop() {

@@ -6,7 +6,6 @@ import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.commands.subcommands.BasicSubCommand;
 import com.brlnsreb.minigames.core.lobby.entities.NPCEntity;
 import com.brlnsreb.minigames.core.player.CustomPlayer;
-import com.brlnsreb.minigames.mm.config.MMConfig;
 
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
@@ -49,7 +48,6 @@ public class MMDebugCommand extends BasicSubCommand {
         if (args.length > 1) {
 
             //ARGS HERE
-            MMConfig config = plugin.getMMGame().getConfig();
             Position pos = player.getPosition();
             int cx = pos.getFloorX() >> 4;
             int cz = pos.getFloorZ() >> 4;
@@ -129,7 +127,7 @@ public class MMDebugCommand extends BasicSubCommand {
                 case "7":
                     Position pos3 = player.getPosition();
                     Item hoe = Item.get(Item.GOLDEN_HOE, 0, 1);
-                    hoe.setCustomName(TextFormat.colorize(config.getSheriffHoeName()));
+                    hoe.setCustomName(TextFormat.colorize("&l&bSheriff Hoe"));
                     
                     CompoundTag nbt2 = Entity.getDefaultNBT(pos3);
                     nbt2.putCompound("Item", NBTIO.putItemHelper(hoe));
@@ -152,7 +150,7 @@ public class MMDebugCommand extends BasicSubCommand {
                     if (drop != null) {
                         drop.setNameTagVisible(true);
                         drop.setNameTagAlwaysVisible(true);
-                        drop.setNameTag(TextFormat.colorize(config.getSheriffHoeName()));
+                        drop.setNameTag(TextFormat.colorize("&l&bSheriff Hoe"));
                         drop.setScale(1.2f);
                         
                         drop.spawnToAll();

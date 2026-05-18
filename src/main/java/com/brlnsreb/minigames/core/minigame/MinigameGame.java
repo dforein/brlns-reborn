@@ -11,12 +11,12 @@ public abstract class MinigameGame {
     protected GameState state;
     protected final Set<Player> players;
     protected final Arena arena;
-    protected final MessageUtil messages;
+    protected final MessageUtil msgUtil;
 
-    public MinigameGame(Set<Player> players, Arena arena, GameState state, MessageUtil messages) {
+    public MinigameGame(Set<Player> players, Arena arena, GameState state, MessageUtil msgUtil) {
         this.players = players;
         this.arena = arena;
-        this.messages = messages;
+        this.msgUtil = msgUtil;
         this.state = state;
     }
     

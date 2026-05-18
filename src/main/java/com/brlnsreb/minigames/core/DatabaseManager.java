@@ -2,6 +2,7 @@ package com.brlnsreb.minigames.core;
 
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.core.minigame.MinigameType;
+import com.brlnsreb.minigames.utils.DBResults;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -33,7 +34,7 @@ public class DatabaseManager {
     }
 
     private boolean initConnectionPool() {
-        Config config = new Config(new File(plugin.getDataFolder() + "database.yml"), Config.YAML);
+        Config config = new Config(new File(plugin.getDataFolder() + "general/database.yml"), Config.YAML);
 
         if (!config.getBoolean("enabled", false)) {
             plugin.getLogger().warning(TextFormat.GOLD + "Database disabled by settings.");
@@ -85,38 +86,46 @@ public class DatabaseManager {
     }
 
     private void createTables() {
+        String accountsTable = """
+            CREATE TABLE IF NOT EXISTS accounts (
+                name VARCHAR(32) PRIMARY KEY,
+                password_hash VARCHAR(60) NOT NULL,
+                exp INT DEFAULT 0,
+                coins INT DEFAULT 0
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        """;
+
         String playersTable = """
             CREATE TABLE IF NOT EXISTS players (
                 uuid VARCHAR(36) PRIMARY KEY,
-                player_name VARCHAR(32),
-                exp INT DEFAULT 0,
-                coins INT DEFAULT 0,
-                INDEX idx_name (player_name)
+                name VARCHAR(32) NOT NULL,
+                FOREIGN KEY (name) REFERENCES accounts(name) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         """;
 
         String statsTable = """
             CREATE TABLE IF NOT EXISTS %s (
-                player_uuid VARCHAR(36) PRIMARY KEY,
+                player_name VARCHAR(32) PRIMARY KEY,
                 wins INT DEFAULT 0,
                 INDEX idx_win (wins),
-                FOREIGN KEY (player_uuid) REFERENCES players(uuid) ON DELETE CASCADE
+                FOREIGN KEY (player_name) REFERENCES accounts(name) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         """;
 
-        String alterStmtCommand = "ALTER TABLE %s ADD COLUMN IF NOT EXISTS";
+        String alterStmtCommand = "ALTER TABLE %s ADD COLUMN IF NOT EXISTS ";
 
-        String[] columnsPlayers = {};   //for updates, to add new columns
+        String[] columnsAccounts = {};   //for updates, to add new columns
         String[] columnsStats = {};
         String pvpKillsColumn = "kills INT DEFAULT 0";
         
         try (Connection conn = getConnection();
              var stmt = conn.createStatement()) {
             
+            stmt.execute(accountsTable);
             stmt.execute(playersTable);
             
-            for (String column : columnsPlayers) {
-                stmt.execute(alterStmtCommand.formatted("players") + column);
+            for (String column : columnsAccounts) {
+                stmt.execute(alterStmtCommand.formatted("accounts") + column);
             }
 
             for (MinigameType minigame : MinigameType.values()) {
@@ -146,7 +155,7 @@ public class DatabaseManager {
         return dataSource.getConnection();
     }
 
-    public static int executeUpdate(String sql, Object... params) {
+    public static int executeUpdate(String sql, Object... params) throws SQLException {
         try (Connection conn = getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
             
@@ -155,14 +164,10 @@ public class DatabaseManager {
             }
             
             return stmt.executeUpdate();
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return -1;
         }
     }
 
-    public static List<Map<String, Object>> executeSelect(String sql, Object... params) {
+    public static DBResults executeSelect(String sql, Object... params) throws SQLException {
         try (Connection conn = getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
             
@@ -184,11 +189,7 @@ public class DatabaseManager {
                 results.add(row);
             }
 
-            return results;
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+            return new DBResults(results);
         }
     }
     

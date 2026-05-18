@@ -37,9 +37,9 @@ public abstract class MinigameMatch {
         this.msgUtil = new MessageUtil(this.messages, this.players);
     }
     
-    public abstract void onJoin(Player player);
-    public abstract void onJoinAsSpectator(Player player);
-    public abstract void onLeave(Player player);
+    public abstract boolean onJoin(Player player);
+    public abstract boolean onJoinAsSpectator(Player player);
+    public abstract boolean onLeave(Player player);
 
     public abstract void onEnding();
     

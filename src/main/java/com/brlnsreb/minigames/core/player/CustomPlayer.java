@@ -2,6 +2,7 @@ package com.brlnsreb.minigames.core.player;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
@@ -21,34 +22,46 @@ import cn.nukkit.network.protocol.types.PlayerInfo;
 import cn.nukkit.utils.PersonaPiece;
 import cn.nukkit.utils.PersonaPieceTint;
 import cn.nukkit.utils.SkinAnimation;
+import cn.nukkit.utils.TextFormat;
 
 public class CustomPlayer extends Player {
 
-    public boolean isGameSpectator = false;
+    public PlayerStateType state = PlayerStateType.LOBBY;
     public boolean takeDamage = false;
+    public AtomicBoolean asyncFlag = new AtomicBoolean(false);
+    public String playerNameTag;
     private PlayerData data;
 
     public CustomPlayer(@NotNull BedrockSession session, @NotNull PlayerInfo info) {
         super(session, info);
 
-        //search player data in db through DatabaseManager and save in a PlayerData instance
+        PlayerDataManager.newPlayer(this);
+        updatePlayerNameTag();
+    }
+
+    public boolean canRunAsync() {
+        return asyncFlag.compareAndSet(false, true);
+    }
+
+    public void resetAsync() {
+        asyncFlag.set(false);
     }
 
     public boolean isGameSpectator() {
-        return isGameSpectator;
+        return state == PlayerStateType.SPECTATOR;
     }
 
     public void setGameSpectator(boolean value) {
-        this.setGameSpectator(value, false);
+        setGameSpectator(value, false);
     }
     
     public void setGameSpectator(boolean value, boolean spawnToAll) {
-        this.isGameSpectator = value;
-
         if (value) {
-            this.despawnFromAll();
-        } else if (spawnToAll) {
-            this.spawnToAll();
+            state = PlayerStateType.SPECTATOR;
+            despawnFromAll();
+        } else {
+            if (spawnToAll) spawnToAll();
+            state = null;
         }
     }
 
@@ -60,9 +73,15 @@ public class CustomPlayer extends Player {
         this.data = data;
     }
 
+    public void updatePlayerNameTag() {
+        playerNameTag = "&7" + (data.getFloorLevel() < 0 ? "?" : data.getFloorLevel()) 
+                        + " &a" + (data.name != null ? data.name : this.getName());
+        setNameTag(TextFormat.colorize(playerNameTag));
+    }
+
     @Override
     public void spawnTo(Player player) {
-        if (this.isGameSpectator) return;
+        if (state == PlayerStateType.SPECTATOR) return;
         super.spawnTo(player);
     }
 

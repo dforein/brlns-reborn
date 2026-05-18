@@ -102,14 +102,14 @@ public class ScanCommand extends SimpleSubCommand {
             String rawMaxCoords = config.getString("world.arena-regions." + mapId + ".max");
 
             Vector3 min = new Vector3(
-                getCoordinate(rawMinCoords, X),
-                getCoordinate(rawMinCoords, Y),
-                getCoordinate(rawMinCoords, Z)
+                parseCoordinate(rawMinCoords, X),
+                parseCoordinate(rawMinCoords, Y),
+                parseCoordinate(rawMinCoords, Z)
             );
             Vector3 max = new Vector3(
-                getCoordinate(rawMaxCoords, X),
-                getCoordinate(rawMaxCoords, Y),
-                getCoordinate(rawMaxCoords, Z)
+                parseCoordinate(rawMaxCoords, X),
+                parseCoordinate(rawMaxCoords, Y),
+                parseCoordinate(rawMaxCoords, Z)
             );
 
             List<String> spawnsRawList = config.getStringList("world.arena-regions." + mapId + ".spawns");
@@ -117,9 +117,9 @@ public class ScanCommand extends SimpleSubCommand {
             
             for (String coords : spawnsRawList) {
                 spawns.add(new Vector3(
-                    getCoordinate(coords, X),
-                    getCoordinate(coords, Y),
-                    getCoordinate(coords, Z)
+                    parseCoordinate(coords, X),
+                    parseCoordinate(coords, Y),
+                    parseCoordinate(coords, Z)
                 ));
             }
             
@@ -137,7 +137,7 @@ public class ScanCommand extends SimpleSubCommand {
 
     }
 
-    private double getCoordinate(String rawCoords, int coord) {
+    private double parseCoordinate(String rawCoords, int coord) {
         return Double.parseDouble(
             rawCoords.split("\\s+") [coord]
         );
