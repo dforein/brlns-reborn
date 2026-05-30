@@ -1,4 +1,4 @@
-package com.brlnsreb.minigames.core;
+package com.brlnsreb.minigames.core.database;
 
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.core.minigame.MinigameType;
@@ -88,7 +88,7 @@ public class DatabaseManager {
     private void createTables() {
         String accountsTable = """
             CREATE TABLE IF NOT EXISTS accounts (
-                name VARCHAR(32) PRIMARY KEY,
+                name VARCHAR(26) PRIMARY KEY,
                 password_hash VARCHAR(60) NOT NULL,
                 exp INT DEFAULT 0,
                 coins INT DEFAULT 0
@@ -98,47 +98,29 @@ public class DatabaseManager {
         String playersTable = """
             CREATE TABLE IF NOT EXISTS players (
                 uuid VARCHAR(36) PRIMARY KEY,
-                name VARCHAR(32) NOT NULL,
+                name VARCHAR(26) NOT NULL,
                 FOREIGN KEY (name) REFERENCES accounts(name) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         """;
 
         String statsTable = """
             CREATE TABLE IF NOT EXISTS %s (
-                player_name VARCHAR(32) PRIMARY KEY,
-                wins INT DEFAULT 0,
-                INDEX idx_win (wins),
+                player_name VARCHAR(26) PRIMARY KEY,
+                stat_type TINYINT UNSIGNED,
+                value INT,
                 FOREIGN KEY (player_name) REFERENCES accounts(name) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         """;
-
-        String alterStmtCommand = "ALTER TABLE %s ADD COLUMN IF NOT EXISTS ";
-
-        String[] columnsAccounts = {};   //for updates, to add new columns
-        String[] columnsStats = {};
-        String pvpKillsColumn = "kills INT DEFAULT 0";
         
         try (Connection conn = getConnection();
              var stmt = conn.createStatement()) {
             
             stmt.execute(accountsTable);
             stmt.execute(playersTable);
-            
-            for (String column : columnsAccounts) {
-                stmt.execute(alterStmtCommand.formatted("accounts") + column);
-            }
 
             for (MinigameType minigame : MinigameType.values()) {
                 String mgNameTag = minigame.getNameTag();
                 stmt.execute(statsTable.formatted(mgNameTag));
-
-                for (String column : columnsStats) {
-                    stmt.execute(alterStmtCommand.formatted(mgNameTag) + column);
-                }
-
-                if (minigame.isPvp()) {
-                    stmt.execute(alterStmtCommand.formatted(mgNameTag) + pvpKillsColumn);
-                }
             }
 
             plugin.getLogger().info(TextFormat.GRAY + "Database tables ready");

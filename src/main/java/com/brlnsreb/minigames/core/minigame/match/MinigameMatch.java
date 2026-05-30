@@ -1,4 +1,4 @@
-package com.brlnsreb.minigames.core.minigame;
+package com.brlnsreb.minigames.core.minigame.match;
 
 import cn.nukkit.Player;
 import cn.nukkit.utils.Config;
@@ -7,8 +7,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-import com.brlnsreb.minigames.core.minigame.lobby.DeathLobby;
-import com.brlnsreb.minigames.core.minigame.lobby.WaitingLobby;
+import com.brlnsreb.minigames.core.minigame.Minigame;
+import com.brlnsreb.minigames.core.minigame.MinigameManager;
+import com.brlnsreb.minigames.core.minigame.MinigameType;
 import com.brlnsreb.minigames.utils.MessageUtil;
 
 public abstract class MinigameMatch {
@@ -17,24 +18,36 @@ public abstract class MinigameMatch {
     protected final GameState state;
     protected final Set<Player> players;
     protected final int number;
+    protected final Minigame minigame;
 
     protected WaitingLobby waitingLobby;
     protected MinigameGame game;
-    protected DeathLobby deathLobby;
+    protected EndLobby endLobby;
 
     protected Config config;
     protected Config messages;
     protected final MessageUtil msgUtil;
+
+    public MinigameMatch(MinigameType minigame, int matchNumber) {
+        this(MinigameManager.getMinigame(minigame), matchNumber);
+    }
     
     public MinigameMatch(Minigame minigame, int matchNumber) {
         this.id = ThreadLocalRandom.current().nextInt(10000000, 99999999);
         this.state = new GameState();
         this.players = new HashSet<>();
         this.number = matchNumber;
+        this.minigame = minigame;
 
         this.config = minigame.getConfig();
         this.messages = minigame.getMessages();
         this.msgUtil = new MessageUtil(this.messages, this.players);
+    }
+
+    public void reloadConfig() {
+        this.config = minigame.getConfig();
+        this.messages = minigame.getMessages();
+        this.msgUtil.reloadConfig(messages);
     }
     
     public abstract boolean onJoin(Player player);
@@ -51,5 +64,6 @@ public abstract class MinigameMatch {
     public GameStateType getCurrentState() { return state.current; }
     public int getNumber() { return number; }
     public MinigameGame getGame() { return game; }
+    public Minigame getMinigame() { return minigame; }
     
 }

@@ -4,7 +4,9 @@ import java.util.BitSet;
 import java.util.HashSet;
 
 import com.brlnsreb.minigames.MinigameCore;
-import com.brlnsreb.minigames.core.minigame.lobby.MinigameLobby;
+import com.brlnsreb.minigames.core.auth.AuthSystem;
+import com.brlnsreb.minigames.core.minigame.match.MinigameMatch;
+import com.brlnsreb.minigames.core.player.CustomPlayer;
 
 import cn.nukkit.Player;
 import cn.nukkit.utils.Config;
@@ -29,9 +31,8 @@ public abstract class Minigame {
         this.nameTag = minigame.getNameTag();
 
         plugin = MinigameCore.getInstance();
-        this.config = new Config(plugin.getDataFolder() + this.nameTag + "/config.yml", Config.YAML);
-        this.messages = new Config(plugin.getDataFolder() + this.nameTag + "/messages.yml", Config.YAML);
 
+        this.reloadConfig();
         this.lobby = createLobby();
         this.matches = new HashSet<>();
         this.busyMatchNumbers = new BitSet();
@@ -43,6 +44,13 @@ public abstract class Minigame {
     }
 
     public boolean onMatchJoin(Player player) {
+        CustomPlayer p = (CustomPlayer) player;
+
+        if (p.getPlayerData().name == null) {
+            AuthSystem.openMenu(p);
+            return false;
+        }
+
         return mainPendingMatch.onJoin(player);
     }
 
@@ -63,6 +71,16 @@ public abstract class Minigame {
     public void onMatchEnding(MinigameMatch match) {
         matches.remove(match);
         busyMatchNumbers.clear(match.getNumber());
+    }
+
+    public void reloadConfig() {
+        this.config = new Config(plugin.getDataFolder() + this.nameTag + "/config.yml", Config.YAML);
+        this.messages = new Config(plugin.getDataFolder() + this.nameTag + "/messages.yml", Config.YAML);
+
+        lobby.reloadConfig();
+        for (MinigameMatch match : matches) {
+            match.reloadConfig();
+        }
     }
 
     public HashSet<? extends MinigameMatch> getMatches() { return matches; }

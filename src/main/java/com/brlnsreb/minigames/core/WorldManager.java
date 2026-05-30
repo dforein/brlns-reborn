@@ -47,6 +47,8 @@ public class WorldManager {
     }
 
     public static void setGameRules(Level level, Config config) {
+        //TODO: interaction with world (e.g. skywars: drops, tnts, fire spread, etc allowed)
+        
         GameRules gameRules = level.getGameRules();
 
         //particular

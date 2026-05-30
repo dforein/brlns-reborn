@@ -16,13 +16,20 @@ public abstract class Lobby {
 
     protected final Level level;
     protected Config config;
+    protected Config messages;
 
-    public Lobby(Config lobbyConfig) {
-        this.config = lobbyConfig;
-        this.level = Server.getInstance().getLevelByName(lobbyConfig.getString("world"));
+    public Lobby(Config config, Config messages) {
+        this.config = config;
+        this.messages = messages;
+        this.level = Server.getInstance().getLevelByName(config.getString("lobby.world"));
     }
 
     public abstract boolean onJoin(Player player);
+
+    public void reloadConfig(Config config, Config messages) {
+        this.config = config;
+        this.messages = messages;
+    }
 
     protected void createHologram(Position pos, String text) {
         HologramEntity holo = new HologramEntity(pos.getChunk(), Entity.getDefaultNBT(pos));
@@ -30,8 +37,7 @@ public abstract class Lobby {
         holo.spawnToAll();
     }
     
-    protected NPCEntity spawnNpc(String configPath, Consumer<Player> task) {
-        //remember to put the subtitle later
+    protected NPCEntity spawnNpc(String configPath, Consumer<Player> task, boolean subtitle) {
 
         configPath += ".";
 
@@ -48,9 +54,8 @@ public abstract class Lobby {
 
         NPCEntity npc = new NPCEntity(pos.getChunk(), Entity.getDefaultNBT(pos));
 
-        npc.updateTitle(
-            config.getString(configPath + "text1")
-        );
+        npc.updateTitle(config.getString(configPath + "text1"));
+        if (subtitle) { npc.updateSubTitle(config.getString(configPath + "text2")); }
         npc.setDefaultPose(config.getDouble(configPath + "default-yaw"));
         npc.setTask(task);
         npc.setSkin(config.getString(configPath + "skin-file"));
@@ -60,10 +65,20 @@ public abstract class Lobby {
         return npc;
     }
 
+    protected void reloadNpcConfigData(NPCEntity npc, String configPath, boolean subtitle) {
+        npc.updateTitle(config.getString(configPath + "text1"));
+        if (subtitle) { npc.updateSubTitle(config.getString(configPath + "text2")); }
+        npc.setDefaultPose(config.getDouble(configPath + "default-yaw"));
+    }
+
     private double parseCoordinate(String rawCoords, int coord) {
         return Double.parseDouble(
             rawCoords.split("\\s+") [coord]
         );
     }
+
+    public Level getLevel() { return this.level; }
+    public Config getConfig() { return this.config; }
+    public Config getMessages() { return this.messages; }
 
 }

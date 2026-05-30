@@ -7,8 +7,8 @@ import java.util.concurrent.CompletionException;
 
 import org.mindrot.jbcrypt.BCrypt;
 
-import com.brlnsreb.minigames.core.DatabaseManager;
-import com.brlnsreb.minigames.core.auth.AuthMenu;
+import com.brlnsreb.minigames.core.database.DatabaseManager;
+import com.brlnsreb.minigames.core.database.StatType;
 import com.brlnsreb.minigames.utils.DBResults;
 
 import cn.nukkit.Server;
@@ -16,7 +16,6 @@ import cn.nukkit.scheduler.ServerScheduler;
 
 public class PlayerDataManager {
 
-    private static AuthMenu auth = new AuthMenu();
     private static ServerScheduler scheduler = Server.getInstance().getScheduler();
     public enum Outcome {
         OK,
@@ -65,7 +64,7 @@ public class PlayerDataManager {
                 
                 //update player's data
                 data.name = accountsResults.getString("name");
-                data.coins = accountsResults.getInt("coins");
+                data.setCoins(accountsResults.getInt("coins"));
                 data.setExp(accountsResults.getInt("exp"));
 
                 scheduler.scheduleTask(() -> {
@@ -187,7 +186,7 @@ public class PlayerDataManager {
                 //player's data update
                 PlayerData data = player.getPlayerData();
                 data.name = name;
-                data.coins = accountsResults.getInt("coins");
+                data.setCoins(accountsResults.getInt("coins"));
                 data.setExp(accountsResults.getInt("exp"));
 
                 scheduler.scheduleTask(() -> {
@@ -256,7 +255,7 @@ public class PlayerDataManager {
                     SET exp = ?, coins = ?
                     WHERE name = ?
                     """,
-                    data.getExp(), data.coins, data.name
+                    data.getExp(), data.getCoins(), data.name
 
                 ) < 1) return Outcome.DB_ERROR;
 
@@ -292,17 +291,11 @@ public class PlayerDataManager {
     }
 
     public static void onMatchEnd(UUID winnerId) {
-        onMatchEnd(winnerId, 0, false);
+        onMatchEnd(winnerId);
     }
 
-    public static void onMatchEnd(UUID winnerId, int kills) {
-        onMatchEnd(winnerId, kills, true);
-    }
-
-    public static void onMatchEnd(UUID winnerId, int kills, boolean pvp) {
+    public static void onMatchEnd(UUID winnerId, Map<StatType, Integer> stats) {
         
     }
-
-    public static AuthMenu getAuth() { return auth; }
 
 }

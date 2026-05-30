@@ -1,8 +1,8 @@
 package com.brlnsreb.minigames.mm.ui;
 
-import cn.nukkit.Player;
+import com.brlnsreb.minigames.utils.abstraction.BossBarAbstract;
 
-import com.brlnsreb.minigames.utils.BossBarAbstract;
+import cn.nukkit.Player;
 
 public class BossBarSystem extends BossBarAbstract {
     

@@ -8,7 +8,7 @@ import cn.nukkit.event.Listener;
 import cn.nukkit.event.entity.ProjectileHitEvent;
 import cn.nukkit.utils.TextFormat;
 
-import com.brlnsreb.minigames.core.minigame.GameStateType;
+import com.brlnsreb.minigames.core.minigame.match.GameStateType;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.config.MMConfig;
 import com.brlnsreb.minigames.mm.entities.ThrownSwordEntity;

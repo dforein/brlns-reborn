@@ -1,21 +1,18 @@
 package com.brlnsreb.minigames.core.minigame;
 
 public enum MinigameType {
-    MURDER_MYSTERY(1, "mm", true);
+    MURDER_MYSTERY(1, "mm");
 
     private final int id;
     private final String nameTag;
-    private final boolean pvp;
 
-    private MinigameType(int id, String nameTag, boolean pvp) {
+    private MinigameType(int id, String nameTag) {
         this.id = id;
         this.nameTag = nameTag;
-        this.pvp = pvp;
     }
 
     public int getId() { return id; }
     public String getNameTag() { return nameTag; }
-    public boolean isPvp() { return pvp; }
     
     public static MinigameType fromId(int id) {
         for (MinigameType mg : values()) {

@@ -1,6 +1,6 @@
 package com.brlnsreb.minigames.listeners.general;
 
-import com.brlnsreb.minigames.core.auth.AuthMenu;
+import com.brlnsreb.minigames.core.auth.AuthSystem;
 import com.brlnsreb.minigames.core.player.CustomPlayer;
 
 import cn.nukkit.event.EventHandler;
@@ -20,10 +20,10 @@ public class FormResponseListener implements Listener {
 
             switch (player.state) {
                 case LOBBY:
-                    String authTitle = AuthMenu.getConfig().getString("auth.menu.title");
+                    String authTitle = AuthSystem.getConfig().getString("auth.menu.title");
 
                     if (window.title().contains(authTitle)) {
-                        AuthMenu.handleResponse(player, window);
+                        AuthSystem.handleResponse(player, window);
                         return;
                     }
 

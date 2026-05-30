@@ -28,11 +28,11 @@ import com.brlnsreb.minigames.listeners.general.FormResponseListener;
 import com.brlnsreb.minigames.listeners.general.BlockUpdateListener;
 import com.brlnsreb.minigames.listeners.general.ChatListener;
 import com.brlnsreb.minigames.listeners.general.PlayerCreationListener;
+import com.brlnsreb.minigames.listeners.general.PlayerQuitListener;
 
 public class MinigameCore extends PluginBase {
     
     private static MinigameCore instance;
-    private MinigameManager minigameManager;
 
     private boolean globalChat = false;
     private boolean saveAtShutdown = false;
@@ -94,9 +94,6 @@ public class MinigameCore extends PluginBase {
         for (Level level : getServer().getLevels().values()) {
             level.setAutoSave(false);
         }
-        
-
-        this.minigameManager = new MinigameManager();
 
         registerCommands();
         registerListeners();
@@ -107,7 +104,7 @@ public class MinigameCore extends PluginBase {
     
     @Override
     public void onDisable() {
-        minigameManager.forceStop();
+        MinigameManager.forceStop();
 
         this.getLogger().info(TextFormat.DARK_RED + "brlnsreb Minigames disabled!");
 
@@ -135,6 +132,7 @@ public class MinigameCore extends PluginBase {
         PluginManager pm = getServer().getPluginManager();
         
         pm.registerEvents(new PlayerCreationListener(), this);
+        pm.registerEvents(new PlayerQuitListener(), this);
         pm.registerEvents(new ChatListener(this), this);
         pm.registerEvents(new BlockUpdateListener(), this);
         pm.registerEvents(new EntityChunkListener(), this);

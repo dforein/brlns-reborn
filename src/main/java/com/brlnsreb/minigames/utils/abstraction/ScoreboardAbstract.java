@@ -1,4 +1,4 @@
-package com.brlnsreb.minigames.utils;
+package com.brlnsreb.minigames.utils.abstraction;
 
 import cn.nukkit.Player;
 import cn.nukkit.scoreboard.Scoreboard;

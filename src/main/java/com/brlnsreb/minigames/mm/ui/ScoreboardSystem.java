@@ -3,7 +3,7 @@ package com.brlnsreb.minigames.mm.ui;
 import cn.nukkit.Player;
 
 import com.brlnsreb.minigames.mm.roles.MMRole;
-import com.brlnsreb.minigames.utils.ScoreboardAbstract;
+import com.brlnsreb.minigames.utils.abstraction.ScoreboardAbstract;
 
 public class ScoreboardSystem extends ScoreboardAbstract {
 

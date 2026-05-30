@@ -1,5 +1,6 @@
 package com.brlnsreb.minigames.core.player;
 
+import java.lang.ref.WeakReference;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -7,10 +8,17 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.brlnsreb.minigames.MinigameCore;
+import com.brlnsreb.minigames.core.minigame.MinigameType;
+import com.brlnsreb.minigames.core.minigame.match.MinigameMatch;
+
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.entity.data.Skin;
+import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
+import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
+import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.DoubleTag;
@@ -26,47 +34,64 @@ import cn.nukkit.utils.TextFormat;
 
 public class CustomPlayer extends Player {
 
+    public enum DamageState {
+        INVULNERABLE,
+        ONLY_INANIMATE,
+        ONLY_PLAYERS,
+        ONLY_MOBS,
+        MOBS_AND_PLAYERS,
+        FULL_NO_FALL_DAMAGE,
+        FULL
+    }
+
+    public DamageState damageState = DamageState.INVULNERABLE;
+    public boolean canAttackPlayers = false;
+    public boolean attackEvent = true;
+
     public PlayerStateType state = PlayerStateType.LOBBY;
-    public boolean takeDamage = false;
-    public AtomicBoolean asyncFlag = new AtomicBoolean(false);
+    public MinigameType currentMinigame = null;
+    private WeakReference<MinigameMatch> currentMatch = null;
+    
     public String playerNameTag;
     private PlayerData data;
+
+    public AtomicBoolean asyncFlag = new AtomicBoolean(false);
 
     public CustomPlayer(@NotNull BedrockSession session, @NotNull PlayerInfo info) {
         super(session, info);
 
         PlayerDataManager.initPlayer(this);
-        updatePlayerNameTag();
+        this.updatePlayerNameTag();
     }
 
     public boolean canRunAsync() {
-        return asyncFlag.compareAndSet(false, true);
+        return this.asyncFlag.compareAndSet(false, true);
     }
 
     public void resetAsync() {
-        asyncFlag.set(false);
+        this.asyncFlag.set(false);
     }
 
     public boolean isGameSpectator() {
-        return state == PlayerStateType.SPECTATOR;
+        return this.state == PlayerStateType.SPECTATOR;
     }
 
     public void setGameSpectator(boolean value) {
-        setGameSpectator(value, false);
+        this.setGameSpectator(value, false);
     }
     
     public void setGameSpectator(boolean value, boolean spawnToAll) {
         if (value) {
-            state = PlayerStateType.SPECTATOR;
-            despawnFromAll();
+            this.state = PlayerStateType.SPECTATOR;
+            this.despawnFromAll();
         } else {
-            if (spawnToAll) spawnToAll();
-            state = null;
+            if (spawnToAll) this.spawnToAll();
+            this.state = null;
         }
     }
 
     public PlayerData getPlayerData() {
-        return data;
+        return this.data;
     }
 
     public void setPlayerData(PlayerData data) {
@@ -74,9 +99,9 @@ public class CustomPlayer extends Player {
     }
 
     public void updatePlayerNameTag() {
-        playerNameTag = "&7" + (data.getFloorLevel() < 0 ? "?" : data.getFloorLevel()) 
+        this.playerNameTag = "&7" + (data.getFloorLevel() < 0 ? "?" : data.getFloorLevel()) 
                         + " &a" + (data.name != null ? data.name : this.getName());
-        setNameTag(TextFormat.colorize(playerNameTag));
+        this.setNameTag(TextFormat.colorize(this.playerNameTag));
     }
 
     @Override
@@ -87,14 +112,101 @@ public class CustomPlayer extends Player {
 
     @Override
     public boolean attack(EntityDamageEvent source) {
-        //when working on this later, consider sources like cactus damage, player attacks, lava, etc. for different games
+        //TODO: attack player
+        // - consider sources like cactus damage, lava, player attacks etc.: 
+        //      need new variables or (maybe better) internal enum to isolate different classes of sources
+        // - work on setCancelled use (for listeners)
+        // - avoid death? compare damage and health
 
-        if (takeDamage) {
-            return super.attack(source);
+        switch (this.damageState) {
+            case INVULNERABLE:
+                break;
+
+            case ONLY_PLAYERS:
+                if (source instanceof EntityDamageByEntityEvent) {
+                    EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) source;
+                    if (event.getDamager() instanceof Player) {
+                        return checkAndAttack(source);
+                    }
+                }
+                break;
+
+            case FULL:
+                return checkAndAttack(source);
+
+            case FULL_NO_FALL_DAMAGE:
+                if (!(source.getCause() == DamageCause.FALL)) break;
+                return checkAndAttack(source);
+
+            case ONLY_INANIMATE:
+                if (source instanceof EntityDamageByEntityEvent) break;
+                return checkAndAttack(source);
+                
+            case ONLY_MOBS:
+                if (source instanceof EntityDamageByEntityEvent) {
+                    EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) source;
+                    if (event.getDamager() instanceof Player) break;
+
+                    return checkAndAttack(source);
+                }
+                break;
+            
+            case MOBS_AND_PLAYERS:
+                if (!(source instanceof EntityDamageByEntityEvent)) break;
+                return checkAndAttack(source);
         }
         
-        //source.setCancelled();
+        if (!this.attackEvent) source.setCancelled();
         return false;
+    }
+
+    private boolean checkAndAttack(EntityDamageEvent source) {
+        if (source.getDamage() < getHealthCurrent()) {
+            //OK!
+            return super.attack(source);
+        }
+
+        //not ok, player death
+        this.setHealthCurrent(this.getHealthMax());
+        super.attack(source);               //to show the damage animation
+        this.setHealthCurrent(this.getHealthMax());
+
+        if (currentMinigame != null) {
+            this.getMatch().getGame().onDeath(this);
+        }
+
+        return true;
+    }
+
+    public void changeWorld(Location loc) {
+        MinigameCore plugin = MinigameCore.getInstance();
+
+        try {
+            int viewDistance = this.getViewDistance();
+
+            this.setViewDistance(2);
+            this.despawnFromAll();
+
+            this.teleport(loc);
+
+            plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
+                if (this.isOnline()) { 
+                    this.spawnToAll(); 
+                    this.setViewDistance(viewDistance);
+                }
+            }, 20);
+
+        } catch (Exception e) {
+            plugin.getLogger().error("Error teleporting player: " + e.getMessage());
+        }
+    }
+
+    public MinigameMatch getMatch() {
+        return this.currentMatch.get();
+    }
+
+    public void setMatch(MinigameMatch match) {
+        this.currentMatch = new WeakReference<>(match);
     }
 
     @Override

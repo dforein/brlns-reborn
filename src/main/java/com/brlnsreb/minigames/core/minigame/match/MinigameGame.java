@@ -1,7 +1,8 @@
-package com.brlnsreb.minigames.core.minigame;
+package com.brlnsreb.minigames.core.minigame.match;
 
 import java.util.Set;
 
+import com.brlnsreb.minigames.core.player.CustomPlayer;
 import com.brlnsreb.minigames.utils.MessageUtil;
 
 import cn.nukkit.Player;
@@ -25,5 +26,7 @@ public abstract class MinigameGame {
     public abstract void forceStop();
     
     public abstract boolean checkWinCondition();    //should be considered also the case where everyone left the game, so no winners
+
+    public void onDeath(CustomPlayer player) {}        //override this if player death is allowed
 
 }

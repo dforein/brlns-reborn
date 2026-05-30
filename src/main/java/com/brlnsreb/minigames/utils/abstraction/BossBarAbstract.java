@@ -1,4 +1,4 @@
-package com.brlnsreb.minigames.utils;
+package com.brlnsreb.minigames.utils.abstraction;
 
 import java.util.Collection;
 import java.util.HashMap;

@@ -2,22 +2,38 @@ package com.brlnsreb.minigames.core.player;
 
 public class PlayerData {
 
-    public String name = null;
-    private int exp = -1;
-    private double level = -1.0;
-    private int levelFloor = -1;
-    public int coins = -1;
+    public String name;      //this is also the account username, if it's null the player is not logged in
+    private int coins;
+    private int exp;
+    private double level;
+    private int levelFloor;
 
     public PlayerData() {
         resetData();
     }
 
     public void resetData() {
-        name = null;
-        exp = -1;
-        level = -1.0;
-        levelFloor = -1;
-        coins = -1;
+        this.name = null;
+        this.coins = -1;
+        this.exp = -1;
+        this.level = -1.0;
+        this.levelFloor = -1;
+    }
+
+    public void addCoins(int deltaCoins) {
+        this.coins += deltaCoins;
+    }
+
+    public void setCoins(int coins) {
+        this.coins = coins;
+    }
+
+    public void removeCoins(int absDeltaCoins) {
+        if (this.coins < absDeltaCoins) {
+            this.coins = 0;
+        } else {
+            this.coins -= absDeltaCoins;
+        }
     }
 
     public void addExp(int deltaExp) {
@@ -49,6 +65,7 @@ public class PlayerData {
         }
     }
 
+    public int getCoins() { return this.coins; }
     public int getExp() { return this.exp; }
     public double getLevel() { return this.level; }
     public int getFloorLevel() { return this.levelFloor; }

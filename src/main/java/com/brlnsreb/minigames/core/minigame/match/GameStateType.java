@@ -1,4 +1,4 @@
-package com.brlnsreb.minigames.core.minigame;
+package com.brlnsreb.minigames.core.minigame.match;
 
 public enum GameStateType {
     WAITING_LOBBY,

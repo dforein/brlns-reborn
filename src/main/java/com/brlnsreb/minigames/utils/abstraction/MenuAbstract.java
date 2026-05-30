@@ -1,4 +1,4 @@
-package com.brlnsreb.minigames.utils;
+package com.brlnsreb.minigames.utils.abstraction;
 
 import java.util.Map;
 import java.util.UUID;
@@ -8,13 +8,9 @@ import cn.nukkit.Player;
 
 public abstract class MenuAbstract {
 
-    protected final Map<UUID, Long> openingCooldown;
+    protected static final Map<UUID, Long> openingCooldown = new ConcurrentHashMap<>();
 
-    public MenuAbstract() {
-        this.openingCooldown = new ConcurrentHashMap<>();
-    }
-
-    protected boolean checkCooldown(Player player) {
+    protected static boolean checkCooldown(Player player) {
         long now = System.currentTimeMillis();
         UUID uuid = player.getUniqueId();
 

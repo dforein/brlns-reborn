@@ -7,7 +7,7 @@ import cn.nukkit.event.player.PlayerFormRespondedEvent;
 import cn.nukkit.form.window.CustomForm;
 import cn.nukkit.form.response.SimpleResponse;
 
-import com.brlnsreb.minigames.core.minigame.GameStateType;
+import com.brlnsreb.minigames.core.minigame.match.GameStateType;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.roles.GamePlayer;
 import com.brlnsreb.minigames.mm.roles.MMRole;

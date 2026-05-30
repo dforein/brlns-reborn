@@ -4,7 +4,7 @@ import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.core.player.CustomPlayer;
 import com.brlnsreb.minigames.core.player.PlayerDataManager;
 import com.brlnsreb.minigames.core.player.PlayerDataManager.Outcome;
-import com.brlnsreb.minigames.utils.MenuAbstract;
+import com.brlnsreb.minigames.utils.abstraction.MenuAbstract;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
@@ -14,16 +14,16 @@ import cn.nukkit.scheduler.ServerScheduler;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 
-public class AuthMenu extends MenuAbstract {
+public class AuthSystem extends MenuAbstract {
 
     private static final ServerScheduler scheduler = Server.getInstance().getScheduler();
-    private static final Config config = new Config(MinigameCore.getInstance().getDataFolder() + "general-lobby/config.yml", Config.YAML);
+    private static Config config = new Config(MinigameCore.getInstance().getDataFolder() + "general-lobby/config.yml", Config.YAML);
 
-    public AuthMenu() {
-        super();
+    public static void reloadConfig() {
+        config = new Config(MinigameCore.getInstance().getDataFolder() + "general-lobby/config.yml", Config.YAML);
     }
 
-    public void openMenu(Player player) {
+    public static void openMenu(Player player) {
         checkCooldown(player);
 
         String path = "auth.menu.";

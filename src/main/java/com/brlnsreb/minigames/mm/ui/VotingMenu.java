@@ -6,7 +6,7 @@ import cn.nukkit.utils.TextFormat;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.config.MMConfig;
 import com.brlnsreb.minigames.mm.systems.VotingSystem;
-import com.brlnsreb.minigames.utils.MenuAbstract;
+import com.brlnsreb.minigames.utils.abstraction.MenuAbstract;
 
 import java.util.ArrayList;
 import java.util.List;
