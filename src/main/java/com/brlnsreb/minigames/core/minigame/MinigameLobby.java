@@ -20,7 +20,7 @@ public abstract class MinigameLobby extends Lobby {
     }
 
     public void onReplaceMainPendingMatch(int matchNumber) {
-        joinNpc.updateSubTitle(
+        joinNpc.updateSubtitle(
             joinNpcSubtitle.formatted(minigame.getNameTag(), matchNumber)
         );
     }
@@ -29,13 +29,13 @@ public abstract class MinigameLobby extends Lobby {
         return spawnNpc(
             "lobby.npc",
             (Player player) -> { minigame.onMatchJoin(player); },
-            true
+            true, minigame
         );
     }
 
     public void reloadConfig() {
         super.reloadConfig(minigame.getConfig(), minigame.getMessages());
-        reloadNpcConfigData(joinNpc, "lobby.npc", true);
+        reloadNpcConfigData(joinNpc, "lobby.npc", true, true);
     }
 
 }

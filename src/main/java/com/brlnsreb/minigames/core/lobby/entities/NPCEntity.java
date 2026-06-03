@@ -42,6 +42,8 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
     private double verticalOffset1 = 0.6;
     private double verticalOffset2 = 0.25;
 
+    private String playerCountLine = null;
+
     public NPCEntity(IChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
     }
@@ -54,7 +56,16 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
         text1.setText(line);
     }
 
-    public void updateSubTitle(String line) {
+    public void updatePlayerCountSubtitle(int count) {
+        if (playerCountLine == null) return;
+        updateSubtitle(playerCountLine.formatted(count));
+    }
+
+    public void setPlayerCountLine(String line) {
+        playerCountLine = line;
+    }
+
+    public void updateSubtitle(String line) {
         if (text2 == null) {
             text2 = createHologram(verticalOffset1);
         }

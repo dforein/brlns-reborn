@@ -27,6 +27,7 @@ import com.brlnsreb.minigames.mm.ui.ScoreboardSystem;
 import com.brlnsreb.minigames.mm.ui.SpectatorMenu;
 import com.brlnsreb.minigames.mm.ui.VotingMenu;
 import com.brlnsreb.minigames.utils.CustomPlaySoundPacket;
+import com.brlnsreb.minigames.utils.YAMLUtil;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -436,7 +437,7 @@ public class MurderMysteryGame {
         broadcast(config.getMessage("game-start2"));
 
         for (GamePlayer gp : roleManager.getOnlinePlayers()) {
-            Player player = gp.getPlayer();
+            CustomPlayer player = gp.getPlayer();
             if (!player.isOnline()) continue;
 
             switch (gp.getRole()) {
@@ -581,30 +582,15 @@ public class MurderMysteryGame {
         Level level = plugin.getServer().getLevelByName(worldName);
         
         //min & max coords
-        String rawMinCoords = pConfig.getString(path + "min");
-        String rawMaxCoords = pConfig.getString(path + "max");
-
-        Vector3 min = new Vector3(
-            parseCoordinate(rawMinCoords, X),
-            parseCoordinate(rawMinCoords, Y),
-            parseCoordinate(rawMinCoords, Z)
-        );
-        Vector3 max = new Vector3(
-            parseCoordinate(rawMaxCoords, X),
-            parseCoordinate(rawMaxCoords, Y),
-            parseCoordinate(rawMaxCoords, Z)
-        );
+        Vector3 min = YAMLUtil.parseVector3(pConfig.getString(path + "min"));
+        Vector3 max = YAMLUtil.parseVector3(pConfig.getString(path + "max"));
 
         //spawns
         List<String> spawnsRawList = plugin.getConfig().getStringList(path + "spawns");
         List<Vector3> spawns = new ArrayList<>();
 
         for (String coords : spawnsRawList) {
-            spawns.add(new Vector3(
-                parseCoordinate(coords, X),
-                parseCoordinate(coords, Y),
-                parseCoordinate(coords, Z)
-            ));
+            spawns.add(YAMLUtil.parseVector3Centered(coords));
         }
 
         if (level != null) {
@@ -654,12 +640,6 @@ public class MurderMysteryGame {
 
         
         arena = new Arena(pConfig.getString(path + "name"), level, min, max, spawns);
-    }
-
-    private double parseCoordinate(String rawCoords, int coord) {
-        return Double.parseDouble(
-            rawCoords.split("\\s+") [coord]
-        );
     }
 
     private void teleportPlayers() {

@@ -3,7 +3,6 @@ package com.brlnsreb.minigames;
 import cn.nukkit.Server;
 import cn.nukkit.command.SimpleCommandMap;
 import cn.nukkit.level.Level;
-import cn.nukkit.math.Vector3;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.plugin.PluginManager;
 import cn.nukkit.registry.Registries;
@@ -11,6 +10,7 @@ import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import com.brlnsreb.minigames.mm.entities.DeadBodyEntity;
 import com.brlnsreb.minigames.mm.entities.ThrownSwordEntity;
+import com.brlnsreb.minigames.utils.YAMLUtil;
 
 import java.util.ArrayList;
 
@@ -114,7 +114,7 @@ public class MinigameCore extends PluginBase {
 
     private void prepareGeneralLobby() {
         Config config = new Config(getDataFolder() + "general-lobby/config.yml", Config.YAML);
-        String folderName = config.getString("lobby.spawn.world");
+        String folderName = config.getString("lobby.world");
 
         server.loadLevel(folderName);
 
@@ -125,11 +125,9 @@ public class MinigameCore extends PluginBase {
             generalLobbyLevel
         );
 
-        server.getDefaultLevel().setSpawnLocation(new Vector3(
-            config.getDouble("lobby.spawn.x"),
-            config.getDouble("lobby.spawn.y"),
-            config.getDouble("lobby.spawn.z")
-        ));
+        server.getDefaultLevel().setSpawnLocation(
+            YAMLUtil.parseVector3Centered(config.getString("lobby.spawn-pos"))
+        );
 
         server.getDefaultLevel().save();
 

@@ -1,9 +1,12 @@
 package com.brlnsreb.minigames.generallobby;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.core.lobby.Lobby;
+import com.brlnsreb.minigames.core.lobby.entities.NPCEntity;
 import com.brlnsreb.minigames.core.minigame.Minigame;
 import com.brlnsreb.minigames.core.minigame.MinigameManager;
 import com.brlnsreb.minigames.core.player.CustomPlayer;
@@ -17,6 +20,7 @@ public class GeneralLobby extends Lobby {
 
     public static GeneralLobby instance;
     private final LobbyBossBar bossBar;
+    private final HashMap<NPCEntity, String> npcMap = new HashMap<>();
 
     public GeneralLobby(MinigameCore plugin, Config config, Config messages) {
         super(config, messages);
@@ -49,10 +53,23 @@ public class GeneralLobby extends Lobby {
             String path = "lobby.npc." + gameNameTag;
             Minigame minigame = MinigameManager.getMinigame(gameNameTag);
 
-            spawnNpc(
+            npcMap.put(spawnNpc(
                 path,
                 (Player player) -> { minigame.onLobbyJoin(player); },
-                true
+                true, minigame
+            ), gameNameTag);
+        }
+    }
+
+    @Override
+    public void reloadConfig(Config config, Config messages) {
+        super.reloadConfig(config, messages);
+
+        for (Map.Entry<NPCEntity, String> npc : npcMap.entrySet()) {
+            reloadNpcConfigData(
+                npc.getKey(), 
+                "lobby.npc." + npc.getValue(),
+                true, true
             );
         }
     }

@@ -83,6 +83,17 @@ public abstract class Minigame {
         }
     }
 
+    public int getPlayerCount() {
+        int count = 0;
+
+        count += lobby.getLevel().getPlayers().size();
+        for (MinigameMatch match : matches) {
+            count += match.getPlayers().size();
+        }
+
+        return count;
+    }
+
     public HashSet<? extends MinigameMatch> getMatches() { return matches; }
     public int getId() { return id; }
     public String getNameTag() { return nameTag; }

@@ -62,6 +62,7 @@ public abstract class MinigameMatch {
     public int getId() { return id; }
     public GameState getState() { return state; }
     public GameStateType getCurrentState() { return state.current; }
+    public Set<Player> getPlayers() { return players; }
     public int getNumber() { return number; }
     public MinigameGame getGame() { return game; }
     public Minigame getMinigame() { return minigame; }

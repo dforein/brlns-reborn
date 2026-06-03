@@ -9,10 +9,8 @@ game:
   end-time: 10
 waiting-lobby:
   world: waitinglobby
+  #npc:
   spawn:
-    x: -5
-    y: 12
-    z: -35
   rules-book:
     item-name: '&o&l&fRules &r&7- Hold / Right Click'
     title: Murder Mystery Rules
@@ -21,23 +19,23 @@ waiting-lobby:
     - |-
       §l§aMurder§2Mystery
 
-      §r§7Find and eliminate the murderer before they kill everyone!
+      §r§8Find and eliminate the murderer before they kill everyone!
 
-      §7Collect §6GOLD §7to craft a gun.
+      §8Collect §6GOLD §8to craft a gun.
     - |-
       §l§6Roles:
 
-      §r§cMurderer§7: Kill all innocents
+      §r§cMurderer§8: Kill all innocents
 
-      §9Sheriff§7: Protect innocents
+      §9Sheriff§8: Protect innocents
 
-      §aInnocent§7: Survive and collect gold
+      §aInnocent§8: Survive and collect gold
     - |-
       §l§dTips:
 
-      §r§7- Watch for suspicious behavior
-      §7- Work together
-      §7- The murderer has a throwable sword and can turn the lights off for a short period
+      §r§8- Watch for suspicious behavior
+      §8- Work together
+      §8- The murderer has a throwable sword and can turn the lights off for a short period
   game-poll:
     item-name: '&o&l&dGame Poll &r&7- Hold / Right Click'
     times:
