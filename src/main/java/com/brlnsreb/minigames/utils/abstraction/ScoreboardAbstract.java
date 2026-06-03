@@ -1,6 +1,5 @@
 package com.brlnsreb.minigames.utils.abstraction;
 
-import cn.nukkit.Player;
 import cn.nukkit.scoreboard.Scoreboard;
 import cn.nukkit.scoreboard.data.DisplaySlot;
 import cn.nukkit.scoreboard.scorer.FakeScorer;
@@ -9,34 +8,29 @@ import cn.nukkit.utils.TextFormat;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
+
+import com.brlnsreb.minigames.core.player.CustomPlayer;
 
 public abstract class ScoreboardAbstract {
     
     protected static final String OBJECTIVE_NAME = "scoreboard";
     protected static final String DISPLAY_TITLE = "";
 
-    protected final Map<UUID, Scoreboard> playerBoards = new HashMap<>();
     protected final Map<UUID, Map<Integer, FakeScorer>> activeScorers = new HashMap<>();
 
-    protected Scoreboard getScoreboard(Player player) {
+    protected Scoreboard getScoreboard(CustomPlayer player) {
         if (player == null || !player.isOnline()) return null;
+        if (player.scoreboard != null) return player.scoreboard;
 
-        Scoreboard sb = playerBoards.computeIfAbsent(player.getUniqueId(), k -> {
-            Scoreboard newSb = new Scoreboard(OBJECTIVE_NAME, DISPLAY_TITLE);
-            newSb.addViewer(player, DisplaySlot.SIDEBAR);
-            return newSb;
-        });
-
-        if (!sb.containViewer(player, DisplaySlot.SIDEBAR)) {
-            sb.addViewer(player, DisplaySlot.SIDEBAR);
-        }
+        Scoreboard sb = new Scoreboard(OBJECTIVE_NAME, DISPLAY_TITLE);
+        player.scoreboard = sb;
+        if (sb != null) sb.addViewer(player, DisplaySlot.SIDEBAR);
 
         return sb;
     }
 
-    public void updatePregame(Collection<Player> players, String timer) {
+    public void updatePregame(Collection<CustomPlayer> players, String timer) {
         String[] lines = {
             "&a",
             "  &l&dGame time:",
@@ -47,13 +41,13 @@ public abstract class ScoreboardAbstract {
         update(players, lines);
     }
 
-    public void update(Collection<Player> players, String[] lines) {
-        for (Player p : players) {
+    public void update(Collection<CustomPlayer> players, String[] lines) {
+        for (CustomPlayer p : players) {
             update(p, lines);
         }
     }
 
-    public void update(Player player, String[] lines) {
+    public void update(CustomPlayer player, String[] lines) {
         Scoreboard sb = getScoreboard(player);
         if (sb == null) return;
 
@@ -104,17 +98,12 @@ public abstract class ScoreboardAbstract {
         });
     }
 
-    public void remove(Player player) {
-        UUID playerId = player.getUniqueId();
-        Scoreboard sb = playerBoards.remove(playerId);
-        if (sb != null && player.isOnline()) {
-            sb.removeViewer(player, DisplaySlot.SIDEBAR);
+    public void remove(CustomPlayer player) {
+        if (player.scoreboard != null && player.isOnline()) {
+            player.scoreboard.removeViewer(player, DisplaySlot.SIDEBAR);
+            player.scoreboard = null;
         }
-        activeScorers.remove(playerId);
-    }
-
-    public Set<UUID> getActivePlayerNames() {
-        return playerBoards.keySet();
+        activeScorers.remove(player.getUniqueId());
     }
 
 }

@@ -42,15 +42,5 @@ public abstract class ItemManagerAbstract {
 
         return item;
     }
-
-    public static void clearInventory(Player player) {
-        if (!player.isOnline()) return;
-        
-        player.getInventory().clearAll();
-        player.getCursorInventory().clearAll();
-
-        player.getInventory().sendContents(player);
-        player.getCursorInventory().sendContents(player);
-    }
     
 }

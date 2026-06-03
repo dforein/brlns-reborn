@@ -26,8 +26,7 @@ public class PlayerQuitListener implements Listener {
         CustomPlayer player = (CustomPlayer) p;
 
         PlayerDataManager.savePlayerData(player.getUniqueId());
-        //TODO: maybe send a notice to the minigame
-        ... player.getGameData();
+        player.getMatch().onLeave(player);
     }
     
 }

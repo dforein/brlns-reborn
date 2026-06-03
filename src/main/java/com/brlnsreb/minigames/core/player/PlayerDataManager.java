@@ -16,7 +16,7 @@ import cn.nukkit.scheduler.ServerScheduler;
 
 public class PlayerDataManager {
 
-    private static ServerScheduler scheduler = Server.getInstance().getScheduler();
+    private static ServerScheduler scheduler;
     public enum Outcome {
         OK,
         ASYNC_TASK_ALREADY_RUNNING,
@@ -31,6 +31,10 @@ public class PlayerDataManager {
     
     private static final HashMap<UUID, PlayerData> dataMap = new HashMap<>();
     private static final HashMap<String, UUID> nameIdMap = new HashMap<>();
+
+    public static void init() {
+        scheduler = Server.getInstance().getScheduler();
+    }
 
     public static CompletableFuture<Outcome> initPlayer(CustomPlayer player) {
         if (!player.canRunAsync()) {

@@ -1,13 +1,12 @@
 package com.brlnsreb.minigames.mm.ui;
 
-import cn.nukkit.Player;
-
+import com.brlnsreb.minigames.core.player.CustomPlayer;
 import com.brlnsreb.minigames.mm.roles.MMRole;
 import com.brlnsreb.minigames.utils.abstraction.ScoreboardAbstract;
 
 public class ScoreboardSystem extends ScoreboardAbstract {
 
-    public void updateInGame(Player player, String timer, int innocents, boolean sheriffAlive, MMRole role) {
+    public void updateInGame(CustomPlayer player, String timer, int innocents, boolean sheriffAlive, MMRole role) {
         String[] lines = {
             "&a",
             "  &l&aInnocents:",

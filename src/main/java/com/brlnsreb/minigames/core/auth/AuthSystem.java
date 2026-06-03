@@ -16,8 +16,13 @@ import cn.nukkit.utils.TextFormat;
 
 public class AuthSystem extends MenuAbstract {
 
-    private static final ServerScheduler scheduler = Server.getInstance().getScheduler();
-    private static Config config = new Config(MinigameCore.getInstance().getDataFolder() + "general-lobby/config.yml", Config.YAML);
+    private static ServerScheduler scheduler;
+    private static Config config;
+
+    public static void init() {
+        scheduler = Server.getInstance().getScheduler();
+        reloadConfig();
+    }
 
     public static void reloadConfig() {
         config = new Config(MinigameCore.getInstance().getDataFolder() + "general-lobby/config.yml", Config.YAML);

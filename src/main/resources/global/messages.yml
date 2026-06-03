@@ -1,5 +1,15 @@
 # &3&o《》
 # &2▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+
+lobby-bossbar:
+  message1: '&l&eBroken&4Lens &%sReborn'  #replace variable color
+  message2: '&l&ePlaying %s'  #replace name
+  other-messages:
+  colors:
+  - 'e'
+  - 'a'
+  - '9'
+
 auth:
   menu:
     title: Login to your account

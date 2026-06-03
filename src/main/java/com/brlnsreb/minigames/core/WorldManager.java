@@ -19,8 +19,12 @@ import cn.nukkit.utils.Config;
 
 public class WorldManager {
 
-    private static final Server server = Server.getInstance();
-    private static final HashSet<String> availableLevels = getAllLevelNames();
+    private static Server server;
+    private static HashSet<String> availableLevels = getAllLevelNames();
+
+    public static void init() {
+        server = Server.getInstance();
+    }
 
     public static Level loadLevel(String levelName) {
         if (!availableLevels.contains(levelName)) return null;
@@ -43,7 +47,10 @@ public class WorldManager {
         
         //load level
         server.loadLevel(folderName);
-        return server.getLevelByName(folderName);
+        Level loadedLevel = server.getLevelByName(folderName);
+        loadedLevel.setAutoSave(false);
+
+        return loadedLevel;
     }
 
     public static void setGameRules(Level level, Config config) {
@@ -58,7 +65,7 @@ public class WorldManager {
         };
 
         for (GameRule rule : particulars) {
-            gameRules.setGameRule(rule, config.getBoolean(rule.getName()));
+            gameRules.setGameRule(rule, config.getBoolean("gamerules." + rule.getName()));
         }
 
         //universal (gets updated every time a new game needs something particular)

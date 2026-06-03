@@ -8,17 +8,17 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.core.minigame.MinigameType;
 import com.brlnsreb.minigames.core.minigame.match.MinigameMatch;
+import com.brlnsreb.minigames.generallobby.GeneralLobby;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.data.Skin;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
-import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.DoubleTag;
@@ -27,6 +27,7 @@ import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.nbt.tag.StringTag;
 import cn.nukkit.network.connection.BedrockSession;
 import cn.nukkit.network.protocol.types.PlayerInfo;
+import cn.nukkit.scoreboard.Scoreboard;
 import cn.nukkit.utils.PersonaPiece;
 import cn.nukkit.utils.PersonaPieceTint;
 import cn.nukkit.utils.SkinAnimation;
@@ -46,7 +47,7 @@ public class CustomPlayer extends Player {
 
     public DamageState damageState = DamageState.INVULNERABLE;
     public boolean canAttackPlayers = false;
-    public boolean attackEvent = true;
+    public boolean attackEvent = false;
 
     public PlayerStateType state = PlayerStateType.LOBBY;
     public MinigameType currentMinigame = null;
@@ -55,14 +56,20 @@ public class CustomPlayer extends Player {
     public String playerNameTag;
     private PlayerData data;
 
+    public Scoreboard scoreboard = null;
+    public Long bossBarId = null;
+
     public AtomicBoolean asyncFlag = new AtomicBoolean(false);
+
 
     public CustomPlayer(@NotNull BedrockSession session, @NotNull PlayerInfo info) {
         super(session, info);
 
         PlayerDataManager.initPlayer(this);
         this.updatePlayerNameTag();
+        GeneralLobby.getInstance().onJoin(this);
     }
+
 
     public boolean canRunAsync() {
         return this.asyncFlag.compareAndSet(false, true);
@@ -101,6 +108,10 @@ public class CustomPlayer extends Player {
     public void updatePlayerNameTag() {
         this.playerNameTag = "&7" + (data.getFloorLevel() < 0 ? "?" : data.getFloorLevel()) 
                         + " &a" + (data.name != null ? data.name : this.getName());
+        this.resetNameTag();
+    }
+
+    public void resetNameTag() {
         this.setNameTag(TextFormat.colorize(this.playerNameTag));
     }
 
@@ -124,8 +135,8 @@ public class CustomPlayer extends Player {
 
             case ONLY_PLAYERS:
                 if (source instanceof EntityDamageByEntityEvent) {
-                    EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) source;
-                    if (event.getDamager() instanceof Player) {
+                    Entity entity = ((EntityDamageByEntityEvent) source).getDamager();
+                    if (entity instanceof Player && ((CustomPlayer) entity).canAttackPlayers) {
                         return checkAndAttack(source);
                     }
                 }
@@ -153,6 +164,8 @@ public class CustomPlayer extends Player {
             
             case MOBS_AND_PLAYERS:
                 if (!(source instanceof EntityDamageByEntityEvent)) break;
+                Entity entity = ((EntityDamageByEntityEvent) source).getDamager();
+                if (entity instanceof Player && !((CustomPlayer) entity).canAttackPlayers) break;
                 return checkAndAttack(source);
         }
         
@@ -176,29 +189,6 @@ public class CustomPlayer extends Player {
         }
 
         return true;
-    }
-
-    public void changeWorld(Location loc) {
-        MinigameCore plugin = MinigameCore.getInstance();
-
-        try {
-            int viewDistance = this.getViewDistance();
-
-            this.setViewDistance(2);
-            this.despawnFromAll();
-
-            this.teleport(loc);
-
-            plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
-                if (this.isOnline()) { 
-                    this.spawnToAll(); 
-                    this.setViewDistance(viewDistance);
-                }
-            }, 20);
-
-        } catch (Exception e) {
-            plugin.getLogger().error("Error teleporting player: " + e.getMessage());
-        }
     }
 
     public MinigameMatch getMatch() {
