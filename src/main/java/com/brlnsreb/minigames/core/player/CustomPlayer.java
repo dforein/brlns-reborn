@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.brlnsreb.minigames.core.minigame.MinigameType;
+import com.brlnsreb.minigames.core.minigame.Minigame;
 import com.brlnsreb.minigames.core.minigame.match.MinigameMatch;
 import com.brlnsreb.minigames.generallobby.GeneralLobby;
 
@@ -50,7 +50,7 @@ public class CustomPlayer extends Player {
     public boolean attackEvent = false;
 
     public PlayerStateType state = PlayerStateType.LOBBY;
-    public MinigameType currentMinigame = null;
+    public Minigame currentMinigame = null;
     private WeakReference<MinigameMatch> currentMatch = null;
     
     public String playerNameTag;
@@ -119,6 +119,12 @@ public class CustomPlayer extends Player {
     public void spawnTo(Player player) {
         if (state == PlayerStateType.SPECTATOR) return;
         super.spawnTo(player);
+    }
+
+    public void setAttackVars(DamageState damageState, boolean canAttackPlayers, boolean attackEvent) {
+        this.damageState = damageState;
+        this.canAttackPlayers = canAttackPlayers;
+        this.attackEvent = attackEvent;
     }
 
     @Override

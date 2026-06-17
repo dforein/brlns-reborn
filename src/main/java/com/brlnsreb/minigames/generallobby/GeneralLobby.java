@@ -7,11 +7,11 @@ import java.util.Map;
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.core.lobby.Lobby;
 import com.brlnsreb.minigames.core.lobby.entities.NPCEntity;
+import com.brlnsreb.minigames.core.lobby.ui.MainLobbyBossBar;
 import com.brlnsreb.minigames.core.minigame.Minigame;
 import com.brlnsreb.minigames.core.minigame.MinigameManager;
 import com.brlnsreb.minigames.core.player.CustomPlayer;
 import com.brlnsreb.minigames.core.player.PlayerUtils;
-import com.brlnsreb.minigames.utils.LobbyBossBar;
 
 import cn.nukkit.Player;
 import cn.nukkit.utils.Config;
@@ -19,51 +19,50 @@ import cn.nukkit.utils.Config;
 public class GeneralLobby extends Lobby {
 
     public static GeneralLobby instance;
-    private final LobbyBossBar bossBar;
+    private final MainLobbyBossBar bossBar;
+    private final MainLobbyItemManager items;
     private final HashMap<NPCEntity, String> npcMap = new HashMap<>();
 
-    public GeneralLobby(MinigameCore plugin, Config config, Config messages) {
-        super(config, messages);
+    public GeneralLobby() {
+        super();
         instance = this;
 
-        this.bossBar = new LobbyBossBar(
-            plugin, 
-            this.messages.getString("name"),
-            new Config(plugin.getDataFolder() + "global/messages.yml", Config.YAML)     //for global lobby-bossbar messages (not just general lobby, all lobbies)
-        );
+        this.bossBar = new MainLobbyBossBar(this.messages.getString("name"));
+        this.items = new MainLobbyItemManager(config);
 
         this.bossBar.startBossBarUpdates(this.level);
         this.spawnAllNpcs();
     }
 
-    public boolean onJoin(Player player) {
-        CustomPlayer p = (CustomPlayer) player;
+    protected void onJoinBossBar(CustomPlayer player) {
+        bossBar.updateLobbyBossBar(player);
+    }
 
-        PlayerUtils.changeWorld(p, spawnPos);
-        PlayerUtils.setLobbyState(p);
+    protected void onJoinItems(CustomPlayer player) {
+        giveLobbyItems(player);
+    }
+
+    public static void giveLobbyItems(CustomPlayer player) {
+        PlayerUtils.clearInventory(player);
+
         
-        bossBar.updateLobbyBossBar(p);
-        //TODO: items
-
-        return true;
     }
 
     private void spawnAllNpcs() {
         for (String gameNameTag : (List<String>) config.getList("npc.list")) {
-            String path = "lobby.npc." + gameNameTag;
+            String configPath = "lobby.npc." + gameNameTag;
             Minigame minigame = MinigameManager.getMinigame(gameNameTag);
 
             npcMap.put(spawnNpc(
-                path,
+                configPath,
                 (Player player) -> { minigame.onLobbyJoin(player); },
                 true, minigame
             ), gameNameTag);
         }
     }
 
-    @Override
-    public void reloadConfig(Config config, Config messages) {
-        super.reloadConfig(config, messages);
+    public void reloadConfig() {
+        super.reloadConfig(true);
 
         for (Map.Entry<NPCEntity, String> npc : npcMap.entrySet()) {
             reloadNpcConfigData(
@@ -72,8 +71,17 @@ public class GeneralLobby extends Lobby {
                 true, true
             );
         }
+
+        bossBar.reloadConfig(messages.getString("name"));
     }
 
     public static GeneralLobby getInstance() { return instance; }
+    public Config getNewConfig() { 
+        return new Config(MinigameCore.getInstance().getDataFolder() + "general-lobby/config.yml", Config.YAML); 
+    }
+    public Config getNewMessages() {
+        return new Config(MinigameCore.getInstance().getDataFolder() + "general-lobby/messages.yml", Config.YAML);
+    }
+    public String getConfigPath() { return ""; }
     
 }

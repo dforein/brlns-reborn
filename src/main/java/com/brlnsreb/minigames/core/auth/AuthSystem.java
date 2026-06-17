@@ -21,11 +21,11 @@ public class AuthSystem extends MenuAbstract {
 
     public static void init() {
         scheduler = Server.getInstance().getScheduler();
-        reloadConfig();
+        config = new Config(MinigameCore.getInstance().getDataFolder() + "general-lobby/config.yml", Config.YAML);
     }
 
     public static void reloadConfig() {
-        config = new Config(MinigameCore.getInstance().getDataFolder() + "general-lobby/config.yml", Config.YAML);
+        config.reload();
     }
 
     public static void openMenu(Player player) {

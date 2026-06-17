@@ -31,6 +31,7 @@ public abstract class ScoreboardAbstract {
     }
 
     public void updatePregame(Collection<CustomPlayer> players, String timer) {
+        //pre-prepared scoreboard for pregame phase
         String[] lines = {
             "&a",
             "  &l&dGame time:",
@@ -42,16 +43,27 @@ public abstract class ScoreboardAbstract {
     }
 
     public void update(Collection<CustomPlayer> players, String[] lines) {
+        //use this to create or update the scoreboard (more players)
         for (CustomPlayer p : players) {
             update(p, lines);
         }
     }
 
     public void update(CustomPlayer player, String[] lines) {
+        //use this to create or update the scoreboard (one player)
         Scoreboard sb = getScoreboard(player);
         if (sb == null) return;
 
         draw(sb, player.getUniqueId(), lines);
+    }
+
+    public void remove(CustomPlayer player) {
+        //use this to remove the scoreboard, if there is one
+        if (player.scoreboard != null && player.isOnline()) {
+            player.scoreboard.removeViewer(player, DisplaySlot.SIDEBAR);
+            player.scoreboard = null;
+        }
+        activeScorers.remove(player.getUniqueId());
     }
 
     protected void draw(Scoreboard sb, UUID playerId, String[] lines) {
@@ -96,14 +108,6 @@ public abstract class ScoreboardAbstract {
             }
             return false;
         });
-    }
-
-    public void remove(CustomPlayer player) {
-        if (player.scoreboard != null && player.isOnline()) {
-            player.scoreboard.removeViewer(player, DisplaySlot.SIDEBAR);
-            player.scoreboard = null;
-        }
-        activeScorers.remove(player.getUniqueId());
     }
 
 }

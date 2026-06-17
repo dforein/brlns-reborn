@@ -1,13 +1,19 @@
 package com.brlnsreb.minigames.core.minigame;
 
+import java.util.Set;
+
 import com.brlnsreb.minigames.core.minigame.match.MinigameMatch;
 import com.brlnsreb.minigames.mm.MurderMystery;
 
 public class MinigameManager {
     
-    private static final Minigame[] minigames = {
-        new MurderMystery(MinigameType.MURDER_MYSTERY)
-    };
+    private static Set<? extends Minigame> minigames;
+
+    public MinigameManager() {
+        minigames = Set.of(
+            new MurderMystery(MinigameType.MURDER_MYSTERY)
+        );
+    }
 
     public static void forceStop() {
         for (Minigame mg : minigames) {

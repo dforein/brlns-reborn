@@ -1,6 +1,7 @@
 package com.brlnsreb.minigames.core.player;
 
 import com.brlnsreb.minigames.MinigameCore;
+import com.brlnsreb.minigames.core.player.CustomPlayer.DamageState;
 
 import cn.nukkit.Player;
 import cn.nukkit.level.Position;
@@ -50,8 +51,7 @@ public class PlayerUtils {
     public static void setLobbyState(CustomPlayer p) {
         p.state = PlayerStateType.LOBBY;
         
-        p.canAttackPlayers = false;
-        p.attackEvent = false;
+        p.setAttackVars(DamageState.INVULNERABLE, false, false);
         p.setGamemode(Player.ADVENTURE);
 
         p.removeAllEffects();

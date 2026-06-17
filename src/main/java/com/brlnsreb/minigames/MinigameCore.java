@@ -35,6 +35,7 @@ import com.brlnsreb.minigames.listeners.general.PlayerQuitListener;
 public class MinigameCore extends PluginBase {
     
     private static MinigameCore instance;
+    private MinigameManager minigameManager;
     private GeneralLobby generalLobby;
     private Server server;
 
@@ -73,6 +74,7 @@ public class MinigameCore extends PluginBase {
         PlayerDataManager.init();
 
         prepareGeneralLobby();
+        minigameManager = new MinigameManager();
 
         registerCommands();
         registerListeners();
@@ -113,16 +115,11 @@ public class MinigameCore extends PluginBase {
     }
 
     private void prepareGeneralLobby() {
-        Config config = new Config(getDataFolder() + "general-lobby/config.yml", Config.YAML);
-        String folderName = config.getString("lobby.world");
-
-        server.loadLevel(folderName);
-
-        Level generalLobbyLevel = server.getLevelByName(folderName);
-        generalLobbyLevel.setAutoSave(false);
+        this.generalLobby = new GeneralLobby();
+        Config config = generalLobby.getConfig();
 
         server.setDefaultLevel(
-            generalLobbyLevel
+            server.getLevelByName(config.getString("lobby.world"))
         );
 
         server.getDefaultLevel().setSpawnLocation(
@@ -130,19 +127,13 @@ public class MinigameCore extends PluginBase {
         );
 
         server.getDefaultLevel().save();
-
-        this.generalLobby = new GeneralLobby(
-            this,
-            config, 
-            new Config(getDataFolder() + "general-lobby/messages.yml", Config.YAML)
-        );
     }
 
     private void registerCommands() {
         SimpleCommandMap cm = server.getCommandMap();
 
         cm.register("ping", new PingCommand());
-        cm.register("reloadconfig", new ReloadConfigCommand(this));
+        cm.register("reloadconfig", new ReloadConfigCommand());
         cm.register("globalchat", new GlobalChatCommand(this));
         cm.register("togglesave", new ToggleSaveCommand(this));
     }
@@ -175,4 +166,5 @@ public class MinigameCore extends PluginBase {
     public void setDebugVar(int value) { debugVar = value; }
 
     public GeneralLobby getGeneralLobby() { return generalLobby; }
+    public MinigameManager getMinigameManager() { return minigameManager; }
 }

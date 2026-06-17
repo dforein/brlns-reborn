@@ -10,7 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import com.brlnsreb.minigames.core.minigame.Minigame;
 import com.brlnsreb.minigames.core.minigame.MinigameManager;
 import com.brlnsreb.minigames.core.minigame.MinigameType;
-import com.brlnsreb.minigames.utils.MessageUtil;
+import com.brlnsreb.minigames.utils.Messages;
 
 public abstract class MinigameMatch {
     
@@ -26,7 +26,7 @@ public abstract class MinigameMatch {
 
     protected Config config;
     protected Config messages;
-    protected final MessageUtil msgUtil;
+    protected final Messages msgUtil;
 
     public MinigameMatch(MinigameType minigame, int matchNumber) {
         this(MinigameManager.getMinigame(minigame), matchNumber);
@@ -41,14 +41,15 @@ public abstract class MinigameMatch {
 
         this.config = minigame.getConfig();
         this.messages = minigame.getMessages();
-        this.msgUtil = new MessageUtil(this.messages, this.players);
+        this.msgUtil = new Messages(this.messages, this.players);
+
+        createWaitingLobby("waiting-lobby");
+        createEndLobby("end-lobby");
     }
 
-    public void reloadConfig() {
-        this.config = minigame.getConfig();
-        this.messages = minigame.getMessages();
-        this.msgUtil.reloadConfig(messages);
-    }
+    protected abstract void createWaitingLobby(String configPath);
+    protected abstract void createGame();
+    protected abstract void createEndLobby(String configPath);
     
     public abstract boolean onJoin(Player player);
     public abstract boolean onJoinAsSpectator(Player player);
@@ -56,9 +57,9 @@ public abstract class MinigameMatch {
 
     public abstract void onEnding();
     
-    public abstract int getMinPlayers();
-    public abstract int getMaxPlayers();
-    
+    public int getMinPlayers() { return config.getInt("match.min-players"); }
+    public int getMaxPlayers() { return config.getInt("match.max-players"); }
+
     public int getId() { return id; }
     public GameState getState() { return state; }
     public GameStateType getCurrentState() { return state.current; }

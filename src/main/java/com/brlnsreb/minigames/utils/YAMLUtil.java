@@ -50,4 +50,9 @@ public class YAMLUtil {
         );
     }
 
+    public static String checkConfigPath(String configPath) {
+        if (configPath.isEmpty() || configPath.charAt(configPath.length() - 1) == '.') return configPath;
+        return configPath + ".";
+    }
+
 }

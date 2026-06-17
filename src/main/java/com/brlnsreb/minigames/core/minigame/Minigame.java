@@ -32,11 +32,14 @@ public abstract class Minigame {
 
         plugin = MinigameCore.getInstance();
 
-        this.reloadConfig();
+        this.config = new Config(plugin.getDataFolder() + this.nameTag + "/config.yml", Config.YAML);
+        this.messages = new Config(plugin.getDataFolder() + this.nameTag + "/messages.yml", Config.YAML);
+
         this.lobby = createLobby();
         this.matches = new HashSet<>();
         this.busyMatchNumbers = new BitSet();
-        this.mainPendingMatch = createMatch();
+
+        onMatchCreation();
     }
 
     public boolean onLobbyJoin(Player player) {
@@ -55,14 +58,27 @@ public abstract class Minigame {
     }
 
     protected abstract MinigameLobby createLobby();
-    public abstract MinigameMatch createMatch();
+    protected abstract MinigameMatch createMatch(int newMatchNumber);
 
-    protected void replaceMainPendingMatch(MinigameMatch match) {      //used in createMatch
+    public boolean onMatchCreation() {
+        if (mainPendingMatch != null
+            && mainPendingMatch.getPlayers().size() < mainPendingMatch.getMaxPlayers()) {
+                return false;
+        }
+
+        replaceMainPendingMatch(
+            createMatch(getNewMatchNumber())
+        );
+
+        return true;
+    }
+
+    private void replaceMainPendingMatch(MinigameMatch match) {
         mainPendingMatch = match;
         lobby.onReplaceMainPendingMatch(match.getNumber());
     }
 
-    protected int getMatchNumber() {                            //used in createMatch
+    private int getNewMatchNumber() {
         int n = busyMatchNumbers.nextClearBit(1);
         busyMatchNumbers.set(n);
         return n;
@@ -74,13 +90,9 @@ public abstract class Minigame {
     }
 
     public void reloadConfig() {
-        this.config = new Config(plugin.getDataFolder() + this.nameTag + "/config.yml", Config.YAML);
-        this.messages = new Config(plugin.getDataFolder() + this.nameTag + "/messages.yml", Config.YAML);
-
+        this.config.reload();
+        this.messages.reload();
         lobby.reloadConfig();
-        for (MinigameMatch match : matches) {
-            match.reloadConfig();
-        }
     }
 
     public int getPlayerCount() {

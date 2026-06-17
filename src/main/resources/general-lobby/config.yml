@@ -1,12 +1,11 @@
-lobby:
-  world: generallobby
-  spawn-pos: 
-  npc:
-    list:
-    - mm
-    mm:
-      pos: 0 0 0
-      text1: '&atest1'
-      text2: test2 %d
-      default-yaw: 0
-      skin-file: skins/test.png
+world: generallobby
+spawn-pos: 
+npc:
+  list:
+  - mm
+  mm:
+    pos: 0 0 0
+    text1: '&atest1'
+    text2: test2 %d
+    default-yaw: 0
+    skin-file: skins/test.png

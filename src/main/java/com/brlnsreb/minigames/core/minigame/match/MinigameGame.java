@@ -3,7 +3,7 @@ package com.brlnsreb.minigames.core.minigame.match;
 import java.util.Set;
 
 import com.brlnsreb.minigames.core.player.CustomPlayer;
-import com.brlnsreb.minigames.utils.MessageUtil;
+import com.brlnsreb.minigames.utils.Messages;
 
 import cn.nukkit.Player;
 
@@ -12,9 +12,9 @@ public abstract class MinigameGame {
     protected GameState state;
     protected final Set<Player> players;
     protected final Arena arena;
-    protected final MessageUtil msgUtil;
+    protected final Messages msgUtil;
 
-    public MinigameGame(Set<Player> players, Arena arena, GameState state, MessageUtil msgUtil) {
+    public MinigameGame(Set<Player> players, Arena arena, GameState state, Messages msgUtil) {
         this.players = players;
         this.arena = arena;
         this.msgUtil = msgUtil;

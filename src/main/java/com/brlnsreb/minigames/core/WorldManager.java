@@ -11,6 +11,8 @@ import java.util.HashSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.brlnsreb.minigames.utils.YAMLUtil;
+
 import cn.nukkit.Server;
 import cn.nukkit.level.GameRule;
 import cn.nukkit.level.GameRules;
@@ -20,29 +22,41 @@ import cn.nukkit.utils.Config;
 public class WorldManager {
 
     private static Server server;
-    private static HashSet<String> availableLevels = getAllLevelNames();
 
     public static void init() {
         server = Server.getInstance();
     }
 
-    public static Level loadLevel(String levelName) {
+    public static Level loadLobbyLevel(String levelName) {
+        return loadLevel(levelName, true, null, null);
+    }
+
+    public static Level loadLevel(String levelName, Config config, String configPath) {
+        return loadLevel(levelName, false, config, configPath);
+    }
+
+    private static Level loadLevel(String levelName, boolean isLobby, Config config, String configPath) {
+        configPath = YAMLUtil.checkConfigPath(configPath);
+
+        HashSet<String> availableLevels = getAllLevelNames();
         if (!availableLevels.contains(levelName)) return null;
 
-        //get lowest X number in "levelNameX" available for the level to load
-        int count = 1;
         String folderName = levelName;
-        while (server.getLevelByName(folderName) != null) {
-            count++;
-            folderName = levelName + count;
-        }
+        if (!isLobby) {
+            //get lowest X number in "levelNameX" available for the level to load
+            int count = 1;
+            while (server.getLevelByName(folderName) != null) {
+                count++;
+                folderName = levelName + count;
+            }
 
-        //check if folder of levelNameX exists, else create it
-        String worldPath = server.getDataPath() + "/worlds/";
-        Path levelFolder = Path.of(worldPath + folderName);
-        if (!Files.exists(levelFolder)) {
-            if (!copyWorld(Path.of(worldPath + levelName), levelFolder)) return null;
-            availableLevels.add(folderName);
+            //check if folder of levelNameX exists, else create it
+            String worldPath = server.getDataPath() + "/worlds/";
+            Path levelFolder = Path.of(worldPath + folderName);
+            if (!Files.exists(levelFolder)) {
+                if (!copyWorld(Path.of(worldPath + levelName), levelFolder)) return null;
+                availableLevels.add(folderName);
+            }
         }
         
         //load level
@@ -50,12 +64,28 @@ public class WorldManager {
         Level loadedLevel = server.getLevelByName(folderName);
         loadedLevel.setAutoSave(false);
 
+        setGameRules(loadedLevel, isLobby, config, configPath);
+
         return loadedLevel;
     }
 
-    public static void setGameRules(Level level, Config config) {
+    public static void unloadLevel(Level level) {
+        server.getScheduler().scheduleDelayedTask(() -> { server.unloadLevel(level, true); }, 20);
+    }
+
+    public static void setGameRules(Level level) {
+        setGameRules(level, true, null, null);
+    }
+
+    public static void setGameRules(Level level, Config config, String configPath) {
+        setGameRules(level, false, config, configPath);
+    }
+
+    private static void setGameRules(Level level, boolean isLobby, Config config, String configPath) {
         //TODO: interaction with world (e.g. skywars: drops, tnts, fire spread, etc allowed)
         
+        configPath = YAMLUtil.checkConfigPath(configPath);
+
         GameRules gameRules = level.getGameRules();
 
         //particular
@@ -65,7 +95,9 @@ public class WorldManager {
         };
 
         for (GameRule rule : particulars) {
-            gameRules.setGameRule(rule, config.getBoolean("gamerules." + rule.getName()));
+            gameRules.setGameRule(rule, 
+                isLobby? false : config.getBoolean(configPath + "gamerules." + rule.getName())
+            );
         }
 
         //universal (gets updated every time a new game needs something particular)
@@ -97,6 +129,8 @@ public class WorldManager {
 
         for (GameRule rule : enabled) { gameRules.setGameRule(rule, true); }
         for (GameRule rule : disabled) { gameRules.setGameRule(rule, false); }
+
+        level.save();
     }
 
     public static HashSet<String> getAllLevelNames() {
@@ -144,7 +178,5 @@ public class WorldManager {
             return false;
         }
     }
-
-    public static HashSet<String> getAvailableLevels() { return availableLevels; }
 
 }

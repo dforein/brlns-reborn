@@ -11,13 +11,14 @@ public abstract class WaitingLobby extends Lobby {
     protected final NPCEntity leaveNpc;
 
     public WaitingLobby(Minigame minigame) {
-        super(minigame.getConfig(), minigame.getMessages());
+        super(minigame);
 
         this.leaveNpc = spawnNpc(
-            "waiting-lobby.npc", 
-            (Player player) -> { minigame.onLobbyJoin(player); }, 
-            false
+            "waiting-lobby.npc.", 
+            (Player player) -> { minigame.onLobbyJoin(player); }
         );
     }
+
+    public String getConfigPath() { return "waiting-lobby."; }
     
 }

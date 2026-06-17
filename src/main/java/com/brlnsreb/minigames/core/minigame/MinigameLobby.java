@@ -2,21 +2,34 @@ package com.brlnsreb.minigames.core.minigame;
 
 import com.brlnsreb.minigames.core.lobby.Lobby;
 import com.brlnsreb.minigames.core.lobby.entities.NPCEntity;
+import com.brlnsreb.minigames.core.lobby.ui.MainLobbyBossBar;
+import com.brlnsreb.minigames.core.player.CustomPlayer;
+import com.brlnsreb.minigames.generallobby.GeneralLobby;
 
 import cn.nukkit.Player;
+import cn.nukkit.utils.Config;
 
 public abstract class MinigameLobby extends Lobby {
 
-    protected final Minigame minigame;
     protected final NPCEntity joinNpc;
     protected final String joinNpcSubtitle;
+    protected MainLobbyBossBar bossBar;
     
     public MinigameLobby(Minigame minigame) {
-        super(minigame.getConfig(), minigame.getMessages());
-
-        this.minigame = minigame;
+        super(minigame);
         this.joinNpc = spawnJoinNpc(minigame);
         this.joinNpcSubtitle = config.getString("npc.subtitle");
+        this.bossBar = new MainLobbyBossBar(config.getString("name"));
+
+        this.bossBar.startBossBarUpdates(level);
+    }
+
+    protected void onJoinBossBar(CustomPlayer player) {
+        bossBar.updateLobbyBossBar(player);
+    }
+
+    protected void onJoinItems(CustomPlayer player) {
+        GeneralLobby.giveLobbyItems(player);
     }
 
     public void onReplaceMainPendingMatch(int matchNumber) {
@@ -27,15 +40,19 @@ public abstract class MinigameLobby extends Lobby {
 
     private NPCEntity spawnJoinNpc(Minigame minigame) {
         return spawnNpc(
-            "lobby.npc",
+            "lobby.npc.",
             (Player player) -> { minigame.onMatchJoin(player); },
             true, minigame
         );
     }
 
     public void reloadConfig() {
-        super.reloadConfig(minigame.getConfig(), minigame.getMessages());
-        reloadNpcConfigData(joinNpc, "lobby.npc", true, true);
+        super.reloadConfig(false);
+        reloadNpcConfigData(joinNpc, "lobby.npc.", true, true);
     }
+
+    public Config getNewConfig() { return minigame.getConfig(); }
+    public Config getNewMessages() { return minigame.getMessages(); }
+    public String getConfigPath() { return "lobby."; }
 
 }

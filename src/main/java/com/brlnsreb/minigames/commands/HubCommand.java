@@ -1,5 +1,7 @@
 package com.brlnsreb.minigames.commands;
 
+import com.brlnsreb.minigames.core.player.CustomPlayer;
+
 import cn.nukkit.Player;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
@@ -23,9 +25,19 @@ public class HubCommand extends Command {
             return true;
         }
         
-        Player player = (Player) sender;
+        CustomPlayer player = (CustomPlayer) sender;
         
-       //TODO: hub/lobby command
+        switch (player.state) {
+            case LOBBY:
+                player.sendMessage("");
+                break;
+
+            default:
+                player.getMatch().onLeave(player);
+                player.currentMinigame.onLobbyJoin(player);
+                break;
+        }
+       //TODO: hub/lobby command (done?)
         
         return true;
     }
