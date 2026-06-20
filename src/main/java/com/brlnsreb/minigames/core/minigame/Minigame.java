@@ -43,17 +43,23 @@ public abstract class Minigame {
     }
 
     public boolean onLobbyJoin(Player player) {
+        CustomPlayer p = (CustomPlayer) player;
+        if (p.isTeleporting()) return false;
+        
+        p.setTeleporting();
         return lobby.onJoin(player);
     }
 
     public boolean onMatchJoin(Player player) {
         CustomPlayer p = (CustomPlayer) player;
+        if (p.isTeleporting()) return false;
 
-        if (p.getPlayerData().name == null) {
+        if (!p.getPlayerData().isLogged()) {
             AuthSystem.openMenu(p);
             return false;
         }
 
+        p.setTeleporting();
         return mainPendingMatch.onJoin(player);
     }
 
@@ -106,7 +112,9 @@ public abstract class Minigame {
         return count;
     }
 
+    public MinigameLobby getLobby() { return lobby; }
     public HashSet<? extends MinigameMatch> getMatches() { return matches; }
+    public MinigameMatch getMainPendingMatch() { return mainPendingMatch; }
     public int getId() { return id; }
     public String getNameTag() { return nameTag; }
     public Config getConfig() { return config; }

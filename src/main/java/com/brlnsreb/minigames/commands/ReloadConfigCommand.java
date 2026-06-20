@@ -3,7 +3,7 @@ package com.brlnsreb.minigames.commands;
 import com.brlnsreb.minigames.core.auth.AuthSystem;
 import com.brlnsreb.minigames.core.minigame.MinigameManager;
 import com.brlnsreb.minigames.generallobby.GeneralLobby;
-import com.brlnsreb.minigames.utils.Messages;
+import com.brlnsreb.minigames.utils.YamlUtil;
 
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
@@ -23,7 +23,7 @@ public class ReloadConfigCommand extends Command {
 
         MinigameManager.reloadConfig();
         GeneralLobby.getInstance().reloadConfig();
-        Messages.resetCache();
+        YamlUtil.resetCache();
         AuthSystem.reloadConfig();
 
         sender.sendMessage(TextFormat.GREEN + "Config file reloaded!");

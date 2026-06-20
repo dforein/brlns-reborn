@@ -4,6 +4,8 @@ import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.core.player.CustomPlayer.DamageState;
 
 import cn.nukkit.Player;
+import cn.nukkit.entity.effect.Effect;
+import cn.nukkit.entity.effect.EffectType;
 import cn.nukkit.level.Position;
 import cn.nukkit.scoreboard.data.DisplaySlot;
 import cn.nukkit.utils.DummyBossBar;
@@ -55,6 +57,8 @@ public class PlayerUtils {
         p.setGamemode(Player.ADVENTURE);
 
         p.removeAllEffects();
+        giveEffect(p, EffectType.NIGHT_VISION, 99999999, 2, false);
+
         p.setHealthCurrent(p.getHealthMax());
         p.getFoodData().setFood(18);
 
@@ -63,6 +67,14 @@ public class PlayerUtils {
         clearInventory(p);
         removeScoreboard(p);
         removeBossBar(p);
+    }
+
+    private static void giveEffect(Player player, EffectType type, int duration, int amplifier, boolean isVisible) {
+        Effect effect = Effect.get(EffectType.NIGHT_VISION);
+        effect.setDuration(duration);
+        effect.setAmplifier(amplifier);
+        effect.setVisible(isVisible);
+        player.addEffect(effect);
     }
 
     public static void clearInventory(Player p) {

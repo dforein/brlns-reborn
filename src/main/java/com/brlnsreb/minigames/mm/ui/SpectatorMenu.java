@@ -25,7 +25,6 @@ public class SpectatorMenu extends MenuAbstract {
     private final Map<UUID, TaskHandler> handlers;
     
     public SpectatorMenu(MurderMysteryGame game) {
-        super();
         this.game = game;
         this.pendingMenus = new ConcurrentHashMap<>();
         this.handlers = new ConcurrentHashMap<>();

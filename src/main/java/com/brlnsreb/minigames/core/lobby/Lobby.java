@@ -4,17 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.core.WorldManager;
 import com.brlnsreb.minigames.core.lobby.entities.HologramEntity;
 import com.brlnsreb.minigames.core.lobby.entities.NPCEntity;
 import com.brlnsreb.minigames.core.minigame.Minigame;
 import com.brlnsreb.minigames.core.player.CustomPlayer;
 import com.brlnsreb.minigames.core.player.PlayerUtils;
-import com.brlnsreb.minigames.utils.YAMLUtil;
+import com.brlnsreb.minigames.utils.YamlUtil;
 
 import cn.nukkit.Player;
-import cn.nukkit.Server;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
@@ -37,7 +35,7 @@ public abstract class Lobby {
         String levelPath = configPath().equals("") ?
             "world" : configPath() + ".world";
         this.level = WorldManager.loadLobbyLevel(config.getString(levelPath));
-        this.spawnPos = YAMLUtil.parsePosition(config.getString(configPath() + "spawn"), this.level);
+        this.spawnPos = YamlUtil.parsePosition(config.getString(configPath() + "spawn"), this.level);
     }
 
     public Lobby() {
@@ -48,7 +46,7 @@ public abstract class Lobby {
         String levelPath = configPath().equals("") ?
             "world" : configPath() + ".world";
         this.level = WorldManager.loadLobbyLevel(config.getString(levelPath));
-        this.spawnPos = YAMLUtil.parsePosition(config.getString(configPath() + "spawn"), this.level);
+        this.spawnPos = YamlUtil.parsePosition(config.getString(configPath() + "spawn"), this.level);
     }
 
     public boolean onJoin(Player player) {
@@ -74,40 +72,23 @@ public abstract class Lobby {
     }
 
     protected NPCEntity spawnNpc(String configPath, Consumer<Player> task) {
-        configPath = YAMLUtil.checkConfigPath(configPath);
+        return spawnNpc(configPath, task, false);
+    }
 
-        Position pos = YAMLUtil.parsePosition(config.getString(configPath + "pos"), this.level);
-
+    protected NPCEntity spawnNpc(String configPath, Consumer<Player> task, boolean subtitle) {
+        configPath = YamlUtil.checkConfigPath(configPath);
+        Position pos = YamlUtil.parsePosition(config.getString(configPath + "pos"), this.level);
+        
         NPCEntity npc = new NPCEntity(pos.getChunk(), Entity.getDefaultNBT(pos));
+
         npc.updateTitle(config.getString(configPath + "text1"));
+        if (subtitle) npc.updateSubtitle(config.getString(configPath + "text2"));
+
         npc.setDefaultPose(config.getDouble(configPath + "default-yaw"));
         npc.setTask(task);
         npc.setSkin(config.getString(configPath + "skin-file"));
 
         npc.spawnToAll();
-
-        return npc;
-    }
-
-    protected NPCEntity spawnNpc(String configPath, Consumer<Player> task, boolean subtitle) {
-        configPath = YAMLUtil.checkConfigPath(configPath);
-
-        NPCEntity npc = spawnNpc(configPath, task);
-        npc.updateSubtitle(config.getString(configPath + "text2"));
-        return npc;
-    }
-    
-    protected NPCEntity spawnNpc(String configPath, Consumer<Player> task, boolean subtitle, Minigame minigameForPlayerCount) {
-        configPath = YAMLUtil.checkConfigPath(configPath);
-
-        NPCEntity npc = spawnNpc(configPath, task);
-
-        npc.setPlayerCountLine(config.getString(configPath + "text2"));
-        Server.getInstance().getScheduler().scheduleRepeatingTask(MinigameCore.getInstance(), 
-            () -> {
-                npc.updatePlayerCountSubtitle(minigameForPlayerCount.getPlayerCount());
-            }, 100
-        );
 
         return npc;
     }
@@ -126,22 +107,18 @@ public abstract class Lobby {
             this.config = getNewConfig();
             this.messages = getNewMessages();
         }
-        this.spawnPos = YAMLUtil.parsePosition(config.getString("lobby.spawn"), this.level);
+        this.spawnPos = YamlUtil.parsePosition(config.getString("lobby.spawn"), this.level);
     }
 
-    protected void reloadNpcConfigData(NPCEntity npc, String configPath, boolean subtitle, boolean playerCountSubtitle) {
+    protected void reloadNpcConfigData(NPCEntity npc, String configPath, boolean subtitle) {
         if (npc == null) return;
 
-        configPath = YAMLUtil.checkConfigPath(configPath);
+        configPath = YamlUtil.checkConfigPath(configPath);
         
         npc.setDefaultPose(config.getDouble(configPath + "default-yaw"));
         npc.updateTitle(config.getString(configPath + "text1"));
         if (subtitle) {
-            if (playerCountSubtitle) {
-                npc.setPlayerCountLine(config.getString(configPath + "text2"));
-            } else {
-                npc.updateSubtitle(config.getString(configPath + "text2"));
-            }
+            npc.updateSubtitle(config.getString(configPath + "text2"));
         }
     }
 
@@ -151,6 +128,6 @@ public abstract class Lobby {
     public abstract Config getNewConfig();
     public abstract Config getNewMessages();
     public abstract String getConfigPath();
-    public String configPath() { return YAMLUtil.checkConfigPath(getConfigPath()); }
+    public String configPath() { return YamlUtil.checkConfigPath(getConfigPath()); }
 
 }

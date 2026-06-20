@@ -97,6 +97,14 @@ public class CustomPlayer extends Player {
         }
     }
 
+    public boolean isTeleporting() {
+        return this.state == PlayerStateType.TELEPORTING;
+    }
+
+    public void setTeleporting() {
+        this.state = PlayerStateType.TELEPORTING;
+    }
+
     public PlayerData getPlayerData() {
         return this.data;
     }
@@ -107,7 +115,7 @@ public class CustomPlayer extends Player {
 
     public void updatePlayerNameTag() {
         this.playerNameTag = "&7" + (data.getFloorLevel() < 0 ? "?" : data.getFloorLevel()) 
-                        + " &a" + (data.name != null ? data.name : this.getName());
+                        + " &a" + (data.isLogged() ? data.name : this.getName());
         this.resetNameTag();
     }
 
@@ -117,7 +125,7 @@ public class CustomPlayer extends Player {
 
     @Override
     public void spawnTo(Player player) {
-        if (state == PlayerStateType.SPECTATOR) return;
+        if (this.isGameSpectator()) return;
         super.spawnTo(player);
     }
 
@@ -204,6 +212,8 @@ public class CustomPlayer extends Player {
     public void setMatch(MinigameMatch match) {
         this.currentMatch = new WeakReference<>(match);
     }
+
+    
 
     @Override
     public void saveNBT() {

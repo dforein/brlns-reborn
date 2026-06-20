@@ -97,7 +97,7 @@ public class PlayerDataManager {
 
         return CompletableFuture.supplyAsync(() -> {
             try {
-                if (player.getPlayerData().name != null) return Outcome.PLAYER_ALREADY_LOGGED_IN;
+                if (player.getPlayerData().isLogged()) return Outcome.PLAYER_ALREADY_LOGGED_IN;
 
                 //check name: alphanumeric + underscore, min and max lenght
                 if (!name.matches("^[A-Za-z0-9_]{3,26}$")) return Outcome.INVALID_NAME;
@@ -165,7 +165,7 @@ public class PlayerDataManager {
         
         return CompletableFuture.supplyAsync(() -> {
             try {
-                if (player.getPlayerData().name != null) return Outcome.PLAYER_ALREADY_LOGGED_IN;
+                if (player.getPlayerData().isLogged()) return Outcome.PLAYER_ALREADY_LOGGED_IN;
 
                 //check whether another player is already logged into the account
                 DBResults playerResults = DatabaseManager.executeSelect(
@@ -219,7 +219,7 @@ public class PlayerDataManager {
         
         return CompletableFuture.supplyAsync(() -> {
             try {
-                if (player.getPlayerData().name == null) return Outcome.PLAYER_ALREADY_LOGGED_OUT;
+                if (!player.getPlayerData().isLogged()) return Outcome.PLAYER_ALREADY_LOGGED_OUT;
 
                 //delete the player-account association
                 if (DatabaseManager.executeUpdate(

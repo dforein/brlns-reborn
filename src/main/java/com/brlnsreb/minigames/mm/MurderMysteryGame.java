@@ -27,7 +27,7 @@ import com.brlnsreb.minigames.mm.ui.ScoreboardSystem;
 import com.brlnsreb.minigames.mm.ui.SpectatorMenu;
 import com.brlnsreb.minigames.mm.ui.VotingMenu;
 import com.brlnsreb.minigames.utils.CustomPlaySoundPacket;
-import com.brlnsreb.minigames.utils.YAMLUtil;
+import com.brlnsreb.minigames.utils.YamlUtil;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -582,15 +582,15 @@ public class MurderMysteryGame {
         Level level = plugin.getServer().getLevelByName(worldName);
         
         //min & max coords
-        Vector3 min = YAMLUtil.parseVector3(pConfig.getString(path + "min"));
-        Vector3 max = YAMLUtil.parseVector3(pConfig.getString(path + "max"));
+        Vector3 min = YamlUtil.parseVector3(pConfig.getString(path + "min"));
+        Vector3 max = YamlUtil.parseVector3(pConfig.getString(path + "max"));
 
         //spawns
         List<String> spawnsRawList = plugin.getConfig().getStringList(path + "spawns");
         List<Vector3> spawns = new ArrayList<>();
 
         for (String coords : spawnsRawList) {
-            spawns.add(YAMLUtil.parseVector3Centered(coords));
+            spawns.add(YamlUtil.parseVector3Centered(coords));
         }
 
         if (level != null) {

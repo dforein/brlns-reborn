@@ -5,5 +5,5 @@ public enum PlayerStateType {
     WAITING_LOBBY,
     PLAYING,
     SPECTATOR,
-    OTHER
+    TELEPORTING
 }

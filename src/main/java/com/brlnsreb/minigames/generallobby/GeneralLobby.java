@@ -12,26 +12,34 @@ import com.brlnsreb.minigames.core.minigame.Minigame;
 import com.brlnsreb.minigames.core.minigame.MinigameManager;
 import com.brlnsreb.minigames.core.player.CustomPlayer;
 import com.brlnsreb.minigames.core.player.PlayerUtils;
+import com.brlnsreb.minigames.generallobby.items.MainLobbyItemManager;
+import com.brlnsreb.minigames.generallobby.ui.GamesMenu;
+import com.brlnsreb.minigames.utils.YamlUtil;
 
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.utils.Config;
 
 public class GeneralLobby extends Lobby {
 
     public static GeneralLobby instance;
+
     private final MainLobbyBossBar bossBar;
-    private final MainLobbyItemManager items;
-    private final HashMap<NPCEntity, String> npcMap = new HashMap<>();
+    private static MainLobbyItemManager items;
+
+    private final HashMap<NPCEntity, String> npcNameTagMap = new HashMap<>();
 
     public GeneralLobby() {
         super();
         instance = this;
 
-        this.bossBar = new MainLobbyBossBar(this.messages.getString("name"));
-        this.items = new MainLobbyItemManager(config);
+        this.bossBar = new MainLobbyBossBar(messages.getString("name"));
+        items = new MainLobbyItemManager(config);
 
         this.bossBar.startBossBarUpdates(this.level);
         this.spawnAllNpcs();
+
+        GamesMenu.init(config);
     }
 
     protected void onJoinBossBar(CustomPlayer player) {
@@ -45,7 +53,10 @@ public class GeneralLobby extends Lobby {
     public static void giveLobbyItems(CustomPlayer player) {
         PlayerUtils.clearInventory(player);
 
-        
+        items.giveGames(player);
+        items.giveMenu(player);
+        items.giveMagicStaff(player);
+        items.giveJoinGame(player);
     }
 
     private void spawnAllNpcs() {
@@ -53,23 +64,42 @@ public class GeneralLobby extends Lobby {
             String configPath = "lobby.npc." + gameNameTag;
             Minigame minigame = MinigameManager.getMinigame(gameNameTag);
 
-            npcMap.put(spawnNpc(
+            NPCEntity npc = spawnNpc(
                 configPath,
                 (Player player) -> { minigame.onLobbyJoin(player); },
-                true, minigame
-            ), gameNameTag);
+                false
+            );
+
+            npcNameTagMap.put(npc, gameNameTag);
+
+            Server.getInstance().getScheduler().scheduleRepeatingTask(MinigameCore.getInstance(), 
+                () -> {
+                    updateNpcSubtitle(npc);
+                }, 100
+            );
         }
+    }
+
+    private void updateNpcSubtitle(NPCEntity npc) {
+        String subtitle = YamlUtil.getStr(getConfigPath() + "npc.text2", config).formatted(
+            minigame.getNameTag(),
+            minigame.getMainPendingMatch().getNumber(),
+            minigame.getMainPendingMatch().getPlayers().size()
+        );
+        
+        npc.updateSubtitle(subtitle);
     }
 
     public void reloadConfig() {
         super.reloadConfig(true);
 
-        for (Map.Entry<NPCEntity, String> npc : npcMap.entrySet()) {
+        for (Map.Entry<NPCEntity, String> npcEntry : npcNameTagMap.entrySet()) {
             reloadNpcConfigData(
-                npc.getKey(), 
-                "lobby.npc." + npc.getValue(),
-                true, true
+                npcEntry.getKey(), 
+                configPath() + "npc." + npcEntry.getValue(),
+                false
             );
+            updateNpcSubtitle(npcEntry.getKey());
         }
 
         bossBar.reloadConfig(messages.getString("name"));

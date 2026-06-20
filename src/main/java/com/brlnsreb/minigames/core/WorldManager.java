@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.brlnsreb.minigames.utils.YAMLUtil;
+import com.brlnsreb.minigames.utils.YamlUtil;
 
 import cn.nukkit.Server;
 import cn.nukkit.level.GameRule;
@@ -36,7 +36,7 @@ public class WorldManager {
     }
 
     private static Level loadLevel(String levelName, boolean isLobby, Config config, String configPath) {
-        configPath = YAMLUtil.checkConfigPath(configPath);
+        configPath = YamlUtil.checkConfigPath(configPath);
 
         HashSet<String> availableLevels = getAllLevelNames();
         if (!availableLevels.contains(levelName)) return null;
@@ -84,7 +84,7 @@ public class WorldManager {
     private static void setGameRules(Level level, boolean isLobby, Config config, String configPath) {
         //TODO: interaction with world (e.g. skywars: drops, tnts, fire spread, etc allowed)
         
-        configPath = YAMLUtil.checkConfigPath(configPath);
+        configPath = YamlUtil.checkConfigPath(configPath);
 
         GameRules gameRules = level.getGameRules();
 

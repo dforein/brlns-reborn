@@ -1,14 +1,33 @@
 package com.brlnsreb.minigames.utils;
 
+import java.util.HashMap;
+
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
+import cn.nukkit.utils.Config;
+import cn.nukkit.utils.TextFormat;
 
-public class YAMLUtil {
+public class YamlUtil {
 
     private static final int X = 0;
     private static final int Y = 1;
     private static final int Z = 2;
+
+    private static final HashMap<String, String> cache = new HashMap<>();
+
+    public static void resetCache() {
+        cache.clear();
+    }
+
+    public static String getStr(String path, Config config) {
+        String str = cache.get(config.hashCode() + path);
+        if (str == null) return str;
+
+        str = TextFormat.colorize(config.getString(path));
+        if (str != null) cache.put(config.hashCode() + path, str);
+        return str;
+    }
 
     public static Position parsePosition(String rawCoords, Level level) {
         return new Position(

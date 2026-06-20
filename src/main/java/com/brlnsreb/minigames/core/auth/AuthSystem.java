@@ -4,15 +4,16 @@ import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.core.player.CustomPlayer;
 import com.brlnsreb.minigames.core.player.PlayerDataManager;
 import com.brlnsreb.minigames.core.player.PlayerDataManager.Outcome;
+import com.brlnsreb.minigames.utils.YamlUtil;
 import com.brlnsreb.minigames.utils.abstraction.MenuAbstract;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.form.response.CustomResponse;
 import cn.nukkit.form.window.CustomForm;
 import cn.nukkit.form.window.SimpleForm;
 import cn.nukkit.scheduler.ServerScheduler;
 import cn.nukkit.utils.Config;
-import cn.nukkit.utils.TextFormat;
 
 public class AuthSystem extends MenuAbstract {
 
@@ -34,22 +35,23 @@ public class AuthSystem extends MenuAbstract {
         String path = "auth.menu.";
 
         CustomForm menu = new CustomForm(config.getString(path + "title"));
-        menu.addLabel(config.getString(path + "label0"));
-        menu.addInput(TextFormat.colorize(config.getString(path + "input1")), player.getName());
-        menu.addInput(config.getString(path + "input2"));
-        menu.addToggle(config.getString(path + "toggle3"), false);
+        menu.addLabel(YamlUtil.getStr(path + "label0", config));
+        menu.addInput(YamlUtil.getStr(path + "input1", config), player.getName());
+        menu.addInput(YamlUtil.getStr(path + "input2", config));
+        menu.addToggle(YamlUtil.getStr(path + "toggle3", config), false);
 
+        menu.putMeta("type", "auth");
         menu.send(player);
     }
 
-    public static void handleResponse(CustomPlayer player, CustomForm window) {
-        if (window.response() == null) return;
+    public static void handleResponse(CustomPlayer player, CustomResponse response) {
+        if (response == null) return;
 
-        String name = window.response().getInputResponse(1);
-        String password = window.response().getInputResponse(2);
+        String name = response.getInputResponse(1);
+        String password = response.getInputResponse(2);
         
 
-        if (window.response().getToggleResponse(3)) {
+        if (response.getToggleResponse(3)) {
             registerPlayer(player, name, password);
         } else {
             loginPlayer(player, name, password);
@@ -75,8 +77,8 @@ public class AuthSystem extends MenuAbstract {
             }
 
             SimpleForm responseWindow = new SimpleForm(
-                config.getString(path + "title"),
-                config.getString(path + "config").formatted(name)
+                YamlUtil.getStr(path + "title", config),
+                YamlUtil.getStr(path + "config", config).formatted(name)
             );
             
             scheduler.scheduleTask(() -> {
@@ -89,7 +91,7 @@ public class AuthSystem extends MenuAbstract {
         PlayerDataManager.playerLogin(player, name, password).thenAccept(outcome -> {
             if (outcome == Outcome.ASYNC_TASK_ALREADY_RUNNING) return;
 
-            String path = "auth.register-outcome.";
+            String path = "auth.login-outcome.";
             path += switch (outcome) {
                 case OK -> "ok.";
                 case PLAYER_ALREADY_LOGGED_IN -> "player-already-logged-in.";
@@ -104,8 +106,8 @@ public class AuthSystem extends MenuAbstract {
             }
 
             SimpleForm responseWindow = new SimpleForm(
-                config.getString(path + "title"),
-                config.getString(path + "config").formatted(name)
+                YamlUtil.getStr(path + "title", config),
+                YamlUtil.getStr(path + "config", config).formatted(name)
             );
             
             scheduler.scheduleTask(() -> {

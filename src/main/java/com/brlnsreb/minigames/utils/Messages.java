@@ -1,7 +1,6 @@
 package com.brlnsreb.minigames.utils;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 import cn.nukkit.Player;
@@ -14,7 +13,6 @@ public class Messages {
     private Config messages;
     private final Collection<Player> players;
     private final String prefix;
-    private static final HashMap<String, String> cache = new HashMap<>();
     
     public Messages(Config messages, Collection<Player> players) {
         this.messages = messages;
@@ -22,32 +20,16 @@ public class Messages {
         this.prefix = messages.getString("prefix") + " &r";
     }
 
-    public static void resetCache() {
-        cache.clear();
-    }
-
-
-    public static String getString(String path, Config messages, String prefix) {
-        return TextFormat.colorize(prefix) + getString(path, messages);
-    }
-
-    public static String getString(String path, Config messages) {
-        path = YAMLUtil.checkConfigPath(path);
-
-        String message = cache.get(messages.hashCode() + path);
-        if (message != null) return message;
-
-        message = TextFormat.colorize(messages.getString(path));
-        if (message != null) cache.put(messages.hashCode() + path, message);
-        return message;
+    public static String getStrPrefix(String path, Config messages, String prefix) {
+        return TextFormat.colorize(prefix) + YamlUtil.getStr(path, messages);
     }
 
     private String getString(String path, String prefix) {
-        return getString(path, this.messages, prefix);
+        return getStrPrefix(path, this.messages, prefix);
     }
 
     private String getString(String path) {
-        return getString(path, this.messages);
+        return YamlUtil.getStr(path, this.messages);
     }
 
     public String replacePlaceholders(String message, Map<String, String> placeholders) {

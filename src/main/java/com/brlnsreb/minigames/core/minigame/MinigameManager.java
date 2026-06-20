@@ -1,16 +1,16 @@
 package com.brlnsreb.minigames.core.minigame;
 
-import java.util.Set;
+import java.util.List;
 
 import com.brlnsreb.minigames.core.minigame.match.MinigameMatch;
 import com.brlnsreb.minigames.mm.MurderMystery;
 
 public class MinigameManager {
     
-    private static Set<? extends Minigame> minigames;
+    private static List<? extends Minigame> minigames;
 
     public MinigameManager() {
-        minigames = Set.of(
+        minigames = List.of(
             new MurderMystery(MinigameType.MURDER_MYSTERY)
         );
     }
@@ -32,6 +32,10 @@ public class MinigameManager {
             if (mg.getId() == minigame.getId()) return mg;
         }
         return null;
+    }
+
+    public static List<? extends Minigame> getMinigames() {
+        return minigames;
     }
 
     public static void reloadConfig() {

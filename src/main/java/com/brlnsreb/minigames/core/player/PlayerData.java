@@ -20,6 +20,10 @@ public class PlayerData {
         this.levelFloor = -1;
     }
 
+    public boolean isLogged() {
+        return this.name != null;
+    }
+
     public void addCoins(int deltaCoins) {
         this.coins += deltaCoins;
     }

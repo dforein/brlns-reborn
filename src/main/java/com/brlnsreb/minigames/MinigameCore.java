@@ -10,7 +10,8 @@ import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import com.brlnsreb.minigames.mm.entities.DeadBodyEntity;
 import com.brlnsreb.minigames.mm.entities.ThrownSwordEntity;
-import com.brlnsreb.minigames.utils.YAMLUtil;
+import com.brlnsreb.minigames.utils.YamlUtil;
+import com.brlnsreb.minigames.utils.abstraction.MenuAbstract;
 
 import java.util.ArrayList;
 
@@ -76,6 +77,8 @@ public class MinigameCore extends PluginBase {
         prepareGeneralLobby();
         minigameManager = new MinigameManager();
 
+        startDeadMenusCheckTask();
+
         registerCommands();
         registerListeners();
 
@@ -123,10 +126,18 @@ public class MinigameCore extends PluginBase {
         );
 
         server.getDefaultLevel().setSpawnLocation(
-            YAMLUtil.parseVector3Centered(config.getString("lobby.spawn-pos"))
+            YamlUtil.parseVector3Centered(config.getString("lobby.spawn-pos"))
         );
 
         server.getDefaultLevel().save();
+    }
+
+    private void startDeadMenusCheckTask() {
+        server.getScheduler().scheduleDelayedRepeatingTask(this, 
+            () -> { MenuAbstract.checkDeadForms(); }, 
+            5 * 60 * 20, 
+            5 * 60 * 20
+        );
     }
 
     private void registerCommands() {

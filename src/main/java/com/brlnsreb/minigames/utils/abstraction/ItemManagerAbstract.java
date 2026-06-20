@@ -1,5 +1,7 @@
 package com.brlnsreb.minigames.utils.abstraction;
 
+import com.brlnsreb.minigames.utils.YamlUtil;
+
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.enchantment.Enchantment;
@@ -12,6 +14,10 @@ public abstract class ItemManagerAbstract {
 
     public ItemManagerAbstract(Config config) {
         this.config = config;
+    }
+
+    protected String getStr(String path) {
+        return YamlUtil.getStr(path, this.config);
     }
 
     public static void giveItem(Player player, int slot, String itemId, String itemName) {
