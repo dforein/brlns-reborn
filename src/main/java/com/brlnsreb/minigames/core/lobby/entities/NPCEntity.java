@@ -9,7 +9,6 @@ import javax.imageio.ImageIO;
 import org.jetbrains.annotations.NotNull;
 
 import com.brlnsreb.minigames.MinigameCore;
-import com.brlnsreb.minigames.core.minigame.Minigame;
 
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
@@ -61,14 +60,6 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
         }
 
         text2.setText(line);
-    }
-
-    public void updatePlayerCountSubtitle(Minigame minigame) {
-
-        updateSubtitle(playerCountLine.formatted(
-            minigame.getPlayerCount()
-        ));
-
     }
 
     public void updateText(String line1, String line2) {
