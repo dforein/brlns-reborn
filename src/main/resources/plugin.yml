@@ -1,5 +1,5 @@
 name: brlnsreb minigames
-main: com.brlnsreb.minigames.MinigameCore
+main: org.brlnsreb.MinigameCore
 version: "2.0.0"
 api: "2.0.0"
 author: brlnsreb
