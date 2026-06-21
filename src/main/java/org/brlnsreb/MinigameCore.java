@@ -1,4 +1,4 @@
-package brlnsreb;
+package org.brlnsreb;
 
 import cn.nukkit.Server;
 import cn.nukkit.command.SimpleCommandMap;
