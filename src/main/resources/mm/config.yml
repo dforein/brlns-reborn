@@ -16,7 +16,7 @@ waiting-lobby:
   rules-book:
     item-name: '&o&l&fRules &r&7- Hold / Right Click'
     title: Murder Mystery Rules
-    author: @Woona, @BlueWillow
+    author: '@Woona, @BlueWillow'
     content:
     - |-
       &lHow to play §aMurder§2Mystery&r&l!
