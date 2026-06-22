@@ -1078,6 +1078,7 @@ public class MurderMysteryGame {
             case MURDERER:
                 if (trackingActive) {
                     double dist = trackerSystem.getNearestDistance(p, roleManager.getAllPlayers());
+                    if (dist == Double.MAX_VALUE) dist = 0;
                     bossBar.updateExpAndDistance(p, gp.getExpEarned(), dist);
                 } else {
                     bossBar.updateExp(p, gp.getExpEarned());
