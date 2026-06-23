@@ -37,14 +37,13 @@ public class MinigameCore extends PluginBase {
     @Override
     public void onLoad() {
         instance = this;
-        this.getLogger().info(TextFormat.WHITE + "brlnsreb Minigames loading...");
+        this.getLogger().info(TextFormat.WHITE + "BrokenLens Reborn server loading...");
 
         try {
             Registries.ENTITY.registerCustomEntity(this, DeadBodyEntity.class);
             Registries.ENTITY.registerCustomEntity(this, ThrownSwordEntity.class);
             Registries.ENTITY.registerCustomEntity(this, NPCEntity.class);
             Registries.ENTITY.rebuildTag();
-            this.getLogger().info("§aCustom entities registered successfully.");
             
         } catch (cn.nukkit.registry.RegisterException e) {
             this.getLogger().error("Error during entities registration: " + e.getMessage());
@@ -102,7 +101,7 @@ public class MinigameCore extends PluginBase {
         pm.registerEvents(new MMFormResponseListener(mmGame), this);
 
         
-        this.getLogger().info(TextFormat.DARK_GREEN + "brlnsreb Minigames enabled!");
+        this.getLogger().info(TextFormat.DARK_GREEN + "BrokenLens Reborn server enabled!");
     }
     
     @Override
@@ -111,7 +110,7 @@ public class MinigameCore extends PluginBase {
             mmGame.forceStop();
         }
 
-        this.getLogger().info(TextFormat.DARK_RED + "brlnsreb Minigames disabled!");
+        this.getLogger().info(TextFormat.DARK_RED + "BrokenLens Reborn server disabled!");
 
         if (saveAtShutdown) return;
         for (Level level : new ArrayList<>(getServer().getLevels().values())) {

@@ -27,7 +27,7 @@ import com.brlnsreb.minigames.mm.ui.BossBarSystem;
 import com.brlnsreb.minigames.mm.ui.ScoreboardSystem;
 import com.brlnsreb.minigames.mm.ui.SpectatorMenu;
 import com.brlnsreb.minigames.mm.ui.VotingMenu;
-import com.brlnsreb.minigames.utils.CustomPlaySoundPacket;
+import com.brlnsreb.minigames.utils.SoundUtil;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -760,13 +760,12 @@ public class MurderMysteryGame {
             config.getMessageNoPrefix("murderer-won-title") : 
             config.getMessageNoPrefix("innocents-won-title");
         
-        CustomPlaySoundPacket packet = new CustomPlaySoundPacket();
         for (Player p : getOnlinePlayers()) {
             p.sendTitle(TextFormat.colorize(titleMsg), "",
                         10, 60, 10);
 
             p.getLevel().addSound(p, Sound.RANDOM_CLICK, 1.0f, 1.0f, p);
-            packet.sendDirectionalSoundTo(p, "random.fizz");
+            SoundUtil.sendSoundTo(p, "entity.generic.extinguish_fire");
         }
         
         String chatMsg = murdererWin ? 

@@ -6,9 +6,10 @@ import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
-import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.scheduler.Task;
+import cn.nukkit.utils.ItemHelper;
+
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.core.minigame.Arena;
 import com.brlnsreb.minigames.mm.config.MMConfig;
@@ -72,8 +73,7 @@ public class GoldSystem {
         Item gold = Item.get(Item.GOLD_INGOT, 0, 1);
 
         CompoundTag nbt = Entity.getDefaultNBT(pos);
-        nbt.putCompound("Item", NBTIO.putItemHelper(gold));
-        nbt.putBoolean("mm_gold", true);
+        nbt.putCompound("Item", ItemHelper.write(gold));
         nbt.putBoolean("Mergeable", false);
         nbt.putShort("Health", 5);
         
@@ -90,8 +90,8 @@ public class GoldSystem {
             nbt
         );
 
-        
         if (entity != null) {
+            entity.addTag("mm_gold");
             entity.spawnToAll();
         }
     }
@@ -104,7 +104,7 @@ public class GoldSystem {
 
     public void cleanupGold(Level level) {
         for (Entity entity : level.getEntities()) {
-            if (entity instanceof EntityItem && entity.namedTag != null && entity.namedTag.getBoolean("mm_gold")) {
+            if (entity instanceof EntityItem && entity.hasTag("mm_gold")) {
                 entity.close();
             }
         }

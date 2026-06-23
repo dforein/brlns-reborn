@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+import org.cloudburstmc.protocol.bedrock.data.command.CommandParamType;
+
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.commands.MMOperatorCommand;
 import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
@@ -12,7 +14,6 @@ import com.brlnsreb.minigames.mm.MurderMysteryGame;
 
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
-import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
@@ -117,11 +118,11 @@ public class AddCommand extends SimpleSubCommand {
 		LinkedList<CommandParameter> parameters = new LinkedList<>();
 
 		parameters.add(CommandParameter.newEnum(this.getName(), this.getAliases()));
-        parameters.add(CommandParameter.newType("mapId", CommandParamType.STRING));
+        parameters.add(CommandParameter.newType("mapId", CommandParamType.ID));
         parameters.add(CommandParameter.newType("min", CommandParamType.POSITION));
         parameters.add(CommandParameter.newType("max", CommandParamType.POSITION));
         parameters.add(CommandParameter.newEnum("worldFolder", levelNames.toArray(new String[levelNames.size()])));
-        parameters.add(CommandParameter.newType("mapName", CommandParamType.TEXT));
+        parameters.add(CommandParameter.newType("mapName", CommandParamType.RAW_TEXT));
 
 		return parameters;
 	}

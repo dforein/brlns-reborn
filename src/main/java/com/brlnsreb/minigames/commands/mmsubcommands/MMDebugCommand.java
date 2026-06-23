@@ -2,6 +2,9 @@ package com.brlnsreb.minigames.commands.mmsubcommands;
 
 import java.util.LinkedList;
 
+import org.cloudburstmc.protocol.bedrock.data.actor.ActorFlags;
+import org.cloudburstmc.protocol.bedrock.data.command.CommandParamType;
+
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.commands.subcommands.BasicSubCommand;
 import com.brlnsreb.minigames.core.player.CustomPlayer;
@@ -10,17 +13,15 @@ import com.brlnsreb.minigames.mm.config.MMConfig;
 
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
-import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.data.EntityFlag;
 import cn.nukkit.entity.item.EntityItem;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.format.IChunk;
 import cn.nukkit.level.particle.FloatingTextParticle;
-import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
+import cn.nukkit.utils.ItemHelper;
 import cn.nukkit.utils.TextFormat;
 
 public class MMDebugCommand extends BasicSubCommand {
@@ -59,8 +60,7 @@ public class MMDebugCommand extends BasicSubCommand {
                     pos = pos.add(3, 0, 0);
 
                     CompoundTag nbt = Entity.getDefaultNBT(pos);
-                    nbt.putCompound("Item", NBTIO.putItemHelper(gold));
-                    nbt.putBoolean("mm_gold", true);
+                    nbt.putCompound("Item", ItemHelper.write(gold));
                     nbt.putBoolean("Mergeable", false);
                     nbt.putShort("Health", 5);
 
@@ -74,22 +74,23 @@ public class MMDebugCommand extends BasicSubCommand {
                     );
 
                     if (entity != null) {
+                        entity.addTag("mm_gold");
                         entity.spawnToAll();
                     }
 
                     break;
                 case "2":
                     for (Entity entity2 : player.getLevel().getEntities()) {
-                        if (entity2 instanceof EntityItem && entity2.namedTag != null && entity2.namedTag.getBoolean("mm_gold")) {
+                        if (entity2 instanceof EntityItem && entity2.hasTag("mm_gold")) {
                             entity2.close();
                         }
                     }
                     break;
                 case "3":
-                    player.setDataFlag(EntityFlag.HAS_GRAVITY, false);
+                    player.setDataFlag(ActorFlags.HAS_GRAVITY, false);
                     break;
                 case "4":
-                    player.setDataFlag(EntityFlag.HAS_GRAVITY, true);
+                    player.setDataFlag(ActorFlags.HAS_GRAVITY, true);
                     break;
                 case "5":
                     //plugin.getMMGame().getDeath().createBody(player, player.getNextPosition());
@@ -132,7 +133,7 @@ public class MMDebugCommand extends BasicSubCommand {
                     hoe.setCustomName(TextFormat.colorize(config.getSheriffHoeName()));
                     
                     CompoundTag nbt2 = Entity.getDefaultNBT(pos3);
-                    nbt2.putCompound("Item", NBTIO.putItemHelper(hoe));
+                    nbt2.putCompound("Item", ItemHelper.write(hoe));
                     nbt2.putShort("Health", 5);
                     nbt2.putShort("Age", -32768);
 
@@ -207,7 +208,7 @@ public class MMDebugCommand extends BasicSubCommand {
     public CommandParameter[] getParameters() {
 		LinkedList<CommandParameter> parameters = new LinkedList<>();
 		parameters.add(CommandParameter.newEnum(this.getName(), this.getAliases()));
-        parameters.add(CommandParameter.newType("[args...]", CommandParamType.RAWTEXT));
+        parameters.add(CommandParameter.newType("[args...]", CommandParamType.RAW_TEXT));
 		return parameters.toArray(new CommandParameter[parameters.size()]);
 	}
 

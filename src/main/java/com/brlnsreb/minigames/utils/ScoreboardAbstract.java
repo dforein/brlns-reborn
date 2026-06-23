@@ -94,6 +94,7 @@ public abstract class ScoreboardAbstract {
         UUID playerId = player.getUniqueId();
         Scoreboard sb = playerBoards.remove(playerId);
         if (sb != null && player.isOnline()) {
+            player.removeScoreboard(sb);
             sb.removeViewer(player, DisplaySlot.SIDEBAR);
         }
         activeScorers.remove(playerId);

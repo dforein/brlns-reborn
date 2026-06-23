@@ -46,7 +46,7 @@ public class ItemManager {
         
         Item book = Item.get(Item.WRITTEN_BOOK);
         
-        CompoundTag tag = book.getNamedTag();
+        CompoundTag tag = book.getNbt();
         if (tag == null) {
             tag = new CompoundTag();
         }
@@ -66,7 +66,7 @@ public class ItemManager {
         }
         
         tag.putList("pages", pagesList);
-        book.setNamedTag(tag);
+        book.setNbt(tag);
         book.setCustomName(TextFormat.colorize("&o&l&fRules &7- Hold / Right Click"));
         
         return book;

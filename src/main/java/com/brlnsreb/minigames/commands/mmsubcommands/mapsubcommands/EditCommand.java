@@ -5,11 +5,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+import org.cloudburstmc.protocol.bedrock.data.command.CommandParamType;
+
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
 
 import cn.nukkit.command.CommandSender;
-import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
@@ -141,7 +142,7 @@ public class EditCommand extends SimpleSubCommand {
         parameters1.add(param1);
         parameters1.add(param2);
         parameters1.add(CommandParameter.newEnum("name", new String[] {"name"}));
-        parameters1.add(CommandParameter.newType("mapName", CommandParamType.TEXT));
+        parameters1.add(CommandParameter.newType("mapName", CommandParamType.RAW_TEXT));
         paramList.add(parameters1);
 
         parameters2.add(param1);
@@ -165,13 +166,13 @@ public class EditCommand extends SimpleSubCommand {
         parameters5.add(param1);
         parameters5.add(param2);
         parameters5.add(CommandParameter.newEnum("builders", new String[] {"builders"}));
-        parameters5.add(CommandParameter.newType("buildersNames", CommandParamType.TEXT));
+        parameters5.add(CommandParameter.newType("buildersNames", CommandParamType.RAW_TEXT));
         paramList.add(parameters5);
 
         parameters6.add(param1);
         parameters6.add(param2);
         parameters6.add(CommandParameter.newEnum("builders-team", new String[] {"builders-team"}));
-        parameters6.add(CommandParameter.newType("buildersTeamName", CommandParamType.TEXT));
+        parameters6.add(CommandParameter.newType("buildersTeamName", CommandParamType.RAW_TEXT));
         paramList.add(parameters1);
 
 		return paramList;

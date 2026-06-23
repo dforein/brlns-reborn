@@ -1,22 +1,16 @@
 package com.brlnsreb.minigames.lobby.entities;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.function.Consumer;
 
-import javax.imageio.ImageIO;
-
+import org.cloudburstmc.protocol.bedrock.data.actor.ActorFlags;
 import org.jetbrains.annotations.NotNull;
-
-import com.brlnsreb.minigames.MinigameCore;
 
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.entity.custom.CustomEntity;
 import cn.nukkit.entity.custom.CustomEntityDefinition;
-import cn.nukkit.entity.data.EntityFlag;
-import cn.nukkit.entity.data.Skin;
+import cn.nukkit.entity.data.human.Skin;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.item.Item;
@@ -176,14 +170,8 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
 
     public Skin loadSkin(String skinFileName) {
         try {
-            BufferedImage img = ImageIO.read(new File(
-                MinigameCore.getInstance().getDataFolder(), 
-                "skins/" + skinFileName + ".png"
-            ));
-            Skin skin = new Skin();
-            skin.setSkinData(img);
-            skin.setSkinId(skinFileName);
-            return skin;
+            //TODO: load npc skin
+            return null;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -249,8 +237,8 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
         this.setInvulnerable(true);
         this.setNameTagVisible(false);
         this.setImmobile(false);
-        this.setDataFlag(EntityFlag.SILENT, true);
-        this.setDataFlag(EntityFlag.COLLIDABLE, false);
+        this.setDataFlag(ActorFlags.SILENT, true);
+        this.setDataFlag(ActorFlags.COLLIDABLE, false);
 
         this.setHealthCurrent(5);
     }

@@ -2,12 +2,13 @@ package com.brlnsreb.minigames.commands.mmsubcommands;
 
 import java.util.LinkedList;
 
+import org.cloudburstmc.protocol.bedrock.data.command.CommandParamType;
+
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.commands.subcommands.BasicSubCommand;
 import com.brlnsreb.minigames.mm.config.MMConfig;
 
 import cn.nukkit.command.CommandSender;
-import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.utils.TextFormat;
 
@@ -99,7 +100,7 @@ public class MMDebugConsoleCommand extends BasicSubCommand {
     public CommandParameter[] getParameters() {
 		LinkedList<CommandParameter> parameters = new LinkedList<>();
 		parameters.add(CommandParameter.newEnum(this.getName(), this.getAliases()));
-        parameters.add(CommandParameter.newType("[args...]", CommandParamType.RAWTEXT));
+        parameters.add(CommandParameter.newType("[args...]", CommandParamType.RAW_TEXT));
 		return parameters.toArray(new CommandParameter[parameters.size()]);
 	}
 
