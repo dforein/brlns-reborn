@@ -99,6 +99,7 @@ public class MinigameCore extends PluginBase {
         pm.registerEvents(new MMPlayerAttackListener(mmGame), this);
         pm.registerEvents(new MMPlayerChatListener(mmGame), this);
         pm.registerEvents(new MMFormResponseListener(mmGame), this);
+        pm.registerEvents(new MMPlayerInventoryListener(mmGame), this);
 
         
         this.getLogger().info(TextFormat.DARK_GREEN + "BrokenLens Reborn server enabled!");
