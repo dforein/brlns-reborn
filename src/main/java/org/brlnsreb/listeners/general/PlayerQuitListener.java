@@ -24,11 +24,13 @@ public class PlayerQuitListener implements Listener {
         handlePlayerLeave(event.getPlayer());
     }
 
+
     private void handlePlayerLeave(Player p) {
         CustomPlayer player = (CustomPlayer) p;
 
         PlayerDataManager.savePlayerData(player.getUniqueId());
         player.getMatch().onLeave(player);
+        player.save();
     }
     
 }

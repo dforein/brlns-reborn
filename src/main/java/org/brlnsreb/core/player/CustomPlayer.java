@@ -10,6 +10,7 @@ import org.cloudburstmc.protocol.bedrock.BedrockServerSession;
 import org.cloudburstmc.protocol.bedrock.data.skin.AnimationData;
 import org.cloudburstmc.protocol.bedrock.data.skin.PersonaPieceData;
 import org.cloudburstmc.protocol.bedrock.data.skin.PersonaPieceTintData;
+import org.cloudburstmc.protocol.common.util.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
 import org.brlnsreb.core.minigame.Minigame;
@@ -17,11 +18,14 @@ import org.brlnsreb.core.minigame.match.MinigameMatch;
 import org.brlnsreb.generallobby.GeneralLobby;
 
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
+import cn.nukkit.level.Position;
 import cn.nukkit.nbt.tag.CompoundTag;
+import cn.nukkit.nbt.tag.DoubleTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.nbt.tag.StringTag;
 import cn.nukkit.scoreboard.Scoreboard;
@@ -207,13 +211,32 @@ public class CustomPlayer extends Player {
         this.currentMatch = new WeakReference<>(match);
     }
 
-    
-
     @Override
     public void saveNBT() {
+        Position spawn = Server.getInstance().getDefaultLevel().getSpawnLocation();
+
+        this.nbt.putList("Pos", new ListTag<DoubleTag>()
+                .add(new DoubleTag(spawn.x))
+                .add(new DoubleTag(spawn.y))
+                .add(new DoubleTag(spawn.z))
+        );
+
+        this.nbt.putList("Motion", new ListTag<DoubleTag>()
+                .add(new DoubleTag(0.0))
+                .add(new DoubleTag(0.0))
+                .add(new DoubleTag(0.0))
+        );
+
+        this.nbt.remove("Rotation");
+
+        this.nbt.remove("FallDistance");
+        this.nbt.remove("Fire");
+        this.nbt.remove("Air");
+        this.nbt.putBoolean("OnGround", true);
+        this.nbt.remove("Invulnerable");
         this.nbt.putFloat("Health", this.getHealthDefaultMax());
         this.nbt.putInt("playerGameType", Player.ADVENTURE);
-        
+
         this.nbt.remove("SpawnX");
         this.nbt.remove("SpawnY");
         this.nbt.remove("SpawnZ");
@@ -223,6 +246,7 @@ public class CustomPlayer extends Player {
         this.nbt.remove("CursorItem");
         this.nbt.remove("ActiveEffects");
         this.nbt.remove("Attributes");
+        
         this.nbt.remove("Inventory");
         this.nbt.remove("SelectedInventorySlot");
         this.nbt.remove("OffInventory");
@@ -297,6 +321,41 @@ public class CustomPlayer extends Player {
             }
 
             this.getNbt().putCompound("Skin", skinTag);
+        }
+    }
+
+    @Override
+    public void save(boolean async) {
+        Preconditions.checkState(!this.closed, "Tried to save closed player");
+
+        saveNBT();
+
+        if (this.level != null && this.level.getProvider() != null) {
+            this.nbt.putString("Level", Server.getInstance().getDefaultLevel().getName());
+
+            this.nbt.putInt("playerGameType", ADVENTURE);
+            this.nbt.putLong("lastPlayed", System.currentTimeMillis() / 1000);
+            this.nbt.putString("lastIP", this.getAddress());
+            this.nbt.putInt("EXP", this.getExperience());
+            this.nbt.putInt("expLevel", this.getExperienceLevel());
+            this.nbt.putInt("foodLevel", 18);
+            this.nbt.putFloat("foodSaturationLevel", this.getFoodData().getSaturation());
+            this.nbt.putInt("enchSeed", this.getEnchantmentSeed());
+
+            var fogIdentifiers = new ListTag<StringTag>();
+            var userProvidedFogIds = new ListTag<StringTag>();
+            this.fogStack.forEach(fog -> {
+                fogIdentifiers.add(new StringTag(fog));
+                userProvidedFogIds.add(new StringTag(fog));
+            });
+            this.nbt.putList("fogIdentifiers", fogIdentifiers);
+            this.nbt.putList("userProvidedFogIds", userProvidedFogIds);
+
+            this.nbt.putInt("TimeSinceRest", this.timeSinceRest);
+
+            if (!this.getName().isBlank() && this.nbt != null) {
+                this.server.saveOfflinePlayerData(this.uuid, this.getNbt(), async);
+            }
         }
     }
 
