@@ -1,6 +1,7 @@
 package org.brlnsreb.core.auth;
 
 import org.brlnsreb.BrlnsReb;
+import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerDataManager;
 import org.brlnsreb.core.player.PlayerDataManager.Outcome;
@@ -22,11 +23,7 @@ public class AuthSystem extends MenuAbstract {
 
     public static void init() {
         scheduler = Server.getInstance().getScheduler();
-        config = new Config(BrlnsReb.getInstance().getDataFolder() + "general-lobby/config.yml", Config.YAML);
-    }
-
-    public static void reloadConfig() {
-        config.reload();
+        config = ConfigManager.getConfig("general-lobby/config.yml");
     }
 
     public static void openMenu(Player player) {

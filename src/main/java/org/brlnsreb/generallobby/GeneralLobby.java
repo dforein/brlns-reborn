@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.brlnsreb.BrlnsReb;
+import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.lobby.ui.MainLobbyBossBar;
@@ -96,7 +97,7 @@ public class GeneralLobby extends Lobby {
     }
 
     public void reloadConfig() {
-        super.reloadConfig(true);
+        super.reloadConfig();
 
         for (Map.Entry<NPCEntity, String> npcEntry : npcNameTagMap.entrySet()) {
             reloadNpcConfigData(
@@ -111,11 +112,11 @@ public class GeneralLobby extends Lobby {
     }
 
     public static GeneralLobby getInstance() { return instance; }
-    public Config getNewConfig() { 
-        return new Config(BrlnsReb.getInstance().getDataFolder() + "general-lobby/config.yml", Config.YAML); 
+    public Config getConfig() { 
+        return ConfigManager.getConfig("general-lobby/config.yml");
     }
-    public Config getNewMessages() {
-        return new Config(BrlnsReb.getInstance().getDataFolder() + "general-lobby/messages.yml", Config.YAML);
+    public Config getMessages() {
+        return ConfigManager.getConfig("general-lobby/messages.yml");
     }
     public String getConfigPath() { return ""; }
     

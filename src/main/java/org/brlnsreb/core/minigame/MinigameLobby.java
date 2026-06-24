@@ -71,7 +71,7 @@ public abstract class MinigameLobby extends Lobby {
     }
 
     public void reloadConfig() {
-        super.reloadConfig(false);
+        super.reloadConfig();
 
         reloadNpcConfigData(
             joinNpc, 

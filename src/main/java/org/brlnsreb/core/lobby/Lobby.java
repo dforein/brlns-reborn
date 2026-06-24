@@ -30,8 +30,8 @@ public abstract class Lobby {
 
     public Lobby(Minigame minigame) {
         this.minigame = minigame;
-        this.config = getNewConfig();
-        this.messages = getNewMessages();
+        this.config = getConfig();
+        this.messages = getMessages();
 
         String levelPath = configPath().equals("") ?
             "world" : configPath() + ".world";
@@ -40,14 +40,7 @@ public abstract class Lobby {
     }
 
     public Lobby() {
-        this.minigame = null;
-        this.config = getNewConfig();
-        this.messages = getNewMessages();
-
-        String levelPath = configPath().equals("") ?
-            "world" : configPath() + ".world";
-        this.level = WorldManager.loadLobbyLevel(config.getString(levelPath));
-        this.spawnPos = YamlUtil.parsePosition(config.getString(configPath() + "spawn"), this.level);
+        this(null);
     }
 
     public boolean onJoin(Player player) {
@@ -100,15 +93,11 @@ public abstract class Lobby {
     }
 
     public void initConfig() {
-        this.config = getNewConfig();
-        this.messages = getNewMessages();
+        this.config = getConfig();
+        this.messages = getMessages();
     }
 
-    public void reloadConfig(boolean reloadConfig) {
-        if (reloadConfig) {
-            this.config = getNewConfig();
-            this.messages = getNewMessages();
-        }
+    public void reloadConfig() {
         this.spawnPos = YamlUtil.parsePosition(config.getString("lobby.spawn"), this.level);
     }
 
@@ -125,10 +114,8 @@ public abstract class Lobby {
     }
 
     public Level getLevel() { return this.level; }
-    public Config getConfig() { return this.config; }
-    public Config getMessages() { return this.messages; }
-    public abstract Config getNewConfig();
-    public abstract Config getNewMessages();
+    public abstract Config getConfig();
+    public abstract Config getMessages();
     public abstract String getConfigPath();
     public String configPath() { return YamlUtil.checkConfigPath(getConfigPath()); }
 

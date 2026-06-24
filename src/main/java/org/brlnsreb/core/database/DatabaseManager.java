@@ -1,6 +1,7 @@
 package org.brlnsreb.core.database;
 
 import org.brlnsreb.BrlnsReb;
+import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.core.minigame.MinigameType;
 import org.brlnsreb.utils.DBResults;
 import com.zaxxer.hikari.HikariConfig;
@@ -9,7 +10,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 
-import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -34,7 +34,7 @@ public class DatabaseManager {
     }
 
     private boolean initConnectionPool() {
-        Config config = new Config(new File(plugin.getDataFolder() + "database.yml"), Config.YAML);
+        Config config = ConfigManager.getConfig("global/database.yml");
 
         if (!config.getBoolean("enabled", false)) {
             plugin.getLogger().warning(TextFormat.GOLD + "Database disabled by settings.");

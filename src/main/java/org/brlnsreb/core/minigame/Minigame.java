@@ -4,6 +4,7 @@ import java.util.BitSet;
 import java.util.HashSet;
 
 import org.brlnsreb.BrlnsReb;
+import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.core.auth.AuthSystem;
 import org.brlnsreb.core.minigame.match.MinigameMatch;
 import org.brlnsreb.core.player.CustomPlayer;
@@ -32,8 +33,8 @@ public abstract class Minigame {
 
         plugin = BrlnsReb.getInstance();
 
-        this.config = new Config(plugin.getDataFolder() + this.nameTag + "/config.yml", Config.YAML);
-        this.messages = new Config(plugin.getDataFolder() + this.nameTag + "/messages.yml", Config.YAML);
+        this.config = ConfigManager.getConfig(this.nameTag + "/config.yml");
+        this.messages = ConfigManager.getConfig(this.nameTag + "/messages.yml");
 
         this.lobby = createLobby();
         this.matches = new HashSet<>();
@@ -92,8 +93,6 @@ public abstract class Minigame {
     }
 
     public void reloadConfig() {
-        this.config.reload();
-        this.messages.reload();
         lobby.reloadConfig();
     }
 

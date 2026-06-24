@@ -1,6 +1,6 @@
 package org.brlnsreb.commands;
 
-import org.brlnsreb.core.auth.AuthSystem;
+import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.generallobby.GeneralLobby;
 import org.brlnsreb.utils.YamlUtil;
@@ -21,10 +21,11 @@ public class ReloadConfigCommand extends cn.nukkit.command.Command {
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (!sender.isOp()) return true;
 
+        ConfigManager.reloadConfigs();
+        YamlUtil.resetCache();
+
         MinigameManager.reloadConfig();
         GeneralLobby.getInstance().reloadConfig();
-        YamlUtil.resetCache();
-        AuthSystem.reloadConfig();
 
         sender.sendMessage(TextFormat.GREEN + "Config file reloaded!");
         return true;
