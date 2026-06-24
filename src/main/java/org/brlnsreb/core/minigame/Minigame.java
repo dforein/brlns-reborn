@@ -24,7 +24,7 @@ public abstract class Minigame {
     protected final HashSet<? extends MinigameMatch> matches;
     protected final BitSet busyMatchNumbers;
     protected MinigameMatch mainPendingMatch;
-    protected int currentPlayers = 0;
+    protected MinigameMatch secondPendingMatch;
 
     public Minigame(MinigameType minigame) {
         this.id = minigame.getId();
@@ -39,6 +39,7 @@ public abstract class Minigame {
         this.matches = new HashSet<>();
         this.busyMatchNumbers = new BitSet();
 
+        this.secondPendingMatch = createMatch(getNewMatchNumber());
         onMatchCreation();
     }
 
@@ -72,16 +73,11 @@ public abstract class Minigame {
                 return false;
         }
 
-        replaceMainPendingMatch(
-            createMatch(getNewMatchNumber())
-        );
+        mainPendingMatch = secondPendingMatch;
+        lobby.onReplaceMainPendingMatch(mainPendingMatch.getNumber());
+        secondPendingMatch = createMatch(getNewMatchNumber());
 
         return true;
-    }
-
-    private void replaceMainPendingMatch(MinigameMatch match) {
-        mainPendingMatch = match;
-        lobby.onReplaceMainPendingMatch(match.getNumber());
     }
 
     private int getNewMatchNumber() {
