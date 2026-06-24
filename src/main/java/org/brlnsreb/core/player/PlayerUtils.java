@@ -14,6 +14,7 @@ public class PlayerUtils {
     
     public static void removeScoreboard(CustomPlayer p) {
         if (p.scoreboard != null) {
+            p.removeScoreboard(p.scoreboard);
             p.scoreboard.removeViewer(p, DisplaySlot.SIDEBAR);
             p.scoreboard = null;
         }
@@ -50,9 +51,20 @@ public class PlayerUtils {
         }
     }
 
-    public static void setLobbyState(CustomPlayer p) {
-        p.state = PlayerStateType.LOBBY;
-        
+    public static void setLobbyState(CustomPlayer p, PlayerStateType newState) {
+        clearInventory(p);
+        removeScoreboard(p);
+        removeBossBar(p);
+
+        if (p.state == PlayerStateType.LOBBY || p.state == PlayerStateType.WAITING_LOBBY) {
+            p.state = newState;
+            p.resetNameTag();
+            
+            return;                 //already coming from a lobby, no need to execute the following code
+        }
+
+        p.state = newState;
+
         p.setAttackVars(DamageState.INVULNERABLE, false, false);
         p.setGamemode(Player.ADVENTURE);
 
@@ -61,12 +73,6 @@ public class PlayerUtils {
 
         p.setHealthCurrent(p.getHealthMax());
         p.getFoodData().setFood(18);
-
-        p.resetNameTag();
-
-        clearInventory(p);
-        removeScoreboard(p);
-        removeBossBar(p);
     }
 
     private static void giveEffect(Player player, EffectType type, int duration, int amplifier, boolean isVisible) {

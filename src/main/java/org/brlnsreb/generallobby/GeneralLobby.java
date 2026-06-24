@@ -11,6 +11,7 @@ import org.brlnsreb.core.lobby.ui.MainLobbyBossBar;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.generallobby.items.MainLobbyItemManager;
 import org.brlnsreb.generallobby.ui.GamesMenu;
@@ -40,6 +41,10 @@ public class GeneralLobby extends Lobby {
         this.spawnAllNpcs();
 
         GamesMenu.init(config);
+    }
+
+    protected PlayerStateType onJoinState() { 
+        return PlayerStateType.LOBBY; 
     }
 
     protected void onJoinBossBar(CustomPlayer player) {

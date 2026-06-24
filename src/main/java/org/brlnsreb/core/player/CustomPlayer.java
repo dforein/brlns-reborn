@@ -12,7 +12,7 @@ import org.cloudburstmc.protocol.bedrock.data.skin.PersonaPieceData;
 import org.cloudburstmc.protocol.bedrock.data.skin.PersonaPieceTintData;
 import org.cloudburstmc.protocol.common.util.Preconditions;
 import org.jetbrains.annotations.NotNull;
-
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.match.MinigameMatch;
 import org.brlnsreb.generallobby.GeneralLobby;
@@ -47,11 +47,12 @@ public class CustomPlayer extends Player {
     public boolean canAttackPlayers = false;
     public boolean attackEvent = false;
 
-    public PlayerStateType state = PlayerStateType.LOBBY;
+    public PlayerStateType state = null;
     public Minigame currentMinigame = null;
     private WeakReference<MinigameMatch> currentMatch = null;
     
-    public String playerNameTag;
+    public String lobbyPlayerNameTag;
+    public String gamePlayerNameTag;
     private PlayerData data;
 
     public Scoreboard scoreboard = null;
@@ -112,13 +113,33 @@ public class CustomPlayer extends Player {
     }
 
     public void updatePlayerNameTag() {
-        this.playerNameTag = "&7" + (data.getFloorLevel() < 0 ? "?" : data.getFloorLevel()) 
-                        + " &a" + (data.isLogged() ? data.name : this.getName());
+        this.lobbyPlayerNameTag = TextFormat.colorize(
+            "&8" + (data.getFloorLevel() < 0 ? "?" : data.getFloorLevel()) +
+            " &7" + (data.isLogged() ? data.name : this.getName())
+        );
+        
+        this.gamePlayerNameTag = TextFormat.colorize(
+            "&8" + (data.getFloorLevel() < 0 ? "?" : data.getFloorLevel()) +
+            " &a" + (data.isLogged() ? data.name : this.getName())
+        );
+
         this.resetNameTag();
     }
 
     public void resetNameTag() {
-        this.setNameTag(TextFormat.colorize(this.playerNameTag));
+        switch (this.state) {
+            case LOBBY:
+                this.setNameTag(this.lobbyPlayerNameTag);
+                break;
+            
+            case WAITING_LOBBY:
+                this.setNameTag(this.gamePlayerNameTag);
+                break;
+            
+            default:
+                BrlnsReb.getInstance().getLogger().alert("CustomPlayer::resetNameTag, unrecognized state: " + state.toString());
+                break;
+        } 
     }
 
     @Override

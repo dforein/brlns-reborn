@@ -11,15 +11,16 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.core.player.PlayerUtils;
 
 public abstract class ScoreboardAbstract {
     
     protected static final String OBJECTIVE_NAME = "scoreboard";
     protected static final String DISPLAY_TITLE = "";
 
-    protected final Map<UUID, Map<Integer, FakeScorer>> activeScorers = new HashMap<>();
+    protected static final Map<UUID, Map<Integer, FakeScorer>> activeScorers = new HashMap<>();
 
-    protected Scoreboard getScoreboard(CustomPlayer player) {
+    protected Scoreboard getScoreboardOrCreate(CustomPlayer player) {
         if (player == null || !player.isOnline()) return null;
         if (player.scoreboard != null) return player.scoreboard;
 
@@ -51,7 +52,7 @@ public abstract class ScoreboardAbstract {
 
     public void update(CustomPlayer player, String[] lines) {
         //use this to create or update the scoreboard (one player)
-        Scoreboard sb = getScoreboard(player);
+        Scoreboard sb = getScoreboardOrCreate(player);
         if (sb == null) return;
 
         draw(sb, player.getUniqueId(), lines);
@@ -59,15 +60,13 @@ public abstract class ScoreboardAbstract {
 
     public void remove(CustomPlayer player) {
         //use this to remove the scoreboard, if there is one
-        if (player.scoreboard != null && player.isOnline()) {
-            player.removeScoreboard(player.scoreboard);
-            player.scoreboard.removeViewer(player, DisplaySlot.SIDEBAR);
-            
-            player.scoreboard = null;
-        }
-        
+        PlayerUtils.removeScoreboard(player);
         activeScorers.remove(player.getUniqueId());
+        
+        //PlayerUtils.removeScoreboard(player) can be used also outside this class, so in that case activeScorers won't be cleared, 
+        //however, this class will be used in already started matches, therefore at match ending it will be deleted (-> no memory leak)
     }
+
 
     protected void draw(Scoreboard sb, UUID playerId, String[] lines) {
         int i;

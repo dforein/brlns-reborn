@@ -132,7 +132,7 @@ public class PlayerDataManager {
         });
     }
 
-    public static boolean createNewAccount(String name, String password, UUID playerId) throws SQLException {
+    private static boolean createNewAccount(String name, String password, UUID playerId) throws SQLException {
         String pwHash = BCrypt.hashpw(password, BCrypt.gensalt(12));
 
         if (DatabaseManager.executeUpdate(

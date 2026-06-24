@@ -9,6 +9,7 @@ import org.brlnsreb.core.lobby.entities.HologramEntity;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.utils.YamlUtil;
 
@@ -54,7 +55,7 @@ public abstract class Lobby {
 
         p.currentMinigame = minigame;
         PlayerUtils.changeWorld(p, spawnPos);
-        PlayerUtils.setLobbyState(p);
+        PlayerUtils.setLobbyState(p, onJoinState());
 
         onJoinBossBar(p);
         onJoinItems(p);
@@ -62,6 +63,7 @@ public abstract class Lobby {
         return true;
     }
 
+    protected abstract PlayerStateType onJoinState();
     protected abstract void onJoinBossBar(CustomPlayer player);
     protected abstract void onJoinItems(CustomPlayer player);
 

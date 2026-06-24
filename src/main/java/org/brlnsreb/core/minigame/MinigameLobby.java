@@ -5,6 +5,7 @@ import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.lobby.ui.MainLobbyBossBar;
 import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.generallobby.GeneralLobby;
 import org.brlnsreb.utils.YamlUtil;
 
@@ -23,6 +24,10 @@ public abstract class MinigameLobby extends Lobby {
         this.bossBar = new MainLobbyBossBar(config.getString("name"));
 
         this.bossBar.startBossBarUpdates(level);
+    }
+
+    protected PlayerStateType onJoinState() { 
+        return PlayerStateType.LOBBY; 
     }
 
     protected void onJoinBossBar(CustomPlayer player) {
