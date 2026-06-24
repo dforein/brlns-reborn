@@ -22,6 +22,7 @@ import cn.nukkit.utils.Config;
 public class WorldManager {
 
     private static Server server;
+    private static HashSet<Integer> enabledPhysicsLevels = new HashSet<>();
 
     public static void init() {
         server = Server.getInstance();
@@ -67,6 +68,10 @@ public class WorldManager {
         setGameRules(loadedLevel, isLobby, config, configPath);
 
         return loadedLevel;
+    }
+
+    public static void unloadLevel(int levelId) {
+        unloadLevel(server.getLevel(levelId));
     }
 
     public static void unloadLevel(Level level) {
@@ -132,6 +137,24 @@ public class WorldManager {
 
         level.save();
     }
+
+    public static void enablePhysicsIn(Level level) {
+        enabledPhysicsLevels.add(level.getId());
+    }
+
+    public static void enablePhysicsIn(int levelId) {
+        enabledPhysicsLevels.add(levelId);
+    }
+
+    public static void removeFromEnabledPhysicsLevels(Level level) {
+        enabledPhysicsLevels.remove(level.getId());
+    }
+
+    public static void removeFromEnabledPhysicsLevels(int levelId) {
+        enabledPhysicsLevels.remove(levelId);
+    }
+
+    public static HashSet<Integer> getEnabledPhysicsLevels() { return enabledPhysicsLevels; }
 
     public static HashSet<String> getAllLevelNames() {
         Path worldsFolder = Path.of(server.getDataPath() + "/worlds");

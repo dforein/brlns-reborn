@@ -2,7 +2,13 @@ package org.brlnsreb.core.minigame.match;
 
 import cn.nukkit.level.Level;
 import cn.nukkit.math.Vector3;
+import cn.nukkit.utils.Config;
+
 import java.util.List;
+
+import org.brlnsreb.core.WorldManager;
+import org.brlnsreb.utils.YamlUtil;
+
 import java.util.ArrayList;
 
 public class Arena {
@@ -12,13 +18,41 @@ public class Arena {
     private final Vector3 min;
     private final Vector3 max;
     private final List<Vector3> spawns;
+    private final boolean physicsEnabled;
     
-    public Arena(String name, Level level, Vector3 min, Vector3 max, List<Vector3> spawns) {
-        this.name = name;
-        this.level = level;
-        this.min = min;
-        this.max = max;
-        this.spawns = new ArrayList<>(spawns);
+    public Arena(Config config, String mapsConfigPath, String settingsConfigPath) {
+        mapsConfigPath = YamlUtil.checkConfigPath(mapsConfigPath);
+        settingsConfigPath = YamlUtil.checkConfigPath(settingsConfigPath);
+
+        this.name = YamlUtil.getStr(mapsConfigPath + "name", config);
+
+        this.level = WorldManager.loadLevel(
+            YamlUtil.getStr(mapsConfigPath + "world", config), 
+            config, 
+            mapsConfigPath
+        );
+
+        this.min = YamlUtil.parseVector3(YamlUtil.getStr(mapsConfigPath + "min", config));
+        this.max = YamlUtil.parseVector3(YamlUtil.getStr(mapsConfigPath + "max", config));
+
+        this.spawns = new ArrayList<>();
+        for (String rawCoords : config.getStringList(mapsConfigPath + "spawns")) {
+            this.spawns.add(YamlUtil.parseVector3Centered(rawCoords));
+        }
+
+        if (config.getBoolean(settingsConfigPath + "physics-enabled")) {
+            WorldManager.enablePhysicsIn(level);
+            this.physicsEnabled = true;
+        } else {
+            this.physicsEnabled = false;
+        }
+    }
+
+    public void close() {
+        if (physicsEnabled) {
+            WorldManager.removeFromEnabledPhysicsLevels(level);
+        }
+        WorldManager.unloadLevel(level);
     }
     
     public String getName() {
@@ -38,7 +72,7 @@ public class Arena {
     }
     
     public List<Vector3> getSpawns() {
-        return new ArrayList<>(spawns);
+        return spawns;
     }
     
     public Vector3 getRandomSpawn() {
