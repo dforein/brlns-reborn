@@ -1,7 +1,8 @@
 package org.brlnsreb.core.lobby.entities;
 
+import org.cloudburstmc.protocol.bedrock.data.actor.ActorFlags;
+
 import cn.nukkit.Player;
-import cn.nukkit.entity.data.EntityFlag;
 import cn.nukkit.entity.item.EntityArmorStand;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.item.Item;
@@ -31,9 +32,9 @@ public class HologramEntity extends EntityArmorStand {
 
         this.setFireImmune(true);
         this.setInvulnerable(true);
-        this.setDataFlag(EntityFlag.SILENT, true);
-        this.setDataFlag(EntityFlag.COLLIDABLE, false);
-        this.setDataFlag(EntityFlag.HAS_COLLISION, false);
+        this.setDataFlag(ActorFlags.SILENT, true);
+        this.setDataFlag(ActorFlags.COLLIDABLE, false);
+        this.setDataFlag(ActorFlags.HAS_COLLISION, false);
     }
 
     @Override

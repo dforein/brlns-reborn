@@ -5,8 +5,6 @@ import java.util.function.Consumer;
 import org.cloudburstmc.protocol.bedrock.data.actor.ActorFlags;
 import org.jetbrains.annotations.NotNull;
 
-import org.brlnsreb.BrlnsReb;
-
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.EntityHuman;
@@ -24,9 +22,9 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
 
     public static final String IDENTIFIER = "brlnsreb:npc";
 
-    private static final double lookDistance = 10;
-    private static final double distSqThreshold = lookDistance * lookDistance;
-    private static final double rotationThreshold = 30;
+    private static final double LOOK_DISTANCE = 10;
+    private static final double DISTANCE_SQ_THRES = LOOK_DISTANCE * LOOK_DISTANCE;
+    private static final double ROTATION_THRES = 30;
     private double defaultYaw = 0;
     private double defaultPitch = 0;
     private double lastBodyYaw = 0;
@@ -88,7 +86,7 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
 
         if (currentTick % 2 == 0) {
             Player closest = null;
-            double minDistanceSq = distSqThreshold;
+            double minDistanceSq = DISTANCE_SQ_THRES;
 
             for (Player p : this.getLevel().getPlayers().values()) {
                 double distSq = this.distanceSquared(p);
@@ -117,7 +115,7 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
                 while (angleDiff > 180) angleDiff -= 360;
                 while (angleDiff < -180) angleDiff += 360;
 
-                if (Math.abs(angleDiff) > rotationThreshold) {
+                if (Math.abs(angleDiff) > ROTATION_THRES) {
                     lastBodyYaw += angleDiff * lerpSpeed;
                 }
 
