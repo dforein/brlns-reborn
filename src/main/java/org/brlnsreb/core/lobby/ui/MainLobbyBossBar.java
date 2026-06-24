@@ -96,7 +96,7 @@ public class MainLobbyBossBar extends BossBarAbstract {
                         if (colorIndex[0] >= colors.size()) {
                             taskRef[0].cancel();
                         }
-                    }, 0
+                    }, 5
                 );
                 break;
         

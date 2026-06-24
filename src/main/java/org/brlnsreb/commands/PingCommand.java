@@ -1,26 +1,29 @@
 package org.brlnsreb.commands;
 
 import cn.nukkit.Player;
-import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.command.tree.node.PlayersNode;
+import cn.nukkit.plugin.annotation.Command;
 import cn.nukkit.utils.TextFormat;
 
 import org.cloudburstmc.protocol.bedrock.data.command.CommandParamType;
 
-public class PingCommand extends Command {
+@Command(
+    name = "ping",
+    description = "Check your ping",
+    usage = "/ping or /ping <player>"
+)
+
+public class PingCommand extends cn.nukkit.command.Command {
     
     public PingCommand() {
-        super("ping", "Check your ping", "/ping <player>");
-
         this.getCommandParameters().clear();
 
         this.addCommandParameters("default", new CommandParameter[0]);
         this.addCommandParameters("target", new CommandParameter[] {
             CommandParameter.newType("target", CommandParamType.SELECTION, new PlayersNode())
         });
-
     }
     
     @Override

@@ -2,11 +2,10 @@ package org.brlnsreb.commands.subcommands;
 
 import java.util.LinkedList;
 
-import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParameter;
 
-public abstract class BasicSubCommand extends Command {
+public abstract class BasicSubCommand extends cn.nukkit.command.Command {
     
     public BasicSubCommand(String name) {
         super(name);

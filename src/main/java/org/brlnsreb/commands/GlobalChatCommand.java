@@ -2,21 +2,17 @@ package org.brlnsreb.commands;
 
 import org.brlnsreb.BrlnsReb;
 
-import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
+import cn.nukkit.plugin.annotation.Command;
 import cn.nukkit.utils.TextFormat;
 
-public class GlobalChatCommand extends Command {
+@Command(
+    name = "globalchat",
+    permission = "admin",
+    description = "Toggle global server chat or local level chat"
+)
 
-    private final BrlnsReb plugin;
-    
-    public GlobalChatCommand(BrlnsReb plugin) {
-        super("globalchat");
-        this.setDescription("Toggle global server chat or local level chat");
-        this.setPermission("admin");
-
-        this.plugin = plugin;
-    }
+public class GlobalChatCommand extends cn.nukkit.command.Command {
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
@@ -25,11 +21,11 @@ public class GlobalChatCommand extends Command {
             return true;
         }
 
-        if (plugin.getGlobalChat()) {
-            plugin.setGlobalChat(false);
+        if (BrlnsReb.getGlobalChat()) {
+            BrlnsReb.setGlobalChat(false);
             sender.sendMessage(TextFormat.RED + "Global Chat disabled");
         } else {
-            plugin.setGlobalChat(true);
+            BrlnsReb.setGlobalChat(true);
             sender.sendMessage(TextFormat.GREEN + "Global Chat enabled");
         }
         return true;

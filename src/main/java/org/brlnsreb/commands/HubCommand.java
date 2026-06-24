@@ -1,22 +1,20 @@
 package org.brlnsreb.commands;
 
+import org.brlnsreb.core.minigame.match.MinigameMatch;
 import org.brlnsreb.core.player.CustomPlayer;
 
 import cn.nukkit.Player;
-import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
+import cn.nukkit.plugin.annotation.Command;
 import cn.nukkit.utils.TextFormat;
 
-public class HubCommand extends Command {
-    
-    public HubCommand() {
-        super("hub");
-        this.setDescription("Go to lobby");
-        this.setAliases(new String[] {
-            "hub",
-            "lobby"
-        });
-    }
+@Command(
+    name = "hub",
+    aliases = {"lobby"},
+    description = "Go to lobby"
+)
+
+public class HubCommand extends cn.nukkit.command.Command {
     
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
@@ -33,7 +31,8 @@ public class HubCommand extends Command {
                 break;
 
             default:
-                player.getMatch().onLeave(player);
+                MinigameMatch match = player.getMatch();
+                if (match != null) match.onLeave(player);
                 player.currentMinigame.onLobbyJoin(player);
                 break;
         }

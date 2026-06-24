@@ -4,8 +4,6 @@ import java.util.LinkedList;
 
 import org.cloudburstmc.protocol.bedrock.data.command.CommandParamType;
 
-import org.cloudburstmc.protocol.bedrock.data.command.CommandParamType;
-
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.commands.subcommands.BasicSubCommand;
 import org.brlnsreb.mm.config.MMConfig;
@@ -73,11 +71,11 @@ public class MMDebugConsoleCommand extends BasicSubCommand {
                     sender.sendMessage("checkEnoughPlayers = false");
                     break;
                 case "set":
-                    plugin.setDebugVar(Integer.parseInt(args[2]));
-                    sender.sendMessage("debugVar = " + plugin.getDebugVar());
+                    BrlnsReb.setDebugVar(Integer.parseInt(args[2]));
+                    sender.sendMessage("debugVar = " + BrlnsReb.getDebugVar());
                     break;
                 case "get":
-                    sender.sendMessage("debugVar = " + plugin.getDebugVar());
+                    sender.sendMessage("debugVar = " + BrlnsReb.getDebugVar());
                     break;
                 default:
                     sender.sendMessage("no args");

@@ -5,18 +5,18 @@ import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.generallobby.GeneralLobby;
 import org.brlnsreb.utils.YamlUtil;
 
-import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
+import cn.nukkit.plugin.annotation.Command;
 import cn.nukkit.utils.TextFormat;
 
-public class ReloadConfigCommand extends Command {
-    
-    public ReloadConfigCommand() {
-        super("reloadconfig");
-        this.setDescription("Reload config.yml");
-        this.setPermission("admin");
-    }
+@Command(
+    name = "reloadconfig", 
+    permission = "admin",
+    description = "Reload all configs"
+)
 
+public class ReloadConfigCommand extends cn.nukkit.command.Command {
+    
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (!sender.isOp()) return true;

@@ -10,7 +10,9 @@ import cn.nukkit.event.Listener;
 import cn.nukkit.event.player.PlayerFormRespondedEvent;
 import cn.nukkit.form.response.CustomResponse;
 import cn.nukkit.form.response.SimpleResponse;
+import cn.nukkit.plugin.annotation.EventListener;
 
+@EventListener
 public class FormResponseListener implements Listener {
 
     @EventHandler

@@ -8,7 +8,9 @@ import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.level.ChunkUnloadEvent;
 import cn.nukkit.level.format.IChunk;
+import cn.nukkit.plugin.annotation.EventListener;
 
+@EventListener
 public class EntityChunkListener implements Listener {
 
     @EventHandler

@@ -9,7 +9,9 @@ import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.player.PlayerKickEvent;
 import cn.nukkit.event.player.PlayerQuitEvent;
+import cn.nukkit.plugin.annotation.EventListener;
 
+@EventListener
 public class PlayerQuitListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)

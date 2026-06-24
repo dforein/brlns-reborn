@@ -6,14 +6,13 @@ import java.util.List;
 
 import org.brlnsreb.BrlnsReb;
 
-import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.utils.TextFormat;
 import cn.nukkit.Player;
 import cn.nukkit.level.Level;
 
-public class WorldCommand extends Command {
+public class WorldCommand extends cn.nukkit.command.Command {
     //UNUSED COMMAND (just for practice, and blueprint)
 
     BrlnsReb plugin;

@@ -1,6 +1,5 @@
 package org.brlnsreb.commands;
 
-import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.utils.TextFormat;
@@ -19,7 +18,7 @@ import org.brlnsreb.commands.mmsubcommands.MMStartCommand;
 import org.brlnsreb.commands.mmsubcommands.MMStopCommand;
 import org.brlnsreb.mm.MurderMysteryGame;
 
-public class MMOperatorCommand extends Command {
+public class MMOperatorCommand extends cn.nukkit.command.Command {
 
     private final List<BasicSubCommand> simpleSubCommandsList = new ArrayList<>();
     private final List<ComplexSubCommand> complexSubCommandsList = new ArrayList<>();

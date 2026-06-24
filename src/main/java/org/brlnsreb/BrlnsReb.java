@@ -1,24 +1,17 @@
 package org.brlnsreb;
 
 import cn.nukkit.Server;
-import cn.nukkit.command.SimpleCommandMap;
 import cn.nukkit.level.Level;
 import cn.nukkit.plugin.PluginBase;
-import cn.nukkit.plugin.PluginManager;
 import cn.nukkit.registry.Registries;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import org.brlnsreb.mm.entities.DeadBodyEntity;
 import org.brlnsreb.mm.entities.ThrownSwordEntity;
 import org.brlnsreb.utils.YamlUtil;
-import org.brlnsreb.utils.abstraction.MenuAbstract;
 
 import java.util.ArrayList;
 
-import org.brlnsreb.commands.GlobalChatCommand;
-import org.brlnsreb.commands.PingCommand;
-import org.brlnsreb.commands.ReloadConfigCommand;
-import org.brlnsreb.commands.ToggleSaveCommand;
 import org.brlnsreb.core.WorldManager;
 import org.brlnsreb.core.auth.AuthSystem;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
@@ -26,23 +19,25 @@ import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.minigame.MinigameType;
 import org.brlnsreb.core.player.PlayerDataManager;
 import org.brlnsreb.generallobby.GeneralLobby;
-import org.brlnsreb.listeners.general.EntityChunkListener;
-import org.brlnsreb.listeners.general.FormResponseListener;
-import org.brlnsreb.listeners.general.BlockUpdateListener;
-import org.brlnsreb.listeners.general.ChatListener;
-import org.brlnsreb.listeners.general.PlayerCreationListener;
-import org.brlnsreb.listeners.general.PlayerQuitListener;
 
 public class BrlnsReb extends PluginBase {
     
     private static BrlnsReb instance;
+    private static Server server;
+
     private MinigameManager minigameManager;
     private GeneralLobby generalLobby;
-    private Server server;
 
-    private boolean globalChat = false;
-    private boolean saveAtShutdown = false;
-    private int debugVar = 0;
+    private final String[] RESOURCES = {
+            "global/database.yml",
+            "global/messages.yml",
+            "general-lobby/config.yml",
+            "general-lobby/messages.yml"
+        };
+
+    private static boolean globalChat = false;
+    private static boolean saveAtShutdown = false;
+    private static int debugVar = 0;
     
     @Override
     public void onLoad() {
@@ -76,11 +71,6 @@ public class BrlnsReb extends PluginBase {
         prepareGeneralLobby();
         minigameManager = new MinigameManager();
 
-        startDeadMenusCheckTask();
-
-        registerCommands();
-        registerListeners();
-
         
         this.getLogger().info(TextFormat.DARK_GREEN + "BrokenLens Reborn server enabled!");
     }
@@ -100,14 +90,7 @@ public class BrlnsReb extends PluginBase {
     }
 
     private void saveAllResources() {
-        String[] resources = {
-            "global/database.yml",
-            "global/messages.yml",
-            "general-lobby/config.yml",
-            "general-lobby/messages.yml"
-        };
-
-        for (String file : resources) { 
+        for (String file : RESOURCES) { 
             saveResource(file, false); 
         }
         for (MinigameType minigame : MinigameType.values()) {
@@ -131,40 +114,12 @@ public class BrlnsReb extends PluginBase {
         server.getDefaultLevel().save();
     }
 
-    private void startDeadMenusCheckTask() {
-        server.getScheduler().scheduleDelayedRepeatingTask(this, 
-            () -> { MenuAbstract.checkDeadForms(); }, 
-            5 * 60 * 20, 
-            5 * 60 * 20
-        );
-    }
-
-    private void registerCommands() {
-        SimpleCommandMap cm = server.getCommandMap();
-
-        cm.register("ping", new PingCommand());
-        cm.register("reloadconfig", new ReloadConfigCommand());
-        cm.register("globalchat", new GlobalChatCommand(this));
-        cm.register("togglesave", new ToggleSaveCommand(this));
-    }
-
-    private void registerListeners() {
-        PluginManager pm = server.getPluginManager();
-        
-        pm.registerEvents(new PlayerCreationListener(), this);
-        pm.registerEvents(new PlayerQuitListener(), this);
-        pm.registerEvents(new ChatListener(this), this);
-        pm.registerEvents(new BlockUpdateListener(), this);
-        pm.registerEvents(new EntityChunkListener(), this);
-        pm.registerEvents(new FormResponseListener(), this);
-    }
-    
     public static BrlnsReb getInstance() { return instance; }
-    public boolean getGlobalChat() { return globalChat; }
-    public void setGlobalChat(boolean value) { globalChat = value; }
-    public boolean getSave() { return saveAtShutdown; }
+    public static boolean getGlobalChat() { return globalChat; }
+    public static void setGlobalChat(boolean value) { globalChat = value; }
+    public static boolean getSave() { return saveAtShutdown; }
 
-    public void setSave(boolean value) {
+    public static void setSave(boolean value) {
         saveAtShutdown = value;
 
         for (Level level : server.getLevels().values()) {
@@ -172,8 +127,8 @@ public class BrlnsReb extends PluginBase {
         }
     }
 
-    public int getDebugVar() { return debugVar; }
-    public void setDebugVar(int value) { debugVar = value; }
+    public static int getDebugVar() { return debugVar; }
+    public static void setDebugVar(int value) { debugVar = value; }
 
     public GeneralLobby getGeneralLobby() { return generalLobby; }
     public MinigameManager getMinigameManager() { return minigameManager; }

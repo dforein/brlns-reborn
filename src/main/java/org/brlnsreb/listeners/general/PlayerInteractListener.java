@@ -24,6 +24,7 @@ import cn.nukkit.item.ItemIronSword;
 import cn.nukkit.item.ItemNetherStar;
 import cn.nukkit.item.ItemYellowDye;
 import cn.nukkit.level.Sound;
+import cn.nukkit.plugin.annotation.EventListener;
 import cn.nukkit.entity.item.EntityArmorStand;
 import cn.nukkit.entity.effect.Effect;
 import cn.nukkit.entity.effect.EffectType;
@@ -40,11 +41,11 @@ import org.brlnsreb.mm.ui.BossBarSystem;
 
 import java.util.*;
 
+@EventListener
 public class PlayerInteractListener implements Listener {
 
     //TODO: interact listener
     
-    private final MurderMysteryGame game;
     private static final HashSet<String> INTERACT_BLOCKS = new HashSet<>(Arrays.asList(
             Block.CHEST, Block.TRAPPED_CHEST, Block.ENDER_CHEST, Block.COPPER_CHEST,
             Block.FURNACE, Block.BLAST_FURNACE, Block.SMOKER,
@@ -67,10 +68,7 @@ public class PlayerInteractListener implements Listener {
             Block.DRAGON_EGG
         )
     );
-    
-    public PlayerInteractListener(MurderMysteryGame game) {
-        this.game = game;
-    }
+
     
     @EventHandler
     public void onItemFrameInteract(ItemFrameUseEvent event) {

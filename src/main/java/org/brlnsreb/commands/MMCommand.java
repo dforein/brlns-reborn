@@ -1,6 +1,5 @@
 package org.brlnsreb.commands;
 
-import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.utils.TextFormat;
 
@@ -15,7 +14,7 @@ import org.brlnsreb.commands.mmsubcommands.MMJoinAllCommand;
 import org.brlnsreb.commands.mmsubcommands.MMLeaveCommand;
 import org.brlnsreb.mm.MurderMysteryGame;
 
-public class MMCommand extends Command {
+public class MMCommand extends cn.nukkit.command.Command {
 
     private final List<BasicSubCommand> simpleSubCommandsList = new ArrayList<>();
 
