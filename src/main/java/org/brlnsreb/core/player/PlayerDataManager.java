@@ -271,6 +271,27 @@ public class PlayerDataManager {
         });
     }
 
+    public static Outcome savePlayerDataSync(UUID playerId) {
+        PlayerData data = dataMap.get(playerId);
+
+        try {
+            if (DatabaseManager.executeUpdate(
+                """
+                UPDATE accounts
+                SET exp = ?, coins = ?
+                WHERE name = ?
+                """,
+                data.getExp(), data.getCoins(), data.name
+
+            ) < 1) return Outcome.DB_ERROR;
+
+            return Outcome.OK;
+
+        } catch (SQLException e) {
+            return Outcome.DB_ERROR;
+        }
+    }
+
     public static CompletableFuture<Outcome> savePlayerData(UUID playerId, String field, Object value) {
         String name = dataMap.get(playerId).name;
 

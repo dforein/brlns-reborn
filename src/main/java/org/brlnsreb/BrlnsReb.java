@@ -1,5 +1,6 @@
 package org.brlnsreb;
 
+import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.level.Level;
 import cn.nukkit.plugin.PluginBase;
@@ -75,11 +76,19 @@ public class BrlnsReb extends PluginBase {
         
         this.getLogger().info(TextFormat.DARK_GREEN + "BrokenLens Reborn server enabled!");
     }
+
+    @Override
+    public void beforeStop() {
+        MinigameManager.forceStop();
+
+        for (Player p : server.getOnlinePlayers().values()) {
+            PlayerDataManager.savePlayerDataSync(p.getUniqueId());
+            p.save();
+        }
+    }
     
     @Override
     public void onDisable() {
-        MinigameManager.forceStop();
-
         this.getLogger().info(TextFormat.DARK_RED + "BrokenLens Reborn server disabled!");
 
         if (saveAtShutdown) return;
