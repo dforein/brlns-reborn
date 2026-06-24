@@ -3,7 +3,7 @@ package org.brlnsreb.core.minigame;
 import java.util.BitSet;
 import java.util.HashSet;
 
-import org.brlnsreb.MinigameCore;
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.auth.AuthSystem;
 import org.brlnsreb.core.minigame.match.MinigameMatch;
 import org.brlnsreb.core.player.CustomPlayer;
@@ -16,7 +16,7 @@ public abstract class Minigame {
     protected final int id;
     protected final String nameTag;
 
-    protected final MinigameCore plugin;
+    protected final BrlnsReb plugin;
     protected Config config;
     protected Config messages;
 
@@ -30,7 +30,7 @@ public abstract class Minigame {
         this.id = minigame.getId();
         this.nameTag = minigame.getNameTag();
 
-        plugin = MinigameCore.getInstance();
+        plugin = BrlnsReb.getInstance();
 
         this.config = new Config(plugin.getDataFolder() + this.nameTag + "/config.yml", Config.YAML);
         this.messages = new Config(plugin.getDataFolder() + this.nameTag + "/messages.yml", Config.YAML);

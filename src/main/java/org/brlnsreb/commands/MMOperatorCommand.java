@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.brlnsreb.MinigameCore;
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.commands.subcommands.ComplexSubCommand;
 import org.brlnsreb.commands.subcommands.BasicSubCommand;
 import org.brlnsreb.commands.mmsubcommands.MMDebugCommand;
@@ -24,9 +24,9 @@ public class MMOperatorCommand extends Command {
     private final List<BasicSubCommand> simpleSubCommandsList = new ArrayList<>();
     private final List<ComplexSubCommand> complexSubCommandsList = new ArrayList<>();
 
-    //private final MinigameCore plugin;
+    //private final BrlnsReb plugin;
     
-    public MMOperatorCommand(MinigameCore plugin, MurderMysteryGame game) {
+    public MMOperatorCommand(BrlnsReb plugin, MurderMysteryGame game) {
 
         super("mmop");
         this.setDescription("Murder Mystery operator commands");

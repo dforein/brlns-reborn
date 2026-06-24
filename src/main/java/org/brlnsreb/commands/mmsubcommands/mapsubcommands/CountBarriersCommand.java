@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.brlnsreb.commands.subcommands.SimpleSubCommand;
 import org.brlnsreb.core.minigame.match.Arena;
-import org.brlnsreb.MinigameCore;
+import org.brlnsreb.BrlnsReb;
 
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
@@ -18,9 +18,9 @@ import cn.nukkit.utils.TextFormat;
 
 public class CountBarriersCommand extends SimpleSubCommand {
     
-    private final MinigameCore plugin;
+    private final BrlnsReb plugin;
     
-    public CountBarriersCommand(MinigameCore plugin) {
+    public CountBarriersCommand(BrlnsReb plugin) {
         super("countbarriers");
         this.setAliases(new String[] {
 				"countbarriers"

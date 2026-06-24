@@ -1,17 +1,17 @@
 package org.brlnsreb.mm.entities;
 
+import org.cloudburstmc.protocol.bedrock.data.actor.ActorFlags;
 import org.jetbrains.annotations.NotNull;
 
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
+import cn.nukkit.entity.EntityAnimation;
 import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.entity.custom.CustomEntity;
 import cn.nukkit.entity.custom.CustomEntityDefinition;
-import cn.nukkit.entity.data.EntityFlag;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.level.format.IChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.network.protocol.AnimateEntityPacket.Animation;
 
 public class DeadBodyEntity extends EntityHuman implements CustomEntity {
 
@@ -47,9 +47,9 @@ public class DeadBodyEntity extends EntityHuman implements CustomEntity {
         this.setInvulnerable(true);
         this.setNameTagVisible(false);
         this.setCanClimb(false);
-        this.setDataFlag(EntityFlag.SILENT, true);
-        this.setDataFlag(EntityFlag.COLLIDABLE, false);
-        this.setDataFlag(EntityFlag.BODY_ROTATION_BLOCKED, false);
+        this.setDataFlag(ActorFlags.SILENT, true);
+        this.setDataFlag(ActorFlags.COLLIDABLE, false);
+        this.setDataFlag(ActorFlags.BODY_ROTATION_BLOCKED, false);
         
         this.setHealthCurrent(5);
     }
@@ -96,8 +96,8 @@ public class DeadBodyEntity extends EntityHuman implements CustomEntity {
         return fallForward;
     }
 
-    public Animation getAnimation() {
-        return Animation.builder()
+    public EntityAnimation getAnimation() {
+        return EntityAnimation.builder()
             .animation(fallForward ? "animation.corpse.fall_forward" : "animation.corpse.fall_backward") 
             .nextState(fallForward ? "animation.corpse.fall_forward" : "animation.corpse.fall_backward")
             .stopExpression("0")
@@ -106,8 +106,8 @@ public class DeadBodyEntity extends EntityHuman implements CustomEntity {
             .build();
     }
 
-    public Animation getStaticAnimation() {
-        return Animation.builder()
+    public EntityAnimation getStaticAnimation() {
+        return EntityAnimation.builder()
             .animation(fallForward ? "animation.corpse.lying_forward" : "animation.corpse.lying_backward") 
             .nextState(fallForward ? "animation.corpse.lying_forward" : "animation.corpse.lying_backward")
             .stopExpression("0")

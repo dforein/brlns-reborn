@@ -2,12 +2,13 @@ package org.brlnsreb.commands.mmsubcommands.mapsubcommands;
 
 import java.util.LinkedList;
 
+import org.cloudburstmc.protocol.bedrock.data.command.CommandParamType;
+
 import org.brlnsreb.commands.subcommands.SimpleSubCommand;
 import org.brlnsreb.mm.MurderMysteryGame;
 
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
-import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.TextFormat;

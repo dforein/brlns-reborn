@@ -4,7 +4,6 @@ import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockRedstoneWire;
 import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.data.EntityFlag;
 import cn.nukkit.entity.effect.Effect;
 import cn.nukkit.entity.effect.EffectType;
 import cn.nukkit.entity.item.EntityItem;
@@ -12,8 +11,8 @@ import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.level.format.IChunk;
-import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
+import cn.nukkit.utils.ItemHelper;
 import cn.nukkit.utils.TextFormat;
 
 import java.util.List;
@@ -23,7 +22,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.brlnsreb.MinigameCore;
+import org.cloudburstmc.protocol.bedrock.data.actor.ActorFlags;
+
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.mm.roles.MMRole;
 import org.brlnsreb.mm.MurderMysteryGame;
@@ -32,7 +33,7 @@ import org.brlnsreb.mm.entities.DeadBodyEntity;
 
 public class DeathSystem {
     
-    private final MinigameCore plugin;
+    private final BrlnsReb plugin;
     private final MurderMysteryGame game;
     private static final HashSet<String> REDSTONE_BLACKLIST = new HashSet<>(Arrays.asList(
             Block.TALL_GRASS, Block.TALL_DRY_GRASS,
@@ -55,7 +56,7 @@ public class DeathSystem {
     );
 
     
-    public DeathSystem(MinigameCore plugin, MurderMysteryGame game) {
+    public DeathSystem(BrlnsReb plugin, MurderMysteryGame game) {
         this.plugin = plugin;
         this.game = game;
     }
@@ -99,8 +100,7 @@ public class DeathSystem {
         hoe.setCustomName(TextFormat.colorize(config.getSheriffHoeName()));
         
         CompoundTag nbt = Entity.getDefaultNBT(pos);
-        nbt.putCompound("Item", NBTIO.putItemHelper(hoe));
-        nbt.putBoolean("mm_sheriff_hoe", true);
+        nbt.putCompound("Item", ItemHelper.write(hoe));
         nbt.putShort("Health", 5);
         nbt.putShort("Age", -32768);
 
@@ -118,6 +118,8 @@ public class DeathSystem {
         );
         
         if (drop != null) {
+            drop.addTag("mm_sheriff_hoe");
+            
             drop.setNameTagVisible(true);
             drop.setNameTagAlwaysVisible(true);
             drop.setNameTag(TextFormat.colorize(config.getSheriffHoeName()));
@@ -150,12 +152,12 @@ public class DeathSystem {
         
         body.setSkin(victim.getSkin());
         body.setRotation(yaw, pitch, headYaw);
-        body.setDataFlag(EntityFlag.INVISIBLE, true);
+        body.setDataFlag(ActorFlags.INVISIBLE, true);
 
         body.spawnToAll();
 
         plugin.getServer().getScheduler().scheduleDelayedTask(game.getPlugin(), () -> {
-            body.setDataFlag(EntityFlag.INVISIBLE, false);
+            body.setDataFlag(ActorFlags.INVISIBLE, false);
         }, 2);
         plugin.getServer().getScheduler().scheduleDelayedTask(game.getPlugin(), () -> {
             body.playAnimation(body.getAnimation());
@@ -225,7 +227,7 @@ public class DeathSystem {
 
     public void cleanupSheriffHoe(Level level) {
         for (Entity entity : level.getEntities()) {
-            if (entity instanceof EntityItem && entity.namedTag != null && entity.namedTag.getBoolean("mm_sheriff_hoe")) {
+            if (entity instanceof EntityItem && entity.hasTag("mm_sheriff_hoe")) {
                 entity.close();
             }
         }

@@ -7,7 +7,7 @@ import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.TextFormat;
-import org.brlnsreb.MinigameCore;
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.minigame.match.Arena;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -18,7 +18,7 @@ import java.util.*;
 
 public class GoldSpawnMapper {
     
-    private final MinigameCore plugin;
+    private final BrlnsReb plugin;
     private final Map<String, List<Vector3>> mapCache;
     private final Map<String, List<Vector3>> barrierCache;
     private final File mapsFolder;
@@ -48,7 +48,7 @@ public class GoldSpawnMapper {
         )
     );
     
-    public GoldSpawnMapper(MinigameCore plugin) {
+    public GoldSpawnMapper(BrlnsReb plugin) {
         this.plugin = plugin;
         this.mapCache = new HashMap<>();
         this.barrierCache = new HashMap<>();

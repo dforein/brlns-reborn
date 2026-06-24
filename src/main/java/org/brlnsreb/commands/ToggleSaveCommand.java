@@ -1,6 +1,6 @@
 package org.brlnsreb.commands;
 
-import org.brlnsreb.MinigameCore;
+import org.brlnsreb.BrlnsReb;
 
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
@@ -8,9 +8,9 @@ import cn.nukkit.utils.TextFormat;
 
 public class ToggleSaveCommand extends Command {
 
-    private final MinigameCore plugin;
+    private final BrlnsReb plugin;
     
-    public ToggleSaveCommand(MinigameCore plugin) {
+    public ToggleSaveCommand(BrlnsReb plugin) {
         super("togglesave");
         this.setDescription("Toggle saving worlds at server shutdown");
         this.setPermission("admin");

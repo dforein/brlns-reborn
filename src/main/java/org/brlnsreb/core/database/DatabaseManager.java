@@ -1,6 +1,6 @@
 package org.brlnsreb.core.database;
 
-import org.brlnsreb.MinigameCore;
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.minigame.MinigameType;
 import org.brlnsreb.utils.DBResults;
 import com.zaxxer.hikari.HikariConfig;
@@ -21,9 +21,9 @@ public class DatabaseManager {
     
     private static HikariDataSource dataSource;
     private static boolean enabled;
-    private final MinigameCore plugin;
+    private final BrlnsReb plugin;
 
-    public DatabaseManager(MinigameCore plugin) {
+    public DatabaseManager(BrlnsReb plugin) {
         this.plugin = plugin;
         enabled = initConnectionPool();
     }

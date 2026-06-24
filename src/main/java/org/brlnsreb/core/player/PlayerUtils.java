@@ -1,6 +1,6 @@
 package org.brlnsreb.core.player;
 
-import org.brlnsreb.MinigameCore;
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer.DamageState;
 
 import cn.nukkit.Player;
@@ -30,7 +30,7 @@ public class PlayerUtils {
     }
 
     public static void changeWorld(Player p, Position pos) {
-        MinigameCore plugin = MinigameCore.getInstance();
+        BrlnsReb plugin = BrlnsReb.getInstance();
 
         try {
             int viewDistance = p.getViewDistance();

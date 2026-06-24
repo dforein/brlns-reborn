@@ -1,6 +1,6 @@
 package org.brlnsreb.commands;
 
-import org.brlnsreb.MinigameCore;
+import org.brlnsreb.BrlnsReb;
 
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
@@ -8,9 +8,9 @@ import cn.nukkit.utils.TextFormat;
 
 public class GlobalChatCommand extends Command {
 
-    private final MinigameCore plugin;
+    private final BrlnsReb plugin;
     
-    public GlobalChatCommand(MinigameCore plugin) {
+    public GlobalChatCommand(BrlnsReb plugin) {
         super("globalchat");
         this.setDescription("Toggle global server chat or local level chat");
         this.setPermission("admin");

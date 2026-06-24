@@ -60,9 +60,12 @@ public abstract class ScoreboardAbstract {
     public void remove(CustomPlayer player) {
         //use this to remove the scoreboard, if there is one
         if (player.scoreboard != null && player.isOnline()) {
+            player.removeScoreboard(player.scoreboard);
             player.scoreboard.removeViewer(player, DisplaySlot.SIDEBAR);
+            
             player.scoreboard = null;
         }
+        
         activeScorers.remove(player.getUniqueId());
     }
 

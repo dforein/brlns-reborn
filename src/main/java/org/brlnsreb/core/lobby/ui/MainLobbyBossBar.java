@@ -3,7 +3,7 @@ package org.brlnsreb.core.lobby.ui;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-import org.brlnsreb.MinigameCore;
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.abstraction.BossBarAbstract;
 
@@ -15,7 +15,7 @@ import cn.nukkit.utils.Config;
 
 public class MainLobbyBossBar extends BossBarAbstract {
 
-    private final MinigameCore plugin;
+    private final BrlnsReb plugin;
     private final String path = "lobby-bossbar.";
     private String name;                        //mainMessage1 name (of the game, or server in case of general lobby)
     private Config messages;
@@ -24,7 +24,7 @@ public class MainLobbyBossBar extends BossBarAbstract {
     private int messagesIndex = 0;              //i will periodically change messages in messages.yml order
 
     public MainLobbyBossBar(String name) {
-        plugin = MinigameCore.getInstance();
+        plugin = BrlnsReb.getInstance();
         reloadConfig(name);
     }
 

@@ -29,7 +29,7 @@ import cn.nukkit.entity.effect.Effect;
 import cn.nukkit.entity.effect.EffectType;
 import cn.nukkit.utils.TextFormat;
 
-import org.brlnsreb.MinigameCore;
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.minigame.match.GameStateType;
 import org.brlnsreb.mm.MurderMysteryGame;
 import org.brlnsreb.mm.config.MMConfig;
@@ -311,7 +311,7 @@ public class MMPlayerInteractListener implements Listener {
         if (game.getState() == GameStateType.ENDING) return;
 
 
-        MinigameCore plugin = game.getPlugin();
+        BrlnsReb plugin = game.getPlugin();
         plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
             for (Player p : game.getPlayers()) {
                 p.sendMessage(TextFormat.colorize(config.getMessage("lights-out-over")));

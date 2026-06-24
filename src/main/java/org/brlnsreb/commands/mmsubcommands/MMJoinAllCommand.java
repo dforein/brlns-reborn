@@ -3,7 +3,7 @@ package org.brlnsreb.commands.mmsubcommands;
 import java.util.Map;
 import java.util.UUID;
 
-import org.brlnsreb.MinigameCore;
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.commands.subcommands.BasicSubCommand;
 import org.brlnsreb.mm.MurderMysteryGame;
 
@@ -13,10 +13,10 @@ import cn.nukkit.Player;
 
 public class MMJoinAllCommand extends BasicSubCommand {
 
-    private final MinigameCore plugin;
+    private final BrlnsReb plugin;
     private final MurderMysteryGame game;
     
-    public MMJoinAllCommand(MinigameCore plugin, MurderMysteryGame game) {
+    public MMJoinAllCommand(BrlnsReb plugin, MurderMysteryGame game) {
         super("joinall");
         this.setAliases(new String[] {
 				"joinall"

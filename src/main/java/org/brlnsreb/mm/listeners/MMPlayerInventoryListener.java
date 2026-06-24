@@ -1,27 +1,28 @@
 package org.brlnsreb.mm.listeners;
 
-import cn.nukkit.Player;
 import cn.nukkit.event.EventHandler;
-import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
-import cn.nukkit.event.player.PlayerItemHeldEvent;
 import cn.nukkit.event.player.PlayerDropItemEvent;
-import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemCompass;
 
 import org.brlnsreb.mm.MurderMysteryGame;
 import org.brlnsreb.mm.roles.GamePlayer;
 import org.brlnsreb.mm.roles.MMRole;
 
 public class MMPlayerInventoryListener implements Listener {
-    //UNUSED: replaced with old mechanics due to new features
+
     private final MurderMysteryGame game;
     
     public MMPlayerInventoryListener(MurderMysteryGame game) {
         this.game = game;
     }
+
+    @EventHandler
+    public void onDrop(PlayerDropItemEvent event) {
+        event.setCancelled(true);
+    }
     
-    @EventHandler(priority = EventPriority.HIGHEST)
+    //UNUSED: replaced with old mechanics due to new features
+    /*@EventHandler(priority = EventPriority.HIGHEST)
     public void onItemHeld(PlayerItemHeldEvent event) {
         Player player = event.getPlayer();
         GamePlayer gp = game.getRoleManager().getGamePlayer(player);
@@ -45,10 +46,5 @@ public class MMPlayerInventoryListener implements Listener {
             
             game.getSpectatorMenu().openTeleportMenu(player);
         }
-    }
-
-    @EventHandler
-    public void onDrop(PlayerDropItemEvent event) {
-        event.setCancelled(true);
-    }
+    }*/
 }

@@ -3,7 +3,7 @@ package org.brlnsreb.commands.mmsubcommands.mapsubcommands;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.brlnsreb.MinigameCore;
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.commands.subcommands.SimpleSubCommand;
 
 import cn.nukkit.Player;
@@ -14,9 +14,9 @@ import cn.nukkit.utils.TextFormat;
 
 public class SaveNewSpawnCommand  extends SimpleSubCommand {
     
-    private final MinigameCore plugin;
+    private final BrlnsReb plugin;
 
-    public SaveNewSpawnCommand(MinigameCore plugin) {
+    public SaveNewSpawnCommand(BrlnsReb plugin) {
         super("newspawn");
         this.setAliases(new String[] {
 				"newspawn"

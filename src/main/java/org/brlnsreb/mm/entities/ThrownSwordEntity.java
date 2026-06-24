@@ -1,12 +1,12 @@
 package org.brlnsreb.mm.entities;
 
+import org.cloudburstmc.protocol.bedrock.data.actor.ActorFlags;
 import org.jetbrains.annotations.NotNull;
 
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.custom.CustomEntity;
 import cn.nukkit.entity.custom.CustomEntityDefinition;
-import cn.nukkit.entity.data.EntityFlag;
 import cn.nukkit.entity.projectile.EntityProjectile;
 import cn.nukkit.level.format.IChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
@@ -44,7 +44,7 @@ public class ThrownSwordEntity extends EntityProjectile implements CustomEntity 
         this.setScale(0.6f);
         this.setNameTagVisible(false);
         this.setCanClimb(false);
-        this.setDataFlag(EntityFlag.SILENT, true);
+        this.setDataFlag(ActorFlags.SILENT, true);
     }
 
     @Override

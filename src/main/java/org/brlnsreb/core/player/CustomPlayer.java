@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
+import org.cloudburstmc.protocol.bedrock.BedrockServerSession;
+import org.cloudburstmc.protocol.bedrock.data.skin.AnimationData;
+import org.cloudburstmc.protocol.bedrock.data.skin.PersonaPieceData;
+import org.cloudburstmc.protocol.bedrock.data.skin.PersonaPieceTintData;
 import org.jetbrains.annotations.NotNull;
 
 import org.brlnsreb.core.minigame.Minigame;
@@ -13,24 +17,14 @@ import org.brlnsreb.core.minigame.match.MinigameMatch;
 import org.brlnsreb.generallobby.GeneralLobby;
 
 import cn.nukkit.Player;
-import cn.nukkit.Server;
 import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.data.Skin;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
-import cn.nukkit.level.Position;
 import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.nbt.tag.DoubleTag;
-import cn.nukkit.nbt.tag.FloatTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.nbt.tag.StringTag;
-import cn.nukkit.network.connection.BedrockSession;
-import cn.nukkit.network.protocol.types.PlayerInfo;
 import cn.nukkit.scoreboard.Scoreboard;
-import cn.nukkit.utils.PersonaPiece;
-import cn.nukkit.utils.PersonaPieceTint;
-import cn.nukkit.utils.SkinAnimation;
 import cn.nukkit.utils.TextFormat;
 
 public class CustomPlayer extends Player {
@@ -62,7 +56,7 @@ public class CustomPlayer extends Player {
     public AtomicBoolean asyncFlag = new AtomicBoolean(false);
 
 
-    public CustomPlayer(@NotNull BedrockSession session, @NotNull PlayerInfo info) {
+    public CustomPlayer(@NotNull BedrockServerSession session, @NotNull PlayerInfo info) {
         super(session, info);
 
         PlayerDataManager.initPlayer(this);
@@ -217,88 +211,92 @@ public class CustomPlayer extends Player {
 
     @Override
     public void saveNBT() {
+        this.nbt.putFloat("Health", this.getHealthDefaultMax());
+        this.nbt.putInt("playerGameType", Player.ADVENTURE);
+        
+        this.nbt.remove("SpawnX");
+        this.nbt.remove("SpawnY");
+        this.nbt.remove("SpawnZ");
+        this.nbt.remove("SpawnLevel");
+        this.nbt.remove("SpawnDimension");
 
-        Position spawn = Server.getInstance().getDefaultLevel().getSpawnLocation();
-
-        this.namedTag.putString("Level", spawn.getLevel().getFolderName());
-        this.namedTag.putList("Pos", new ListTag<DoubleTag>()
-            .add(new DoubleTag(spawn.x))
-            .add(new DoubleTag(spawn.y))
-            .add(new DoubleTag(spawn.z))
-        );
-        this.namedTag.putList("Motion", new ListTag<DoubleTag>()
-            .add(new DoubleTag(0))
-            .add(new DoubleTag(0))
-            .add(new DoubleTag(0))
-        );
-        this.namedTag.putList("Rotation", new ListTag<FloatTag>()
-            .add(new FloatTag(0.0f))
-            .add(new FloatTag(0.0f))
-        );
-        this.namedTag.putFloat("FallDistance", 0.0f);
-        this.namedTag.putShort("Fire", 0);
-        this.namedTag.putBoolean("Invulnerable", this.invulnerable);
-        this.namedTag.putFloat("Scale", this.scale);
-        this.namedTag.putFloat("Health", 20.0f);
-        this.namedTag.putInt("playerGameType", Player.ADVENTURE);
-
-        this.namedTag.remove("ActiveEffects");
-        this.namedTag.remove("Attributes");
-        this.namedTag.remove("Inventory");
-        this.namedTag.remove("SelectedInventorySlot");
-        this.namedTag.remove("OffInventory");
-        this.namedTag.remove("EnderItems");
-
-        this.savePlayerSkin();
+        this.nbt.remove("CursorItem");
+        this.nbt.remove("ActiveEffects");
+        this.nbt.remove("Attributes");
+        this.nbt.remove("Inventory");
+        this.nbt.remove("SelectedInventorySlot");
+        this.nbt.remove("OffInventory");
+        this.nbt.remove("EnderItems");
 
         this.adventureSettings.saveNBT();
 
-    }
+        var skin = getSkin();
+        var serializedSkin = skin.getSkin();
+        if (serializedSkin != null) {
+            CompoundTag skinTag = new CompoundTag()
+                    .putByteArray("Data", serializedSkin.getSkinData().getImage())
+                    .putInt("SkinImageWidth", serializedSkin.getSkinData().getWidth())
+                    .putInt("SkinImageHeight", serializedSkin.getSkinData().getHeight())
+                    .putString("ModelId", serializedSkin.getSkinId())
+                    .putString("CapeId", serializedSkin.getCapeId())
+                    .putByteArray("CapeData", serializedSkin.getCapeData().getImage())
+                    .putInt("CapeImageWidth", serializedSkin.getCapeData().getWidth())
+                    .putInt("CapeImageHeight", serializedSkin.getCapeData().getHeight())
+                    .putByteArray("SkinResourcePatch", serializedSkin.getSkinResourcePatch().getBytes(StandardCharsets.UTF_8))
+                    .putByteArray("GeometryData", serializedSkin.getGeometryData().getBytes(StandardCharsets.UTF_8))
+                    .putByteArray("SkinAnimationData", serializedSkin.getAnimationData().getBytes(StandardCharsets.UTF_8))
+                    .putBoolean("PremiumSkin", serializedSkin.isPremium())
+                    .putBoolean("PersonaSkin", serializedSkin.isPersona())
+                    .putBoolean("CapeOnClassicSkin", serializedSkin.isCapeOnClassic())
+                    .putString("ArmSize", serializedSkin.getArmSize())
+                    .putString("SkinColor", serializedSkin.getSkinColor())
+                    .putBoolean("IsTrustedSkin", skin.isTrusted());
 
-    private void savePlayerSkin() {
-        Skin skin = this.getSkin();
-        if (skin != null) {
-            CompoundTag skinTag = (new CompoundTag()).putByteArray("Data", skin.getSkinData().data).putInt("SkinImageWidth", skin.getSkinData().width).putInt("SkinImageHeight", skin.getSkinData().height).putString("ModelId", skin.getSkinId()).putString("CapeId", skin.getCapeId()).putByteArray("CapeData", skin.getCapeData().data).putInt("CapeImageWidth", skin.getCapeData().width).putInt("CapeImageHeight", skin.getCapeData().height).putByteArray("SkinResourcePatch", skin.getSkinResourcePatch().getBytes(StandardCharsets.UTF_8)).putByteArray("GeometryData", skin.getGeometryData().getBytes(StandardCharsets.UTF_8)).putByteArray("SkinAnimationData", skin.getAnimationData().getBytes(StandardCharsets.UTF_8)).putBoolean("PremiumSkin", skin.isPremium()).putBoolean("PersonaSkin", skin.isPersona()).putBoolean("CapeOnClassicSkin", skin.isCapeOnClassic()).putString("ArmSize", skin.getArmSize()).putString("SkinColor", skin.getSkinColor()).putBoolean("IsTrustedSkin", skin.isTrusted());
-            List<SkinAnimation> animations = skin.getAnimations();
+            List<AnimationData> animations = serializedSkin.getAnimations();
             if (!animations.isEmpty()) {
                 ListTag<CompoundTag> animationsTag = new ListTag<>();
-
-                for(SkinAnimation animation : animations) {
-                animationsTag.add((new CompoundTag()).putFloat("Frames", animation.frames).putInt("Type", animation.type).putInt("ImageWidth", animation.image.width).putInt("ImageHeight", animation.image.height).putInt("AnimationExpression", animation.expression).putByteArray("Image", animation.image.data));
+                for (AnimationData animation : animations) {
+                    animationsTag.add(new CompoundTag()
+                            .putFloat("Frames", animation.getFrames())
+                            .putInt("Type", animation.getTextureType().ordinal())
+                            .putInt("ImageWidth", animation.getImage().getWidth())
+                            .putInt("ImageHeight", animation.getImage().getHeight())
+                            .putInt("AnimationExpression", animation.getExpressionType().ordinal())
+                            .putByteArray("Image", animation.getImage().getImage()));
                 }
-
                 skinTag.putList("AnimatedImageData", animationsTag);
             }
 
-            List<PersonaPiece> personaPieces = skin.getPersonaPieces();
+            List<PersonaPieceData> personaPieces = serializedSkin.getPersonaPieces();
             if (!personaPieces.isEmpty()) {
                 ListTag<CompoundTag> piecesTag = new ListTag<>();
-
-                for(PersonaPiece piece : personaPieces) {
-                piecesTag.add((new CompoundTag()).putString("PieceId", piece.id).putString("PieceType", piece.type).putString("PackId", piece.packId).putBoolean("IsDefault", piece.isDefault).putString("ProductId", piece.productId));
+                for (PersonaPieceData piece : personaPieces) {
+                    piecesTag.add(new CompoundTag().putString("PieceId", piece.getId())
+                            .putString("PieceType", piece.getType())
+                            .putString("PackId", piece.getPackId())
+                            .putBoolean("IsDefault", piece.isDefault())
+                            .putString("ProductId", piece.getProductId()));
                 }
-
                 skinTag.putList("PersonaPieces", piecesTag);
             }
-
-            List<PersonaPieceTint> tints = skin.getTintColors();
+            List<PersonaPieceTintData> tints = serializedSkin.getTintColors();
             if (!tints.isEmpty()) {
                 ListTag<CompoundTag> tintsTag = new ListTag<>();
-
-                for(PersonaPieceTint tint : tints) {
-                ListTag<StringTag> colors = new ListTag<>();
-                colors.setAll((List<StringTag>)tint.colors.stream().map(StringTag::new).collect(Collectors.toList()));
-                tintsTag.add((new CompoundTag()).putString("PieceType", tint.pieceType).putList("Colors", colors));
+                for (PersonaPieceTintData tint : tints) {
+                    ListTag<StringTag> colors = new ListTag<>();
+                    colors.setAll(tint.getColors().stream().map(StringTag::new).collect(Collectors.toList()));
+                    tintsTag.add(new CompoundTag()
+                            .putString("PieceType", tint.getType())
+                            .putList("Colors", colors));
                 }
-
                 skinTag.putList("PieceTintColors", tintsTag);
             }
 
-            if (!skin.getPlayFabId().isEmpty()) {
-                skinTag.putString("PlayFabId", skin.getPlayFabId());
+            if (!serializedSkin.getPlayFabId().isEmpty()) {
+                skinTag.putString("PlayFabId", serializedSkin.getPlayFabId());
             }
 
-            this.namedTag.putCompound("Skin", skinTag);
+            this.getNbt().putCompound("Skin", skinTag);
         }
     }
 

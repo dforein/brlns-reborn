@@ -1,6 +1,6 @@
 package org.brlnsreb.listeners.general;
 
-import org.brlnsreb.MinigameCore;
+import org.brlnsreb.BrlnsReb;
 
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
@@ -10,9 +10,9 @@ import cn.nukkit.level.Level;
 
 public class ChatListener implements Listener{
 
-    private final MinigameCore plugin;
+    private final BrlnsReb plugin;
 
-    public ChatListener(MinigameCore plugin) {
+    public ChatListener(BrlnsReb plugin) {
         this.plugin = plugin;
     }
 

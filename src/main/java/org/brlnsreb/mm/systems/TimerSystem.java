@@ -1,18 +1,18 @@
 package org.brlnsreb.mm.systems;
 
-import org.brlnsreb.MinigameCore;
+import org.brlnsreb.BrlnsReb;
 
 import cn.nukkit.scheduler.Task;
 
 public class TimerSystem {
     
-    private final MinigameCore plugin;
+    private final BrlnsReb plugin;
     private int secondsRemaining;
     private boolean firstSecond;
     private Task task;
     private Runnable onTick;
     
-    public TimerSystem(MinigameCore plugin, int duration) {
+    public TimerSystem(BrlnsReb plugin, int duration) {
         this.plugin = plugin;
         this.secondsRemaining = duration;
     }

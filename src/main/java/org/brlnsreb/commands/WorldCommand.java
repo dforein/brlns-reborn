@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.brlnsreb.MinigameCore;
+import org.brlnsreb.BrlnsReb;
 
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
@@ -16,9 +16,9 @@ import cn.nukkit.level.Level;
 public class WorldCommand extends Command {
     //UNUSED COMMAND (just for practice, and blueprint)
 
-    MinigameCore plugin;
+    BrlnsReb plugin;
     
-    public WorldCommand(MinigameCore plugin) {
+    public WorldCommand(BrlnsReb plugin) {
         super("world");
         this.setDescription("Commands for world navigation");
         this.setPermission("admin");

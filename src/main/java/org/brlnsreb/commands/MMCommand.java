@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.brlnsreb.MinigameCore;
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.commands.subcommands.BasicSubCommand;
 import org.brlnsreb.commands.mmsubcommands.MMJoinCommand;
 import org.brlnsreb.commands.mmsubcommands.MMJoinAllCommand;
@@ -19,9 +19,9 @@ public class MMCommand extends Command {
 
     private final List<BasicSubCommand> simpleSubCommandsList = new ArrayList<>();
 
-    //private final MinigameCore plugin;
+    //private final BrlnsReb plugin;
     
-    public MMCommand(MinigameCore plugin, MurderMysteryGame game) {
+    public MMCommand(BrlnsReb plugin, MurderMysteryGame game) {
 
         super("mm");
         this.setDescription("Murder Mystery commands");

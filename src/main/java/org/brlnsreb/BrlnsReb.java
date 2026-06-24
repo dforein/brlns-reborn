@@ -33,9 +33,9 @@ import org.brlnsreb.listeners.general.ChatListener;
 import org.brlnsreb.listeners.general.PlayerCreationListener;
 import org.brlnsreb.listeners.general.PlayerQuitListener;
 
-public class MinigameCore extends PluginBase {
+public class BrlnsReb extends PluginBase {
     
-    private static MinigameCore instance;
+    private static BrlnsReb instance;
     private MinigameManager minigameManager;
     private GeneralLobby generalLobby;
     private Server server;
@@ -48,14 +48,13 @@ public class MinigameCore extends PluginBase {
     public void onLoad() {
 
         instance = this;
-        this.getLogger().info(TextFormat.WHITE + "brlnsreb Minigames loading...");
+        this.getLogger().info(TextFormat.WHITE + "BrokenLens Reborn server loading...");
 
         try {
             Registries.ENTITY.registerCustomEntity(this, DeadBodyEntity.class);
             Registries.ENTITY.registerCustomEntity(this, ThrownSwordEntity.class);
             Registries.ENTITY.registerCustomEntity(this, NPCEntity.class);
             Registries.ENTITY.rebuildTag();
-            getLogger().info("§aCustom entities registered successfully.");
             
         } catch (cn.nukkit.registry.RegisterException e) {
             getLogger().error("Error during entities registration: " + e.getMessage());
@@ -83,14 +82,14 @@ public class MinigameCore extends PluginBase {
         registerListeners();
 
         
-        getLogger().info(TextFormat.DARK_GREEN + "brlnsreb Minigames enabled!");
+        this.getLogger().info(TextFormat.DARK_GREEN + "BrokenLens Reborn server enabled!");
     }
     
     @Override
     public void onDisable() {
         MinigameManager.forceStop();
 
-        getLogger().info(TextFormat.DARK_RED + "brlnsreb Minigames disabled!");
+        this.getLogger().info(TextFormat.DARK_RED + "BrokenLens Reborn server disabled!");
 
         if (saveAtShutdown) return;
         for (Level level : new ArrayList<>(server.getLevels().values())) {
@@ -160,7 +159,7 @@ public class MinigameCore extends PluginBase {
         pm.registerEvents(new FormResponseListener(), this);
     }
     
-    public static MinigameCore getInstance() { return instance; }
+    public static BrlnsReb getInstance() { return instance; }
     public boolean getGlobalChat() { return globalChat; }
     public void setGlobalChat(boolean value) { globalChat = value; }
     public boolean getSave() { return saveAtShutdown; }

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.brlnsreb.MinigameCore;
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.lobby.ui.MainLobbyBossBar;
@@ -72,7 +72,7 @@ public class GeneralLobby extends Lobby {
 
             npcNameTagMap.put(npc, gameNameTag);
 
-            Server.getInstance().getScheduler().scheduleRepeatingTask(MinigameCore.getInstance(), 
+            Server.getInstance().getScheduler().scheduleRepeatingTask(BrlnsReb.getInstance(), 
                 () -> {
                     updateNpcSubtitle(npc);
                 }, 100
@@ -107,10 +107,10 @@ public class GeneralLobby extends Lobby {
 
     public static GeneralLobby getInstance() { return instance; }
     public Config getNewConfig() { 
-        return new Config(MinigameCore.getInstance().getDataFolder() + "general-lobby/config.yml", Config.YAML); 
+        return new Config(BrlnsReb.getInstance().getDataFolder() + "general-lobby/config.yml", Config.YAML); 
     }
     public Config getNewMessages() {
-        return new Config(MinigameCore.getInstance().getDataFolder() + "general-lobby/messages.yml", Config.YAML);
+        return new Config(BrlnsReb.getInstance().getDataFolder() + "general-lobby/messages.yml", Config.YAML);
     }
     public String getConfigPath() { return ""; }
     

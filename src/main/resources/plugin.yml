@@ -1,9 +1,9 @@
-name: brlnsreb minigames
-main: org.brlnsreb.MinigameCore
+name: brlnsreb
+main: org.brlnsreb.BrlnsReb
 version: "2.0.0"
-api: "2.0.0"
+api: "3.0.0"
 author: brlnsreb
-description: BrokenLens Reborn Minigames plugin
+description: BrokenLens Reborn plugin
   
 permissions:
   admin:

@@ -44,7 +44,7 @@ public class MMPlayerPickupListener implements Listener {
         Item item = itemEntity.getItem();
 
         // Golds
-        if (item instanceof ItemGoldIngot && itemEntity.namedTag.contains("mm_gold")) {
+        if (item instanceof ItemGoldIngot && itemEntity.hasTag("mm_gold")) {
             event.setCancelled(true);
             
             handleGoldPickup(player, itemEntity);
@@ -52,7 +52,7 @@ public class MMPlayerPickupListener implements Listener {
         }
 
         // Sheriff Hoe
-        if (item instanceof ItemGoldenHoe && itemEntity.namedTag.contains("mm_sheriff_hoe")) {
+        if (item instanceof ItemGoldenHoe && itemEntity.hasTag("mm_sheriff_hoe")) {
             event.setCancelled(true);
             
             handleSheriffHoePickup(player, itemEntity);

@@ -5,21 +5,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-import org.brlnsreb.MinigameCore;
+import org.cloudburstmc.protocol.bedrock.data.command.CommandParamType;
+
+import org.cloudburstmc.protocol.bedrock.data.command.CommandParamType;
+
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.commands.subcommands.SimpleSubCommand;
 
 import cn.nukkit.command.CommandSender;
-import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 
 public class EditCommand extends SimpleSubCommand {
     
-    private final MinigameCore plugin;
+    private final BrlnsReb plugin;
     private LinkedList<String> levelNames;
     
-    public EditCommand(MinigameCore plugin) {
+    public EditCommand(BrlnsReb plugin) {
         super("edit");
         this.setAliases(new String[] {
 				"edit"
@@ -141,7 +144,7 @@ public class EditCommand extends SimpleSubCommand {
         parameters1.add(param1);
         parameters1.add(param2);
         parameters1.add(CommandParameter.newEnum("name", new String[] {"name"}));
-        parameters1.add(CommandParameter.newType("mapName", CommandParamType.TEXT));
+        parameters1.add(CommandParameter.newType("mapName", CommandParamType.RAW_TEXT));
         paramList.add(parameters1);
 
         parameters2.add(param1);
@@ -165,13 +168,13 @@ public class EditCommand extends SimpleSubCommand {
         parameters5.add(param1);
         parameters5.add(param2);
         parameters5.add(CommandParameter.newEnum("builders", new String[] {"builders"}));
-        parameters5.add(CommandParameter.newType("buildersNames", CommandParamType.TEXT));
+        parameters5.add(CommandParameter.newType("buildersNames", CommandParamType.RAW_TEXT));
         paramList.add(parameters5);
 
         parameters6.add(param1);
         parameters6.add(param2);
         parameters6.add(CommandParameter.newEnum("builders-team", new String[] {"builders-team"}));
-        parameters6.add(CommandParameter.newType("buildersTeamName", CommandParamType.TEXT));
+        parameters6.add(CommandParameter.newType("buildersTeamName", CommandParamType.RAW_TEXT));
         paramList.add(parameters1);
 
 		return paramList;

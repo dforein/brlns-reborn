@@ -12,7 +12,7 @@ import cn.nukkit.math.Vector3;
 import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
-import org.brlnsreb.MinigameCore;
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.minigame.match.Arena;
 import org.brlnsreb.core.minigame.match.GameStateType;
 import org.brlnsreb.core.player.CustomPlayer;
@@ -26,7 +26,6 @@ import org.brlnsreb.mm.ui.BossBarSystem;
 import org.brlnsreb.mm.ui.ScoreboardSystem;
 import org.brlnsreb.mm.ui.SpectatorMenu;
 import org.brlnsreb.mm.ui.VotingMenu;
-import org.brlnsreb.utils.CustomPlaySoundPacket;
 import org.brlnsreb.utils.YamlUtil;
 
 import java.util.*;
@@ -34,7 +33,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class MurderMysteryGame {
     
-    private final MinigameCore plugin;
+    private final BrlnsReb plugin;
     private final MMConfig config;
     private final MMRoleManager roleManager;
     
@@ -70,7 +69,7 @@ public class MurderMysteryGame {
     private final Set<Entity> deadBodies = new HashSet<>();
     private final List<Position> redstonePositions = new ArrayList<>();
     
-    public MurderMysteryGame(MinigameCore plugin) {
+    public MurderMysteryGame(BrlnsReb plugin) {
         this.plugin = plugin;
         this.config = new MMConfig(plugin.getConfig());
         this.roleManager = new MMRoleManager();
@@ -740,13 +739,12 @@ public class MurderMysteryGame {
             config.getMessageNoPrefix("murderer-won-title") : 
             config.getMessageNoPrefix("innocents-won-title");
         
-        CustomPlaySoundPacket packet = new CustomPlaySoundPacket();
         for (Player p : getOnlinePlayers()) {
             p.sendTitle(TextFormat.colorize(titleMsg), "",
                         10, 60, 10);
 
             p.getLevel().addSound(p, Sound.RANDOM_CLICK, 1.0f, 1.0f, p);
-            packet.sendDirectionalSoundTo(p, "random.fizz");
+            SoundUtil.sendSoundTo(p, "entity.generic.extinguish_fire");
         }
         
         String chatMsg = murdererWin ? 
@@ -1178,7 +1176,7 @@ public class MurderMysteryGame {
         return deadBodies;
     }
 
-    public MinigameCore getPlugin() {
+    public BrlnsReb getPlugin() {
         return plugin;
     }
 

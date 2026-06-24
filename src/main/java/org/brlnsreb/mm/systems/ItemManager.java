@@ -1,5 +1,5 @@
 package org.brlnsreb.mm.systems;
-import org.brlnsreb.MinigameCore;
+import org.brlnsreb.BrlnsReb;
 
 import java.util.List;
 
@@ -12,15 +12,15 @@ import cn.nukkit.utils.TextFormat;
 
 public class ItemManager {
 
-    public static void giveLobbyItems(Player player, String bookName, MinigameCore plugin) {
+    public static void giveLobbyItems(Player player, String bookName, BrlnsReb plugin) {
         giveLobbyItems(player, bookName, "", true, plugin);
     }
 
-    public static void giveLobbyItems(Player player, String bookName, String netherStarName, MinigameCore plugin) {
+    public static void giveLobbyItems(Player player, String bookName, String netherStarName, BrlnsReb plugin) {
         giveLobbyItems(player, bookName, netherStarName, false, plugin);
     }
 
-    public static void giveLobbyItems(Player player, String bookName, String netherStarName, Boolean onlyRulesBook, MinigameCore plugin) {
+    public static void giveLobbyItems(Player player, String bookName, String netherStarName, Boolean onlyRulesBook, BrlnsReb plugin) {
         clearInventory(player);
         
         Item book = createRulesBook(plugin);
@@ -35,7 +35,7 @@ public class ItemManager {
         player.getInventory().sendContents(player);
     }
 
-    private static Item createRulesBook(MinigameCore plugin) {
+    private static Item createRulesBook(BrlnsReb plugin) {
         String title = plugin.getConfig().getString("lobby.rules-book.title", "Murder Mystery Rules");
         String author = plugin.getConfig().getString("lobby.rules-book.author", "Server");
         List<String> pages = plugin.getConfig().getStringList("lobby.rules-book.pages");
@@ -46,7 +46,7 @@ public class ItemManager {
         
         Item book = Item.get(Item.WRITTEN_BOOK);
         
-        CompoundTag tag = book.getNamedTag();
+        CompoundTag tag = book.getNbt();
         if (tag == null) {
             tag = new CompoundTag();
         }
@@ -66,7 +66,7 @@ public class ItemManager {
         }
         
         tag.putList("pages", pagesList);
-        book.setNamedTag(tag);
+        book.setNbt(tag);
         book.setCustomName(TextFormat.colorize("&o&l&fRules &7- Hold / Right Click"));
         
         return book;

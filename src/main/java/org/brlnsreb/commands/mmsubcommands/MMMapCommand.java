@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.brlnsreb.MinigameCore;
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.commands.MMOperatorCommand;
 import org.brlnsreb.commands.mmsubcommands.mapsubcommands.AddCommand;
 import org.brlnsreb.commands.mmsubcommands.mapsubcommands.AddVolumeCommand;
@@ -33,7 +33,7 @@ public class MMMapCommand extends ComplexSubCommand {
 
     private final List<SimpleSubCommand> subCommandsList = new ArrayList<>();
     
-    public MMMapCommand(MinigameCore plugin, MurderMysteryGame game, MMOperatorCommand fatherCommand) {
+    public MMMapCommand(BrlnsReb plugin, MurderMysteryGame game, MMOperatorCommand fatherCommand) {
         super("map");
         this.setAliases(new String[] {
 				"map"

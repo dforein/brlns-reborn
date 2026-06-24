@@ -1,6 +1,6 @@
 package org.brlnsreb.core.minigame;
 
-import org.brlnsreb.MinigameCore;
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.lobby.ui.MainLobbyBossBar;
@@ -46,7 +46,7 @@ public abstract class MinigameLobby extends Lobby {
             false
         );
 
-        Server.getInstance().getScheduler().scheduleRepeatingTask(MinigameCore.getInstance(), 
+        Server.getInstance().getScheduler().scheduleRepeatingTask(BrlnsReb.getInstance(), 
             () -> {
                 updateJoinNpcSubtitle();
             }, 100

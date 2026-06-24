@@ -29,7 +29,7 @@ import cn.nukkit.entity.effect.Effect;
 import cn.nukkit.entity.effect.EffectType;
 import cn.nukkit.utils.TextFormat;
 
-import org.brlnsreb.MinigameCore;
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.minigame.match.GameStateType;
 import org.brlnsreb.mm.MurderMysteryGame;
 import org.brlnsreb.mm.config.MMConfig;
