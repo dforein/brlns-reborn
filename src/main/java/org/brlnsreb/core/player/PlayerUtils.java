@@ -70,7 +70,7 @@ public class PlayerUtils {
     }
 
     private static void giveEffect(Player player, EffectType type, int duration, int amplifier, boolean isVisible) {
-        Effect effect = Effect.get(EffectType.NIGHT_VISION);
+        Effect effect = Effect.get(type);
         effect.setDuration(duration);
         effect.setAmplifier(amplifier);
         effect.setVisible(isVisible);

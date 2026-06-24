@@ -47,27 +47,26 @@ public class PlayerInteractListener implements Listener {
     //TODO: interact listener
     
     private static final HashSet<String> INTERACT_BLOCKS = new HashSet<>(Arrays.asList(
-            Block.CHEST, Block.TRAPPED_CHEST, Block.ENDER_CHEST, Block.COPPER_CHEST,
-            Block.FURNACE, Block.BLAST_FURNACE, Block.SMOKER,
-            Block.HOPPER, 
-            Block.BARREL, 
-            Block.BEACON, 
-            Block.BREWING_STAND,
-            Block.ANVIL, Block.CHIPPED_ANVIL, Block.DAMAGED_ANVIL,
-            Block.CARTOGRAPHY_TABLE, 
-            Block.CRAFTING_TABLE, 
-            Block.CRAFTER,
-            Block.DISPENSER, Block.DROPPER, 
-            Block.ENCHANTING_TABLE,
-            Block.GRINDSTONE, 
-            Block.LECTERN,
-            Block.LOOM,
-            Block.WALL_SIGN, Block.STANDING_SIGN,
-            Block.SMITHING_TABLE,
-            Block.STONECUTTER,
-            Block.DRAGON_EGG
-        )
-    );
+        Block.CHEST, Block.TRAPPED_CHEST, Block.ENDER_CHEST, Block.COPPER_CHEST,
+        Block.FURNACE, Block.BLAST_FURNACE, Block.SMOKER,
+        Block.HOPPER, 
+        Block.BARREL, 
+        Block.BEACON, 
+        Block.BREWING_STAND,
+        Block.ANVIL, Block.CHIPPED_ANVIL, Block.DAMAGED_ANVIL,
+        Block.CARTOGRAPHY_TABLE, 
+        Block.CRAFTING_TABLE, 
+        Block.CRAFTER,
+        Block.DISPENSER, Block.DROPPER, 
+        Block.ENCHANTING_TABLE,
+        Block.GRINDSTONE, 
+        Block.LECTERN,
+        Block.LOOM,
+        Block.WALL_SIGN, Block.STANDING_SIGN,
+        Block.SMITHING_TABLE,
+        Block.STONECUTTER,
+        Block.DRAGON_EGG
+    ));
 
     
     @EventHandler
