@@ -4,8 +4,8 @@ import java.util.Date;
 import java.util.LinkedList;
 
 import org.brlnsreb.commands.subcommands.SimpleSubCommand;
-import org.brlnsreb.mm.MurderMysteryGame;
-import org.brlnsreb.mm.systems.GoldSpawnMapper;
+import org.brlnsreb.minigames.mm.MurderMysteryGame;
+import org.brlnsreb.minigames.mm.systems.GoldSpawnMapper;
 
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParameter;

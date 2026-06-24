@@ -9,10 +9,10 @@ import java.util.List;
 
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.commands.subcommands.BasicSubCommand;
+import org.brlnsreb.minigames.mm.MurderMysteryGame;
 import org.brlnsreb.commands.mmsubcommands.MMJoinCommand;
 import org.brlnsreb.commands.mmsubcommands.MMJoinAllCommand;
 import org.brlnsreb.commands.mmsubcommands.MMLeaveCommand;
-import org.brlnsreb.mm.MurderMysteryGame;
 
 public class MMCommand extends cn.nukkit.command.Command {
 

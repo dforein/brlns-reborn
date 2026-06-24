@@ -6,8 +6,7 @@ import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.registry.Registries;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
-import org.brlnsreb.mm.entities.DeadBodyEntity;
-import org.brlnsreb.mm.entities.ThrownSwordEntity;
+
 import org.brlnsreb.utils.YamlUtil;
 
 import java.util.ArrayList;
@@ -19,6 +18,8 @@ import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.minigame.MinigameType;
 import org.brlnsreb.core.player.PlayerDataManager;
 import org.brlnsreb.generallobby.GeneralLobby;
+import org.brlnsreb.minigames.mm.entities.DeadBodyEntity;
+import org.brlnsreb.minigames.mm.entities.ThrownSwordEntity;
 
 public class BrlnsReb extends PluginBase {
     

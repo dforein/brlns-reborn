@@ -10,13 +10,13 @@ import java.util.List;
 
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.commands.subcommands.ComplexSubCommand;
+import org.brlnsreb.minigames.mm.MurderMysteryGame;
 import org.brlnsreb.commands.subcommands.BasicSubCommand;
 import org.brlnsreb.commands.mmsubcommands.MMDebugCommand;
 import org.brlnsreb.commands.mmsubcommands.MMDebugConsoleCommand;
 import org.brlnsreb.commands.mmsubcommands.MMMapCommand;
 import org.brlnsreb.commands.mmsubcommands.MMStartCommand;
 import org.brlnsreb.commands.mmsubcommands.MMStopCommand;
-import org.brlnsreb.mm.MurderMysteryGame;
 
 public class MMOperatorCommand extends cn.nukkit.command.Command {
 

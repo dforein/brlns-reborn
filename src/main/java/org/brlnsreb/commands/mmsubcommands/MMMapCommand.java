@@ -23,7 +23,7 @@ import org.brlnsreb.commands.mmsubcommands.mapsubcommands.ScanCommand;
 import org.brlnsreb.commands.mmsubcommands.mapsubcommands.ScanForBarriersCommand;
 import org.brlnsreb.commands.subcommands.ComplexSubCommand;
 import org.brlnsreb.commands.subcommands.SimpleSubCommand;
-import org.brlnsreb.mm.MurderMysteryGame;
+import org.brlnsreb.minigames.mm.MurderMysteryGame;
 
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParameter;

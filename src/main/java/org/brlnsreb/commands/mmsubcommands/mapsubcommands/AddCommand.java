@@ -10,7 +10,7 @@ import org.cloudburstmc.protocol.bedrock.data.command.CommandParamType;
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.commands.MMOperatorCommand;
 import org.brlnsreb.commands.subcommands.SimpleSubCommand;
-import org.brlnsreb.mm.MurderMysteryGame;
+import org.brlnsreb.minigames.mm.MurderMysteryGame;
 
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;

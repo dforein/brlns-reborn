@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.commands.subcommands.BasicSubCommand;
-import org.brlnsreb.mm.MurderMysteryGame;
+import org.brlnsreb.minigames.mm.MurderMysteryGame;
 
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.utils.TextFormat;

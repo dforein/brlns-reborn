@@ -3,7 +3,7 @@ package org.brlnsreb.core.minigame;
 import java.util.List;
 
 import org.brlnsreb.core.minigame.match.MinigameMatch;
-import org.brlnsreb.mm.MurderMystery;
+import org.brlnsreb.minigames.mm.MurderMystery;
 
 public class MinigameManager {
     

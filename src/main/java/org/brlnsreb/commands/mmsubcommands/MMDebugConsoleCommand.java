@@ -6,7 +6,7 @@ import org.cloudburstmc.protocol.bedrock.data.command.CommandParamType;
 
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.commands.subcommands.BasicSubCommand;
-import org.brlnsreb.mm.config.MMConfig;
+import org.brlnsreb.minigames.mm.config.MMConfig;
 
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParameter;

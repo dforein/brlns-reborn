@@ -32,12 +32,12 @@ import cn.nukkit.utils.TextFormat;
 
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.minigame.match.GameStateType;
-import org.brlnsreb.mm.MurderMysteryGame;
-import org.brlnsreb.mm.config.MMConfig;
-import org.brlnsreb.mm.roles.GamePlayer;
-import org.brlnsreb.mm.roles.MMRole;
-import org.brlnsreb.mm.systems.ItemManager;
-import org.brlnsreb.mm.ui.BossBarSystem;
+import org.brlnsreb.minigames.mm.MurderMysteryGame;
+import org.brlnsreb.minigames.mm.config.MMConfig;
+import org.brlnsreb.minigames.mm.roles.GamePlayer;
+import org.brlnsreb.minigames.mm.roles.MMRole;
+import org.brlnsreb.minigames.mm.systems.ItemManager;
+import org.brlnsreb.minigames.mm.ui.BossBarSystem;
 
 import java.util.*;
 

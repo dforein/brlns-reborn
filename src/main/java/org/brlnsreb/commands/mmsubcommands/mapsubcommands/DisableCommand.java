@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.brlnsreb.commands.MMOperatorCommand;
 import org.brlnsreb.commands.subcommands.SimpleSubCommand;
-import org.brlnsreb.mm.MurderMysteryGame;
+import org.brlnsreb.minigames.mm.MurderMysteryGame;
 
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParameter;
