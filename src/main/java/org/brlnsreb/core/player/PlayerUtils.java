@@ -13,6 +13,7 @@ import cn.nukkit.utils.DummyBossBar;
 public class PlayerUtils {
     
     public static void removeScoreboard(CustomPlayer p) {
+        if (!p.isOnline()) return;
         if (p.scoreboard != null) {
             p.removeScoreboard(p.scoreboard);
             p.scoreboard.removeViewer(p, DisplaySlot.SIDEBAR);
@@ -21,6 +22,7 @@ public class PlayerUtils {
     }
 
     public static void removeBossBar(CustomPlayer p) {
+        if (!p.isOnline()) return;
         if (!p.getDummyBossBars().isEmpty()) {
             for (DummyBossBar bar : p.getDummyBossBars().values()) {
                 bar.destroy(); 
@@ -52,6 +54,8 @@ public class PlayerUtils {
     }
 
     public static void setLobbyState(CustomPlayer p, PlayerStateType newState) {
+        if (!p.isOnline()) return;
+
         clearInventory(p);
         removeScoreboard(p);
         removeBossBar(p);
