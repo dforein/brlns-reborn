@@ -5,9 +5,6 @@ import java.util.LinkedList;
 import org.cloudburstmc.protocol.bedrock.data.actor.ActorFlags;
 import org.cloudburstmc.protocol.bedrock.data.command.CommandParamType;
 
-import org.cloudburstmc.protocol.bedrock.data.actor.ActorFlags;
-import org.cloudburstmc.protocol.bedrock.data.command.CommandParamType;
-
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.commands.subcommands.BasicSubCommand;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
@@ -161,10 +158,7 @@ public class MMDebugCommand extends BasicSubCommand {
                     }
                     break;
                 case "8":
-                    ((CustomPlayer) player).setGameSpectator(true);
-                    break;
-                case "9":
-                    ((CustomPlayer) player).setGameSpectator(false, true);
+                    ((CustomPlayer) player).setGameSpectator();
                     break;
                 case "10":
                     holo = new FloatingTextParticle(

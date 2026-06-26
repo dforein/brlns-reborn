@@ -1,6 +1,5 @@
 package org.brlnsreb.listeners.general;
 
-import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockButton;
 import cn.nukkit.block.BlockCake;
@@ -10,181 +9,116 @@ import cn.nukkit.block.BlockFarmland;
 import cn.nukkit.block.BlockFenceGate;
 import cn.nukkit.block.BlockLever;
 import cn.nukkit.block.BlockPressurePlateBase;
+import cn.nukkit.block.BlockTrapdoor;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.ItemFrameUseEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.event.player.PlayerInteractEvent.Action;
-import cn.nukkit.event.player.PlayerInteractEntityEvent;
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemBlazeRod;
-import cn.nukkit.item.ItemCompass;
-import cn.nukkit.item.ItemGoldenHoe;
-import cn.nukkit.item.ItemIronSword;
-import cn.nukkit.item.ItemNetherStar;
-import cn.nukkit.item.ItemYellowDye;
-import cn.nukkit.level.Sound;
+import cn.nukkit.event.player.PlayerBucketEmptyEvent;
+import cn.nukkit.event.player.PlayerBucketFillEvent;
+import cn.nukkit.event.player.PlayerInteractEntityEvent;
 import cn.nukkit.plugin.annotation.EventListener;
-import cn.nukkit.entity.item.EntityArmorStand;
-import cn.nukkit.entity.effect.Effect;
-import cn.nukkit.entity.effect.EffectType;
-import cn.nukkit.utils.TextFormat;
 
-import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.minigame.match.GameStateType;
-import org.brlnsreb.minigames.mm.MurderMysteryGame;
-import org.brlnsreb.minigames.mm.config.MMConfig;
-import org.brlnsreb.minigames.mm.roles.GamePlayer;
-import org.brlnsreb.minigames.mm.roles.MMRole;
-import org.brlnsreb.minigames.mm.systems.ItemManager;
-import org.brlnsreb.minigames.mm.ui.BossBarSystem;
-
-import java.util.*;
+import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.core.player.PlayerStateType;
+import org.brlnsreb.core.player.CustomPlayer.InteractMode;
+import org.brlnsreb.generallobby.items.MainLobbyItemManager;
 
 @EventListener
 public class PlayerInteractListener implements Listener {
 
-    //TODO: interact listener
-
-    private static final HashSet<String> INTERACT_BLOCKS = new HashSet<>(Arrays.asList(
-        Block.CHEST, Block.TRAPPED_CHEST, Block.ENDER_CHEST, Block.COPPER_CHEST,
-        Block.FURNACE, Block.BLAST_FURNACE, Block.SMOKER,
-        Block.HOPPER, 
-        Block.BARREL, 
-        Block.BEACON, 
-        Block.BREWING_STAND,
-        Block.ANVIL, Block.CHIPPED_ANVIL, Block.DAMAGED_ANVIL,
-        Block.CARTOGRAPHY_TABLE, 
-        Block.CRAFTING_TABLE, 
-        Block.CRAFTER,
-        Block.DISPENSER, Block.DROPPER, 
-        Block.ENCHANTING_TABLE,
-        Block.GRINDSTONE, 
-        Block.LECTERN,
-        Block.LOOM,
-        Block.WALL_SIGN, Block.STANDING_SIGN,
-        Block.SMITHING_TABLE,
-        Block.STONECUTTER,
-        Block.DRAGON_EGG
-    ));
-
-    
     @EventHandler
-    public void onInteractItemFrame(ItemFrameUseEvent event) {
+    public void onInteract(PlayerInteractEvent event) {
+        CustomPlayer player = (CustomPlayer) event.getPlayer();
 
+        checkItemInteraction(player, event.getAction(), event.getItem());
         
+        switch (player.interactMode) {
+            case FULL:
+                return;
+            
+            case LIMITED, ONLY_PLAYER_BLOCKS:
+                Block block = event.getBlock();
+                if (block != null) {
+                    if (block instanceof BlockDoor
+                        || block instanceof BlockFenceGate
+                        || block instanceof BlockTrapdoor
+                        || block instanceof BlockButton
+                        || block instanceof BlockLever
+                    ) return;
 
+                    if (player.state != PlayerStateType.LOBBY
+                        && (block instanceof BlockCake || block instanceof BlockCandleCake)
+                    ) return;
+
+                    if (event.getAction() == Action.PHYSICAL) {
+                        if (block instanceof BlockFarmland 
+                            || block instanceof BlockPressurePlateBase) {
+                            event.setCancelled();
+                        }
+                    } else {
+                        event.setCancelled();
+                    }
+                }
+                return;
+
+            case NOTHING:
+                event.setCancelled();
+                return;
+        }
+    }
+
+    private void checkItemInteraction(CustomPlayer player, Action action, Item item) {
+        if (item == null) return;
+        if (!(action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)) return;
+
+        if (player.state == PlayerStateType.LOBBY) {
+            MainLobbyItemManager.getInstance().onItemUse(player, item);
+        } else {
+            if (player.getMatch() != null) {
+                player.getMatch().onItemUse(player, item);
+            }
+        }
     }
 
     @EventHandler
     public void onInteractEntity(PlayerInteractEntityEvent event) {
-        Player player = event.getPlayer();
+        CustomPlayer player = (CustomPlayer) event.getPlayer();
 
-        if (event.getEntity() instanceof EntityArmorStand) {
-            
+        if (player.interactMode != InteractMode.FULL) {
+            event.setCancelled();
         }
-
-        
-        
-        if (handleItemInteraction(player, item, gp)) event.setCancelled();
-
     }
 
     @EventHandler
-    public void onInteract(PlayerInteractEvent event) {
+    public void onInteractItemFrame(ItemFrameUseEvent event) {
+        CustomPlayer player = (CustomPlayer) event.getPlayer();
 
-        Block block = event.getBlock();
-    
-        if (block != null) {
-            if (INTERACT_BLOCKS.contains(block.getId()) 
-                || block instanceof BlockCake               //TODO: remove later (cake)
-                || block instanceof BlockCandleCake) {      //TODO: remove later (cake)
-
-                event.setCancelled(true);
-                return;
-            }
-
-            if (event.getAction() == Action.PHYSICAL) {
-                if (block instanceof BlockFarmland || block instanceof BlockPressurePlateBase) {
-
-                    event.setCancelled(true);
-                    return;
-                }
-            }
+        if (player != null && 
+            player.interactMode != InteractMode.FULL
+        ) {
+            event.setCancelled();
         }
-
-        Player player = event.getPlayer();
-        GamePlayer gp = game.getRoleManager().getGamePlayer(player);
-        if (gp == null) return;
-
-        if (block != null) {
-            if (gp.getRole() == MMRole.SPECTATOR) {
-                if (block instanceof BlockDoor
-                    || block instanceof BlockFenceGate
-                    || block instanceof BlockButton
-                    || block instanceof BlockLever) {
-                    
-                    event.setCancelled(true);
-                    return;
-                }
-            }
-        }
-
-        Item item = event.getItem();
-        if (item == null) return;
-
-        if ((item instanceof ItemIronSword || item instanceof ItemGoldenHoe) 
-            && event.getAction() != Action.RIGHT_CLICK_AIR) return;
-        
-        if (handleItemInteraction(player, item, gp)) event.setCancelled();
-
     }
 
-    private boolean handleItemInteraction(Player player, Item item, GamePlayer gp) {
-        if (game.getState() == GameStateType.WAITING_LOBBY || game.getState() == GameStateType.LOBBY_COUNTDOWN) {
-            if (game.getPlayers().contains(player)) {
-                //game poll
-                if (item instanceof ItemNetherStar) {
-                    String customName = item.getCustomName();
-                    if (customName != null && customName.contains("Game Poll")) {
-                        game.getVotingMenu().openVotingMenu(player);
-                        return true;
-                    }
-                }
-            }
+    @EventHandler
+    public void onInteractBucketFill(PlayerBucketFillEvent event) {
+        CustomPlayer player = (CustomPlayer) event.getPlayer();
 
-            return false;
+        if (player.interactMode != InteractMode.FULL) {
+            event.setCancelled();
         }
-        
-        if (item instanceof ItemCompass && gp.getRole() == MMRole.SPECTATOR) {
-            game.getSpectatorMenu().openTeleportMenu(player);
-            return true;
-        }
+    }
 
-        if (!gp.isAlive()) return false;
-        MMConfig config = game.getConfig();
+    @EventHandler
+    public void onInteractBucketEmpty(PlayerBucketEmptyEvent event) {
+        CustomPlayer player = (CustomPlayer) event.getPlayer();
 
-        if (item instanceof ItemGoldenHoe) {
-            handleSheriffShoot(player, gp, config);
-            return true;
+        if (player.interactMode != InteractMode.FULL) {
+            event.setCancelled();
         }
-
-        else if (item instanceof ItemIronSword) {
-            handleMurdererThrow(player, gp, config);
-            return true;
-        }
-        
-        else if (item instanceof ItemBlazeRod) {
-            handleFlash(player, gp, config);
-            return true;
-        }
-        
-        else if (item instanceof ItemYellowDye) {
-            handleBecomeSheriff(player, gp, config);
-            return true;
-        }
-
-        return false;
     }
 
 }

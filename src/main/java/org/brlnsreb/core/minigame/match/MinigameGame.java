@@ -27,6 +27,6 @@ public abstract class MinigameGame {
     
     public abstract boolean checkWinCondition();    //should be considered also the case where everyone left the game, so no winners
 
-    public void onDeath(CustomPlayer player) {}        //override this if player death is allowed
+    public void onDeath(CustomPlayer player) {}     //override this if player death is allowed
 
 }

@@ -13,9 +13,7 @@ import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
-import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.generallobby.items.MainLobbyItemManager;
-import org.brlnsreb.generallobby.ui.GamesMenu;
 import org.brlnsreb.utils.YamlUtil;
 
 import cn.nukkit.Player;
@@ -40,8 +38,6 @@ public class GeneralLobby extends Lobby {
 
         this.bossBar.startBossBarUpdates(this.level);
         this.spawnAllNpcs();
-
-        GamesMenu.init(config);
     }
 
     protected PlayerStateType onJoinState() { 
@@ -53,16 +49,7 @@ public class GeneralLobby extends Lobby {
     }
 
     protected void onJoinItems(CustomPlayer player) {
-        giveLobbyItems(player);
-    }
-
-    public static void giveLobbyItems(CustomPlayer player) {
-        PlayerUtils.clearInventory(player);
-
-        items.giveGames(player);
-        items.giveMenu(player);
-        items.giveMagicStaff(player);
-        items.giveJoinGame(player);
+        items.giveLobbyItems(player);
     }
 
     private void spawnAllNpcs() {

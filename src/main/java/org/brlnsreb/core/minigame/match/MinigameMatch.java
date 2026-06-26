@@ -1,6 +1,8 @@
 package org.brlnsreb.core.minigame.match;
 
 import cn.nukkit.Player;
+import cn.nukkit.event.player.PlayerInteractEvent;
+import cn.nukkit.item.Item;
 import cn.nukkit.utils.Config;
 
 import java.util.HashSet;
@@ -10,6 +12,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.minigame.MinigameType;
+import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.Messages;
 
 public abstract class MinigameMatch {
@@ -45,6 +48,18 @@ public abstract class MinigameMatch {
 
         createWaitingLobby("waiting-lobby");
         createEndLobby("end-lobby");
+    }
+
+    public void onItemUse(CustomPlayer player, Item item) {
+        switch (state.current) {
+            case WAITING_LOBBY:
+                waitingLobby.onItemUse(player, item);
+                break;
+        
+            default:
+                if (player.getLevel().equals(game.getLevel())
+                break;
+        }
     }
 
     protected abstract void createWaitingLobby(String configPath);

@@ -1,15 +1,44 @@
 package org.brlnsreb.generallobby.items;
 
+import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.core.player.PlayerUtils;
+import org.brlnsreb.generallobby.ui.GamesMenu;
 import org.brlnsreb.utils.abstraction.ItemManagerAbstract;
 
 import cn.nukkit.Player;
+import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.Config;
 
 public class MainLobbyItemManager extends ItemManagerAbstract {
+
+    private static MainLobbyItemManager instance;
     
     public MainLobbyItemManager(Config config) {
         super(config);
+        instance = this;
+
+        GamesMenu.init(config);
+    }
+
+    public void onItemUse(CustomPlayer player, Item item) {
+        switch (item.getDisplayName()) {
+            case value:
+                
+                break;
+        
+            default:
+                break;
+        }
+    }
+
+    public void giveLobbyItems(Player player) {
+        PlayerUtils.clearInventory(player);
+
+        giveGames(player);
+        giveMenu(player);
+        giveMagicStaff(player);
+        giveJoinGame(player);
     }
 
     public void giveGames(Player player) {
@@ -28,5 +57,7 @@ public class MainLobbyItemManager extends ItemManagerAbstract {
     public void giveJoinGame(Player player) {
         giveItem(player, 7, Item.SLIME_BALL, getStr("items.join-game.name"));
     }
+
+    public static MainLobbyItemManager getInstance() { return instance; }
 
 }

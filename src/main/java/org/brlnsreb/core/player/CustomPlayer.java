@@ -2,6 +2,8 @@ package org.brlnsreb.core.player;
 
 import java.lang.ref.WeakReference;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -19,11 +21,14 @@ import org.brlnsreb.generallobby.GeneralLobby;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.block.Block;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
 import cn.nukkit.level.Position;
+import cn.nukkit.math.BlockFace;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.DoubleTag;
 import cn.nukkit.nbt.tag.ListTag;
@@ -43,9 +48,19 @@ public class CustomPlayer extends Player {
         FULL
     }
 
+    public enum InteractMode {
+        NOTHING,
+        LIMITED,                    //doors, fences, trapdoors, buttons, levers, cakes (except lobbies, here cakes not allowed)
+        ONLY_PLAYER_BLOCKS,         //limited + blocks placed by players
+        FULL
+    }
+
     public DamageMode damageMode = DamageMode.INVULNERABLE;
     public boolean canAttackPlayers = false;
     public boolean attackEvent = false;
+
+    public InteractMode interactMode = InteractMode.LIMITED;
+    private static HashMap<Integer, HashSet<Vector3>> playerBlocks = new HashMap<>();   //Integer -> levelId
 
     public PlayerStateType state = null;
     public Minigame currentMinigame = null;
@@ -81,19 +96,12 @@ public class CustomPlayer extends Player {
     public boolean isGameSpectator() {
         return this.state == PlayerStateType.SPECTATOR;
     }
-
-    public void setGameSpectator(boolean value) {
-        this.setGameSpectator(value, false);
-    }
     
-    public void setGameSpectator(boolean value, boolean spawnToAll) {
-        if (value) {
-            this.state = PlayerStateType.SPECTATOR;
-            this.despawnFromAll();
-        } else {
-            if (spawnToAll) this.spawnToAll();
-            this.state = null;
-        }
+    public void setGameSpectator() {
+        this.state = PlayerStateType.SPECTATOR;
+        this.setAttackVars(DamageMode.INVULNERABLE, false, false);
+        this.interactMode = InteractMode.NOTHING;
+        this.despawnFromAll();
     }
 
     public boolean isTeleporting() {
@@ -154,6 +162,46 @@ public class CustomPlayer extends Player {
 
     public void setMatch(MinigameMatch match) {
         this.currentMatch = new WeakReference<>(match);
+    }
+
+    //interact logic
+
+    public static void putPlacedBlock(Block block) {
+        int levelId = block.getLevel().getId();
+
+        if (!playerBlocks.containsKey(levelId)) {
+            playerBlocks.put(levelId, new HashSet<Vector3>());
+        }
+
+        playerBlocks.get(levelId).add(block.getVector3());
+    }
+
+    public static void removeLevel(int levelId) {
+        playerBlocks.remove(levelId);
+    }
+
+    @Override
+    public void onBlockBreakStart(Vector3 pos, BlockFace face) {
+        switch (interactMode) {
+            case FULL:
+                super.onBlockBreakStart(pos, face);
+                break;
+
+            case ONLY_PLAYER_BLOCKS:
+                if (playerBlocks.get(level.getId()).contains(pos)) {
+                    super.onBlockBreakStart(pos, face);
+                }
+                break;
+        
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public boolean sleepOn(Vector3 pos) {
+        if (interactMode != InteractMode.FULL) return false;
+        return super.sleepOn(pos);
     }
 
 

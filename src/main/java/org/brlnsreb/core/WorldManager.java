@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.YamlUtil;
 
 import cn.nukkit.Server;
@@ -77,7 +78,8 @@ public class WorldManager {
     public static void unloadLevel(Level level) {
         server.getScheduler().scheduleDelayedTask(() -> { server.unloadLevel(level, true); }, 20);
 
-        if (enabledPhysicsLevels.contains(level.getId())) enabledPhysicsLevels.remove(level.getId());
+        CustomPlayer.removeLevel(level.getId());
+        enabledPhysicsLevels.remove(level.getId());
     }
 
     public static void setGameRules(Level level) {
