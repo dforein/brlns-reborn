@@ -7,6 +7,7 @@ import org.brlnsreb.minigames.mm.roles.MMRole;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.player.PlayerDropItemEvent;
+import cn.nukkit.event.player.PlayerItemHeldEvent;
 
 public class MMPlayerInventoryListener implements Listener {
 
@@ -19,6 +20,11 @@ public class MMPlayerInventoryListener implements Listener {
     @EventHandler
     public void onDrop(PlayerDropItemEvent event) {
         event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onItemHeld(PlayerItemHeldEvent event) {
+        
     }
     
     //UNUSED: replaced with old mechanics due to new features
