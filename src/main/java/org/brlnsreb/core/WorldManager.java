@@ -76,6 +76,8 @@ public class WorldManager {
 
     public static void unloadLevel(Level level) {
         server.getScheduler().scheduleDelayedTask(() -> { server.unloadLevel(level, true); }, 20);
+
+        if (enabledPhysicsLevels.contains(level.getId())) enabledPhysicsLevels.remove(level.getId());
     }
 
     public static void setGameRules(Level level) {
@@ -144,14 +146,6 @@ public class WorldManager {
 
     public static void enablePhysicsIn(int levelId) {
         enabledPhysicsLevels.add(levelId);
-    }
-
-    public static void removeFromEnabledPhysicsLevels(Level level) {
-        enabledPhysicsLevels.remove(level.getId());
-    }
-
-    public static void removeFromEnabledPhysicsLevels(int levelId) {
-        enabledPhysicsLevels.remove(levelId);
     }
 
     public static HashSet<Integer> getEnabledPhysicsLevels() { return enabledPhysicsLevels; }

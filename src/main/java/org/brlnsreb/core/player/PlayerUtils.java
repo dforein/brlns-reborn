@@ -1,7 +1,7 @@
 package org.brlnsreb.core.player;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.player.CustomPlayer.DamageState;
+import org.brlnsreb.core.player.CustomPlayer.DamageMode;
 
 import cn.nukkit.Player;
 import cn.nukkit.entity.effect.Effect;
@@ -70,7 +70,7 @@ public class PlayerUtils {
 
         p.state = newState;
 
-        p.setAttackVars(DamageState.INVULNERABLE, false, false);
+        p.setAttackVars(DamageMode.INVULNERABLE, false, false);
         p.setGamemode(Player.ADVENTURE);
 
         p.removeAllEffects();

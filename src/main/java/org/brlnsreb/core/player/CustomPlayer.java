@@ -33,7 +33,7 @@ import cn.nukkit.utils.TextFormat;
 
 public class CustomPlayer extends Player {
 
-    public enum DamageState {
+    public enum DamageMode {
         INVULNERABLE,
         ONLY_INANIMATE,
         ONLY_PLAYERS,
@@ -43,7 +43,7 @@ public class CustomPlayer extends Player {
         FULL
     }
 
-    public DamageState damageState = DamageState.INVULNERABLE;
+    public DamageMode damageMode = DamageMode.INVULNERABLE;
     public boolean canAttackPlayers = false;
     public boolean attackEvent = false;
 
@@ -148,8 +148,19 @@ public class CustomPlayer extends Player {
         super.spawnTo(player);
     }
 
-    public void setAttackVars(DamageState damageState, boolean canAttackPlayers, boolean attackEvent) {
-        this.damageState = damageState;
+    public MinigameMatch getMatch() {
+        return this.currentMatch.get();
+    }
+
+    public void setMatch(MinigameMatch match) {
+        this.currentMatch = new WeakReference<>(match);
+    }
+
+
+    //attack logic
+
+    public void setAttackVars(DamageMode damageMode, boolean canAttackPlayers, boolean attackEvent) {
+        this.damageMode = damageMode;
         this.canAttackPlayers = canAttackPlayers;
         this.attackEvent = attackEvent;
     }
@@ -162,7 +173,7 @@ public class CustomPlayer extends Player {
         // - work on setCancelled use (for listeners)
         // - avoid death? compare damage and health
 
-        switch (this.damageState) {
+        switch (this.damageMode) {
             case INVULNERABLE:
                 break;
 
@@ -224,13 +235,8 @@ public class CustomPlayer extends Player {
         return true;
     }
 
-    public MinigameMatch getMatch() {
-        return this.currentMatch.get();
-    }
 
-    public void setMatch(MinigameMatch match) {
-        this.currentMatch = new WeakReference<>(match);
-    }
+    //save logic
 
     @Override
     public void saveNBT() {

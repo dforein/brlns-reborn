@@ -45,7 +45,7 @@ import java.util.*;
 public class PlayerInteractListener implements Listener {
 
     //TODO: interact listener
-    
+
     private static final HashSet<String> INTERACT_BLOCKS = new HashSet<>(Arrays.asList(
         Block.CHEST, Block.TRAPPED_CHEST, Block.ENDER_CHEST, Block.COPPER_CHEST,
         Block.FURNACE, Block.BLAST_FURNACE, Block.SMOKER,
@@ -70,14 +70,14 @@ public class PlayerInteractListener implements Listener {
 
     
     @EventHandler
-    public void onItemFrameInteract(ItemFrameUseEvent event) {
+    public void onInteractItemFrame(ItemFrameUseEvent event) {
 
         
 
     }
 
     @EventHandler
-    public void onPlayerInteract(PlayerInteractEntityEvent event) {
+    public void onInteractEntity(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
 
         if (event.getEntity() instanceof EntityArmorStand) {
