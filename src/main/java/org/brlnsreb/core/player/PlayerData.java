@@ -25,19 +25,15 @@ public class PlayerData {
     }
 
     public void addCoins(int deltaCoins) {
-        this.coins += deltaCoins;
+        if (this.coins < -deltaCoins) {
+            this.coins = 0;
+        } else {
+            this.coins -= deltaCoins;
+        }
     }
 
     public void setCoins(int coins) {
         this.coins = coins;
-    }
-
-    public void removeCoins(int absDeltaCoins) {
-        if (this.coins < absDeltaCoins) {
-            this.coins = 0;
-        } else {
-            this.coins -= absDeltaCoins;
-        }
     }
 
     public void addExp(int deltaExp) {
