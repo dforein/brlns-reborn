@@ -6,6 +6,7 @@ import org.brlnsreb.core.player.CustomPlayer.DamageState;
 import cn.nukkit.Player;
 import cn.nukkit.entity.effect.Effect;
 import cn.nukkit.entity.effect.EffectType;
+import cn.nukkit.item.Item;
 import cn.nukkit.level.Position;
 import cn.nukkit.scoreboard.data.DisplaySlot;
 import cn.nukkit.utils.DummyBossBar;
@@ -95,6 +96,36 @@ public class PlayerUtils {
 
         p.getInventory().sendContents(p);
         p.getCursorInventory().sendContents(p);
+    }
+
+    public static void clearItem(Player player, String itemId) {
+        clearItem(player, itemId, false);
+    }
+
+    public static void clearItem(Player player, String itemId, boolean continueSearch) {
+        for (int i = 0; i < player.getInventory().getSize(); i++) {
+            Item itemPointed = player.getInventory().getItem(i);
+
+            if (itemPointed.getId().equals(itemId)) {
+                player.getInventory().clear(i);
+                if (!continueSearch) break;
+            }
+        }
+    }
+    
+    public static void clearItem(Player player, String itemId, String tag) {
+        clearItem(player, itemId, tag, false);
+    }
+
+    public static void clearItem(Player player, String itemId, String tag, boolean continueSearch) {
+        for (int i = 0; i < player.getInventory().getSize(); i++) {
+            Item itemPointed = player.getInventory().getItem(i);
+
+            if (itemPointed.getId().equals(itemId) && itemPointed.hasTag(tag)) {
+                player.getInventory().clear(i);
+                if (!continueSearch) break;
+            }
+        }
     }
 
 }
