@@ -87,7 +87,7 @@ public class GeneralLobby extends Lobby {
     }
 
     private void updateNpcSubtitle(NPCEntity npc) {
-        String subtitle = YamlUtil.getStr(getConfigPath() + "npc.text2", config).formatted(
+        String subtitle = YamlUtil.getStr(configPath() + "npc.text2", config).formatted(
             minigame.getNameTag(),
             minigame.getMainPendingMatch().getNumber(),
             minigame.getMainPendingMatch().getPlayers().size()
@@ -118,6 +118,6 @@ public class GeneralLobby extends Lobby {
     public Config getMessages() {
         return ConfigManager.getConfig("general-lobby/messages.yml");
     }
-    public String getConfigPath() { return ""; }
+    public String requireConfigPath() { return ""; }
     
 }

@@ -1,12 +1,12 @@
 package org.brlnsreb.generallobby.items;
 
-import org.brlnsreb.utils.abstraction.ItemManagerAbstract;
+import org.brlnsreb.utils.ItemManager;
 
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.Config;
 
-public class MainLobbyItemManager extends ItemManagerAbstract {
+public class MainLobbyItemManager extends ItemManager {
     
     public MainLobbyItemManager(Config config) {
         super(config);

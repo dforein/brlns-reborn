@@ -1,3 +1,5 @@
+settings:
+  physics-enabled: false
 lobby:
   npc:
 game:

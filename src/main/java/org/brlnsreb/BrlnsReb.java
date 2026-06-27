@@ -31,6 +31,7 @@ public class BrlnsReb extends PluginBase {
     private GeneralLobby generalLobby;
 
     private final String[] RESOURCES = {
+            "global/config.yml",
             "global/database.yml",
             "global/messages.yml",
             "general-lobby/config.yml",

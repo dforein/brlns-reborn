@@ -83,6 +83,6 @@ public abstract class MinigameLobby extends Lobby {
 
     public Config getNewConfig() { return minigame.getConfig(); }
     public Config getNewMessages() { return minigame.getMessages(); }
-    public String getConfigPath() { return "lobby."; }
+    public String requireConfigPath() { return "lobby."; }
 
 }

@@ -8,6 +8,7 @@ import org.brlnsreb.core.WorldManager;
 import org.brlnsreb.core.lobby.entities.HologramEntity;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.minigame.Minigame;
+import org.brlnsreb.core.minigame.match.MinigameMatch;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
@@ -21,26 +22,39 @@ import cn.nukkit.utils.Config;
 
 public abstract class Lobby {
 
-    protected final Level level;
     protected final Minigame minigame;
+    protected final MinigameMatch match;
+
+    protected final Level level;
     protected Position spawnPos;
+
     protected Config config;
     protected Config messages;
     protected Map<NPCEntity, String> npcConfigPathMap = new HashMap<>();
 
-    public Lobby(Minigame minigame) {
+    public Lobby(Minigame minigame, MinigameMatch match) {
         this.minigame = minigame;
-        this.config = getConfig();
-        this.messages = getMessages();
+        this.match = match;
 
         String levelPath = configPath().equals("") ?
             "world" : configPath() + ".world";
         this.level = WorldManager.loadLobbyLevel(config.getString(levelPath));
         this.spawnPos = YamlUtil.parsePosition(config.getString(configPath() + "spawn"), this.level);
+
+        this.config = getConfig();
+        this.messages = getMessages();
+    }
+
+    public Lobby(Minigame minigame) {
+        this(minigame, null);
+    }
+
+    public Lobby(MinigameMatch match) {
+        this(match.getMinigame(), match);
     }
 
     public Lobby() {
-        this(null);
+        this(null, null);
     }
 
     public boolean onJoin(Player player) {
@@ -52,6 +66,8 @@ public abstract class Lobby {
 
         onJoinBossBar(p);
         onJoinItems(p);
+
+        p.setMatch(match);
 
         return true;
     }
@@ -116,7 +132,7 @@ public abstract class Lobby {
     public Level getLevel() { return this.level; }
     public abstract Config getConfig();
     public abstract Config getMessages();
-    public abstract String getConfigPath();
-    public String configPath() { return YamlUtil.checkConfigPath(getConfigPath()); }
+    public abstract String requireConfigPath();
+    public String configPath() { return YamlUtil.checkConfigPath(requireConfigPath()); }
 
 }

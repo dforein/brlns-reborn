@@ -1,0 +1,17 @@
+items:
+  game-poll:
+    item-name: '&o&l&dGame Poll &r&7- Hold / Right Click'
+    times:
+    - Day
+    - Sunrise
+    - Sunset
+    - Night
+
+waiting-lobby-bossbar:
+  max-countdown: 45
+  shortened-countdown: 10
+  medium-threshold: 60
+  short-threshold: 10
+  text-long: '&l&eStarting in &6%dm %ds'
+  text-medium: '&l&eStarting in &6%ds'
+  text-short: '&l&eStarting in &c%ds'

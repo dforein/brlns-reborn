@@ -14,7 +14,9 @@ import org.cloudburstmc.protocol.common.util.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.minigame.Minigame;
+import org.brlnsreb.core.minigame.match.MinigameGameExpand;
 import org.brlnsreb.core.minigame.match.MinigameMatch;
+import org.brlnsreb.core.minigame.match.MinigameMatchExpand;
 import org.brlnsreb.generallobby.GeneralLobby;
 
 import cn.nukkit.Player;
@@ -228,8 +230,9 @@ public class CustomPlayer extends Player {
         super.attack(source);               //to show the damage animation
         this.setHealthCurrent(this.getHealthMax());
 
-        if (currentMinigame != null) {
-            this.getMatch().getGame().onDeath(this);
+        MinigameMatch match = getMatch();
+        if (match != null && match instanceof MinigameMatchExpand) {
+            ((MinigameGameExpand) match.getGame()).onDeath(this);
         }
 
         return true;

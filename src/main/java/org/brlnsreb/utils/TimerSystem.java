@@ -1,19 +1,17 @@
-package org.brlnsreb.minigames.mm.systems;
+package org.brlnsreb.utils;
 
 import org.brlnsreb.BrlnsReb;
 
+import cn.nukkit.Server;
 import cn.nukkit.scheduler.Task;
 
 public class TimerSystem {
     
-    private final BrlnsReb plugin;
     private int secondsRemaining;
-    private boolean firstSecond;
     private Task task;
     private Runnable onTick;
     
-    public TimerSystem(BrlnsReb plugin, int duration) {
-        this.plugin = plugin;
+    public TimerSystem(int duration) {
         this.secondsRemaining = duration;
     }
 
@@ -31,16 +29,14 @@ public class TimerSystem {
     private void start(Runnable onComplete) {
         if (task != null) { task.cancel(); }
 
-        firstSecond = true;
+        if (onTick != null) {
+            onTick.run();
+        }
 
         task = new Task() {
             @Override
             public void onRun(int currentTick) {
-                if (firstSecond) {
-                    firstSecond = false;
-                } else {
-                    secondsRemaining--;
-                }
+                secondsRemaining--;
                 
                 if (secondsRemaining <= 0) {
                     cancel();
@@ -54,7 +50,7 @@ public class TimerSystem {
                 }
             }
         };
-        plugin.getServer().getScheduler().scheduleRepeatingTask(plugin, task, 20);
+        Server.getInstance().getScheduler().scheduleDelayedRepeatingTask(BrlnsReb.getInstance(), task, 20, 20);
     }
     
     public void stop() {
