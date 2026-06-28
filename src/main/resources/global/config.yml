@@ -17,3 +17,10 @@ match:
         - Sunrise
         - Sunset
         - Night
+  game:
+    items:
+      spectator:
+        teleporter:
+          name: '&l&o&eTeleporter'
+        actions:
+          name: '&l&o&eActions'

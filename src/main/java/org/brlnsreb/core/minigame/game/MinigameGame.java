@@ -2,13 +2,20 @@ package org.brlnsreb.core.minigame.game;
 
 import java.util.Set;
 
+import org.brlnsreb.core.ConfigManager;
+import org.brlnsreb.core.minigame.game.items.SpectatorItemManager;
 import org.brlnsreb.core.minigame.match.GameState;
+import org.brlnsreb.core.minigame.match.GameStateType;
 import org.brlnsreb.core.minigame.match.MinigameMatch;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
+import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.utils.Messages;
+import org.brlnsreb.utils.TimerSystem;
 
+import cn.nukkit.level.Position;
 import cn.nukkit.utils.Config;
+import cn.nukkit.utils.TextFormat;
 
 public abstract class MinigameGame {
 
@@ -19,6 +26,9 @@ public abstract class MinigameGame {
 
     protected final Config config;
     protected final Messages msgUtil;
+    protected final SpectatorItemManager spectatorItems;
+
+    protected TimerSystem timer;
 
     public MinigameGame(MinigameMatch match, String map) {
         this.match = match;
@@ -28,6 +38,7 @@ public abstract class MinigameGame {
 
         this.config = match.getConfig();
         this.msgUtil = match.getMsgUtil();
+        this.spectatorItems = new SpectatorItemManager();
     }
 
     private Arena prepareArena(String map, MinigameMatch match) {
@@ -42,31 +53,107 @@ public abstract class MinigameGame {
     //join-leave logic
 
     public void onJoin(CustomPlayer player) {
-        player.state = PlayerStateType.TELEPORTING;
-        onJoinTeleport(player);
+        PlayerUtils.changeWorld(player, onJoinPosition(player));
 
         player.state = PlayerStateType.PLAYING;
+        onJoinPreparePlayer(player);
+        prepareGameData(player);
     }
 
-    protected abstract void onJoinTeleport(CustomPlayer player);
-    protected abstract void preparePlayer(CustomPlayer player);
+    protected abstract Position onJoinPosition(CustomPlayer player);
+    protected abstract void onJoinPreparePlayer(CustomPlayer player);
+    protected abstract void prepareGameData(CustomPlayer player);
+
+    public void onJoinAsSpectator(CustomPlayer player) {
+        PlayerUtils.changeWorld(player, onJoinPosition(player));
+
+        player.setGameSpectator(true);
+        spectatorItems.giveTeleporter(player);
+        spectatorItems.giveActions(player);
+
+        onJoinPrepareSpectator(player);
+    }
+
+    protected abstract void onJoinPrepareSpectator(CustomPlayer player);
 
     public abstract void onLeave(CustomPlayer player);
+    protected abstract void prepareAndSaveData(CustomPlayer player);
 
 
-    //game lifecycle
+    //GAME LIFECYCLE
+
+    //pregame
+
+    public void onPregameStart() {
+        for (CustomPlayer p : players) {
+            onJoin(p);
+        }
+
+        prepareGame();
+        onPregameCountdown();
+    }
+
+    protected abstract void prepareGame();
+
+
+    //pregame countdown
+
+    protected void onPregameCountdown() {
+        state.current = GameStateType.PREGAME_COUNTDOWN;
+
+        Config globalConfig = ConfigManager.getConfig("global/config.yml");
+        int secondsCountdown = globalConfig.getInt("match.game.pregame-countdown-seconds");
+
+        timer = new TimerSystem(secondsCountdown);
+        timer.start(secondsCountdown, () -> {
+            int secondsRemaining = timer.getSecondsRemaining();
+
+            updatePregameScoreboards(secondsRemaining);
+
+            if (secondsRemaining <= 3) {
+                for (CustomPlayer p : players) {
+                    p.sendTitle(TextFormat.colorize("&l&a" + secondsRemaining), "", 4, 17, 4);
+                }
+            }
+        }, this::onGameStart);
+    }
+
+    protected abstract void updatePregameScoreboards(int secondsRemaining);
+
+
+    //ingame
+
+    protected void onGameStart() {
+        state.current = GameStateType.IN_GAME;
+        startGame();
+    }
+
+    protected abstract void startGame();
+
+
+    //ending
+
+    protected void onGameEnding() {
+        state.current = GameStateType.ENDING;
+        
+        for (CustomPlayer p : players) {
+            prepareAndSaveData(p);
+        }
+        
+        endGame();
+    }
+
+    protected abstract void endGame();
+    public abstract boolean checkWinCondition();    //should be considered also the case where everyone left the game, so no winners
+
+
+    //others
 
     public void close() {
+        //pre-start close
         arena.close();
     }
-    
-    public void onGameStart() {
-        
-    }
 
-    public abstract void onGameEnding();
     public abstract void forceStop();
-    
-    public abstract boolean checkWinCondition();    //should be considered also the case where everyone left the game, so no winners
 
 }

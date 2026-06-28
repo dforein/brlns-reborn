@@ -65,8 +65,11 @@ public abstract class MinigameMatch {
         }
     }
 
-    public boolean onJoinAsSpectator(CustomPlayer player) {
-
+    public void onJoinAsSpectator(CustomPlayer player) {
+        if (game != null) {
+            game.onJoinAsSpectator(player);
+            players.add(player);
+        }
     }
 
     public void onLeave(CustomPlayer player) {
@@ -101,7 +104,7 @@ public abstract class MinigameMatch {
     }
 
     public void onGameStart() {
-        game.onGameStart();
+        game.onPregameStart();
     }
 
     public void stopMatch() {
