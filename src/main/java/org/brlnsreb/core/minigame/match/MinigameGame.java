@@ -7,16 +7,18 @@ import org.brlnsreb.utils.Messages;
 
 public abstract class MinigameGame {
 
-    protected GameState state;
+    protected final MinigameMatch match;
+    protected final GameState state;
     protected final Set<CustomPlayer> players;
     protected final Arena arena;
     protected final Messages msgUtil;
 
     public MinigameGame(MinigameMatch match, String map) {
+        this.match = match;
+        this.state = match.getState();
         this.players = match.getPlayers();
         this.arena = prepareArena(map, match);
         this.msgUtil = match.getMsgUtil();
-        this.state = match.getState();
     }
 
     private Arena prepareArena(String map, MinigameMatch match) {

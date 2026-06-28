@@ -1,6 +1,7 @@
 package org.brlnsreb.core.minigame.match;
 
 import org.brlnsreb.core.minigame.MinigameType;
+import org.brlnsreb.core.player.CustomPlayer;
 
 public abstract class MinigameMatchExpand extends MinigameMatch {
 
@@ -8,9 +9,14 @@ public abstract class MinigameMatchExpand extends MinigameMatch {
     
     public MinigameMatchExpand(MinigameType minigame, int matchNumber) {
         super(minigame, matchNumber);
-        createEndLobby("end-lobby");
+        this.endLobby = createEndLobby("end-lobby");
     }
 
-    protected abstract void createEndLobby(String configPath);
+    public void onDeath(CustomPlayer player) {
+        players.remove(player);
+        endLobby.onJoin(player);
+    }
+
+    protected abstract EndLobby createEndLobby(String configPath);
 
 }

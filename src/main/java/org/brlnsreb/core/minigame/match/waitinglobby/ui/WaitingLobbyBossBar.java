@@ -22,14 +22,17 @@ public class WaitingLobbyBossBar extends BossBarAbstract {
     private final int shortThreshold;
 
     private Integer currentSeconds = null;
+    private final int secondsCountdown;
 
-    public WaitingLobbyBossBar(WaitingLobby waitingLobby) {
+    public WaitingLobbyBossBar(WaitingLobby waitingLobby, int secondsCountdown) {
         this.players = waitingLobby.getPlayers();
 
         this.config = ConfigManager.getConfig("global/config.yml");
 
         this.mediumThreshold = config.getInt(configPath + "medium-threshold");
         this.shortThreshold = config.getInt(configPath + "short-threshold");
+
+        this.secondsCountdown = secondsCountdown;
     }
 
     public void updateWaitingLobbyBossBar() {
@@ -41,7 +44,7 @@ public class WaitingLobbyBossBar extends BossBarAbstract {
         }
     }
 
-    public void updateWaitingLobbyBossBar(int seconds, int maxSeconds) {
+    public void updateWaitingLobbyBossBar(int seconds) {
         this.currentSeconds = seconds;
 
         for (Player p : players) {
@@ -49,7 +52,7 @@ public class WaitingLobbyBossBar extends BossBarAbstract {
                 (CustomPlayer) p,
                 formatCountdownMessage(seconds),
                 seconds,
-                maxSeconds
+                secondsCountdown
             );
         }
     }
@@ -61,9 +64,11 @@ public class WaitingLobbyBossBar extends BossBarAbstract {
                 YamlUtil.getStr(configPath + "text-waiting-players", config)
             );
         } else {
-            updateBossBar(
+            updateCountdown(
                 (CustomPlayer) player, 
-                formatCountdownMessage(this.currentSeconds)
+                formatCountdownMessage(this.currentSeconds),
+                currentSeconds,
+                secondsCountdown
             );
         }
     }

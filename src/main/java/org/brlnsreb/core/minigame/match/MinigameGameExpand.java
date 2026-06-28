@@ -9,7 +9,7 @@ public abstract class MinigameGameExpand extends MinigameGame {
     }
 
     public void onDeath(CustomPlayer player) {
-
+        ((MinigameMatchExpand) match).onDeath(player);
     }
     
 }

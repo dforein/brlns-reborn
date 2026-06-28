@@ -69,7 +69,7 @@ public abstract class WaitingLobby extends Lobby {
         );
 
         this.msgUtil = match.getMsgUtil();
-        this.bossBar = new WaitingLobbyBossBar(this);
+        this.bossBar = new WaitingLobbyBossBar(this, secondsCountdown);
         this.scoreboard = new WaitingLobbyScoreboard(match);
         this.items = requireItemManager();
 
@@ -159,7 +159,7 @@ public abstract class WaitingLobby extends Lobby {
                 shortenCountdown(false);
             }
 
-            bossBar.updateWaitingLobbyBossBar(remaining, secondsCountdown);
+            bossBar.updateWaitingLobbyBossBar(remaining);
         });
     }
 
@@ -174,7 +174,7 @@ public abstract class WaitingLobby extends Lobby {
         timer.start(secondsCountdown, match::onGameStart, () -> {
             int remaining = timer.getSecondsRemaining();
 
-            bossBar.updateWaitingLobbyBossBar(remaining, secondsCountdown);
+            bossBar.updateWaitingLobbyBossBar(remaining);
             
             float pitch = ThreadLocalRandom.current().nextFloat(0.9f, 1.01f);
             for (Player p : players) {
