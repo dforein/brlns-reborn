@@ -1,7 +1,9 @@
-package org.brlnsreb.core.minigame.match;
+package org.brlnsreb.core.minigame.game;
 
 import java.util.Set;
 
+import org.brlnsreb.core.minigame.match.GameState;
+import org.brlnsreb.core.minigame.match.MinigameMatch;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.Messages;
 

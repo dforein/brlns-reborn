@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.brlnsreb.commands.subcommands.SimpleSubCommand;
-import org.brlnsreb.core.minigame.match.Arena;
+import org.brlnsreb.core.minigame.game.Arena;
 import org.brlnsreb.BrlnsReb;
 
 import cn.nukkit.Player;

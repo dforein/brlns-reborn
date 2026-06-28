@@ -14,7 +14,7 @@ import org.cloudburstmc.protocol.common.util.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.minigame.Minigame;
-import org.brlnsreb.core.minigame.match.MinigameGameExpand;
+import org.brlnsreb.core.minigame.game.MinigameGameExpand;
 import org.brlnsreb.core.minigame.match.MinigameMatch;
 import org.brlnsreb.core.minigame.match.MinigameMatchExpand;
 import org.brlnsreb.generallobby.GeneralLobby;

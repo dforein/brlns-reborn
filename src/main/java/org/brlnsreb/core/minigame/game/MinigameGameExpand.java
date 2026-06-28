@@ -1,5 +1,7 @@
-package org.brlnsreb.core.minigame.match;
+package org.brlnsreb.core.minigame.game;
 
+import org.brlnsreb.core.minigame.match.MinigameMatch;
+import org.brlnsreb.core.minigame.match.MinigameMatchExpand;
 import org.brlnsreb.core.player.CustomPlayer;
 
 public abstract class MinigameGameExpand extends MinigameGame {
