@@ -9,7 +9,6 @@ import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.generallobby.GeneralLobby;
 import org.brlnsreb.utils.YamlUtil;
 
-import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.utils.Config;
 
@@ -47,7 +46,7 @@ public abstract class MinigameLobby extends Lobby {
 
         NPCEntity npc = spawnNpc(
             configPath,
-            (Player player) -> { minigame.onMatchJoin(player); },
+            (CustomPlayer player) -> { minigame.onMatchJoin(player); },
             false
         );
 

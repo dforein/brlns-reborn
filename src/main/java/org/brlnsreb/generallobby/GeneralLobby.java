@@ -18,7 +18,6 @@ import org.brlnsreb.generallobby.items.MainLobbyItemManager;
 import org.brlnsreb.generallobby.ui.GamesMenu;
 import org.brlnsreb.utils.YamlUtil;
 
-import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.utils.Config;
 
@@ -72,7 +71,7 @@ public class GeneralLobby extends Lobby {
 
             NPCEntity npc = spawnNpc(
                 configPath,
-                (Player player) -> { minigame.onLobbyJoin(player); },
+                (CustomPlayer player) -> { minigame.onLobbyJoin(player); },
                 false
             );
 

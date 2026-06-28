@@ -12,8 +12,6 @@ teleported-to-arena: '&aMatch will begin soon...'
 map-vote: '&aYou voted on the map: &e%s'
 time-vote: '&aYou voted on the time of day: &e%s'
 #weather-vote: '&aYou voted on the weather: &e%s'
-player-joined: '&3{name} &7joined (&a{playersNumber}&7/&a{maxPlayers}&7)'
-player-left: '&3{name} &7left (&a{playersNumber}&7/&a{maxPlayers}&7)'
 selected-map: '&eYou''re going to play on the map &d{selectedMap} &eat &d{selectedTime}
   &e/ &d{weather}'
 timer-shortened: '&aTimer shortened to {seconds} seconds'

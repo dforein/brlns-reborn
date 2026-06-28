@@ -1,5 +1,7 @@
 package org.brlnsreb.core.player;
 
+import java.util.Collection;
+
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer.DamageMode;
 
@@ -86,6 +88,12 @@ public class PlayerUtils {
         effect.setAmplifier(amplifier);
         effect.setVisible(isVisible);
         player.addEffect(effect);
+    }
+
+    public static void clearInventory(Collection<? extends Player> players) {
+        for (Player p : players) {
+            clearInventory(p);
+        }
     }
 
     public static void clearInventory(Player p) {

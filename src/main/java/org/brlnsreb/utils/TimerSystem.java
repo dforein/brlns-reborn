@@ -15,41 +15,35 @@ public class TimerSystem {
         this.secondsRemaining = duration;
     }
 
-    public void startCountdown(int seconds, Runnable onComplete, Runnable onTick) {
+    public void start(int seconds, Runnable onTick, Runnable onComplete) {
         this.secondsRemaining = seconds;
         this.onTick = onTick;
         start(onComplete);
     }
     
-    public void startGame(int seconds, Runnable onComplete) {
+    public void start(int seconds, Runnable onComplete) {
         this.secondsRemaining = seconds;
+        this.onTick = null;
         start(onComplete);
     }
 
     private void start(Runnable onComplete) {
-        if (task != null) { task.cancel(); }
-
-        if (onTick != null) {
-            onTick.run();
-        }
+        if (task != null) task.cancel();
 
         task = new Task() {
             @Override
             public void onRun(int currentTick) {
                 secondsRemaining--;
+                if (onTick != null) onTick.run();
                 
                 if (secondsRemaining <= 0) {
                     cancel();
-                    if (onComplete != null) {
-                        onComplete.run();
-                    }
-                } else {
-                    if (onTick != null) {
-                        onTick.run();
-                    }
+                    if (onComplete != null) onComplete.run();
                 }
             }
         };
+
+        if (onTick != null) onTick.run();   //first run (0 seconds)
         Server.getInstance().getScheduler().scheduleDelayedRepeatingTask(BrlnsReb.getInstance(), task, 20, 20);
     }
     

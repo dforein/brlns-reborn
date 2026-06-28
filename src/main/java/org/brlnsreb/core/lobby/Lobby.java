@@ -14,7 +14,6 @@ import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.utils.YamlUtil;
 
-import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
@@ -57,17 +56,15 @@ public abstract class Lobby {
         this(null, null);
     }
 
-    public boolean onJoin(Player player) {
-        CustomPlayer p = (CustomPlayer) player;
+    public boolean onJoin(CustomPlayer player) {
+        player.currentMinigame = minigame;
+        PlayerUtils.changeWorld(player, spawnPos);
+        PlayerUtils.setLobbyState(player, onJoinState());
 
-        p.currentMinigame = minigame;
-        PlayerUtils.changeWorld(p, spawnPos);
-        PlayerUtils.setLobbyState(p, onJoinState());
+        onJoinBossBar(player);
+        onJoinItems(player);
 
-        onJoinBossBar(p);
-        onJoinItems(p);
-
-        p.setMatch(match);
+        player.setMatch(match);
 
         return true;
     }
@@ -82,11 +79,11 @@ public abstract class Lobby {
         holo.spawnToAll();
     }
 
-    protected NPCEntity spawnNpc(String configPath, Consumer<Player> task) {
+    protected NPCEntity spawnNpc(String configPath, Consumer<CustomPlayer> task) {
         return spawnNpc(configPath, task, false);
     }
 
-    protected NPCEntity spawnNpc(String configPath, Consumer<Player> task, boolean subtitle) {
+    protected NPCEntity spawnNpc(String configPath, Consumer<CustomPlayer> task, boolean subtitle) {
         configPath = YamlUtil.checkConfigPath(configPath);
         Position pos = YamlUtil.parsePosition(config.getString(configPath + "pos"), this.level);
         

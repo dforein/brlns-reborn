@@ -2,6 +2,7 @@ package org.brlnsreb.core.minigame;
 
 import java.util.BitSet;
 import java.util.HashSet;
+import java.util.List;
 
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.ConfigManager;
@@ -9,7 +10,6 @@ import org.brlnsreb.core.auth.AuthSystem;
 import org.brlnsreb.core.minigame.match.MinigameMatch;
 import org.brlnsreb.core.player.CustomPlayer;
 
-import cn.nukkit.Player;
 import cn.nukkit.utils.Config;
 
 public abstract class Minigame {
@@ -44,24 +44,22 @@ public abstract class Minigame {
         onMatchCreation();
     }
 
-    public boolean onLobbyJoin(Player player) {
-        CustomPlayer p = (CustomPlayer) player;
-        if (p.isTeleporting()) return false;
+    public boolean onLobbyJoin(CustomPlayer player) {
+        if (player.isTeleporting()) return false;
         
-        p.setTeleporting();
+        player.setTeleporting();
         return lobby.onJoin(player);
     }
 
-    public boolean onMatchJoin(Player player) {
-        CustomPlayer p = (CustomPlayer) player;
-        if (p.isTeleporting()) return false;
+    public boolean onMatchJoin(CustomPlayer player) {
+        if (player.isTeleporting()) return false;
 
-        if (!p.getPlayerData().isLogged()) {
-            AuthSystem.openMenu(p);
+        if (!player.getPlayerData().isLogged()) {
+            AuthSystem.openMenu(player);
             return false;
         }
 
-        p.setTeleporting();
+        player.setTeleporting();
         return mainPendingMatch.onJoin(player);
     }
 
@@ -70,7 +68,7 @@ public abstract class Minigame {
 
     public boolean onMatchCreation() {
         if (mainPendingMatch != null
-            && mainPendingMatch.getPlayers().size() < mainPendingMatch.getMaxPlayers()) {
+            && mainPendingMatch.getPlayers().size() < getMaxPlayers()) {
                 return false;
         }
 
@@ -106,6 +104,10 @@ public abstract class Minigame {
 
         return count;
     }
+
+    public int getMinPlayers() { return config.getInt("settings.min-players"); }
+    public int getMaxPlayers() { return config.getInt("settings.max-players"); }
+    public List<String> getAvailableMaps() { return config.getStringList("map-settings.enabled-maps"); }
 
     public MinigameLobby getLobby() { return lobby; }
     public HashSet<? extends MinigameMatch> getMatches() { return matches; }

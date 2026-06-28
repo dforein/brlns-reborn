@@ -1,6 +1,5 @@
 package org.brlnsreb.core.minigame.match;
 
-import cn.nukkit.Player;
 import cn.nukkit.utils.Config;
 
 import java.util.HashSet;
@@ -10,6 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.minigame.MinigameType;
+import org.brlnsreb.core.minigame.match.waitinglobby.WaitingLobby;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.utils.Messages;
@@ -18,7 +18,7 @@ public abstract class MinigameMatch {
     
     protected final int id;
     protected final GameState state;
-    protected final Set<Player> players;
+    protected final Set<CustomPlayer> players;
     protected final int number;
     protected final Minigame minigame;
 
@@ -47,24 +47,18 @@ public abstract class MinigameMatch {
         this.waitingLobby = createWaitingLobby();
     }
 
-    public void initGame(String selectedMap) {
-        this.game = createGame(selectedMap);
-    }
-
-    public void startGame() {
-        this.game.onGameStart();
-    }
-
     protected abstract WaitingLobby createWaitingLobby();
     protected abstract MinigameGame createGame(String selectedMap);
     
-    public boolean onJoin(Player player) {
-        CustomPlayer p = (CustomPlayer) player;
-        if (p.state == PlayerStateType.TELEPORTING) return false;
+
+    //join-leave logic
+
+    public boolean onJoin(CustomPlayer player) {
+        if (player.state == PlayerStateType.TELEPORTING) return false;
 
         switch (state.current) {
             case WAITING_LOBBY, LOBBY_COUNTDOWN:
-                p.state = PlayerStateType.TELEPORTING;
+                player.state = PlayerStateType.TELEPORTING;
                 return waitingLobby.onJoin(player);
         
             default:
@@ -72,24 +66,57 @@ public abstract class MinigameMatch {
         }
     }
 
-    public boolean onJoinAsSpectator(Player player) {
-        
+    public boolean onJoinAsSpectator(CustomPlayer player) {
+
     }
 
-    public void onLeave(Player player) {
-        players.remove(player);
+    public void onLeave(CustomPlayer player) {
+        switch (state.current) {
+            case WAITING_LOBBY, LOBBY_COUNTDOWN:
+                players.remove(player);
+                waitingLobby.onLeave(player);
+                break;
+        
+            case PREGAME_COUNTDOWN, IN_GAME, ENDING:
+                game.onLeave(player);
+                players.remove(player);
+                break;
+        }
+        
+        if (!player.isOnline()) return;
+
         minigame.onLobbyJoin(player);
     }
 
+
+    //game logic
+
+    public void preloadGame(String selectedMap) {
+        //used when the waiting lobby countdown is finishing
+        game = createGame(selectedMap);
+    }
+
+    public void unloadGame() {
+        //used when there aren't enough players anymore, but the game was already preloaded
+        if (game != null) game.close();
+        game = null;
+    }
+
+    public void onGameStart() {
+        game.onGameStart();
+    }
+
+    public void stopMatch() {
+        //TODO: stopMatch
+    }
+
     public abstract void onEnding();
-    
-    public int getMinPlayers() { return config.getInt("settings.min-players"); }
-    public int getMaxPlayers() { return config.getInt("settings.max-players"); }
+
 
     public int getId() { return id; }
     public GameState getState() { return state; }
     public GameStateType getCurrentState() { return state.current; }
-    public Set<Player> getPlayers() { return players; }
+    public Set<CustomPlayer> getPlayers() { return players; }
     public int getNumber() { return number; }
     public MinigameGame getGame() { return game; }
     public Minigame getMinigame() { return minigame; }

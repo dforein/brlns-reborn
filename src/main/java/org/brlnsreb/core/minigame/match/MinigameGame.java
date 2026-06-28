@@ -2,14 +2,13 @@ package org.brlnsreb.core.minigame.match;
 
 import java.util.Set;
 
+import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.Messages;
-
-import cn.nukkit.Player;
 
 public abstract class MinigameGame {
 
     protected GameState state;
-    protected final Set<Player> players;
+    protected final Set<CustomPlayer> players;
     protected final Arena arena;
     protected final Messages msgUtil;
 
@@ -26,6 +25,12 @@ public abstract class MinigameGame {
             "map-settings.maps." + map,
             "settings."
         );
+    }
+
+    public abstract void onLeave(CustomPlayer player);
+
+    public void close() {
+        arena.close();
     }
     
     public abstract void onGameStart();

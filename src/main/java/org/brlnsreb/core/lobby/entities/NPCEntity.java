@@ -2,6 +2,7 @@ package org.brlnsreb.core.lobby.entities;
 
 import java.util.function.Consumer;
 
+import org.brlnsreb.core.player.CustomPlayer;
 import org.cloudburstmc.protocol.bedrock.data.actor.ActorFlags;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +31,7 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
     private double lastBodyYaw = 0;
     private double lerpSpeed = 0.25;
 
-    private Consumer<Player> task = null;
+    private Consumer<CustomPlayer> task = null;
     private HologramEntity text1 = null;
     private HologramEntity text2 = null;
     private double verticalOffset1 = 0.6;
@@ -147,7 +148,7 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
             && ((EntityDamageByEntityEvent) source).getDamager() instanceof Player
             && task != null) {
 
-                task.accept((Player) ((EntityDamageByEntityEvent) source).getDamager());
+                task.accept((CustomPlayer) ((EntityDamageByEntityEvent) source).getDamager());
                 //Server.getInstance().getLogger().info("NPC: attack");
         }
         source.setCancelled(true);
@@ -159,7 +160,7 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
     public boolean onInteract(Player player, Item item) {
         if (task == null) return true;
 
-        task.accept(player);
+        task.accept((CustomPlayer) player);
         //Server.getInstance().getLogger().info("NPC: interact");
         return true;
     }
@@ -191,7 +192,7 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
         this.lerpSpeed = lerpSpeed;
     }
 
-    public void setTask(Consumer<Player> task) {
+    public void setTask(Consumer<CustomPlayer> task) {
         this.task = task;
     }
 

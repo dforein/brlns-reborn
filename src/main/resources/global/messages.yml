@@ -1,6 +1,10 @@
 # &3&o《》
 # &2▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
 
+action-bar:
+  on-join: '&3%s &7joined (&a%d&7/&a%d&7)'
+  on-leave: '&3%s &7left (&a%d&7/&a%d&7)'
+
 lobby-bossbar:
   message1: '&l&eBroken&4Lens &%sReborn'  #replace variable color
   message2: '&l&ePlaying %s'  #replace name

@@ -1,7 +1,7 @@
 package org.brlnsreb.utils;
 
 import java.util.Collection;
-import java.util.Map;
+import java.util.Set;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
@@ -11,10 +11,10 @@ import cn.nukkit.utils.TextFormat;
 public class Messages {
 
     private Config messages;
-    private final Collection<Player> players;
+    private final Collection<? extends Player> players;
     private final String prefix;
     
-    public Messages(Config messages, Collection<Player> players) {
+    public Messages(Config messages, Collection<? extends Player> players) {
         this.messages = messages;
         this.players = players;
         this.prefix = messages.getString("prefix") + " &r";
@@ -32,11 +32,24 @@ public class Messages {
         return YamlUtil.getStr(path, this.messages);
     }
 
-    public String replacePlaceholders(String message, Map<String, String> placeholders) {
-        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-            message = message.replace("{" + entry.getKey() + "}", entry.getValue());
+
+    public static void sendActionBar(Set<? extends Player> players, String path, Config messages) {
+        for (Player p : players) {
+            p.sendActionBar(YamlUtil.getStr(path, messages));
         }
-        return TextFormat.colorize(message);
+    }
+
+    public static void sendActionBar(Set<? extends Player> players, String path, Object[] placeholders, Config messages) {
+        for (Player p : players) {
+            p.sendActionBar(YamlUtil.getStr(path, messages).formatted(placeholders));
+        }
+    }
+
+
+    public void sendTitle(String pathTitle, String pathSubTitle) {
+        for (Player p : players) {
+            p.sendTitle(getString(pathTitle), getString(pathSubTitle));
+        }
     }
 
 
@@ -47,9 +60,9 @@ public class Messages {
         );
     }
 
-    public void broadcastPreset(String path, Map<String, String> placeholders) {
+    public void broadcastPreset(String path, Object[] placeholders) {
         Server.getInstance().broadcastMessage(
-            replacePlaceholders(getString(path), placeholders), 
+            getString(path).formatted(placeholders), 
             players
         );
     }
@@ -61,9 +74,9 @@ public class Messages {
         );
     }
 
-    public void broadcastPresetPrefix(String path, Map<String, String> placeholders) {
+    public void broadcastPresetPrefix(String path, Object[] placeholders) {
         Server.getInstance().broadcastMessage(
-            replacePlaceholders(getString(path, prefix), placeholders), 
+            getString(path, prefix).formatted(placeholders), 
             players
         );
     }
@@ -76,9 +89,9 @@ public class Messages {
         );
     }
 
-    public void broadcast(String message, Map<String, String> placeholders) {
+    public void broadcast(String message, Object[] placeholders) {
         Server.getInstance().broadcastMessage(
-            replacePlaceholders(message, placeholders), 
+            TextFormat.colorize(message.formatted(placeholders)), 
             players
         );
     }
@@ -90,9 +103,9 @@ public class Messages {
         );
     }
 
-    public void broadcastPrefix(String message, Map<String, String> placeholders) {
+    public void broadcastPrefix(String message, Object[] placeholders) {
         Server.getInstance().broadcastMessage(
-            replacePlaceholders(prefix + message, placeholders), 
+            TextFormat.colorize(prefix + message.formatted(placeholders)), 
             players
         );
     }
@@ -102,9 +115,9 @@ public class Messages {
         player.sendMessage(getString(path));
     }
 
-    public void sendPresetMessage(String path, Player player, Map<String, String> placeholders) {
+    public void sendPresetMessage(String path, Player player, Object[] placeholders) {
         player.sendMessage(
-            replacePlaceholders(messages.getString(path), placeholders)
+            messages.getString(path).formatted(placeholders)
         );
     }
 
@@ -112,9 +125,9 @@ public class Messages {
         player.sendMessage(getString(path, prefix));
     }
 
-    public void sendPresetMessagePrefix(String path, Player player, Map<String, String> placeholders) {
+    public void sendPresetMessagePrefix(String path, Player player, Object[] placeholders) {
         player.sendMessage(
-            replacePlaceholders(getString(path, prefix), placeholders)
+            getString(path, prefix).formatted(placeholders)
         );
     }
 
@@ -123,9 +136,9 @@ public class Messages {
         player.sendMessage(TextFormat.colorize(message));
     }
 
-    public void sendMessage(String message, Player player, Map<String, String> placeholders) {
+    public void sendMessage(String message, Player player, Object[] placeholders) {
         player.sendMessage(
-            replacePlaceholders(message, placeholders)
+            TextFormat.colorize(message.formatted(placeholders))
         );
     }
 
@@ -133,11 +146,12 @@ public class Messages {
         player.sendMessage(TextFormat.colorize(prefix + message));
     }
 
-    public void sendMessagePrefix(String message, Player player, Map<String, String> placeholders) {
+    public void sendMessagePrefix(String message, Player player, Object[] placeholders) {
         player.sendMessage(
-            replacePlaceholders(prefix + message, placeholders)
+            TextFormat.colorize(prefix + message.formatted(placeholders))
         );
     }
+
 
     public String getPrefix() {
         return prefix;
