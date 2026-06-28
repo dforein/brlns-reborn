@@ -2293,17 +2293,7 @@
                 "layer": 31,
                 "localize": false,
                 "font_size": "extra_large",
-                "variables": [
-                  {
-                    "requires": "(not $title_shadow)",
-                    "$show_shadow": false
-                  },
-                  {
-                    "requires": "$title_shadow",
-                    "$show_shadow": true
-                  }
-                ],
-                "shadow": "$show_shadow",
+                "shadow": true,
                 "text_alignment": "center",
                 "offset": [ 0, 6 ],
                 "bindings": [
