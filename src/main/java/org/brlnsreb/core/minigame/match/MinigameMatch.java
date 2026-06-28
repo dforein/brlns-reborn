@@ -12,7 +12,6 @@ import org.brlnsreb.core.minigame.MinigameType;
 import org.brlnsreb.core.minigame.game.MinigameGame;
 import org.brlnsreb.core.minigame.match.waitinglobby.WaitingLobby;
 import org.brlnsreb.core.player.CustomPlayer;
-import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.utils.Messages;
 
 public abstract class MinigameMatch {
@@ -55,11 +54,10 @@ public abstract class MinigameMatch {
     //join-leave logic
 
     public boolean onJoin(CustomPlayer player) {
-        if (player.state == PlayerStateType.TELEPORTING) return false;
+        if (player.isTeleporting()) return false;
 
         switch (state.current) {
             case WAITING_LOBBY, LOBBY_COUNTDOWN:
-                player.state = PlayerStateType.TELEPORTING;
                 return waitingLobby.onJoin(player);
         
             default:
@@ -74,8 +72,8 @@ public abstract class MinigameMatch {
     public void onLeave(CustomPlayer player) {
         switch (state.current) {
             case WAITING_LOBBY, LOBBY_COUNTDOWN:
-                players.remove(player);
                 waitingLobby.onLeave(player);
+                players.remove(player);
                 break;
         
             case PREGAME_COUNTDOWN, IN_GAME, ENDING:
@@ -85,7 +83,6 @@ public abstract class MinigameMatch {
         }
         
         if (!player.isOnline()) return;
-
         minigame.onLobbyJoin(player);
     }
 

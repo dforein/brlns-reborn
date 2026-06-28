@@ -35,12 +35,13 @@ public class PlayerUtils {
         p.bossBarId = null;
     }
 
-    public static void changeWorld(Player p, Position pos) {
+    public static void changeWorld(CustomPlayer p, Position pos) {
         BrlnsReb plugin = BrlnsReb.getInstance();
 
         try {
             int viewDistance = p.getViewDistance();
 
+            p.setTeleporting();
             p.setViewDistance(2);
             p.despawnFromAll();
 

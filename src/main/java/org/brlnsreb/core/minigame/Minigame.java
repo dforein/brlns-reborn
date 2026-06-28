@@ -1,8 +1,10 @@
 package org.brlnsreb.core.minigame;
 
+import java.util.ArrayDeque;
 import java.util.BitSet;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Queue;
 
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.ConfigManager;
@@ -24,8 +26,7 @@ public abstract class Minigame {
     protected final MinigameLobby lobby;
     protected final HashSet<? extends MinigameMatch> matches;
     protected final BitSet busyMatchNumbers;
-    protected MinigameMatch mainPendingMatch;
-    protected MinigameMatch secondPendingMatch;
+    protected Queue<MinigameMatch> pendingMatches;
 
     public Minigame(MinigameType minigame) {
         this.id = minigame.getId();
@@ -40,43 +41,72 @@ public abstract class Minigame {
         this.matches = new HashSet<>();
         this.busyMatchNumbers = new BitSet();
 
-        this.secondPendingMatch = createMatch(getNewMatchNumber());
-        onMatchCreation();
+        this.pendingMatches = new ArrayDeque<>();
+        createNewPendingMatch();
     }
+
+    public void reloadConfig() {
+        lobby.reloadConfig();
+    }
+
+
+    //join logic
 
     public boolean onLobbyJoin(CustomPlayer player) {
         if (player.isTeleporting()) return false;
         
-        player.setTeleporting();
         return lobby.onJoin(player);
     }
 
     public boolean onMatchJoin(CustomPlayer player) {
-        if (player.isTeleporting()) return false;
-
         if (!player.getPlayerData().isLogged()) {
             AuthSystem.openMenu(player);
             return false;
         }
 
-        player.setTeleporting();
-        return mainPendingMatch.onJoin(player);
+        return pendingMatches.element().onJoin(player);
     }
+
+
+    //lobby and match management logic
 
     protected abstract MinigameLobby createLobby();
     protected abstract MinigameMatch createMatch(int newMatchNumber);
 
-    public boolean onMatchCreation() {
-        if (mainPendingMatch != null
-            && mainPendingMatch.getPlayers().size() < getMaxPlayers()) {
+    public boolean createNewPendingMatch() {
+        if (!pendingMatches.isEmpty()
+            && pendingMatches.element().getPlayers().size() < getMaxPlayers()) {
                 return false;
         }
 
-        mainPendingMatch = secondPendingMatch;
-        lobby.onReplaceMainPendingMatch(mainPendingMatch.getNumber());
-        secondPendingMatch = createMatch(getNewMatchNumber());
+        pendingMatches.add(createMatch(getNewMatchNumber()));
+        if (pendingMatches.size() < 2) {
+            pendingMatches.add(createMatch(getNewMatchNumber()));
+        }
+
+        lobby.onReplaceMainPendingMatch(pendingMatches.element().getNumber());
 
         return true;
+    }
+
+    public boolean onReplacePendingMatch(MinigameMatch match) {
+        if (!pendingMatches.contains(match)) return false;
+
+        if (!pendingMatches.isEmpty()
+            && pendingMatches.element().getPlayers().size() < getMaxPlayers()) {
+                return false;
+        }
+
+        pendingMatches.remove();
+        createNewPendingMatch();
+
+        return true;
+    }
+
+    public void readdPendingMatch(MinigameMatch match) {
+        if (!pendingMatches.contains(match)) {
+            pendingMatches.add(match);
+        }
     }
 
     private int getNewMatchNumber() {
@@ -90,9 +120,7 @@ public abstract class Minigame {
         busyMatchNumbers.clear(match.getNumber());
     }
 
-    public void reloadConfig() {
-        lobby.reloadConfig();
-    }
+
 
     public int getPlayerCount() {
         int count = 0;
@@ -111,7 +139,7 @@ public abstract class Minigame {
 
     public MinigameLobby getLobby() { return lobby; }
     public HashSet<? extends MinigameMatch> getMatches() { return matches; }
-    public MinigameMatch getMainPendingMatch() { return mainPendingMatch; }
+    public MinigameMatch getMainPendingMatch() { return pendingMatches.element(); }
     public int getId() { return id; }
     public String getNameTag() { return nameTag; }
     public Config getConfig() { return config; }

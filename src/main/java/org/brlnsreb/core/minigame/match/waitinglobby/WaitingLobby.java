@@ -82,10 +82,11 @@ public abstract class WaitingLobby extends Lobby {
     @Override
     public boolean onJoin(CustomPlayer player) {
         if (players.size() >= maxPlayers) {
-            minigame.onMatchCreation();
+            minigame.onReplacePendingMatch(match);
             return false;
         }
 
+        if (player.isTeleporting()) return false;
         if (players.contains(player)) return false;
         
         players.add(player);
@@ -101,7 +102,7 @@ public abstract class WaitingLobby extends Lobby {
             ConfigManager.getConfig("global/messages")
         );
 
-        checkPlayerNumber();
+        checkPlayerNumber(players.size());
 
         return true;
     }
@@ -125,23 +126,27 @@ public abstract class WaitingLobby extends Lobby {
     }
 
     public void onLeave(CustomPlayer player) {
-        checkPlayerNumber();
+        checkPlayerNumber(players.size() - 1);
     }
 
 
     //countdown logic
 
-    protected void checkPlayerNumber() {
-        if (players.size() > minPlayersShortenedCountdown) {
+    protected void checkPlayerNumber(int playerNumber) {
+        if (playerNumber >= maxPlayers) {
+            minigame.onReplacePendingMatch(match);
+            
+        } else if (playerNumber > minPlayersShortenedCountdown) {
             shortenCountdown(true);
             
-        } else if (players.size() > minPlayers && !countdownShortened) {    //if the countdown is already shortened, it will stay shortened
+        } else if (playerNumber > minPlayers && !countdownShortened) {    //if the countdown is already shortened, it will stay shortened
             match.getState().current = GameStateType.LOBBY_COUNTDOWN;
             startCountdown();
 
         } else if (match.getCurrentState() == GameStateType.LOBBY_COUNTDOWN) {  //not enough players
             match.getState().current = GameStateType.WAITING_LOBBY;
             stopCountdown();
+            minigame.readdPendingMatch(match);
         }
     }
 
@@ -149,6 +154,7 @@ public abstract class WaitingLobby extends Lobby {
         countdownShortened = false;
         
         PlayerUtils.clearInventory(players);
+        items.giveItemsCountdown(players);
         
         if (timer != null) timer.stop();
         timer = new TimerSystem(secondsCountdown);
@@ -168,6 +174,7 @@ public abstract class WaitingLobby extends Lobby {
         finalizeVoting();
 
         PlayerUtils.clearInventory(players);
+        items.giveItemsCountdownShortened(players);
 
         if (timer != null) timer.stop();
         timer = new TimerSystem(secondsShortenedCountdown);
@@ -194,6 +201,9 @@ public abstract class WaitingLobby extends Lobby {
         timer = null;
         bossBar.cancelCountdown();
         match.unloadGame();
+
+        PlayerUtils.clearInventory(players);
+        items.giveItemsWaitingPlayers(players);
     }
 
 
