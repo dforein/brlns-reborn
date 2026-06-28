@@ -233,6 +233,9 @@ public abstract class WaitingLobby extends Lobby {
     }
 
     public abstract WaitingLobbyItemManager requireItemManager();
+
+    public Config getConfig() { return match.getConfig(); }
+    public Config getMessages() { return match.getMessages(); }
     public String requireConfigPath() { return "waiting-lobby."; }
     public Set<CustomPlayer> getPlayers() { return players; }
     
