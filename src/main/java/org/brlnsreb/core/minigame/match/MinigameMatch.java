@@ -48,18 +48,6 @@ public abstract class MinigameMatch {
         this.waitingLobby = createWaitingLobby();
     }
 
-    public void onItemUse(CustomPlayer player, Item item) {
-        switch (state.current) {
-            case WAITING_LOBBY:
-                waitingLobby.onItemUse(player, item);
-                break;
-        
-            default:
-                if (player.getLevel().equals(game.getLevel())
-                break;
-        }
-    }
-
     protected abstract WaitingLobby createWaitingLobby();
     protected abstract MinigameGame createGame(String selectedMap);
     
@@ -125,6 +113,21 @@ public abstract class MinigameMatch {
     }
 
     public abstract void onEnding();
+
+
+    //events from listeners
+
+    public void onItemUse(CustomPlayer player, Item item) {
+        switch (state.current) {
+            case WAITING_LOBBY, LOBBY_COUNTDOWN:
+                waitingLobby.onItemUse(player, item);
+                break;
+        
+            default:
+                game.onItemUse(player, item);
+                break;
+        }
+    }
 
 
     public int getId() { return id; }

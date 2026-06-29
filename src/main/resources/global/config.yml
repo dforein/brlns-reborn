@@ -1,3 +1,16 @@
+lobby:
+  items:
+    games: 
+      name: '&l&o&6BrokenLens Games&r &7Hold / Right click'
+      title: 'BrokenLens Games'
+      hub-button-text: 'BrokenLens HUB'
+    menu: 
+      name: '&l&o&eBroken&6Lens &dMenu&r &7Hold / Right click'
+    magic-staff: 
+      name: '&l&o&dMagic Staff&r &7Hold / Right click'
+    join-game: 
+      name: '&l&o&eJoin Game&r &7Hold / Right click'
+
 match:
   waiting-lobby:
     npc:

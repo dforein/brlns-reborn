@@ -1,4 +1,4 @@
-package org.brlnsreb.core.lobby.ui;
+package org.brlnsreb.generallobby.ui;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;

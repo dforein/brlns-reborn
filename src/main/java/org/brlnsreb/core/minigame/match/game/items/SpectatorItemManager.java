@@ -10,7 +10,7 @@ import cn.nukkit.item.Item;
 public class SpectatorItemManager extends ItemManager {
     
     public SpectatorItemManager() {
-        super(ConfigManager.getConfig("global/config.yml"));
+        super(ConfigManager.getGlobalConfig());
     }
 
     public void giveTeleporter(Player player) {

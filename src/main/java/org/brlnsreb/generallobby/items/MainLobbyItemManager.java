@@ -1,12 +1,12 @@
 package org.brlnsreb.generallobby.items;
 
+import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.generallobby.ui.GamesMenu;
 import org.brlnsreb.utils.ItemManager;
 
 import cn.nukkit.Player;
-import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.utils.Config;
 
@@ -15,46 +15,46 @@ public class MainLobbyItemManager extends ItemManager {
     private static MainLobbyItemManager instance;
     
     public MainLobbyItemManager(Config config) {
-        super(config);
+        super(ConfigManager.getGlobalConfig());
         instance = this;
-
-        GamesMenu.init(config);
     }
 
     public void onItemUse(CustomPlayer player, Item item) {
-        switch (item.getDisplayName()) {
-            case value:
-                
-                break;
-        
-            default:
-                break;
+        switch (item.getId()) {
+            case Item.ORANGE_DYE -> GamesMenu.openMenu(player);
+            //case Item.PURPLE_DYE -> ;
+            //case Item.BLAZE_ROD -> ;
+            case Item.SLIME_BALL -> player.currentMinigame.getMainPendingMatch().onJoin(player);
         }
     }
 
-    public void giveLobbyItems(Player player) {
+    public void giveGeneralLobbyItems(Player player) {
         PlayerUtils.clearInventory(player);
 
         giveGames(player);
         giveMenu(player);
         giveMagicStaff(player);
+    }
+
+    public void giveMinigameLobbyItems(Player player) {
+        giveGeneralLobbyItems(player);
         giveJoinGame(player);
     }
 
-    public void giveGames(Player player) {
-        giveItem(player, 1, Item.ORANGE_DYE, getStr("items.games.name"));
+    private void giveGames(Player player) {
+        giveItem(player, 1, Item.ORANGE_DYE, getStr("lobby.items.games.name"));
     }
 
-    public void giveMenu(Player player) {
+    private void giveMenu(Player player) {
         //TODO: purple or green? it changes
-        giveItem(player, 2, Item.PURPLE_DYE, getStr("items.menu.name"));
+        giveItem(player, 2, Item.PURPLE_DYE, getStr("lobby.items.menu.name"));
     }
 
-    public void giveMagicStaff(Player player) {
-        giveItem(player, 3, Item.BLAZE_ROD, getStr("items.magic-staff.name"));
+    private void giveMagicStaff(Player player) {
+        giveItem(player, 3, Item.BLAZE_ROD, getStr("lobby.items.magic-staff.name"));
     }
 
-    public void giveJoinGame(Player player) {
+    private void giveJoinGame(Player player) {
         giveItem(player, 7, Item.SLIME_BALL, getStr("items.join-game.name"));
     }
 

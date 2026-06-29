@@ -8,12 +8,12 @@ import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
-import org.brlnsreb.core.lobby.ui.MainLobbyBossBar;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.generallobby.items.MainLobbyItemManager;
+import org.brlnsreb.generallobby.ui.MainLobbyBossBar;
 import org.brlnsreb.utils.YamlUtil;
 
 import cn.nukkit.Server;
@@ -48,7 +48,7 @@ public class GeneralLobby extends Lobby {
     }
 
     protected void onJoinItems(CustomPlayer player) {
-        items.giveLobbyItems(player);
+        items.giveGeneralLobbyItems(player);
     }
 
     private void spawnAllNpcs() {

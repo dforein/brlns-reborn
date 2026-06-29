@@ -10,6 +10,10 @@ public class ConfigManager {
     
     private static final HashMap<String, Config> configMap = new HashMap<>();
 
+    public static Config getGlobalConfig() {
+        return getConfig("global/config.yml");
+    }
+
     public static Config getConfig(String filePath) {
         Config config = configMap.get(filePath);
         if (config != null) return config;

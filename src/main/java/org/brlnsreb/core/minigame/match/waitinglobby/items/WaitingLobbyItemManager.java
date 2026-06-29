@@ -39,7 +39,7 @@ public abstract class WaitingLobbyItemManager extends ItemManager {
     }
     
     public static void giveGamePoll(Player player) {
-        Config globalConfig = ConfigManager.getConfig("global/config.yml");
+        Config globalConfig = ConfigManager.getGlobalConfig();
         giveItem(
             player, 
             7, 

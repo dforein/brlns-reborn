@@ -57,7 +57,7 @@ public abstract class WaitingLobby extends Lobby {
         this.maxPlayers = minigame.getMaxPlayers();
         this.minPlayersShortenedCountdown = config.getInt("settings.min-players-shortened-countdown");
 
-        Config globalConfig = ConfigManager.getConfig("global/config.yml");
+        Config globalConfig = ConfigManager.getGlobalConfig();
         this.secondsCountdown = globalConfig.getInt(configPath() + "countdown-seconds");
         this.secondsShortenedCountdown = globalConfig.getInt(configPath() + "shortened-countdown-seconds");
 

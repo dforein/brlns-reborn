@@ -27,7 +27,7 @@ public class WaitingLobbyBossBar extends BossBarAbstract {
     public WaitingLobbyBossBar(WaitingLobby waitingLobby, int secondsCountdown) {
         this.players = waitingLobby.getPlayers();
 
-        this.config = ConfigManager.getConfig("global/config.yml");
+        this.config = ConfigManager.getGlobalConfig();
 
         this.mediumThreshold = config.getInt(configPath + "medium-threshold");
         this.shortThreshold = config.getInt(configPath + "short-threshold");

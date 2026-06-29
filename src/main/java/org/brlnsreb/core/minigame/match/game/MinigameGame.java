@@ -13,6 +13,7 @@ import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.utils.Messages;
 import org.brlnsreb.utils.TimerSystem;
 
+import cn.nukkit.item.Item;
 import cn.nukkit.level.Position;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
@@ -80,7 +81,7 @@ public abstract class MinigameGame {
     public abstract void prepareAndSaveData(CustomPlayer player);
 
 
-    //GAME LIFECYCLE
+    //<GAME LIFECYCLE>
 
     //pregame
 
@@ -101,7 +102,7 @@ public abstract class MinigameGame {
     protected void onPregameCountdown() {
         state.current = GameStateType.PREGAME_COUNTDOWN;
 
-        Config globalConfig = ConfigManager.getConfig("global/config.yml");
+        Config globalConfig = ConfigManager.getGlobalConfig();
         int secondsCountdown = globalConfig.getInt("match.game.pregame-countdown-seconds");
 
         timer = new TimerSystem(secondsCountdown);
@@ -155,5 +156,12 @@ public abstract class MinigameGame {
     }
 
     public abstract void forceStop();
+
+    //</GAME LIFECYCLE>
+
+
+    //events from listeners
+
+    public abstract void onItemUse(CustomPlayer player, Item item);
 
 }

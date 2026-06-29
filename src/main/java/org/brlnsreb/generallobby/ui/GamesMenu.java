@@ -1,5 +1,6 @@
 package org.brlnsreb.generallobby.ui;
 
+import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.player.CustomPlayer;
@@ -12,15 +13,11 @@ import cn.nukkit.form.window.SimpleForm;
 import cn.nukkit.utils.Config;
 
 public class GamesMenu extends MenuAbstract {
-    
-    private static Config config;
-
-    public static void init(Config lobbyConfig) {
-        config = lobbyConfig;
-    }
 
     public static void openMenu(Player player) {
         checkCooldown(player);
+
+        Config config = ConfigManager.getGlobalConfig();
 
         SimpleForm menu = new SimpleForm(YamlUtil.getStr("items.games.name", config));
 
@@ -28,7 +25,7 @@ public class GamesMenu extends MenuAbstract {
 
         for (Minigame mg : MinigameManager.getMinigames()) {
             menu.addButton(
-                YamlUtil.getStr("name", mg.getMessages()) + " (" + mg.getPlayerCount() + ")"
+                YamlUtil.getStr("name", mg.getMessages()) + " §r§7(" + mg.getPlayerCount() + ")"
             );  //TODO: add images?
         }
 

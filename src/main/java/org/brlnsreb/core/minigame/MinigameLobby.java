@@ -3,10 +3,10 @@ package org.brlnsreb.core.minigame;
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
-import org.brlnsreb.core.lobby.ui.MainLobbyBossBar;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.generallobby.items.MainLobbyItemManager;
+import org.brlnsreb.generallobby.ui.MainLobbyBossBar;
 import org.brlnsreb.utils.YamlUtil;
 
 import cn.nukkit.Server;
@@ -15,8 +15,9 @@ import cn.nukkit.utils.Config;
 public abstract class MinigameLobby extends Lobby {
 
     protected final NPCEntity joinNpc;
+
     protected MainLobbyBossBar bossBar;
-    
+
     public MinigameLobby(Minigame minigame) {
         super(minigame);
         this.joinNpc = spawnJoinNpc(minigame);
@@ -34,7 +35,7 @@ public abstract class MinigameLobby extends Lobby {
     }
 
     protected void onJoinItems(CustomPlayer player) {
-        MainLobbyItemManager.getInstance().giveLobbyItems(player);
+        MainLobbyItemManager.getInstance().giveMinigameLobbyItems(player);
     }
 
     public void onReplaceMainPendingMatch(int matchNumber) {

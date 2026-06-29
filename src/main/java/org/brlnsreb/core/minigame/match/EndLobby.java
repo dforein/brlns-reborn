@@ -43,7 +43,7 @@ public class EndLobby extends Lobby {
 
     
     
-    public Config getConfig() { return ConfigManager.getConfig("global/config.yml"); }
+    public Config getConfig() { return ConfigManager.getGlobalConfig(); }
     public Config getMessages() { return null; }
     public String requireConfigPath() { return "end-lobby."; }
 }
