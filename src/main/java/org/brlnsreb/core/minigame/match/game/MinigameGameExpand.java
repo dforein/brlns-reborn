@@ -11,7 +11,10 @@ public abstract class MinigameGameExpand extends MinigameGame {
     }
 
     public void onDeath(CustomPlayer player) {
+        kill(player);
         ((MinigameMatchExpand) match).onDeath(player);
     }
+
+    protected abstract void kill(CustomPlayer player);
     
 }

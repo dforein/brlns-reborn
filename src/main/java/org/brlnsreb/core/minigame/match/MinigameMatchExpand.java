@@ -14,6 +14,7 @@ public abstract class MinigameMatchExpand extends MinigameMatch {
 
     public void onDeath(CustomPlayer player) {
         players.remove(player);
+        game.prepareAndSaveData(player);
         endLobby.onJoin(player);
     }
 

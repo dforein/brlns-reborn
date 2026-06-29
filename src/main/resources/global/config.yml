@@ -1,5 +1,8 @@
 match:
   waiting-lobby:
+    npc:
+      leave:
+
     bossbar:
       max-countdown: 45
       shortened-countdown: 10
@@ -24,3 +27,8 @@ match:
           name: '&l&o&eTeleporter'
         actions:
           name: '&l&o&eActions'
+  end-lobby:
+    npc:
+      play-again:
+      spectate:
+      return-to-lobby:

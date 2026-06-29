@@ -77,7 +77,7 @@ public abstract class MinigameGame {
     protected abstract void onJoinPrepareSpectator(CustomPlayer player);
 
     public abstract void onLeave(CustomPlayer player);
-    protected abstract void prepareAndSaveData(CustomPlayer player);
+    public abstract void prepareAndSaveData(CustomPlayer player);
 
 
     //GAME LIFECYCLE

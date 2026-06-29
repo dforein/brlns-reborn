@@ -8,7 +8,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.core.lobby.Lobby;
-import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.minigame.match.GameStateType;
 import org.brlnsreb.core.minigame.match.MinigameMatch;
 import org.brlnsreb.core.minigame.match.waitinglobby.items.WaitingLobbyItemManager;
@@ -38,8 +37,6 @@ public abstract class WaitingLobby extends Lobby {
 
     protected boolean countdownShortened = false;
 
-    protected final NPCEntity leaveNpc;
-
     protected final Messages msgUtil;
     protected final WaitingLobbyBossBar bossBar;
     protected final WaitingLobbyItemManager items;
@@ -63,8 +60,9 @@ public abstract class WaitingLobby extends Lobby {
         this.secondsCountdown = globalConfig.getInt(configPath() + "countdown-seconds");
         this.secondsShortenedCountdown = globalConfig.getInt(configPath() + "shortened-countdown-seconds");
 
-        this.leaveNpc = spawnNpc(
-            configPath() + "npc.", 
+        spawnNpc(
+            "match." + configPath() + "npc.", 
+            globalConfig,
             (CustomPlayer player) -> { match.onLeave(player); }
         );
 

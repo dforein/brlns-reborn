@@ -84,18 +84,26 @@ public abstract class Lobby {
         return spawnNpc(configPath, task, false);
     }
 
+    protected NPCEntity spawnNpc(String configPath, Config customConfig, Consumer<CustomPlayer> task) {
+        return spawnNpc(configPath, customConfig, task, false);
+    }
+
     protected NPCEntity spawnNpc(String configPath, Consumer<CustomPlayer> task, boolean subtitle) {
+        return spawnNpc(configPath, this.config, task, subtitle);
+    }
+
+    protected NPCEntity spawnNpc(String configPath, Config customConfig, Consumer<CustomPlayer> task, boolean subtitle) {
         configPath = YamlUtil.checkConfigPath(configPath);
-        Position pos = YamlUtil.parsePosition(config.getString(configPath + "pos"), this.level);
+        Position pos = YamlUtil.parsePosition(customConfig.getString(configPath + "pos"), this.level);
         
         NPCEntity npc = new NPCEntity(pos.getChunk(), Entity.getDefaultNBT(pos));
 
-        npc.updateTitle(config.getString(configPath + "text1"));
-        if (subtitle) npc.updateSubtitle(config.getString(configPath + "text2"));
+        npc.updateTitle(customConfig.getString(configPath + "text1"));
+        if (subtitle) npc.updateSubtitle(customConfig.getString(configPath + "text2"));
 
-        npc.setDefaultPose(config.getDouble(configPath + "default-yaw"));
+        npc.setDefaultPose(customConfig.getDouble(configPath + "default-yaw"));
         npc.setTask(task);
-        npc.setSkin(config.getString(configPath + "skin-file"));
+        npc.setSkin(customConfig.getString(configPath + "skin-file"));
 
         npc.spawnToAll();
 
