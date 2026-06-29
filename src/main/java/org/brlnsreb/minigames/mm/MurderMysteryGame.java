@@ -13,7 +13,7 @@ import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.minigame.game.Arena;
+import org.brlnsreb.core.minigame.match.game.Arena;
 import org.brlnsreb.core.minigame.match.GameStateType;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.minigames.mm.config.MMConfig;

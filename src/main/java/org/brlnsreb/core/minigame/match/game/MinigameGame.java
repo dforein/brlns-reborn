@@ -1,9 +1,9 @@
-package org.brlnsreb.core.minigame.game;
+package org.brlnsreb.core.minigame.match.game;
 
 import java.util.Set;
 
 import org.brlnsreb.core.ConfigManager;
-import org.brlnsreb.core.minigame.game.items.SpectatorItemManager;
+import org.brlnsreb.core.minigame.match.game.items.SpectatorItemManager;
 import org.brlnsreb.core.minigame.match.GameState;
 import org.brlnsreb.core.minigame.match.GameStateType;
 import org.brlnsreb.core.minigame.match.MinigameMatch;

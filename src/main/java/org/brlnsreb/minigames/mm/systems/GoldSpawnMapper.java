@@ -8,7 +8,7 @@ import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.TextFormat;
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.minigame.game.Arena;
+import org.brlnsreb.core.minigame.match.game.Arena;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

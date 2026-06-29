@@ -1,4 +1,4 @@
-package org.brlnsreb.core.minigame.game;
+package org.brlnsreb.core.minigame.match.game;
 
 import cn.nukkit.level.Level;
 import cn.nukkit.math.Vector3;

@@ -1,4 +1,4 @@
-package org.brlnsreb.core.minigame.game.items;
+package org.brlnsreb.core.minigame.match.game.items;
 
 import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.utils.ItemManager;

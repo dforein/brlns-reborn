@@ -9,7 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.minigame.MinigameType;
-import org.brlnsreb.core.minigame.game.MinigameGame;
+import org.brlnsreb.core.minigame.match.game.MinigameGame;
 import org.brlnsreb.core.minigame.match.waitinglobby.WaitingLobby;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.Messages;

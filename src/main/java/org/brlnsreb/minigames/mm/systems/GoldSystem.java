@@ -11,7 +11,7 @@ import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.ItemHelper;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.minigame.game.Arena;
+import org.brlnsreb.core.minigame.match.game.Arena;
 import org.brlnsreb.minigames.mm.config.MMConfig;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.brlnsreb.core.minigame.game;
+package org.brlnsreb.core.minigame.match.game;
 
 import org.brlnsreb.core.minigame.match.MinigameMatch;
 import org.brlnsreb.core.minigame.match.MinigameMatchExpand;
