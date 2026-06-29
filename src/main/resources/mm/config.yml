@@ -1,12 +1,14 @@
+settings:
+  physics-enabled: false
 lobby:
   npc:
 game:
   min-players: 2
   max-players: 20
   min-players-start: 20
-  max-countdown: 45
-  shortened-countdown: 10
-  pregame-countdown: 10
+  countdown-seconds: 45
+  shortened-countdown-seconds: 10
+  pregame-countdown-seconds: 10
   game-duration: 420
   end-time: 10
 waiting-lobby:

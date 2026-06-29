@@ -24,6 +24,10 @@ public class PlayerData {
         return this.name != null;
     }
 
+    public boolean checkCost(int coinsCost) {
+        return coinsCost <= this.coins;
+    }
+
     public void addCoins(int deltaCoins) {
         if (this.coins < -deltaCoins) {
             this.coins = 0;

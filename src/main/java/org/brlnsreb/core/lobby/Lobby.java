@@ -8,12 +8,12 @@ import org.brlnsreb.core.WorldManager;
 import org.brlnsreb.core.lobby.entities.HologramEntity;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.minigame.Minigame;
+import org.brlnsreb.core.minigame.match.MinigameMatch;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.utils.YamlUtil;
 
-import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
@@ -21,37 +21,51 @@ import cn.nukkit.utils.Config;
 
 public abstract class Lobby {
 
-    protected final Level level;
     protected final Minigame minigame;
+    protected final MinigameMatch match;
+
+    protected final Level level;
     protected Position spawnPos;
+
     protected Config config;
     protected Config messages;
     protected Map<NPCEntity, String> npcConfigPathMap = new HashMap<>();
 
-    public Lobby(Minigame minigame) {
+    public Lobby(Minigame minigame, MinigameMatch match) {
         this.minigame = minigame;
-        this.config = getConfig();
-        this.messages = getMessages();
+        this.match = match;
 
         String levelPath = configPath().equals("") ?
             "world" : configPath() + ".world";
         this.level = WorldManager.loadLobbyLevel(config.getString(levelPath));
         this.spawnPos = YamlUtil.parsePosition(config.getString(configPath() + "spawn"), this.level);
+
+        this.config = getConfig();
+        this.messages = getMessages();
+    }
+
+    public Lobby(Minigame minigame) {
+        this(minigame, null);
+    }
+
+    public Lobby(MinigameMatch match) {
+        this(match.getMinigame(), match);
     }
 
     public Lobby() {
-        this(null);
+        this(null, null);
     }
 
-    public boolean onJoin(Player player) {
-        CustomPlayer p = (CustomPlayer) player;
+    public boolean onJoin(CustomPlayer player) {
+        PlayerUtils.changeWorld(player, spawnPos);
 
-        p.currentMinigame = minigame;
-        PlayerUtils.changeWorld(p, spawnPos);
-        PlayerUtils.setLobbyState(p, onJoinState());
+        player.currentMinigame = minigame;
+        PlayerUtils.setLobbyState(player, onJoinState());
 
-        onJoinBossBar(p);
-        onJoinItems(p);
+        onJoinBossBar(player);
+        onJoinItems(player);
+
+        player.setMatch(match);
 
         return true;
     }
@@ -66,22 +80,30 @@ public abstract class Lobby {
         holo.spawnToAll();
     }
 
-    protected NPCEntity spawnNpc(String configPath, Consumer<Player> task) {
+    protected NPCEntity spawnNpc(String configPath, Consumer<CustomPlayer> task) {
         return spawnNpc(configPath, task, false);
     }
 
-    protected NPCEntity spawnNpc(String configPath, Consumer<Player> task, boolean subtitle) {
+    protected NPCEntity spawnNpc(String configPath, Config customConfig, Consumer<CustomPlayer> task) {
+        return spawnNpc(configPath, customConfig, task, false);
+    }
+
+    protected NPCEntity spawnNpc(String configPath, Consumer<CustomPlayer> task, boolean subtitle) {
+        return spawnNpc(configPath, this.config, task, subtitle);
+    }
+
+    protected NPCEntity spawnNpc(String configPath, Config customConfig, Consumer<CustomPlayer> task, boolean subtitle) {
         configPath = YamlUtil.checkConfigPath(configPath);
-        Position pos = YamlUtil.parsePosition(config.getString(configPath + "pos"), this.level);
+        Position pos = YamlUtil.parsePosition(customConfig.getString(configPath + "pos"), this.level);
         
         NPCEntity npc = new NPCEntity(pos.getChunk(), Entity.getDefaultNBT(pos));
 
-        npc.updateTitle(config.getString(configPath + "text1"));
-        if (subtitle) npc.updateSubtitle(config.getString(configPath + "text2"));
+        npc.updateTitle(customConfig.getString(configPath + "text1"));
+        if (subtitle) npc.updateSubtitle(customConfig.getString(configPath + "text2"));
 
-        npc.setDefaultPose(config.getDouble(configPath + "default-yaw"));
+        npc.setDefaultPose(customConfig.getDouble(configPath + "default-yaw"));
         npc.setTask(task);
-        npc.setSkin(config.getString(configPath + "skin-file"));
+        npc.setSkin(customConfig.getString(configPath + "skin-file"));
 
         npc.spawnToAll();
 
@@ -116,7 +138,7 @@ public abstract class Lobby {
     public Level getLevel() { return this.level; }
     public abstract Config getConfig();
     public abstract Config getMessages();
-    public abstract String getConfigPath();
-    public String configPath() { return YamlUtil.checkConfigPath(getConfigPath()); }
+    public abstract String requireConfigPath();
+    public String configPath() { return YamlUtil.checkConfigPath(requireConfigPath()); }
 
 }

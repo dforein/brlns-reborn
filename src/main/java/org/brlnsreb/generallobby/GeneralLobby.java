@@ -16,7 +16,6 @@ import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.generallobby.items.MainLobbyItemManager;
 import org.brlnsreb.utils.YamlUtil;
 
-import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.utils.Config;
 
@@ -59,7 +58,7 @@ public class GeneralLobby extends Lobby {
 
             NPCEntity npc = spawnNpc(
                 configPath,
-                (Player player) -> { minigame.onLobbyJoin(player); },
+                (CustomPlayer player) -> { minigame.onLobbyJoin(player); },
                 false
             );
 
@@ -74,7 +73,7 @@ public class GeneralLobby extends Lobby {
     }
 
     private void updateNpcSubtitle(NPCEntity npc) {
-        String subtitle = YamlUtil.getStr(getConfigPath() + "npc.text2", config).formatted(
+        String subtitle = YamlUtil.getStr(configPath() + "npc.text2", config).formatted(
             minigame.getNameTag(),
             minigame.getMainPendingMatch().getNumber(),
             minigame.getMainPendingMatch().getPlayers().size()
@@ -105,6 +104,6 @@ public class GeneralLobby extends Lobby {
     public Config getMessages() {
         return ConfigManager.getConfig("general-lobby/messages.yml");
     }
-    public String getConfigPath() { return ""; }
+    public String requireConfigPath() { return ""; }
     
 }

@@ -6,10 +6,9 @@ import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.lobby.ui.MainLobbyBossBar;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
-import org.brlnsreb.generallobby.GeneralLobby;
+import org.brlnsreb.generallobby.items.MainLobbyItemManager;
 import org.brlnsreb.utils.YamlUtil;
 
-import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.utils.Config;
 
@@ -35,7 +34,7 @@ public abstract class MinigameLobby extends Lobby {
     }
 
     protected void onJoinItems(CustomPlayer player) {
-        GeneralLobby.giveLobbyItems(player);
+        MainLobbyItemManager.getInstance().giveLobbyItems(player);
     }
 
     public void onReplaceMainPendingMatch(int matchNumber) {
@@ -47,7 +46,7 @@ public abstract class MinigameLobby extends Lobby {
 
         NPCEntity npc = spawnNpc(
             configPath,
-            (Player player) -> { minigame.onMatchJoin(player); },
+            (CustomPlayer player) -> { minigame.onMatchJoin(player); },
             false
         );
 
@@ -83,6 +82,6 @@ public abstract class MinigameLobby extends Lobby {
 
     public Config getNewConfig() { return minigame.getConfig(); }
     public Config getNewMessages() { return minigame.getMessages(); }
-    public String getConfigPath() { return "lobby."; }
+    public String requireConfigPath() { return "lobby."; }
 
 }

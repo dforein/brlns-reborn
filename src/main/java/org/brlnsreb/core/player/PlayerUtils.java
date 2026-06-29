@@ -1,7 +1,10 @@
 package org.brlnsreb.core.player;
 
+import java.util.Collection;
+
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer.DamageMode;
+import org.brlnsreb.core.player.CustomPlayer.InteractMode;
 
 import cn.nukkit.Player;
 import cn.nukkit.entity.effect.Effect;
@@ -33,12 +36,13 @@ public class PlayerUtils {
         p.bossBarId = null;
     }
 
-    public static void changeWorld(Player p, Position pos) {
+    public static void changeWorld(CustomPlayer p, Position pos) {
         BrlnsReb plugin = BrlnsReb.getInstance();
 
         try {
             int viewDistance = p.getViewDistance();
 
+            p.setTeleporting();
             p.setViewDistance(2);
             p.despawnFromAll();
 
@@ -69,8 +73,9 @@ public class PlayerUtils {
         }
 
         p.state = newState;
-
         p.setAttackVars(DamageMode.INVULNERABLE, false, false);
+        p.interactMode = InteractMode.LIMITED;
+
         p.setGamemode(Player.ADVENTURE);
 
         p.removeAllEffects();
@@ -86,6 +91,12 @@ public class PlayerUtils {
         effect.setAmplifier(amplifier);
         effect.setVisible(isVisible);
         player.addEffect(effect);
+    }
+
+    public static void clearInventory(Collection<? extends Player> players) {
+        for (Player p : players) {
+            clearInventory(p);
+        }
     }
 
     public static void clearInventory(Player p) {

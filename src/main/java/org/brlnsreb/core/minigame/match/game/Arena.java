@@ -1,4 +1,4 @@
-package org.brlnsreb.core.minigame.match;
+package org.brlnsreb.core.minigame.match.game;
 
 import cn.nukkit.level.Level;
 import cn.nukkit.math.Vector3;
@@ -18,7 +18,6 @@ public class Arena {
     private final Vector3 min;
     private final Vector3 max;
     private final List<Vector3> spawns;
-    private final boolean physicsEnabled;
     
     public Arena(Config config, String mapsConfigPath, String settingsConfigPath) {
         mapsConfigPath = YamlUtil.checkConfigPath(mapsConfigPath);
@@ -42,16 +41,10 @@ public class Arena {
 
         if (config.getBoolean(settingsConfigPath + "physics-enabled")) {
             WorldManager.enablePhysicsIn(level);
-            this.physicsEnabled = true;
-        } else {
-            this.physicsEnabled = false;
         }
     }
 
     public void close() {
-        if (physicsEnabled) {
-            WorldManager.removeFromEnabledPhysicsLevels(level);
-        }
         WorldManager.unloadLevel(level);
     }
     

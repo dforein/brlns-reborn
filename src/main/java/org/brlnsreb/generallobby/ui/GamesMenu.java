@@ -2,6 +2,7 @@ package org.brlnsreb.generallobby.ui;
 
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.MinigameManager;
+import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.generallobby.GeneralLobby;
 import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.abstraction.MenuAbstract;
@@ -35,7 +36,7 @@ public class GamesMenu extends MenuAbstract {
         menu.send(player);
     }
 
-    public static void handleResponse(Player player, int buttonId) {
+    public static void handleResponse(CustomPlayer player, int buttonId) {
         if (buttonId == 0) {
             GeneralLobby.getInstance().onJoin(player);
         } else {

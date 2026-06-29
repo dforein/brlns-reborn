@@ -1,0 +1,34 @@
+match:
+  waiting-lobby:
+    npc:
+      leave:
+
+    bossbar:
+      max-countdown: 45
+      shortened-countdown: 10
+      medium-threshold: 60
+      short-threshold: 10
+      text-long: '&l&eStarting in &6%dm %ds'
+      text-medium: '&l&eStarting in &6%ds'
+      text-short: '&l&eStarting in &c%ds'
+      text-waiting-players: '&l&cWaiting For Players'
+    items:
+      game-poll:
+        name: '&o&l&dGame Poll &r&7- Hold / Right Click'
+        times:
+        - Day
+        - Sunrise
+        - Sunset
+        - Night
+  game:
+    items:
+      spectator:
+        teleporter:
+          name: '&l&o&eTeleporter'
+        actions:
+          name: '&l&o&eActions'
+  end-lobby:
+    npc:
+      play-again:
+      spectate:
+      return-to-lobby:

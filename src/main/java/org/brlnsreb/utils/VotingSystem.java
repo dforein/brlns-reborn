@@ -11,11 +11,10 @@ public class VotingSystem<T> {
     
     public VotingSystem() {
         this.votes = new HashMap<>();
-        this.availableOptions = new ArrayList<>();
     }
     
     public void setAvailableOptions(List<T> options) {
-        this.availableOptions = new ArrayList<>(options);
+        this.availableOptions = options;
     }
     
     public List<T> getAvailableOptions() {
@@ -42,11 +41,11 @@ public class VotingSystem<T> {
         
         Map<T, Integer> voteCounts = new HashMap<>();
         for (T option : votes.values()) {
-            voteCounts.put(option, voteCounts.getOrDefault(option, 0) + 1);
+            voteCounts.put(option, 1 + voteCounts.getOrDefault(option, 0));
         }
         
         int maxVotes = Collections.max(voteCounts.values());
-        List<T> winners = new ArrayList<>();
+        List<T> winners = new LinkedList<>();
         for (Map.Entry<T, Integer> entry : voteCounts.entrySet()) {
             if (entry.getValue() == maxVotes) {
                 winners.add(entry.getKey());

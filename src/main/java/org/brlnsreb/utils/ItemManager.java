@@ -1,6 +1,4 @@
-package org.brlnsreb.utils.abstraction;
-
-import org.brlnsreb.utils.YamlUtil;
+package org.brlnsreb.utils;
 
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
@@ -8,11 +6,11 @@ import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 
-public abstract class ItemManagerAbstract {
+public class ItemManager {
 
     protected Config config;
 
-    public ItemManagerAbstract(Config config) {
+    public ItemManager(Config config) {
         this.config = config;
     }
 
