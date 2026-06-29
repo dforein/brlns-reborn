@@ -6,10 +6,10 @@ import org.brlnsreb.generallobby.GeneralLobby;
 import org.brlnsreb.utils.YamlUtil;
 
 import cn.nukkit.command.CommandSender;
-import cn.nukkit.plugin.annotation.Command;
+import cn.nukkit.plugin.annotation.CommandDefinition;
 import cn.nukkit.utils.TextFormat;
 
-@Command(
+@CommandDefinition(
     name = "reloadconfig", 
     permission = "admin",
     description = "Reload all configs"

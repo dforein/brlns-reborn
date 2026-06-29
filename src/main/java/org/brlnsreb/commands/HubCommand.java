@@ -5,10 +5,10 @@ import org.brlnsreb.core.player.CustomPlayer;
 
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
-import cn.nukkit.plugin.annotation.Command;
+import cn.nukkit.plugin.annotation.CommandDefinition;
 import cn.nukkit.utils.TextFormat;
 
-@Command(
+@CommandDefinition(
     name = "hub",
     aliases = {"lobby"},
     description = "Go to lobby"

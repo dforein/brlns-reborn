@@ -3,10 +3,10 @@ package org.brlnsreb.commands;
 import org.brlnsreb.BrlnsReb;
 
 import cn.nukkit.command.CommandSender;
-import cn.nukkit.plugin.annotation.Command;
+import cn.nukkit.plugin.annotation.CommandDefinition;
 import cn.nukkit.utils.TextFormat;
 
-@Command(
+@CommandDefinition(
     name = "globalchat",
     permission = "admin",
     description = "Toggle global server chat or local level chat"

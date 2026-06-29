@@ -4,12 +4,12 @@ import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.command.tree.node.PlayersNode;
-import cn.nukkit.plugin.annotation.Command;
+import cn.nukkit.plugin.annotation.CommandDefinition;
 import cn.nukkit.utils.TextFormat;
 
 import org.cloudburstmc.protocol.bedrock.data.command.CommandParamType;
 
-@Command(
+@CommandDefinition(
     name = "ping",
     description = "Check your ping",
     usage = "/ping or /ping <player>"
