@@ -60,17 +60,19 @@ public class PlayerData {
          */
         
         this.exp = exp;
+    }
 
+    public void updateLevel() {
         int expThreshold = 562500;          //equivalent to 150 levels
         int levelThreshold = 150;
         double expPerHighLevel = 7500.0;    //reciprocal of the derivative of the level function lvl(exp) at x=150
 
-        if (exp < expThreshold) {
-            this.level = Math.sqrt((double) exp) / 5.0;     //lvl(exp)
+        if (this.exp < expThreshold) {
+            this.level = Math.sqrt((double) this.exp) / 5.0;     //lvl(exp)
             this.levelFloor = (int) this.level;
         } else {
             // using the derivative of lvl(exp) to get a linear constant growth
-            int temp = exp - expThreshold;
+            int temp = this.exp - expThreshold;
             this.level = levelThreshold + temp / expPerHighLevel;
             this.levelFloor = (int) this.level;
         }

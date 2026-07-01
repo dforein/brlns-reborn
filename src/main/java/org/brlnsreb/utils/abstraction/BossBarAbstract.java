@@ -26,8 +26,8 @@ public abstract class BossBarAbstract {
         //starts full, variates lenght
         message = TextFormat.colorize(message);
 
-        if (player.bossBarId != null) {
-            player.updateBossBar(message, length, player.bossBarId);
+        if (player.hasBossBar()) {
+            player.updateBossBar(message, length, player.getBossBarId());
         } else {
             newBossBar(player, message, 100.0f);
         }
@@ -37,8 +37,8 @@ public abstract class BossBarAbstract {
         //variates lenght already from start
         message = TextFormat.colorize(message);
         
-        if (player.bossBarId != null) {
-            player.updateBossBar(message, length, player.bossBarId);
+        if (player.hasBossBar()) {
+            player.updateBossBar(message, length, player.getBossBarId());
         } else {
             newBossBar(player, message, (float) length);
         }
@@ -49,7 +49,7 @@ public abstract class BossBarAbstract {
         PlayerUtils.removeBossBar(player);
 
         DummyBossBar bossBar = buildBossBar(player, text, length);
-        player.bossBarId = player.createBossBar(bossBar);
+        player.setBossBarId(player.createBossBar(bossBar));
     }
 
     protected DummyBossBar buildBossBar(CustomPlayer player, String text, float length) {

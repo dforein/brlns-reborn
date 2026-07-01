@@ -385,12 +385,16 @@ public class PlayerDataManager {
         });
     }
 
-    public static void onMatchEnd(UUID winnerId) {
-        onMatchEnd(winnerId);
+    public static PlayerData getPlayerData(UUID uuid) {
+        return dataMap.get(uuid);
     }
 
-    public static void onMatchEnd(UUID winnerId, Map<StatType, Integer> stats) {
-        
+    public static PlayerData getPlayerData(String name) {
+        return dataMap.get(nameIdMap.get(name));
+    }
+
+    public static UUID getPlayerId(String name) {
+        return nameIdMap.get(name);
     }
 
 }

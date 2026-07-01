@@ -22,10 +22,10 @@ public abstract class ScoreboardAbstract {
 
     protected Scoreboard getScoreboardOrCreate(CustomPlayer player) {
         if (player == null || !player.isOnline()) return null;
-        if (player.scoreboard != null) return player.scoreboard;
+        if (player.hasScoreboard()) return player.getScoreboard();
 
         Scoreboard sb = new Scoreboard(OBJECTIVE_NAME, DISPLAY_TITLE);
-        player.scoreboard = sb;
+        player.setScoreboard(sb);
         if (sb != null) sb.addViewer(player, DisplaySlot.SIDEBAR);
 
         return sb;

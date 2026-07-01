@@ -28,7 +28,7 @@ public class PlayerQuitListener implements Listener {
     private void handlePlayerLeave(Player p) {
         CustomPlayer player = (CustomPlayer) p;
 
-        PlayerDataManager.savePlayerData(player.getUniqueId());
+        PlayerDataManager.savePlayerDataAsync(player.getUniqueId());
         player.getMatch().onLeave(player);
         player.save();
     }

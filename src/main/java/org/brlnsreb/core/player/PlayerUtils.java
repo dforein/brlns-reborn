@@ -1,12 +1,14 @@
 package org.brlnsreb.core.player;
 
 import java.util.Collection;
+import java.util.UUID;
 
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer.DamageMode;
 import org.brlnsreb.core.player.CustomPlayer.InteractMode;
 
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.entity.effect.Effect;
 import cn.nukkit.entity.effect.EffectType;
 import cn.nukkit.item.Item;
@@ -18,10 +20,10 @@ public class PlayerUtils {
     
     public static void removeScoreboard(CustomPlayer p) {
         if (!p.isOnline()) return;
-        if (p.scoreboard != null) {
-            p.removeScoreboard(p.scoreboard);
-            p.scoreboard.removeViewer(p, DisplaySlot.SIDEBAR);
-            p.scoreboard = null;
+        if (p.hasScoreboard()) {
+            p.removeScoreboard();
+            p.getScoreboard().removeViewer(p, DisplaySlot.SIDEBAR);
+            p.resetScoreboard();
         }
     }
 
@@ -33,7 +35,7 @@ public class PlayerUtils {
             }
         }
 
-        p.bossBarId = null;
+        p.resetBossBarId();
     }
 
     public static void changeWorld(CustomPlayer p, Position pos) {
@@ -83,6 +85,8 @@ public class PlayerUtils {
 
         p.setHealthCurrent(p.getHealthMax());
         p.getFoodData().setFood(18);
+
+        p.updateExp();
     }
 
     private static void giveEffect(Player player, EffectType type, int duration, int amplifier, boolean isVisible) {
@@ -137,6 +141,10 @@ public class PlayerUtils {
                 if (!continueSearch) break;
             }
         }
+    }
+
+    public static CustomPlayer getPlayer(UUID uuid) {
+        return (CustomPlayer) Server.getInstance().getPlayer(uuid).orElse(null);
     }
 
 }

@@ -72,10 +72,10 @@ public class CustomPlayer extends Player {
     public String gamePlayerNameTag;
     private PlayerData data;
 
-    public Scoreboard scoreboard = null;
-    public Long bossBarId = null;
+    private Scoreboard scoreboard = null;
+    private Long bossBarId = null;
 
-    public AtomicBoolean asyncFlag = new AtomicBoolean(false);
+    private AtomicBoolean asyncFlag = new AtomicBoolean(false);
 
 
     public CustomPlayer(@NotNull BedrockServerSession session, @NotNull PlayerInfo info) {
@@ -87,18 +87,17 @@ public class CustomPlayer extends Player {
     }
 
 
+    //state logic
+
     public boolean canRunAsync() {
         return this.asyncFlag.compareAndSet(false, true);
     }
 
     public void resetAsync() {
         this.asyncFlag.set(false);
-    }
+}
 
-    public boolean isGameSpectator() {
-        return this.state == PlayerStateType.SPECTATOR;
-    }
-    
+    public boolean isGameSpectator() { return this.state == PlayerStateType.SPECTATOR; }
     public void setGameSpectator() {
         this.state = PlayerStateType.SPECTATOR;
         this.setAttackVars(DamageMode.INVULNERABLE, false, false);
@@ -106,21 +105,23 @@ public class CustomPlayer extends Player {
         this.despawnFromAll();
     }
 
-    public boolean isTeleporting() {
-        return this.state == PlayerStateType.TELEPORTING;
+    @Override
+    public void spawnTo(Player player) {
+        if (this.isGameSpectator()) return;
+        super.spawnTo(player);
     }
 
-    public void setTeleporting() {
-        this.state = PlayerStateType.TELEPORTING;
-    }
+    public boolean isTeleporting() { return this.state == PlayerStateType.TELEPORTING; }
+    public void setTeleporting() { this.state = PlayerStateType.TELEPORTING; }
 
-    public PlayerData getPlayerData() {
-        return this.data;
-    }
+    public void setMatch(MinigameMatch match) { this.currentMatch = new WeakReference<>(match); }
+    public MinigameMatch getMatch() { return this.currentMatch.get(); }
 
-    public void setPlayerData(PlayerData data) {
-        this.data = data;
-    }
+
+    //data logic
+
+    public void setPlayerData(PlayerData data) { this.data = data; }
+    public PlayerData getPlayerData() { return this.data; }
 
     public void updatePlayerNameTag() {
         this.lobbyPlayerNameTag = TextFormat.colorize(
@@ -152,19 +153,28 @@ public class CustomPlayer extends Player {
         } 
     }
 
-    @Override
-    public void spawnTo(Player player) {
-        if (this.isGameSpectator()) return;
-        super.spawnTo(player);
+
+    //ui logic
+
+    public void setScoreboard(Scoreboard scoreboard) { this.scoreboard = scoreboard; }
+    public void resetScoreboard() { this.scoreboard = null; }
+    public void removeScoreboard() { this.removeScoreboard(this.scoreboard); }
+    public Scoreboard getScoreboard() { return this.scoreboard; }
+    public boolean hasScoreboard() { return this.scoreboard != null; }
+
+    public void setBossBarId(long bossBarId) { this.bossBarId = bossBarId; }
+    public void resetBossBarId() { this.bossBarId = null; }
+    public Long getBossBarId() { return this.bossBarId; }
+    public boolean hasBossBar() { return this.bossBarId != null; }
+
+    public void updateExp() {
+        int barExp = calculateRequireExperience(data.getFloorLevel())                   //deltaExp between minecraft xp levels
+                    - calculateRequireExperience(data.getFloorLevel() + 1);
+        barExp *= (data.getLevel() - data.getFloorLevel());                             //level - floorLevel = % exp needed for next exp level
+
+        this.setExperience(barExp, data.getFloorLevel());
     }
 
-    public MinigameMatch getMatch() {
-        return this.currentMatch.get();
-    }
-
-    public void setMatch(MinigameMatch match) {
-        this.currentMatch = new WeakReference<>(match);
-    }
 
     //interact logic
 

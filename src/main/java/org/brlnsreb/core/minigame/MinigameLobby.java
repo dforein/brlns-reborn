@@ -5,6 +5,7 @@ import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
+import org.brlnsreb.generallobby.GeneralLobby;
 import org.brlnsreb.generallobby.items.MainLobbyItemManager;
 import org.brlnsreb.generallobby.ui.MainLobbyBossBar;
 import org.brlnsreb.utils.YamlUtil;
@@ -21,8 +22,14 @@ public abstract class MinigameLobby extends Lobby {
     public MinigameLobby(Minigame minigame) {
         super(minigame);
         this.joinNpc = spawnJoinNpc(minigame);
-        this.bossBar = new MainLobbyBossBar(config.getString("name"));
 
+        //leave npc
+        spawnNpc(
+            configPath() + "npc.",
+            (CustomPlayer player) -> { GeneralLobby.getInstance().onJoin(player); }
+        );
+
+        this.bossBar = new MainLobbyBossBar(config.getString("name"));
         this.bossBar.startBossBarUpdates(level);
     }
 

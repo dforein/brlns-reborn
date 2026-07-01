@@ -83,7 +83,7 @@ public class BrlnsReb extends PluginBase {
         MinigameManager.forceStop();
 
         for (Player p : server.getOnlinePlayers().values()) {
-            PlayerDataManager.savePlayerDataSync(p.getUniqueId());
+            PlayerDataManager.savePlayerData(p.getUniqueId());
             p.save();
         }
     }
