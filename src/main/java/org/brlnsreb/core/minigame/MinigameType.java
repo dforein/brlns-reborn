@@ -3,6 +3,7 @@ package org.brlnsreb.core.minigame;
 public enum MinigameType {
     MURDER_MYSTERY(1, "mm");
 
+    public static final int size = MinigameType.values().length;
     private final int id;
     private final String nameTag;
 

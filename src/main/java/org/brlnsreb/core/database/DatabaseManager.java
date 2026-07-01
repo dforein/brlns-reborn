@@ -2,7 +2,6 @@ package org.brlnsreb.core.database;
 
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.ConfigManager;
-import org.brlnsreb.core.minigame.MinigameType;
 import org.brlnsreb.utils.DBResults;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -23,6 +22,36 @@ public class DatabaseManager {
     private static boolean enabled;
     private final BrlnsReb plugin;
 
+    private String accountsTable = """
+        CREATE TABLE IF NOT EXISTS accounts (
+            name VARCHAR(26) PRIMARY KEY,
+            password_hash VARCHAR(60) NOT NULL,
+            exp INT DEFAULT 0,
+            coins INT DEFAULT 0
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    """;
+
+    private String playersTable = """
+        CREATE TABLE IF NOT EXISTS players (
+            uuid VARCHAR(36) PRIMARY KEY,
+            name VARCHAR(26) NOT NULL,
+            FOREIGN KEY (name) REFERENCES accounts(name) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    """;
+
+    private String statsTable = """
+        CREATE TABLE IF NOT EXISTS stats (
+            stat_id INT AUTO_INCREMENT PRIMARY KEY,S
+            player_name VARCHAR(26),
+            minigame_id TINYINT UNSIGNED,
+            stat_type TINYINT UNSIGNED,
+            value INT,
+            FOREIGN KEY (player_name) REFERENCES accounts(name) ON DELETE CASCADE,
+            UNIQUE KEY unique_stat (player_name, minigame_id, stat_type)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    """;
+
+
     public DatabaseManager(BrlnsReb plugin) {
         this.plugin = plugin;
         enabled = initConnectionPool();
@@ -32,6 +61,7 @@ public class DatabaseManager {
         enabled = initConnectionPool();
         return enabled;
     }
+
 
     private boolean initConnectionPool() {
         Config config = ConfigManager.getConfig("global/database.yml");
@@ -86,42 +116,13 @@ public class DatabaseManager {
     }
 
     private void createTables() {
-        String accountsTable = """
-            CREATE TABLE IF NOT EXISTS accounts (
-                name VARCHAR(26) PRIMARY KEY,
-                password_hash VARCHAR(60) NOT NULL,
-                exp INT DEFAULT 0,
-                coins INT DEFAULT 0
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-        """;
-
-        String playersTable = """
-            CREATE TABLE IF NOT EXISTS players (
-                uuid VARCHAR(36) PRIMARY KEY,
-                name VARCHAR(26) NOT NULL,
-                FOREIGN KEY (name) REFERENCES accounts(name) ON DELETE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-        """;
-
-        String statsTable = """
-            CREATE TABLE IF NOT EXISTS %s (
-                player_name VARCHAR(26) PRIMARY KEY,
-                stat_type TINYINT UNSIGNED,
-                value INT,
-                FOREIGN KEY (player_name) REFERENCES accounts(name) ON DELETE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-        """;
-        
         try (Connection conn = getConnection();
              var stmt = conn.createStatement()) {
             
             stmt.execute(accountsTable);
             stmt.execute(playersTable);
 
-            for (MinigameType minigame : MinigameType.values()) {
-                String mgNameTag = minigame.getNameTag();
-                stmt.execute(statsTable.formatted(mgNameTag));
-            }
+            stmt.execute(statsTable);
 
             plugin.getLogger().info(TextFormat.GRAY + "Database tables ready");
             
@@ -129,24 +130,13 @@ public class DatabaseManager {
             plugin.getLogger().error("Failed to create tables: " + e.getMessage());
         }
     }
+
     
     public static Connection getConnection() throws SQLException {
         if (!isEnabled()) {
             throw new SQLException("Database not initialized or already closed!");
         }
         return dataSource.getConnection();
-    }
-
-    public static int executeUpdate(String sql, Object... params) throws SQLException {
-        try (Connection conn = getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
-            for (int i = 0; i < params.length; i++) {
-                stmt.setObject(i + 1, params[i]);
-            }
-            
-            return stmt.executeUpdate();
-        }
     }
 
     public static DBResults executeSelect(String sql, Object... params) throws SQLException {
@@ -164,7 +154,7 @@ public class DatabaseManager {
             List<Map<String, Object>> results = new ArrayList<>();
 
             while (rs.next()) {
-                HashMap<String, Object> row = new HashMap<>();
+                Map<String, Object> row = new HashMap<>(columnCount, 1.0f);
                 for (int i = 1; i <= columnCount; i++) {
                     row.put(meta.getColumnName(i), rs.getObject(i));
                 }
@@ -174,6 +164,19 @@ public class DatabaseManager {
             return new DBResults(results);
         }
     }
+
+    public static int executeUpdate(String sql, Object... params) throws SQLException {
+        try (Connection conn = getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            for (int i = 0; i < params.length; i++) {
+                stmt.setObject(i + 1, params[i]);
+            }
+            
+            return stmt.executeUpdate();
+        }
+    }
+
     
     public static boolean isEnabled() {
         return enabled && dataSource != null && !dataSource.isClosed();

@@ -1,9 +1,12 @@
 package org.brlnsreb.core.player;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -29,14 +32,32 @@ public class PlayerDataManager {
         WRONG_PASSWORD
     }
     
-    private static final HashMap<UUID, PlayerData> dataMap = new HashMap<>();
-    private static final HashMap<String, UUID> nameIdMap = new HashMap<>();
+    private static final ConcurrentHashMap<UUID, PlayerData> dataMap = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, UUID> nameIdMap = new ConcurrentHashMap<>();
 
     public static void init() {
         scheduler = Server.getInstance().getScheduler();
     }
 
-    public static CompletableFuture<Outcome> initPlayer(CustomPlayer player) {
+    private static void setAccountData(CustomPlayer player, String name, int coins, int exp, DBResults statsResults) {
+        PlayerData data = player.getPlayerData();
+
+        data.name = name;
+        data.setCoins(coins);
+        data.setExp(exp);
+
+        if (statsResults == null || statsResults.isEmpty()) return;
+
+        for (int i = 0; i < statsResults.results.size(); i++) {
+            data.setStat(
+                statsResults.getInt(i, "minigame_id"), 
+                statsResults.getInt(i, "stat_type"),
+                statsResults.getInt(i, "value")
+            );
+        }
+    }
+
+    public static CompletableFuture<Outcome> onServerJoin(CustomPlayer player) {
         if (!player.canRunAsync()) {
             return CompletableFuture.completedFuture(
                 Outcome.ASYNC_TASK_ALREADY_RUNNING
@@ -60,20 +81,29 @@ public class PlayerDataManager {
 
                 if (playersResults.isEmpty()) return Outcome.OK;
 
-                //the player is not new, search the account
+                //the player is not new, search the account and stats
                 DBResults accountsResults = DatabaseManager.executeSelect(
                     "SELECT * FROM accounts WHERE name = ?", 
                     playersResults.getString("name")
                 );
+
+                
+                DBResults statsResults = DatabaseManager.executeSelect(
+                    "SELECT * FROM stats WHERE player_name = ?",
+                    accountsResults.getString("name")
+                );
                 
                 //update player's data
-                data.name = accountsResults.getString("name");
-                data.setCoins(accountsResults.getInt("coins"));
-                data.setExp(accountsResults.getInt("exp"));
-
                 scheduler.scheduleTask(() -> {
-                    nameIdMap.put(data.name, playerId);
+                    setAccountData(player, 
+                        accountsResults.getString("name"), 
+                        accountsResults.getInt("coins"), 
+                        accountsResults.getInt("exp"),
+                        statsResults
+                    );
                     player.updatePlayerNameTag();
+
+                    nameIdMap.put(data.name, playerId);
                 });
 
                 player.resetAsync();
@@ -83,6 +113,7 @@ public class PlayerDataManager {
                 throw new CompletionException(e);
             }
         }).exceptionally(e -> {
+            e.printStackTrace();
             player.resetAsync();
             return Outcome.DB_ERROR;
         });
@@ -112,12 +143,17 @@ public class PlayerDataManager {
 
                 //creating new account and updating player's data
                 if (!createNewAccount(name, password, player.getUniqueId())) return Outcome.DB_ERROR;
-                PlayerData data = player.getPlayerData();
-                data.name = name;
 
                 scheduler.scheduleTask(() -> {
-                    nameIdMap.put(data.name, player.getUniqueId());
+                    setAccountData(player, 
+                        name, 
+                        0, 
+                        0,
+                        null
+                    );
                     player.updatePlayerNameTag();
+
+                    nameIdMap.put(name, player.getUniqueId());
                 });
 
                 player.resetAsync();
@@ -127,6 +163,7 @@ public class PlayerDataManager {
                 throw new CompletionException(e);
             }
         }).exceptionally(e -> {
+            e.printStackTrace();
             player.resetAsync();
             return Outcome.DB_ERROR;
         });
@@ -135,23 +172,21 @@ public class PlayerDataManager {
     private static boolean createNewAccount(String name, String password, UUID playerId) throws SQLException {
         String pwHash = BCrypt.hashpw(password, BCrypt.gensalt(12));
 
-        if (DatabaseManager.executeUpdate(
-                """
-                INSERT INTO accounts (name, password_hash, exp, coins)
-                VALUES (?, ?, ?, ?)
-                """,
-                name, pwHash, 0, 0
-                
-            ) < 1) return false;
+        DatabaseManager.executeUpdate(
+            """
+            INSERT INTO accounts (name, password_hash, exp, coins)
+            VALUES (?, ?, ?, ?)
+            """,
+            name, pwHash, 0, 0        
+        );
 
-        if (DatabaseManager.executeUpdate(
-                """
-                INSERT INTO players (uuid, name)
-                VALUES (?, ?)
-                """,
-                playerId.toString(), name
-                
-            ) < 1) return false;
+        DatabaseManager.executeUpdate(
+            """
+            INSERT INTO players (uuid, name)
+            VALUES (?, ?)
+            """,
+            playerId, name
+        );
 
         return true;
     }
@@ -183,18 +218,25 @@ public class PlayerDataManager {
 
                 if (accountsResults.isEmpty()) return Outcome.NAME_NOT_FOUND;
 
+                DBResults statsResults = DatabaseManager.executeSelect(
+                    "SELECT * FROM stats WHERE player_name = ?",
+                    name
+                );
+
                 //password check
                 String pwHash = BCrypt.hashpw(password, BCrypt.gensalt(12));
                 if (!accountsResults.getString("password_hash").equals(pwHash)) return Outcome.WRONG_PASSWORD;
 
                 //player's data update
-                PlayerData data = player.getPlayerData();
-                data.name = name;
-                data.setCoins(accountsResults.getInt("coins"));
-                data.setExp(accountsResults.getInt("exp"));
-
                 scheduler.scheduleTask(() -> {
-                    nameIdMap.put(data.name, player.getUniqueId());
+                    setAccountData(player, 
+                        name, 
+                        accountsResults.getInt("coins"), 
+                        accountsResults.getInt("exp"),
+                        statsResults
+                    );
+
+                    nameIdMap.put(name, player.getUniqueId());
                     player.updatePlayerNameTag();
                 });
 
@@ -205,6 +247,7 @@ public class PlayerDataManager {
                 throw new CompletionException(e);
             }
         }).exceptionally(e -> {
+            e.printStackTrace();
             player.resetAsync();
             return Outcome.DB_ERROR;
         });
@@ -222,16 +265,18 @@ public class PlayerDataManager {
                 if (!player.getPlayerData().isLogged()) return Outcome.PLAYER_ALREADY_LOGGED_OUT;
 
                 //delete the player-account association
-                if (DatabaseManager.executeUpdate(
-                        "DELETE FROM players WHERE uuid = ?", 
-                        player.getUniqueId().toString()
-                    ) < 1
-                ) return Outcome.DB_ERROR;
+                DatabaseManager.executeUpdate(
+                    "DELETE FROM players WHERE uuid = ?", 
+                    player.getUniqueId().toString()
+                );
 
                 //player's data update
                 scheduler.scheduleTask(() -> {
+                    savePlayerData(player.getUniqueId());
                     PlayerData data = player.getPlayerData();
+                    
                     nameIdMap.remove(data.name);
+
                     data.resetData();
                     player.updatePlayerNameTag();
                 });
@@ -243,53 +288,78 @@ public class PlayerDataManager {
                 throw new CompletionException(e);
             }
         }).exceptionally(e -> {
+            e.printStackTrace();
             player.resetAsync();
             return Outcome.DB_ERROR;
         });
     }
 
-    public static CompletableFuture<Outcome> savePlayerData(UUID playerId) {
-        PlayerData data = dataMap.get(playerId);
-
+    public static CompletableFuture<Outcome> savePlayerDataAsync(UUID playerId) {
         return CompletableFuture.supplyAsync(() -> {
-            try {
-                if (DatabaseManager.executeUpdate(
-                    """
-                    UPDATE accounts
-                    SET exp = ?, coins = ?
-                    WHERE name = ?
-                    """,
-                    data.getExp(), data.getCoins(), data.name
-
-                ) < 1) return Outcome.DB_ERROR;
-
-                return Outcome.OK;
-
-            } catch (SQLException e) {
-                return Outcome.DB_ERROR;
-            }
+            return savePlayerData(playerId);
         });
     }
 
-    public static Outcome savePlayerDataSync(UUID playerId) {
+    public static Outcome savePlayerData(UUID playerId) {
         PlayerData data = dataMap.get(playerId);
 
         try {
-            if (DatabaseManager.executeUpdate(
+            if (!data.isLogged()) return Outcome.OK;
+            
+            DatabaseManager.executeUpdate(
                 """
                 UPDATE accounts
                 SET exp = ?, coins = ?
                 WHERE name = ?
                 """,
                 data.getExp(), data.getCoins(), data.name
+            );
 
-            ) < 1) return Outcome.DB_ERROR;
-
-            return Outcome.OK;
+            return savePlayerStats(data);
 
         } catch (SQLException e) {
+            e.printStackTrace();
             return Outcome.DB_ERROR;
         }
+    }
+
+    public static Outcome savePlayerStats(PlayerData data) throws SQLException {
+        int totalRows = data.getStatsAmount();
+        if (totalRows == 0) return Outcome.OK;
+
+        StringBuilder sql = new StringBuilder("INSERT INTO stats (player_name, minigame_id, stat_type, value) VALUES ");
+        for (int i = 0; i < totalRows; i++) {
+            sql.append("(?, ?, ?, ?)");
+            if (i < totalRows - 1) {
+                sql.append(", ");
+            }
+        }
+        sql.append(" ON DUPLICATE KEY UPDATE value = VALUES(value);");
+
+        try (Connection conn = DatabaseManager.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+        
+            int i = 1, statTypeId;
+
+            for (Map.Entry<Integer, int[]> entry : data.getStats().entrySet()) {
+                int minigameId = entry.getKey();
+                int[] values = entry.getValue();
+
+                for (statTypeId = 0; statTypeId < StatType.size; statTypeId++) {
+                    int value = values[statTypeId];
+                    if (value == -1) continue;
+
+                    stmt.setString(i++, data.name);
+                    stmt.setInt(i++, minigameId);
+                    stmt.setInt(i++, statTypeId);
+                    stmt.setInt(i++, value);
+                }
+            }
+
+            if (stmt.executeUpdate() < 1) return Outcome.DB_ERROR;
+        }
+
+        return Outcome.OK;
     }
 
     public static CompletableFuture<Outcome> savePlayerData(UUID playerId, String field, Object value) {
@@ -297,19 +367,19 @@ public class PlayerDataManager {
 
         return CompletableFuture.supplyAsync(() -> {
             try {
-                if (DatabaseManager.executeUpdate(
+                DatabaseManager.executeUpdate(
                     """
                     UPDATE accounts
                     SET ? = ?
                     WHERE name = ?
                     """,
                     field, value, name
-
-                ) < 1) return Outcome.DB_ERROR;
+                );
 
                 return Outcome.OK;
 
             } catch (SQLException e) {
+                e.printStackTrace();
                 return Outcome.DB_ERROR;
             }
         });

@@ -81,7 +81,7 @@ public class CustomPlayer extends Player {
     public CustomPlayer(@NotNull BedrockServerSession session, @NotNull PlayerInfo info) {
         super(session, info);
 
-        PlayerDataManager.initPlayer(this);
+        PlayerDataManager.onServerJoin(this);
         this.updatePlayerNameTag();
         GeneralLobby.getInstance().onJoin(this);
     }
