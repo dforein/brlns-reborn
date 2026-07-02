@@ -1,7 +1,7 @@
 package org.brlnsreb.listeners.general;
 
 import org.brlnsreb.core.player.CustomPlayer;
-import org.brlnsreb.core.player.PlayerDataManager;
+import org.brlnsreb.core.player.data.PlayerDataManager;
 
 import cn.nukkit.Player;
 import cn.nukkit.event.EventHandler;

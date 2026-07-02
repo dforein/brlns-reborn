@@ -1,8 +1,7 @@
-package org.brlnsreb.core.player;
+package org.brlnsreb.core.player.data;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.brlnsreb.core.database.StatType;
 import org.brlnsreb.core.minigame.Minigame;
 
 public class PlayerData {

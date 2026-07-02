@@ -17,7 +17,7 @@ import org.brlnsreb.core.auth.AuthSystem;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.minigame.MinigameType;
-import org.brlnsreb.core.player.PlayerDataManager;
+import org.brlnsreb.core.player.data.PlayerDataManager;
 import org.brlnsreb.generallobby.GeneralLobby;
 import org.brlnsreb.minigames.mm.entities.DeadBodyEntity;
 import org.brlnsreb.minigames.mm.entities.ThrownSwordEntity;

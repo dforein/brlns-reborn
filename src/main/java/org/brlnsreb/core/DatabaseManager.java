@@ -1,7 +1,6 @@
-package org.brlnsreb.core.database;
+package org.brlnsreb.core;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.utils.DBResults;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -41,7 +40,7 @@ public class DatabaseManager {
 
     private String statsTable = """
         CREATE TABLE IF NOT EXISTS stats (
-            stat_id INT AUTO_INCREMENT PRIMARY KEY,S
+            id INT AUTO_INCREMENT PRIMARY KEY,
             player_name VARCHAR(26),
             minigame_id TINYINT UNSIGNED,
             stat_type TINYINT UNSIGNED,

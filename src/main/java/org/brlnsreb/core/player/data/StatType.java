@@ -1,4 +1,4 @@
-package org.brlnsreb.core.database;
+package org.brlnsreb.core.player.data;
 
 public enum StatType {
     MATCHES_PLAYED(1),

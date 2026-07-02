@@ -1,4 +1,4 @@
-package org.brlnsreb.core.player;
+package org.brlnsreb.core.player.data;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,9 +9,8 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.mindrot.jbcrypt.BCrypt;
-
-import org.brlnsreb.core.database.DatabaseManager;
-import org.brlnsreb.core.database.StatType;
+import org.brlnsreb.core.DatabaseManager;
+import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.DBResults;
 
 import cn.nukkit.Server;

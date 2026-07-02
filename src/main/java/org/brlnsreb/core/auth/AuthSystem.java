@@ -2,8 +2,8 @@ package org.brlnsreb.core.auth;
 
 import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.core.player.CustomPlayer;
-import org.brlnsreb.core.player.PlayerDataManager;
-import org.brlnsreb.core.player.PlayerDataManager.Outcome;
+import org.brlnsreb.core.player.data.PlayerDataManager;
+import org.brlnsreb.core.player.data.PlayerDataManager.Outcome;
 import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.abstraction.MenuAbstract;
 

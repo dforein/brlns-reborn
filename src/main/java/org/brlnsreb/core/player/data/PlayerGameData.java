@@ -1,8 +1,8 @@
-package org.brlnsreb.core.player;
+package org.brlnsreb.core.player.data;
 
 import java.util.UUID;
 
-import org.brlnsreb.core.database.StatType;
+import org.brlnsreb.core.player.CustomPlayer;
 
 public abstract class PlayerGameData {
     
