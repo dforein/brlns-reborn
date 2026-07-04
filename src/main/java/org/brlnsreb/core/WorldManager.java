@@ -100,7 +100,13 @@ public class WorldManager {
         //particular
         GameRule[] particulars = {
             GameRule.NATURAL_REGENERATION,
-            GameRule.PVP
+            GameRule.PVP,
+            GameRule.DO_FIRE_TICK,
+            GameRule.DO_TILE_DROPS,
+            GameRule.DO_ENTITY_DROPS,
+            GameRule.DO_MOB_LOOT,
+            GameRule.TNT_EXPLODES,
+            GameRule.MOB_GRIEFING
         };
 
         for (GameRule rule : particulars) {
@@ -120,19 +126,13 @@ public class WorldManager {
 
         GameRule[] disabled = {
             GameRule.DO_DAYLIGHT_CYCLE,
-            GameRule.DO_ENTITY_DROPS,
-            GameRule.DO_FIRE_TICK,
             GameRule.DO_INSOMNIA,
-            GameRule.DO_MOB_LOOT,
             GameRule.DO_MOB_SPAWNING,
-            GameRule.DO_TILE_DROPS,
             GameRule.DO_WEATHER_CYCLE,
             GameRule.SHOW_DAYS_PLAYED,
             GameRule.RECIPES_UNLOCK,
             GameRule.SHOW_COORDINATES,
-            GameRule.TNT_EXPLODES,
             GameRule.PROJECTILES_CAN_BREAK_BLOCKS,
-            GameRule.MOB_GRIEFING,
             GameRule.LOCATOR_BAR
         };
 

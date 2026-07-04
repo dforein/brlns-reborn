@@ -15,10 +15,15 @@ public class MinigameManager {
         );
     }
 
-    public static void forceStop() {
+    public static void forceStop(boolean shutdown) {
         for (Minigame mg : minigames) {
             for (MinigameMatch match : mg.getMatches()) {
-                match.getGame().forceStop();
+                if (shutdown){
+                    //no need to destroy the matches, the whole server will shutdown
+                    match.getGame().forceStop();
+                } else {
+                    match.forceStop();
+                }
             }
         }
     }
@@ -38,9 +43,9 @@ public class MinigameManager {
         return minigames;
     }
 
-    public static void reloadConfig() {
+    public static void onConfigReload() {
         for (Minigame mg : minigames) {
-            mg.reloadConfig();
+            mg.onConfigReload();
         }
     }
 

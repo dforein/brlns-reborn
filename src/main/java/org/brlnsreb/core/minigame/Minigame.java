@@ -45,8 +45,8 @@ public abstract class Minigame {
         createNewPendingMatch();
     }
 
-    public void reloadConfig() {
-        lobby.reloadConfig();
+    public void onConfigReload() {
+        lobby.onConfigReload();
     }
 
 

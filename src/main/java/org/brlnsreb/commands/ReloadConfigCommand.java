@@ -24,8 +24,8 @@ public class ReloadConfigCommand extends cn.nukkit.command.Command {
         ConfigManager.reloadConfigs();
         YamlUtil.resetCache();
 
-        MinigameManager.reloadConfig();
-        GeneralLobby.getInstance().reloadConfig();
+        MinigameManager.onConfigReload();
+        GeneralLobby.getInstance().onConfigReload();
 
         sender.sendMessage(TextFormat.GREEN + "Config file reloaded!");
         return true;

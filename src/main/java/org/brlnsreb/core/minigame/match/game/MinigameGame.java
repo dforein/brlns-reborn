@@ -151,7 +151,6 @@ public abstract class MinigameGame {
     //others
 
     public void close() {
-        //pre-start close
         arena.close();
     }
 

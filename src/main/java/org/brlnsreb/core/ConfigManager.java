@@ -23,7 +23,7 @@ public class ConfigManager {
         return config;
     }
 
-    public static void reloadConfigs() {
+    public static void reloadConfig() {
         for (Config config : configMap.values()) {
             config.reload();
         }

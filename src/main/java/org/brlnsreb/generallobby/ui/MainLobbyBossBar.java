@@ -26,10 +26,10 @@ public class MainLobbyBossBar extends BossBarAbstract {
 
     public MainLobbyBossBar(String name) {
         plugin = BrlnsReb.getInstance();
-        reloadConfig(name);
+        onConfigReload(name);
     }
 
-    public void reloadConfig(String name) {
+    public void onConfigReload(String name) {
         this.name = name;
         this.messages = ConfigManager.getConfig("global/messages.yml");
 

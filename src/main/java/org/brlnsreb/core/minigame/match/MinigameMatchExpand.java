@@ -1,15 +1,15 @@
 package org.brlnsreb.core.minigame.match;
 
-import org.brlnsreb.core.minigame.MinigameType;
+import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.player.CustomPlayer;
 
 public abstract class MinigameMatchExpand extends MinigameMatch {
 
     protected EndLobby endLobby;
     
-    public MinigameMatchExpand(MinigameType minigame, int matchNumber) {
+    public MinigameMatchExpand(Minigame minigame, int matchNumber) {
         super(minigame, matchNumber);
-        this.endLobby = createEndLobby("end-lobby");
+        this.endLobby = new EndLobby(this);
     }
 
     public void onDeath(CustomPlayer player) {
@@ -17,7 +17,5 @@ public abstract class MinigameMatchExpand extends MinigameMatch {
         game.prepareAndSaveData(player);
         endLobby.onJoin(player);
     }
-
-    protected abstract EndLobby createEndLobby(String configPath);
 
 }

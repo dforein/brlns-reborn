@@ -2,37 +2,43 @@ package org.brlnsreb.minigames.mm.ui;
 
 import cn.nukkit.Player;
 import cn.nukkit.form.window.CustomForm;
+import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 
+import org.brlnsreb.core.minigame.match.MinigameMatch;
+import org.brlnsreb.core.minigame.match.waitinglobby.WaitingLobby;
 import org.brlnsreb.minigames.mm.MurderMysteryGame;
 import org.brlnsreb.minigames.mm.config.MMConfig;
-import org.brlnsreb.minigames.mm.systems.VotingSystem;
+import org.brlnsreb.utils.TimeOfDay;
+import org.brlnsreb.utils.VotingSystem;
+import org.brlnsreb.utils.Weather;
 import org.brlnsreb.utils.abstraction.MenuAbstract;
 
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: votingmenu astraction into Utils
-
 public class VotingMenu extends MenuAbstract {
-    
-    private final MurderMysteryGame game;
-    
-    public VotingMenu(MurderMysteryGame game) {
-        super();
-        this.game = game;
+
+    private WaitingLobby waitingLobby;
+    private VotingSystem<String> mapVoting;
+    private VotingSystem<TimeOfDay> timeVoting;
+
+    public VotingMenu(WaitingLobby waitingLobby) {
+        this.waitingLobby = waitingLobby;
+        this.mapVoting = waitingLobby.getMapVoting();
+        this.timeVoting = waitingLobby.getTimeVoting();
     }
     
-    public void openVotingMenu(Player player) {
+    //TODO: REWRITE
+    public void openMenu(Player player) {
         checkCooldown(player);
 
-        MMConfig config = game.getConfig();
-        VotingSystem voting = game.getVotingSystem();
+        Config config = waitingLobby.getConfig();
         
         CustomForm menu = new CustomForm("Game Poll");
         
         //map dropdown
-        List<String> availableMaps = voting.getAvailableMaps();
+        List<String> availableMaps = mapVoting.getAvailableOptions();
         List<String> mapOptions = new ArrayList<>();
         mapOptions.add("None");
         
@@ -79,6 +85,7 @@ public class VotingMenu extends MenuAbstract {
         menu.send(player);
     }
     
+    //TODO: REWRITE
     public void handleVoteResponse(Player player, CustomForm window) {
         if (window.response() == null) return;
         
@@ -109,13 +116,5 @@ public class VotingMenu extends MenuAbstract {
         } else {
             voting.removeTimeVote(player);
         }
-        
-        // reopen menu
-        /*
-        game.getPlugin().getServer().getScheduler().scheduleDelayedTask(
-            game.getPlugin(),
-            () -> openVotingMenu(player),
-            10
-        );*/
     }
 }

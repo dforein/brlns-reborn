@@ -82,8 +82,8 @@ public class GeneralLobby extends Lobby {
         npc.updateSubtitle(subtitle);
     }
 
-    public void reloadConfig() {
-        super.reloadConfig();
+    public void onConfigReload() {
+        super.onConfigReload();
 
         for (Map.Entry<NPCEntity, String> npcEntry : npcNameTagMap.entrySet()) {
             reloadNpcConfigData(
@@ -94,7 +94,7 @@ public class GeneralLobby extends Lobby {
             updateNpcSubtitle(npcEntry.getKey());
         }
 
-        bossBar.reloadConfig(messages.getString("name"));
+        bossBar.onConfigReload(messages.getString("name"));
     }
 
     public static GeneralLobby getInstance() { return instance; }

@@ -41,8 +41,8 @@ public abstract class MinigameMatch {
         this.number = matchNumber;
         this.minigame = minigame;
 
-        this.config = minigame.getConfig();
-        this.messages = minigame.getMessages();
+        this.config = getConfig();
+        this.messages = getMessages();
         this.msgUtil = new Messages(this.messages, this.players);
 
         this.waitingLobby = createWaitingLobby();
@@ -105,14 +105,36 @@ public abstract class MinigameMatch {
     }
 
     public void onGameStart() {
+        waitingLobby.close();
         game.onPregameStart();
     }
 
-    public void stopMatch() {
-        //TODO: stopMatch
+    public void forceStop() {
+        switch (state.current) {
+            case WAITING_LOBBY, LOBBY_COUNTDOWN:
+                for (CustomPlayer p : players) {
+                    waitingLobby.onLeave(p);
+                    minigame.onLobbyJoin(p);
+                }
+                waitingLobby.close();
+                break;
+        
+            case PREGAME_COUNTDOWN, IN_GAME, ENDING:
+                game.forceStop();
+                for (CustomPlayer p : players) {
+                    game.onLeave(p);
+                    minigame.onLobbyJoin(p);
+                }
+                break;
+        }
     }
 
-    public abstract void onEnding();
+    public void onEnding() {
+        for (CustomPlayer p : players) {
+            game.prepareAndSaveData(p);
+            minigame.onLobbyJoin(p);
+        }
+    }
 
 
     //events from listeners
@@ -137,8 +159,8 @@ public abstract class MinigameMatch {
     public int getNumber() { return number; }
     public MinigameGame getGame() { return game; }
     public Minigame getMinigame() { return minigame; }
-    public Config getConfig() { return config; }
-    public Config getMessages() { return messages; }
+    public Config getConfig() { return minigame.getConfig(); }
+    public Config getMessages() { return minigame.getMessages(); }
     public Messages getMsgUtil() { return msgUtil; }
     
 }

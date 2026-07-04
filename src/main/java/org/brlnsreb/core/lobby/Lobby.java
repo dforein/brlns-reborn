@@ -114,12 +114,7 @@ public abstract class Lobby {
         WorldManager.unloadLevel(this.level);
     }
 
-    public void initConfig() {
-        this.config = getConfig();
-        this.messages = getMessages();
-    }
-
-    public void reloadConfig() {
+    public void onConfigReload() {
         this.spawnPos = YamlUtil.parsePosition(config.getString("lobby.spawn"), this.level);
     }
 

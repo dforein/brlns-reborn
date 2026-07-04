@@ -17,8 +17,10 @@ import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.utils.Messages;
+import org.brlnsreb.utils.TimeOfDay;
 import org.brlnsreb.utils.TimerSystem;
 import org.brlnsreb.utils.VotingSystem;
+import org.brlnsreb.utils.Weather;
 
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
@@ -35,7 +37,6 @@ public abstract class WaitingLobby extends Lobby {
 
     protected final int secondsCountdown;
     protected final int secondsShortenedCountdown;
-
     protected boolean countdownShortened = false;
 
     protected final Messages msgUtil;
@@ -44,7 +45,9 @@ public abstract class WaitingLobby extends Lobby {
     protected final WaitingLobbyScoreboard scoreboard;
 
     protected TimerSystem timer;
-    protected final VotingSystem<String> mapVoting;
+    protected VotingSystem<String> mapVoting;
+    protected VotingSystem<TimeOfDay> timeVoting = null;
+    protected VotingSystem<Weather> weatherVoting = null;
 
     protected String selectedMap;
 
@@ -114,6 +117,7 @@ public abstract class WaitingLobby extends Lobby {
         bossBar.updateWaitingLobbyBossBar();
     }
 
+    //OVERRIDE
     protected void onJoinItems(CustomPlayer player) {
         if (countdownShortened) {
             items.giveItemsCountdownShortened(player);
@@ -208,8 +212,9 @@ public abstract class WaitingLobby extends Lobby {
 
     //voting logic
 
+    //OVERRIDE
     protected void prepareVoting() {
-        if (!mapVoting.getAvailableOptions().isEmpty()) return;     //already prepared, skip code
+        if (!mapVoting.getAvailableOptions().isEmpty()) return;         //already prepared, skip code
         
         List<String> availableMaps = minigame.getAvailableMaps();
         
@@ -222,20 +227,20 @@ public abstract class WaitingLobby extends Lobby {
         mapVoting.setAvailableOptions(availableMaps);
     }
 
+    //OVERRIDE
     protected void finalizeVoting() {
         if (selectedMap != null) return;
 
         selectedMap = mapVoting.getMostVoted();
 
         if (selectedMap == null) {
-            List<String> availableMaps = minigame.getAvailableMaps();
+            List<String> availableMaps = mapVoting.getAvailableOptions();
             if (!availableMaps.isEmpty()) {
                 selectedMap = availableMaps.get(new Random().nextInt(availableMaps.size()));
-                BrlnsReb.getInstance().getLogger().warning("No vote. Fallback on random map: " + selectedMap);
             } else {
                 BrlnsReb.getInstance().getLogger().error("CRITIC ERROR: No map enabled in config!");
                 msgUtil.broadcastPrefix("§cError: no map available! Match cancelled.");
-                match.stopMatch();
+                match.forceStop();
                 return;
             }
         }
@@ -244,9 +249,7 @@ public abstract class WaitingLobby extends Lobby {
 
     //listeners access
 
-    public void onItemUse(CustomPlayer player, Item item) {
-
-    }
+    public abstract void onItemUse(CustomPlayer player, Item item);
 
 
 
@@ -256,5 +259,8 @@ public abstract class WaitingLobby extends Lobby {
     public Config getMessages() { return match.getMessages(); }
     public String requireConfigPath() { return "waiting-lobby."; }
     public Set<CustomPlayer> getPlayers() { return players; }
+    public VotingSystem<String> getMapVoting() { return mapVoting; }
+    public VotingSystem<TimeOfDay> getTimeVoting() { return timeVoting; }
+    public VotingSystem<Weather> getWeatherVoting() { return weatherVoting; }
     
 }

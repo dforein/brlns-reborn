@@ -1,8 +1,5 @@
 settings:
   physics-enabled: false
-lobby:
-  npc:
-game:
   min-players: 2
   max-players: 20
   min-players-start: 20
@@ -11,10 +8,20 @@ game:
   pregame-countdown-seconds: 10
   game-duration: 420
   end-time: 10
+
+lobby:
+  npc:
+
+game:
+  
+
 waiting-lobby:
   world: waitinglobby
-  #npc:
+  npc:
+    leave:
   spawn:
+  game-poll:
+    item-name: '&o&l&dGame Poll &r&7- Hold / Right Click'
   rules-book:
     item-name: '&o&l&fRules &r&7- Hold / Right Click'
     title: Murder Mystery Rules
@@ -25,7 +32,7 @@ waiting-lobby:
 
       Rules...
       - No Hacking (Creative, Fly Hacks, Etc.)
-      - No innapropriate language or Content
+      - No inappropriate language or Content
       - No Impersonating other players since We can't see your actual name during game. (EXAMPLE: "I'm Kylie, I suck")
       (EXAMPLE2: "ItsKylie:Ban me")
     - |-
@@ -56,13 +63,7 @@ waiting-lobby:
       (One hit one kill) and can throw their sword.(Hold and Click the Sword in your hand to throw)
       &9Sheriff/Detective&r: Golden Hoe/Sheriff's Gun (1-2 shot Kill)
       &aCivilians/Innocent&r: N/A (NOTE: CIVILIANS AND SHERIFFS WORK TOGETHER)
-  game-poll:
-    item-name: '&o&l&dGame Poll &r&7- Hold / Right Click'
-    times:
-    - Day
-    - Sunrise
-    - Sunset
-    - Night
+
 murderer:
   sword-throw-cooldown: 10
   sword-throw-speed: 30

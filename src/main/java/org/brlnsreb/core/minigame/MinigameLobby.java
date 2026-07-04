@@ -77,8 +77,8 @@ public abstract class MinigameLobby extends Lobby {
         joinNpc.updateSubtitle(subtitle);
     }
 
-    public void reloadConfig() {
-        super.reloadConfig();
+    public void onConfigReload() {
+        super.onConfigReload();
 
         reloadNpcConfigData(
             joinNpc, 
@@ -88,8 +88,8 @@ public abstract class MinigameLobby extends Lobby {
         updateJoinNpcSubtitle();
     }
 
-    public Config getNewConfig() { return minigame.getConfig(); }
-    public Config getNewMessages() { return minigame.getMessages(); }
+    public Config getConfig() { return minigame.getConfig(); }
+    public Config getMessages() { return minigame.getMessages(); }
     public String requireConfigPath() { return "lobby."; }
 
 }
