@@ -62,7 +62,7 @@ public class MainLobbyBossBar extends BossBarAbstract {
                 }
 
                 this.updateDisplayedMessage();
-            }, 200      //update every 10s
+            }, 140      //update every 7s
         );
     }
 
