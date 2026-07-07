@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.data.PlayerData;
 import org.brlnsreb.core.player.data.StatType;
@@ -141,11 +140,7 @@ public class AccountsManager {
 
     public static CompletableFuture<Outcome> savePlayerData(CustomPlayer player) {
         if (player.isOnline() && !player.canRunAsync()) {
-            scheduler.scheduleDelayedTask(
-                BrlnsReb.getInstance(), 
-                () -> savePlayerData(player), 
-                20
-            );
+            scheduler.scheduleDelayedTask(() -> savePlayerData(player), 20);
             return CompletableFuture.completedFuture(
                 Outcome.ASYNC_TASK_ALREADY_RUNNING
             );
@@ -169,11 +164,7 @@ public class AccountsManager {
 
     public static CompletableFuture<Outcome> saveExpCoins(CustomPlayer player) {
         if (!player.canRunAsync()) {
-            scheduler.scheduleDelayedTask(
-                BrlnsReb.getInstance(), 
-                () -> saveExpCoins(player), 
-                20
-            );
+            scheduler.scheduleDelayedTask(() -> savePlayerData(player), 20);
             return CompletableFuture.completedFuture(
                 Outcome.ASYNC_TASK_ALREADY_RUNNING
             );

@@ -97,7 +97,7 @@ public class CustomPlayer extends Player {
 
     public void resetAsync() {
         this.asyncFlag.set(false);
-}
+    }
 
     public boolean isGameSpectator() { return this.state == PlayerStateType.SPECTATOR; }
     public void setGameSpectator() {
@@ -229,12 +229,6 @@ public class CustomPlayer extends Player {
 
     @Override
     public boolean attack(EntityDamageEvent source) {
-        //TODO: attack player
-        // - consider sources like cactus damage, lava, player attacks etc.: 
-        //      need new variables or (maybe better) internal enum to isolate different classes of sources
-        // - work on setCancelled use (for listeners)
-        // - avoid death? compare damage and health
-
         switch (this.damageMode) {
             case INVULNERABLE:
                 break;

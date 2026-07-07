@@ -10,20 +10,24 @@ import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.data.PlayerData;
 import org.brlnsreb.utils.database.DBResults;
 
+import cn.nukkit.Server;
+import cn.nukkit.scheduler.ServerScheduler;
+
 public class PlayerDataManager {
+
+    private static ServerScheduler scheduler;
     
     private static final ConcurrentHashMap<UUID, PlayerData> dataMap = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, UUID> nameIdMap = new ConcurrentHashMap<>();
 
     public static void init() {
+        scheduler = Server.getInstance().getScheduler();
         AccountsManager.init();
     }
 
     public static CompletableFuture<Outcome> onServerJoin(CustomPlayer player) {
         if (!player.canRunAsync()) {
-            return CompletableFuture.completedFuture(
-                Outcome.ASYNC_TASK_ALREADY_RUNNING
-            );
+            scheduler.scheduleDelayedTask(() -> onServerJoin(player), 20);
         }
 
         UUID playerId = player.getUniqueId();
