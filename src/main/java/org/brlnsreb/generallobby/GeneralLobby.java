@@ -1,7 +1,6 @@
 package org.brlnsreb.generallobby;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.brlnsreb.BrlnsReb;
@@ -52,7 +51,7 @@ public class GeneralLobby extends Lobby {
     }
 
     private void spawnAllNpcs() {
-        for (String gameNameTag : (List<String>) config.getList("npc.list")) {
+        for (String gameNameTag : config.getStringList("npc.list")) {
             String configPath = "lobby.npc." + gameNameTag;
             Minigame minigame = MinigameManager.getMinigame(gameNameTag);
 
