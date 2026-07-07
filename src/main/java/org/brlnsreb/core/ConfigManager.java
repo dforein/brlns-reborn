@@ -14,6 +14,10 @@ public class ConfigManager {
         return getConfig("global/config.yml");
     }
 
+    public static Config getGlobalMessages() {
+        return getConfig("global/messages.yml");
+    }
+
     public static Config getConfig(String filePath) {
         Config config = configMap.get(filePath);
         if (config != null) return config;

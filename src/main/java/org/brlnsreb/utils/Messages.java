@@ -17,21 +17,27 @@ public class Messages {
     public Messages(Config messages, Collection<? extends Player> players) {
         this.messages = messages;
         this.players = players;
-        this.prefix = messages.getString("prefix") + " &r";
+        this.prefix = TextFormat.colorize(messages.getString("prefix") + " &r");
     }
 
-    public static String getStrPrefix(String path, Config messages, String prefix) {
-        return TextFormat.colorize(prefix) + YamlUtil.getStr(path, messages);
+    public static String getStrPrefix(String path, Config messages, String colorizedPrefix) {
+        return colorizedPrefix + YamlUtil.getStr(path, messages);
     }
 
-    private String getString(String path, String prefix) {
-        return getStrPrefix(path, this.messages, prefix);
+    public String getStrPrefix(String path, Config messages) {
+        return prefix + YamlUtil.getStr(path, messages);
+    }
+
+    private String getStringPrefix(String path) {
+        return getStrPrefix(path, this.messages);
     }
 
     private String getString(String path) {
         return YamlUtil.getStr(path, this.messages);
     }
 
+
+    //action bar
 
     public static void sendActionBar(Set<? extends Player> players, String path, Config messages) {
         for (Player p : players) {
@@ -46,12 +52,16 @@ public class Messages {
     }
 
 
+    //title
+
     public void sendTitle(String pathTitle, String pathSubTitle) {
         for (Player p : players) {
             p.sendTitle(getString(pathTitle), getString(pathSubTitle));
         }
     }
 
+
+    //broadcast to players a preset message
 
     public void broadcastPreset(String path) {
         Server.getInstance().broadcastMessage(
@@ -69,18 +79,20 @@ public class Messages {
 
     public void broadcastPresetPrefix(String path) {
         Server.getInstance().broadcastMessage(
-            getString(path, prefix), 
+            getStringPrefix(path), 
             players
         );
     }
 
     public void broadcastPresetPrefix(String path, Object[] placeholders) {
         Server.getInstance().broadcastMessage(
-            getString(path, prefix).formatted(placeholders), 
+            getStringPrefix(path).formatted(placeholders), 
             players
         );
     }
 
+
+    //broadcast to players a custom message
 
     public void broadcast(String message) {
         Server.getInstance().broadcastMessage(
@@ -98,18 +110,20 @@ public class Messages {
 
     public void broadcastPrefix(String message) {
         Server.getInstance().broadcastMessage(
-            TextFormat.colorize(prefix + message), 
+            prefix + TextFormat.colorize(message), 
             players
         );
     }
 
     public void broadcastPrefix(String message, Object[] placeholders) {
         Server.getInstance().broadcastMessage(
-            TextFormat.colorize(prefix + message.formatted(placeholders)), 
+            prefix + TextFormat.colorize(message.formatted(placeholders)), 
             players
         );
     }
 
+
+    //send individually a preset message
 
     public void sendPresetMessage(String path, Player player) {
         player.sendMessage(getString(path));
@@ -122,15 +136,17 @@ public class Messages {
     }
 
     public void sendPresetMessagePrefix(String path, Player player) {
-        player.sendMessage(getString(path, prefix));
+        player.sendMessage(getStringPrefix(path));
     }
 
     public void sendPresetMessagePrefix(String path, Player player, Object[] placeholders) {
         player.sendMessage(
-            getString(path, prefix).formatted(placeholders)
+            getStringPrefix(path).formatted(placeholders)
         );
     }
 
+
+    //send individually a custom message
 
     public void sendMessage(String message, Player player) {
         player.sendMessage(TextFormat.colorize(message));
@@ -143,18 +159,16 @@ public class Messages {
     }
 
     public void sendMessagePrefix(String message, Player player) {
-        player.sendMessage(TextFormat.colorize(prefix + message));
+        player.sendMessage(prefix + TextFormat.colorize(message));
     }
 
     public void sendMessagePrefix(String message, Player player, Object[] placeholders) {
         player.sendMessage(
-            TextFormat.colorize(prefix + message.formatted(placeholders))
+            prefix + TextFormat.colorize(message.formatted(placeholders))
         );
     }
 
 
-    public String getPrefix() {
-        return prefix;
-    }
+    public String getPrefix() { return prefix; }
     
 }

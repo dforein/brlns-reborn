@@ -1,7 +1,10 @@
-package org.brlnsreb.core;
+package org.brlnsreb.core.player.data.database;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.utils.DBResults;
+import org.brlnsreb.core.ConfigManager;
+import org.brlnsreb.utils.database.DBResults;
+import org.brlnsreb.utils.database.SQLConsumer;
+
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -26,7 +29,9 @@ public class DatabaseManager {
             name VARCHAR(26) PRIMARY KEY,
             password_hash VARCHAR(60) NOT NULL,
             exp INT DEFAULT 0,
-            coins INT DEFAULT 0
+            coins INT DEFAULT 0,
+            friend_alerts BOOLEAN DEFAULT TRUE,
+            friend_notify BOOLEAN DEFAULT TRUE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     """;
 
@@ -34,19 +39,43 @@ public class DatabaseManager {
         CREATE TABLE IF NOT EXISTS players (
             uuid VARCHAR(36) PRIMARY KEY,
             name VARCHAR(26) NOT NULL,
+            last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (name) REFERENCES accounts(name) ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     """;
 
     private String statsTable = """
         CREATE TABLE IF NOT EXISTS stats (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            player_name VARCHAR(26),
-            minigame_id TINYINT UNSIGNED,
-            stat_type TINYINT UNSIGNED,
-            value INT,
+            player_name VARCHAR(26) NOT NULL,
+            minigame_id TINYINT UNSIGNED NOT NULL,
+            stat_type TINYINT UNSIGNED NOT NULL,
+            value INT NOT NULL,
+            PRIMARY KEY (player_name, minigame_id, stat_type),
+            FOREIGN KEY (player_name) REFERENCES accounts(name) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    """;
+
+    //yes, i'll use double lines to save friends' associations, cus they are easier to retrieve and elaborate
+    private String friendsTable = """
+        CREATE TABLE IF NOT EXISTS friends (
+            player_name VARCHAR(26) NOT NULL,
+            friend_name VARCHAR(26) NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (player_name, friend_name),
             FOREIGN KEY (player_name) REFERENCES accounts(name) ON DELETE CASCADE,
-            UNIQUE KEY unique_stat (player_name, minigame_id, stat_type)
+            FOREIGN KEY (friend_name) REFERENCES accounts(name) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    """;
+
+    private String friendRequestsTable = """
+        CREATE TABLE IF NOT EXISTS friend_requests (
+            sender_name VARCHAR(26) NOT NULL,
+            receiver_name VARCHAR(26) NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (sender_name, receiver_name),
+            FOREIGN KEY (sender_name) REFERENCES accounts(name) ON DELETE CASCADE,
+            FOREIGN KEY (receiver_name) REFERENCES accounts(name) ON DELETE CASCADE,
+            INDEX idx_receiver (receiver_name)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     """;
 
@@ -118,10 +147,17 @@ public class DatabaseManager {
         try (Connection conn = getConnection();
              var stmt = conn.createStatement()) {
             
+            //accounts
             stmt.execute(accountsTable);
             stmt.execute(playersTable);
 
+            //stats
             stmt.execute(statsTable);
+
+            //friends
+            stmt.execute(friendsTable);
+            stmt.execute(friendRequestsTable);
+
 
             plugin.getLogger().info(TextFormat.GRAY + "Database tables ready");
             
@@ -138,14 +174,12 @@ public class DatabaseManager {
         return dataSource.getConnection();
     }
 
-    public static DBResults executeSelect(String sql, Object... params) throws SQLException {
-        try (Connection conn = getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+    public static DBResults executeSelect(Connection conn, String sql, Object... params) throws SQLException {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             for (int i = 0; i < params.length; i++) {
                 stmt.setObject(i + 1, params[i]);
             }
-            
+
             ResultSet rs = stmt.executeQuery();
             ResultSetMetaData meta = rs.getMetaData();
             int columnCount = meta.getColumnCount();
@@ -159,20 +193,45 @@ public class DatabaseManager {
                 }
                 results.add(row);
             }
-
+            
             return new DBResults(results);
         }
     }
 
-    public static int executeUpdate(String sql, Object... params) throws SQLException {
-        try (Connection conn = getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+    public static int executeUpdate(Connection conn, String sql, Object... params) throws SQLException {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             for (int i = 0; i < params.length; i++) {
                 stmt.setObject(i + 1, params[i]);
             }
-            
+
             return stmt.executeUpdate();
+        }
+    }
+
+    public static DBResults executeSelect(String sql, Object... params) throws SQLException {
+        try (Connection conn = getConnection()) {
+            return executeSelect(conn, sql, params);
+        }
+    }
+
+    public static int executeUpdate(String sql, Object... params) throws SQLException {
+        try (Connection conn = getConnection()) {
+            return executeUpdate(conn, sql, params);
+        }
+    }
+
+    public static void executeTransaction(SQLConsumer<Connection> work) throws SQLException {
+        try (Connection conn = getConnection()) {
+            conn.setAutoCommit(false);
+            try {
+                work.accept(conn);
+                conn.commit();
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            } finally {
+                conn.setAutoCommit(true);
+            }
         }
     }
 

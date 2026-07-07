@@ -17,7 +17,7 @@ public class EntityChunkListener implements Listener {
     public void onChunkUnload(ChunkUnloadEvent event) {
         IChunk chunk = event.getChunk();
         for(Entity entity : chunk.getEntities().values()) {
-            if(entity instanceof EntityHuman || entity instanceof HologramEntity) {
+            if (entity instanceof EntityHuman || entity instanceof HologramEntity) {    //includes NPCEntity, which heredits EntityHuman
                 event.setCancelled();
                 return;
             }

@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.minigame.MinigameType;
@@ -14,6 +15,8 @@ import org.brlnsreb.core.minigame.match.game.MinigameGame;
 import org.brlnsreb.core.minigame.match.waitinglobby.WaitingLobby;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.Messages;
+import org.brlnsreb.utils.voting.TimeOfDay;
+import org.brlnsreb.utils.voting.Weather;
 
 public abstract class MinigameMatch {
     
@@ -49,7 +52,7 @@ public abstract class MinigameMatch {
     }
 
     protected abstract WaitingLobby createWaitingLobby();
-    protected abstract MinigameGame createGame(String selectedMap);
+    protected abstract MinigameGame createGame(String map, TimeOfDay time, Weather weather);
     
 
     //join-leave logic
@@ -62,7 +65,8 @@ public abstract class MinigameMatch {
                 return waitingLobby.onJoin(player);
         
             default:
-                return false;
+                onJoinAsSpectator(player);
+                return true;
         }
     }
 
@@ -70,6 +74,9 @@ public abstract class MinigameMatch {
         if (game != null) {
             game.onJoinAsSpectator(player);
             players.add(player);
+
+            player.currentMinigame = minigame;
+            player.setMatch(this);
         }
     }
 
@@ -93,9 +100,9 @@ public abstract class MinigameMatch {
 
     //game logic
 
-    public void preloadGame(String selectedMap) {
+    public void preloadGame(String map, TimeOfDay time, Weather weather) {
         //used when the waiting lobby countdown is finishing
-        game = createGame(selectedMap);
+        game = createGame(map, time, weather);
     }
 
     public void unloadGame() {
@@ -110,6 +117,11 @@ public abstract class MinigameMatch {
     }
 
     public void forceStop() {
+        msgUtil.broadcast(msgUtil.getStrPrefix(
+            "force-stop", 
+            ConfigManager.getGlobalMessages()
+        ));
+
         switch (state.current) {
             case WAITING_LOBBY, LOBBY_COUNTDOWN:
                 for (CustomPlayer p : players) {
@@ -145,7 +157,7 @@ public abstract class MinigameMatch {
                 waitingLobby.onItemUse(player, item);
                 break;
         
-            default:
+            case PREGAME_COUNTDOWN, IN_GAME, ENDING:
                 game.onItemUse(player, item);
                 break;
         }

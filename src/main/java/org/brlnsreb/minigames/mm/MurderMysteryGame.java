@@ -25,9 +25,9 @@ import org.brlnsreb.minigames.mm.systems.*;
 import org.brlnsreb.minigames.mm.ui.BossBarSystem;
 import org.brlnsreb.minigames.mm.ui.ScoreboardSystem;
 import org.brlnsreb.minigames.mm.ui.SpectatorMenu;
-import org.brlnsreb.minigames.mm.ui.VotingMenu;
 import org.brlnsreb.utils.TimerSystem;
 import org.brlnsreb.utils.YamlUtil;
+import org.brlnsreb.utils.voting.VotingMapTimeMenu;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -57,7 +57,7 @@ public class MurderMysteryGame {
     private SpectatorMenu spectatorMenu;
     private TrackerSystem trackerSystem;
     private VotingSystem votingSystem;
-    private VotingMenu votingMenu;
+    private VotingMapTimeMenu votingMenu;
 
     private Task updateTask;
 
@@ -90,7 +90,7 @@ public class MurderMysteryGame {
         this.spectatorMenu = new SpectatorMenu(this);
         this.trackerSystem = new TrackerSystem();
         this.votingSystem = new VotingSystem();
-        this.votingMenu = new VotingMenu(this);
+        this.votingMenu = new VotingMapTimeMenu(this);
     }
     
     public int joinPlayer(Player player) {
@@ -1185,7 +1185,7 @@ public class MurderMysteryGame {
         return votingSystem;
     }
 
-    public VotingMenu getVotingMenu() {
+    public VotingMapTimeMenu getVotingMenu() {
         return votingMenu;
     }
 }

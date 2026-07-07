@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.brlnsreb.core.WorldManager;
 import org.brlnsreb.utils.YamlUtil;
+import org.brlnsreb.utils.voting.TimeOfDay;
+import org.brlnsreb.utils.voting.Weather;
 
 import java.util.ArrayList;
 
@@ -19,7 +21,7 @@ public class Arena {
     private final Vector3 max;
     private final List<Vector3> spawns;
     
-    public Arena(Config config, String mapsConfigPath, String settingsConfigPath) {
+    public Arena(Config config, String mapsConfigPath, String settingsConfigPath, TimeOfDay time, Weather weather) {
         mapsConfigPath = YamlUtil.checkConfigPath(mapsConfigPath);
         settingsConfigPath = YamlUtil.checkConfigPath(settingsConfigPath);
 
@@ -30,6 +32,9 @@ public class Arena {
             config, 
             mapsConfigPath
         );
+
+        TimeOfDay.setTime(level, time);
+        Weather.setWeather(level, weather);
 
         this.min = YamlUtil.parseVector3(YamlUtil.getStr(mapsConfigPath + "min", config));
         this.max = YamlUtil.parseVector3(YamlUtil.getStr(mapsConfigPath + "max", config));

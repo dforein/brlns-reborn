@@ -13,10 +13,10 @@ import cn.nukkit.utils.Config;
 
 public class WaitingLobbyBossBar extends BossBarAbstract {
 
-    private final Set<CustomPlayer> players;
-
+    private final String PATH = "match.waiting-lobby.bossbar.";
     private final Config config;
-    private final String configPath = "match.waiting-lobby.bossbar.";
+
+    private final Set<CustomPlayer> players;
 
     private final int mediumThreshold;
     private final int shortThreshold;
@@ -25,12 +25,12 @@ public class WaitingLobbyBossBar extends BossBarAbstract {
     private final int secondsCountdown;
 
     public WaitingLobbyBossBar(WaitingLobby waitingLobby, int secondsCountdown) {
-        this.players = waitingLobby.getPlayers();
-
         this.config = ConfigManager.getGlobalConfig();
 
-        this.mediumThreshold = config.getInt(configPath + "medium-threshold");
-        this.shortThreshold = config.getInt(configPath + "short-threshold");
+        this.players = waitingLobby.getPlayers();
+
+        this.mediumThreshold = config.getInt(PATH + "medium-threshold");
+        this.shortThreshold = config.getInt(PATH + "short-threshold");
 
         this.secondsCountdown = secondsCountdown;
     }
@@ -39,7 +39,7 @@ public class WaitingLobbyBossBar extends BossBarAbstract {
         for (Player p : players) {
             updateBossBar(
                 (CustomPlayer) p, 
-                YamlUtil.getStr(configPath + "text-waiting-players", config)
+                YamlUtil.getStr(PATH + "text-waiting-players", config)
             );
         }
     }
@@ -61,7 +61,7 @@ public class WaitingLobbyBossBar extends BossBarAbstract {
         if (this.currentSeconds == null) {
             updateBossBar(
                 (CustomPlayer) player, 
-                YamlUtil.getStr(configPath + "text-waiting-players", config)
+                YamlUtil.getStr(PATH + "text-waiting-players", config)
             );
         } else {
             updateCountdown(
@@ -80,13 +80,13 @@ public class WaitingLobbyBossBar extends BossBarAbstract {
 
     private String formatCountdownMessage(int seconds) {
         if (seconds <= shortThreshold) {
-            return YamlUtil.getStr(configPath + "text-short", config)
+            return YamlUtil.getStr(PATH + "text-short", config)
                 .formatted(seconds);
         } else if (seconds < mediumThreshold) {
-            return YamlUtil.getStr(configPath + "text-medium", config)
+            return YamlUtil.getStr(PATH + "text-medium", config)
                 .formatted(seconds);
         } else {
-            return YamlUtil.getStr(configPath + "text-long", config)
+            return YamlUtil.getStr(PATH + "text-long", config)
                 .formatted(seconds / 60, seconds % 60);
         }
     }

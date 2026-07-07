@@ -91,8 +91,6 @@ public class WorldManager {
     }
 
     private static void setGameRules(Level level, boolean isLobby, Config config, String configPath) {
-        //TODO: interaction with world (e.g. skywars: drops, tnts, fire spread, etc allowed)
-        
         configPath = YamlUtil.checkConfigPath(configPath);
 
         GameRules gameRules = level.getGameRules();

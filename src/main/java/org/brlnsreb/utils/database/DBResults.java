@@ -1,4 +1,4 @@
-package org.brlnsreb.utils;
+package org.brlnsreb.utils.database;
 
 import java.util.*;
 
@@ -23,11 +23,19 @@ public class DBResults {
     }
 
     public int getInt(int index, String key) {
-        return (int) results.get(index).get(key);
+        return getNumber(index, key).intValue();
     }
 
     public int getInt(String key) {
-        return (int) results.getFirst().get(key);
+        return getNumber(key).intValue();
+    }
+
+    public Number getNumber(int index, String key) {
+        return (Number) results.get(index).get(key);
+    }
+
+    public Number getNumber(String key) {
+        return (Number) results.getFirst().get(key);
     }
 
     public boolean getBoolean(int index, String key) {

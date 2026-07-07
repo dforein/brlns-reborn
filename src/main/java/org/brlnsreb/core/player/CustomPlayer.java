@@ -18,7 +18,7 @@ import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.match.game.MinigameGameExpand;
 import org.brlnsreb.core.player.data.PlayerData;
-import org.brlnsreb.core.player.data.PlayerDataManager;
+import org.brlnsreb.core.player.data.database.PlayerDataManager;
 import org.brlnsreb.core.minigame.match.MinigameMatch;
 import org.brlnsreb.core.minigame.match.MinigameMatchExpand;
 import org.brlnsreb.generallobby.GeneralLobby;
@@ -66,7 +66,7 @@ public class CustomPlayer extends Player {
     public InteractMode interactMode = InteractMode.LIMITED;
     private static HashMap<Integer, HashSet<Vector3>> playerBlocks = new HashMap<>();   //Integer -> levelId
 
-    public PlayerStateType state = null;
+    public PlayerStateType state = PlayerStateType.LOBBY;
     public Minigame currentMinigame = null;
     private WeakReference<MinigameMatch> currentMatch = null;
     

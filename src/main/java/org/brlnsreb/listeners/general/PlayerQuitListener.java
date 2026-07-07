@@ -1,7 +1,7 @@
 package org.brlnsreb.listeners.general;
 
 import org.brlnsreb.core.player.CustomPlayer;
-import org.brlnsreb.core.player.data.PlayerDataManager;
+import org.brlnsreb.core.player.data.database.AccountsManager;
 
 import cn.nukkit.Player;
 import cn.nukkit.event.EventHandler;
@@ -28,7 +28,7 @@ public class PlayerQuitListener implements Listener {
     private void handlePlayerLeave(Player p) {
         CustomPlayer player = (CustomPlayer) p;
 
-        PlayerDataManager.savePlayerDataAsync(player.getUniqueId());
+        AccountsManager.savePlayerData(player);
         player.getMatch().onLeave(player);
         player.save();
     }

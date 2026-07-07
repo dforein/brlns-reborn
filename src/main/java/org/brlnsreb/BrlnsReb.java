@@ -17,7 +17,7 @@ import org.brlnsreb.core.auth.AuthSystem;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.minigame.MinigameType;
-import org.brlnsreb.core.player.data.PlayerDataManager;
+import org.brlnsreb.core.player.data.database.PlayerDataManager;
 import org.brlnsreb.generallobby.GeneralLobby;
 import org.brlnsreb.minigames.mm.entities.DeadBodyEntity;
 import org.brlnsreb.minigames.mm.entities.ThrownSwordEntity;
@@ -80,11 +80,13 @@ public class BrlnsReb extends PluginBase {
 
     @Override
     public void beforeStop() {
-        MinigameManager.forceStop();
+        MinigameManager.forceStop(true);
 
         for (Player p : server.getOnlinePlayers().values()) {
-            PlayerDataManager.savePlayerData(p.getUniqueId());
+            if (!p.isOnline()) continue;
+            PlayerDataManager.savePlayerDataSync(p.getUniqueId());
             p.save();
+            p.kick("Server is shutting down");
         }
     }
     

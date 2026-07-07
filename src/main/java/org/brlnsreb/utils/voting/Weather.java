@@ -1,4 +1,4 @@
-package org.brlnsreb.utils;
+package org.brlnsreb.utils.voting;
 
 import cn.nukkit.level.Level;
 
@@ -15,7 +15,7 @@ public enum Weather {
         this.name = displayName.toLowerCase();
     }
 
-    public Weather get(String weatherName) {
+    public static Weather get(String weatherName) {
         return switch (weatherName) {
             case "clear" -> CLEAR;
             case "rain" -> RAIN;
@@ -24,7 +24,7 @@ public enum Weather {
         };
     }
 
-    public void setWeather(Level level, Weather weather) {
+    public static void setWeather(Level level, Weather weather) {
         if (weather != null) {
             level.setRaining(weather != CLEAR);
             level.setThundering(weather == STORM);

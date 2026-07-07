@@ -1,4 +1,4 @@
-package org.brlnsreb.utils;
+package org.brlnsreb.utils.voting;
 
 import cn.nukkit.level.Level;
 
@@ -16,7 +16,7 @@ public enum TimeOfDay {
         this.timeValue = timeValue;
     }
 
-    public void setTime(Level level, TimeOfDay time) {
+    public static void setTime(Level level, TimeOfDay time) {
         if (time != null) {
             level.setTime(time.timeValue);
         } else {

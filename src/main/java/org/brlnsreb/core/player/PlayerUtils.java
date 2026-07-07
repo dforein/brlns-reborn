@@ -13,6 +13,7 @@ import cn.nukkit.entity.effect.Effect;
 import cn.nukkit.entity.effect.EffectType;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Position;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.scoreboard.data.DisplaySlot;
 import cn.nukkit.utils.DummyBossBar;
 
@@ -38,7 +39,7 @@ public class PlayerUtils {
         p.resetBossBarId();
     }
 
-    public static void changeWorld(CustomPlayer p, Position pos) {
+    public static void changeWorld(CustomPlayer p, Position pos, boolean lobby) {
         BrlnsReb plugin = BrlnsReb.getInstance();
 
         try {
@@ -48,7 +49,11 @@ public class PlayerUtils {
             p.setViewDistance(2);
             p.despawnFromAll();
 
-            p.teleport(pos);
+            p.teleport(lobby ? pos.add(0.0, 1.0, 0.0) : pos);
+
+            if (lobby) {
+                p.setMotion(new Vector3(0.0, 0.42, 0.0));
+            }
 
             plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
                 p.spawnToAll(); 

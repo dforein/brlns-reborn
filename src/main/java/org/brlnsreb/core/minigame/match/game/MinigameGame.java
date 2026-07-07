@@ -12,6 +12,8 @@ import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.utils.Messages;
 import org.brlnsreb.utils.TimerSystem;
+import org.brlnsreb.utils.voting.TimeOfDay;
+import org.brlnsreb.utils.voting.Weather;
 
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Position;
@@ -31,22 +33,24 @@ public abstract class MinigameGame {
 
     protected TimerSystem timer;
 
-    public MinigameGame(MinigameMatch match, String map) {
+    public MinigameGame(MinigameMatch match, String map, TimeOfDay time, Weather weather) {
+        this.config = match.getConfig();
+
         this.match = match;
         this.state = match.getState();
         this.players = match.getPlayers();
-        this.arena = prepareArena(map, match);
+        this.arena = prepareArena(map, time, weather);
 
-        this.config = match.getConfig();
         this.msgUtil = match.getMsgUtil();
         this.spectatorItems = new SpectatorItemManager();
     }
 
-    private Arena prepareArena(String map, MinigameMatch match) {
+    private Arena prepareArena(String map, TimeOfDay time, Weather weather) {
         return new Arena(
-            match.getConfig(), 
+            config,
             "map-settings.maps." + map,
-            "settings."
+            "settings.",
+            time, weather
         );
     }
 
@@ -54,7 +58,7 @@ public abstract class MinigameGame {
     //join-leave logic
 
     public void onJoin(CustomPlayer player) {
-        PlayerUtils.changeWorld(player, onJoinPosition(player));
+        PlayerUtils.changeWorld(player, onJoinPosition(player), false);
 
         player.state = PlayerStateType.PLAYING;
         onJoinPreparePlayer(player);
@@ -66,7 +70,7 @@ public abstract class MinigameGame {
     protected abstract void prepareGameData(CustomPlayer player);
 
     public void onJoinAsSpectator(CustomPlayer player) {
-        PlayerUtils.changeWorld(player, onJoinPosition(player));
+        PlayerUtils.changeWorld(player, onJoinPosition(player), false);
 
         player.setGameSpectator();
         spectatorItems.giveTeleporter(player);

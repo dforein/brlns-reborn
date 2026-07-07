@@ -57,7 +57,7 @@ public abstract class Lobby {
     }
 
     public boolean onJoin(CustomPlayer player) {
-        PlayerUtils.changeWorld(player, spawnPos);
+        PlayerUtils.changeWorld(player, spawnPos, true);
 
         player.currentMinigame = minigame;
         PlayerUtils.setLobbyState(player, onJoinState());

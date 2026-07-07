@@ -1,4 +1,4 @@
-package org.brlnsreb.utils;
+package org.brlnsreb.utils.voting;
 
 import cn.nukkit.Player;
 import java.util.*;
@@ -63,7 +63,7 @@ public class VotingSystem<T> {
         return counts;
     }
     
-    public void removePlayerVotes(Player player) {
+    public void removePlayerVote(Player player) {
         votes.remove(player.getUniqueId());
     }
 

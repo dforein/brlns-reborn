@@ -1,8 +1,13 @@
 package org.brlnsreb.core.player.data;
 
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.brlnsreb.core.minigame.Minigame;
+import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.core.player.PlayerUtils;
+import org.brlnsreb.core.player.data.database.PlayerDataManager;
 
 public class PlayerData {
 
@@ -12,6 +17,11 @@ public class PlayerData {
     private double level;
     private int levelFloor;
     private ConcurrentHashMap<Integer, int[]> stats = new ConcurrentHashMap<>();  //HashMap<[if global: 0; else MinigameType id], [array of stats values, value indexes: StatType id]>
+    private Set<String> friends = ConcurrentHashMap.newKeySet();
+    private Set<String> receivedFriendRequests = ConcurrentHashMap.newKeySet();
+    private Set<String> sentFriendRequests = ConcurrentHashMap.newKeySet();
+    private boolean friendsAlerts = true;      //if active, the player receives alerts of friends joining the server/a minigame (default: true)
+    private boolean friendsNotify = true;      //if active, friends receive alerts of the player joining the server/a minigame (default: true)
 
     public PlayerData() {
         resetData();
@@ -24,21 +34,25 @@ public class PlayerData {
         this.level = -1.0;
         this.levelFloor = -1;
         this.stats.clear();
+        this.friends.clear();
+        this.receivedFriendRequests.clear();
+        this.sentFriendRequests.clear();
     }
 
     public boolean isLogged() {
         return this.name != null;
     }
 
-    public void setCoins(int coins) {
-        this.coins = coins;
-    }
+
+    //coins
+
+    public void setCoins(int coins) { this.coins = coins; }
 
     public void addCoins(int deltaCoins) {
         if (this.coins < -deltaCoins) {
             this.coins = 0;
         } else {
-            this.coins -= deltaCoins;
+            this.coins += deltaCoins;
         }
     }
 
@@ -46,22 +60,25 @@ public class PlayerData {
         return coinsCost <= this.coins;
     }
 
+    public int getCoins() { return this.coins; }
+
+
+    //exp and levels
+
+    public void setExp(int exp) { this.exp = exp; }
+
     public void addExp(int deltaExp) {
         this.setExp(this.exp + deltaExp);
     }
 
-    public void setExp(int exp) {
+    public void updateLevel() {
         /**
          * the level growth functions are based on values gathered from different yt videos, 
          * at different levels (3-5, 40-60, 149, 7000+, 8000+), considering a more probable 
          * use of exp boosters at higher level (=> higher player longevity) to correct some 
          * weird data (i.e. abnormal level growth compared to the other values at lower levels)
          */
-        
-        this.exp = exp;
-    }
 
-    public void updateLevel() {
         int expThreshold = 562500;          //equivalent to 150 levels
         int levelThreshold = 150;
         double expPerHighLevel = 7500.0;    //reciprocal of the derivative of the level function lvl(exp) at x=150
@@ -77,18 +94,15 @@ public class PlayerData {
         }
     }
 
+    public int getExp() { return this.exp; }
+    public double getLevel() { return this.level; }
+    public int getFloorLevel() { return this.levelFloor; }
+
+
+    //stats
+
     public void setStat(int minigameId, int statType, int value) {
-        int[] minigameStats = this.stats.get(minigameId);
-
-        if (minigameStats == null) {
-            this.stats.put(minigameId, new int[StatType.size]);
-            minigameStats = this.stats.get(minigameId);
-
-            for (int i = 0; i < StatType.size; i++) {
-                minigameStats[i] = -1;
-            }
-        }
-
+        int[] minigameStats = getMinigameStats(minigameId);
         minigameStats[statType - 1] = value;
     }
 
@@ -97,18 +111,23 @@ public class PlayerData {
     }
 
     public void incrementStat(int minigameId, StatType stat) {
+        int[] minigameStats = getMinigameStats(minigameId);
+        minigameStats[stat.id - 1]++;
+    }
+
+    private int[] getMinigameStats(int minigameId) {
         int[] minigameStats = this.stats.get(minigameId);
 
         if (minigameStats == null) {
             this.stats.put(minigameId, new int[StatType.size]);
             minigameStats = this.stats.get(minigameId);
-            
+
             for (int i = 0; i < StatType.size; i++) {
                 minigameStats[i] = -1;
             }
         }
-        
-        minigameStats[stat.id - 1]++;
+
+        return minigameStats;
     }
 
     public int getStat(Minigame minigame, StatType stat) {
@@ -131,10 +150,41 @@ public class PlayerData {
         return count;
     }
 
-    public int getCoins() { return this.coins; }
-    public int getExp() { return this.exp; }
     public ConcurrentHashMap<Integer, int[]> getStats() { return this.stats; }
-    public double getLevel() { return this.level; }
-    public int getFloorLevel() { return this.levelFloor; }
+    
+
+    //friends
+
+    public void addFriend(String name) {
+        this.friends.add(name);
+        this.receivedFriendRequests.remove(name);
+        this.sentFriendRequests.remove(name);
+    }
+
+    public CustomPlayer getFriend(String name) { 
+        if (!isFriendWith(name)) return null;
+        
+        UUID friendId = PlayerDataManager.getPlayerId(name);
+        if (friendId == null) return null;
+
+        return PlayerUtils.getPlayer(friendId);
+    }
+
+    public boolean isFriendWith(String name) { return this.friends.contains(name); }
+    public boolean isFriendWith(CustomPlayer player) { return isFriendWith(player.getPlayerData().name); }
+
+    public void removeFriend(String name) { this.friends.remove(name); }
+    public void receiveFriendRequest(String name) { this.receivedFriendRequests.add(name); }
+    public void removeReceivedFriendRequest(String name) { this.receivedFriendRequests.remove(name); }
+    public void sendFriendRequest(String name) { this.sentFriendRequests.add(name); }
+    public void removeSentFriendRequest(String name) { this.sentFriendRequests.remove(name); }
+    public void setFriendsAlerts(boolean value) { this.friendsAlerts = value; }
+    public void setFriendsNotify(boolean value) { this.friendsNotify = value; }
+
+    public Set<String> getFriends() { return this.friends; }
+    public Set<String> getReceivedFriendRequests() { return this.receivedFriendRequests; }
+    public Set<String> getSentFriendRequests() { return this.sentFriendRequests; }
+    public boolean getFriendsAlerts() { return this.friendsAlerts; }
+    public boolean getFriendsNotify() { return this.friendsNotify; }
 
 }

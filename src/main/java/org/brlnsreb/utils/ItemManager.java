@@ -18,6 +18,10 @@ public class ItemManager {
         return YamlUtil.getStr(path, this.config);
     }
 
+    public static void giveItem(Player player, int slot, Item item) {
+        player.getInventory().setItem(slot, item);
+    }
+
     public static void giveItem(Player player, int slot, String itemId, String itemName) {
         //give player an item (with name)
         Item item = buildItem(itemId, itemName);

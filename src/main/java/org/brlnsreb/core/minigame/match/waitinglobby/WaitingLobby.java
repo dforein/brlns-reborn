@@ -17,10 +17,10 @@ import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.utils.Messages;
-import org.brlnsreb.utils.TimeOfDay;
 import org.brlnsreb.utils.TimerSystem;
-import org.brlnsreb.utils.VotingSystem;
-import org.brlnsreb.utils.Weather;
+import org.brlnsreb.utils.voting.TimeOfDay;
+import org.brlnsreb.utils.voting.VotingSystem;
+import org.brlnsreb.utils.voting.Weather;
 
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
@@ -50,6 +50,8 @@ public abstract class WaitingLobby extends Lobby {
     protected VotingSystem<Weather> weatherVoting = null;
 
     protected String selectedMap;
+    protected TimeOfDay selectedTime = null;
+    protected Weather selectedWeather = null;
 
     public WaitingLobby(MinigameMatch match) {
         super(match);
@@ -76,6 +78,7 @@ public abstract class WaitingLobby extends Lobby {
         this.items = requireItemManager();
 
         this.mapVoting = new VotingSystem<>();
+        requireVotingMenu();
     }
 
 
@@ -117,7 +120,6 @@ public abstract class WaitingLobby extends Lobby {
         bossBar.updateWaitingLobbyBossBar();
     }
 
-    //OVERRIDE
     protected void onJoinItems(CustomPlayer player) {
         if (countdownShortened) {
             items.giveItemsCountdownShortened(player);
@@ -192,7 +194,7 @@ public abstract class WaitingLobby extends Lobby {
             }
         });
 
-        match.preloadGame(selectedMap);
+        match.preloadGame(selectedMap, selectedTime, selectedWeather);
 
         if (sendMessage) {
             msgUtil.broadcastPresetPrefix("waiting-lobby.countdown-shortened");
@@ -212,19 +214,21 @@ public abstract class WaitingLobby extends Lobby {
 
     //voting logic
 
+    protected abstract void requireVotingMenu();
+
     //OVERRIDE
     protected void prepareVoting() {
-        if (!mapVoting.getAvailableOptions().isEmpty()) return;         //already prepared, skip code
+        if (mapVoting.getAvailableOptions().isEmpty()) {
+            List<String> availableMaps = minigame.getAvailableMaps();
         
-        List<String> availableMaps = minigame.getAvailableMaps();
-        
-        while (availableMaps.size() > 3) {
-            availableMaps.remove(
-                ThreadLocalRandom.current().nextInt(availableMaps.size())
-            );
-        }
+            while (availableMaps.size() > 3) {
+                availableMaps.remove(
+                    ThreadLocalRandom.current().nextInt(availableMaps.size())
+                );
+            }
 
-        mapVoting.setAvailableOptions(availableMaps);
+            mapVoting.setAvailableOptions(availableMaps);
+        }
     }
 
     //OVERRIDE
@@ -253,11 +257,12 @@ public abstract class WaitingLobby extends Lobby {
 
 
 
-    public abstract WaitingLobbyItemManager requireItemManager();
+    protected abstract WaitingLobbyItemManager requireItemManager();
 
     public Config getConfig() { return match.getConfig(); }
     public Config getMessages() { return match.getMessages(); }
     public String requireConfigPath() { return "waiting-lobby."; }
+    public Messages getMsgUtil() { return msgUtil; }
     public Set<CustomPlayer> getPlayers() { return players; }
     public VotingSystem<String> getMapVoting() { return mapVoting; }
     public VotingSystem<TimeOfDay> getTimeVoting() { return timeVoting; }

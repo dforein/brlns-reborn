@@ -16,13 +16,15 @@ import cn.nukkit.utils.Config;
 
 public class MainLobbyBossBar extends BossBarAbstract {
 
+    private final int BOSSBAR_UPDATE_PERIOD = 7 * 20;   //in ticks
+    private final String PATH = "lobby-bossbar.";
+
     private final BrlnsReb plugin;
-    private final String path = "lobby-bossbar.";
-    private String name;                        //mainMessage1 name (of the game, or server in case of general lobby)
+    private String name;                            //mainMessage1 name (of the game, or server in case of general lobby)
     private Config messages;
-    private ArrayList<String> colors;           //mainMessage2 colors
+    private ArrayList<String> colors;               //mainMessage2 colors
     private ArrayList<String> messagesArray;
-    private int messagesIndex = 0;              //i will periodically change messages in messages.yml order
+    private int messagesIndex = 0;                  //i will periodically change messages in messages.yml order
 
     public MainLobbyBossBar(String name) {
         plugin = BrlnsReb.getInstance();
@@ -33,11 +35,11 @@ public class MainLobbyBossBar extends BossBarAbstract {
         this.name = name;
         this.messages = ConfigManager.getConfig("global/messages.yml");
 
-        String mainMessage1 = messages.getString(path + "message1");
-        String mainMessage2 = messages.getString(path + "message2");
+        String mainMessage1 = messages.getString(PATH + "message1");
+        String mainMessage2 = messages.getString(PATH + "message2");
 
         this.messagesArray = new ArrayList<>(
-            messages.getList(path + "other-messages")
+            messages.getList(PATH + "other-messages")
                 .stream()
                 .map(capture -> capture.toString())
                 .collect(Collectors.toList())
@@ -47,7 +49,7 @@ public class MainLobbyBossBar extends BossBarAbstract {
         this.messagesArray.addFirst(mainMessage1);
 
         this.colors = new ArrayList<>(              //for mainMessage2, because it changes color quickly
-            messages.getList(path + "colors")
+            messages.getList(PATH + "colors")
                 .stream()
                 .map(capture -> capture.toString())
                 .collect(Collectors.toList())
@@ -62,7 +64,7 @@ public class MainLobbyBossBar extends BossBarAbstract {
                 }
 
                 this.updateDisplayedMessage();
-            }, 140      //update every 7s
+            }, BOSSBAR_UPDATE_PERIOD
         );
     }
 

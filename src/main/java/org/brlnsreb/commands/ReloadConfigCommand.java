@@ -21,7 +21,7 @@ public class ReloadConfigCommand extends cn.nukkit.command.Command {
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (!sender.isOp()) return true;
 
-        ConfigManager.reloadConfigs();
+        ConfigManager.reloadConfig();
         YamlUtil.resetCache();
 
         MinigameManager.onConfigReload();

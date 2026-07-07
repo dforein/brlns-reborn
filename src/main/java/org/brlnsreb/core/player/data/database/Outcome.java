@@ -1,0 +1,21 @@
+package org.brlnsreb.core.player.data.database;
+
+public enum Outcome {
+    OK,
+    DB_ERROR,
+    ASYNC_TASK_ALREADY_RUNNING,
+
+    PLAYER_ALREADY_LOGGED_IN,
+    PLAYER_ALREADY_LOGGED_OUT,
+
+    INVALID_NAME,
+    NAME_ALREADY_IN_USE,
+    NAME_NOT_FOUND,
+    WRONG_PASSWORD,
+    
+    CANNOT_FRIEND_SELF,
+    ALREADY_FRIENDS,
+    REQUEST_ALREADY_SENT,
+    REQUEST_NOT_FOUND,
+    NOT_FRIENDS
+}
