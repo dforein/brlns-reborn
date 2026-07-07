@@ -10,25 +10,17 @@ import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.data.PlayerData;
 import org.brlnsreb.utils.database.DBResults;
 
-import cn.nukkit.Server;
-import cn.nukkit.scheduler.ServerScheduler;
-
 public class PlayerDataManager {
-
-    private static ServerScheduler scheduler;
     
     private static final ConcurrentHashMap<UUID, PlayerData> dataMap = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, UUID> nameIdMap = new ConcurrentHashMap<>();
 
     public static void init() {
-        scheduler = Server.getInstance().getScheduler();
         AccountsManager.init();
     }
 
     public static CompletableFuture<Outcome> onServerJoin(CustomPlayer player) {
-        if (!player.canRunAsync()) {
-            scheduler.scheduleDelayedTask(() -> onServerJoin(player), 20);
-        }
+        if (!DatabaseManager.isEnabled()) return CompletableFuture.completedFuture(Outcome.OK);
 
         UUID playerId = player.getUniqueId();
 
@@ -68,6 +60,7 @@ public class PlayerDataManager {
             }
         }).exceptionally(e -> {
             e.printStackTrace();
+            player.kick("Database error onServerJoin: report this error to the dev team, if you can.");
             return Outcome.DB_ERROR;
         });
     }
