@@ -18,6 +18,7 @@ import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.match.game.MinigameGameExpand;
 import org.brlnsreb.core.player.data.PlayerData;
+import org.brlnsreb.core.player.data.database.Outcome;
 import org.brlnsreb.core.player.data.database.PlayerDataManager;
 import org.brlnsreb.core.minigame.match.MinigameMatch;
 import org.brlnsreb.core.minigame.match.MinigameMatchExpand;
@@ -83,9 +84,11 @@ public class CustomPlayer extends Player {
     public CustomPlayer(@NotNull BedrockServerSession session, @NotNull PlayerInfo info) {
         super(session, info);
 
-        PlayerDataManager.onServerJoin(this);
-        this.updatePlayerNameTag();
-        GeneralLobby.getInstance().onJoin(this);
+        PlayerDataManager.onServerJoin(this).thenAccept(outcome -> {
+            if (outcome == Outcome.DB_ERROR) return;
+            this.updatePlayerNameTag();
+            GeneralLobby.getInstance().onJoin(this);
+        });
     }
 
 

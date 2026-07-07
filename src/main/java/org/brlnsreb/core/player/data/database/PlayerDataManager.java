@@ -20,7 +20,7 @@ public class PlayerDataManager {
     }
 
     public static CompletableFuture<Outcome> onServerJoin(CustomPlayer player) {
-        if (!DatabaseManager.isEnabled()) return CompletableFuture.completedFuture(Outcome.OK);
+        if (!DatabaseManager.isEnabled()) return CompletableFuture.completedFuture(Outcome.DB_ERROR);
 
         UUID playerId = player.getUniqueId();
 
