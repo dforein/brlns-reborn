@@ -55,17 +55,18 @@ public class PlayerUtils {
 
         resetUiAndInventories(p);
 
-        switch (p.state) {
+        PlayerStateType oldState = p.state; 
+        p.state = newState;
+        p.setPresetNameTag();
+
+        switch (oldState) {
             case LOBBY, WAITING_LOBBY, END_LOBBY:
-                p.state = newState;
-                p.resetNameTag();
                 return;                 //already coming from a lobby, no need to execute the following code
         
             default:
                 break;
         }
-
-        p.state = newState;
+        
         resetVars(p);
         resetPlayer(p, Player.ADVENTURE, 18);
 

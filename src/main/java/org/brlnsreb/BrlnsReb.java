@@ -96,9 +96,8 @@ public class BrlnsReb extends PluginBase {
 
         if (saveAtShutdown) return;
         for (Level level : new ArrayList<>(server.getLevels().values())) {
-            if (!level.getName().equals(server.getDefaultLevel().getName())) {
-                server.unloadLevel(level, true);
-            }
+            if (level.getId() == server.getDefaultLevel().getId()) continue;
+            server.unloadLevel(level, true);
         }
     }
 

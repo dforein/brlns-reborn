@@ -39,7 +39,6 @@ import cn.nukkit.nbt.tag.DoubleTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.nbt.tag.StringTag;
 import cn.nukkit.scoreboard.Scoreboard;
-import cn.nukkit.utils.TextFormat;
 
 public class CustomPlayer extends Player {
 
@@ -71,8 +70,10 @@ public class CustomPlayer extends Player {
     public Minigame currentMinigame = null;
     private WeakReference<MinigameMatch> currentMatch = null;
     
-    public String lobbyPlayerNameTag;
-    public String gamePlayerNameTag;
+    public String lobbyName;
+    public String waitingLobbyName;
+    public String ingameChatName;
+
     private PlayerData data;
 
     private Scoreboard scoreboard = null;
@@ -86,7 +87,7 @@ public class CustomPlayer extends Player {
 
         PlayerDataManager.onServerJoin(this).thenAccept(outcome -> {
             if (outcome == Outcome.DB_ERROR) return;
-            this.updatePlayerNameTag();
+            this.updatePresetNameTags();
             GeneralLobby.getInstance().onJoin(this);
         });
     }
@@ -128,33 +129,22 @@ public class CustomPlayer extends Player {
     public void setPlayerData(PlayerData data) { this.data = data; }
     public PlayerData getPlayerData() { return this.data; }
 
-    public void updatePlayerNameTag() {
-        this.lobbyPlayerNameTag = TextFormat.colorize(
-            "&8" + (data.getFloorLevel() < 0 ? "?" : data.getFloorLevel()) +
-            " &7" + (data.isLogged() ? data.name : this.getName())
-        );
+    public void updatePresetNameTags() {
+        this.lobbyName = "§8" + (data.getFloorLevel() < 0 ? "?" : data.getFloorLevel()) +
+                                  " §7" + (data.isLogged() ? data.name : this.getName());
         
-        this.gamePlayerNameTag = TextFormat.colorize(
-            "&8" + (data.getFloorLevel() < 0 ? "?" : data.getFloorLevel()) +
-            " &a" + (data.isLogged() ? data.name : this.getName())
-        );
+        this.waitingLobbyName = "§8" + (data.getFloorLevel() < 0 ? "?" : data.getFloorLevel()) +
+                                         " §a" + (data.isLogged() ? data.name : this.getName());
 
-        this.resetNameTag();
+        this.setPresetNameTag();
     }
 
-    public void resetNameTag() {
+    public void setPresetNameTag() {
         switch (this.state) {
-            case LOBBY:
-                this.setNameTag(this.lobbyPlayerNameTag);
-                break;
-            
-            case WAITING_LOBBY:
-                this.setNameTag(this.gamePlayerNameTag);
-                break;
-            
-            default:
-                BrlnsReb.getInstance().getLogger().alert("CustomPlayer::resetNameTag, unrecognized state: " + state.toString());
-                break;
+            case LOBBY -> this.setNameTag(this.lobbyName);
+            case WAITING_LOBBY -> this.setNameTag(this.waitingLobbyName);
+            case END_LOBBY -> this.setNameTag("§l§fGHOST§r " + data.name);
+            default -> BrlnsReb.getInstance().getLogger().alert("CustomPlayer::resetNameTag, unrecognized state: " + state.toString());
         } 
     }
 

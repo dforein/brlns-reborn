@@ -63,11 +63,13 @@ public abstract class MinigameGame {
 
         player.state = PlayerStateType.PLAYING;
         onJoinPreparePlayer(player);
+        setGameNames(player);
         prepareGameData(player);
     }
 
     protected abstract Position onJoinPosition(CustomPlayer player);
     protected abstract void onJoinPreparePlayer(CustomPlayer player);
+    protected abstract void setGameNames(CustomPlayer player);       //display name tag + chat name tag
     protected abstract void prepareGameData(CustomPlayer player);
 
     public void onJoinAsSpectator(CustomPlayer player) {
@@ -172,5 +174,6 @@ public abstract class MinigameGame {
     //events from listeners
 
     public abstract void onItemUse(CustomPlayer player, Item item);
+    public abstract boolean onChat(CustomPlayer player);
 
 }

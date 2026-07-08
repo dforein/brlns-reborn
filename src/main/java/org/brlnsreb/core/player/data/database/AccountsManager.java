@@ -96,7 +96,7 @@ public class AccountsManager {
             data.setCoins(0);
             data.setExp(0);
 
-            player.updatePlayerNameTag();
+            player.updatePresetNameTags();
         });
 
         return Outcome.OK;
@@ -122,7 +122,7 @@ public class AccountsManager {
                 );
             }
 
-            player.updatePlayerNameTag();
+            player.updatePresetNameTags();
         });
     }
 
@@ -133,7 +133,7 @@ public class AccountsManager {
         if (outcome != Outcome.OK) return outcome;
 
         data.resetData();
-        player.updatePlayerNameTag();
+        player.updatePresetNameTags();
 
         return outcome;
     }

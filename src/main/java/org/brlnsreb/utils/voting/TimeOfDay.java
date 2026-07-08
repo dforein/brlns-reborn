@@ -20,7 +20,7 @@ public enum TimeOfDay {
         if (time != null) {
             level.setTime(time.timeValue);
         } else {
-            level.setTime(6000);
+            level.setTime(DAY.timeValue);
         }
     }
 }

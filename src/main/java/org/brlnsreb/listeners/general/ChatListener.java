@@ -1,6 +1,8 @@
 package org.brlnsreb.listeners.general;
 
 import org.brlnsreb.BrlnsReb;
+import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.core.player.PlayerStateType;
 
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
@@ -13,13 +15,27 @@ import cn.nukkit.plugin.annotation.EventListener;
 public class ChatListener implements Listener {
 
     @EventHandler
-    private void onChat(PlayerChatEvent event) {
+    public void onChat(PlayerChatEvent event) {
+        CustomPlayer player = (CustomPlayer) event.getPlayer();
+
+        if (player.state == PlayerStateType.PLAYING) {
+            if (!player.getMatch().getGame().onChat(player)) {
+                event.setCancelled();
+                return;
+            }
+            event.setFormat(player.ingameChatName + ": %s");
+        } else {
+            event.setFormat(player.getDisplayName() + ": %s");
+        }
+
+        filterPlayerBySenderLevel(event);
+    }
+
+    private void filterPlayerBySenderLevel(PlayerChatEvent event) {
         //avoid players chatting in different worlds
         if (BrlnsReb.getGlobalChat()) return;
 
-        Player sender = event.getPlayer();
-        Level senderLevel = sender.getLevel();
-
+        Level senderLevel = event.getPlayer().getLevel();
         event.getRecipients().removeIf(recipient -> 
             (recipient instanceof Player) &&
             !((Player) recipient).getLevel().equals(senderLevel)
