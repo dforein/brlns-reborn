@@ -18,26 +18,8 @@ import cn.nukkit.scoreboard.data.DisplaySlot;
 import cn.nukkit.utils.DummyBossBar;
 
 public class PlayerUtils {
-    
-    public static void removeScoreboard(CustomPlayer p) {
-        if (!p.isOnline()) return;
-        if (p.hasScoreboard()) {
-            p.removeScoreboard();
-            p.getScoreboard().removeViewer(p, DisplaySlot.SIDEBAR);
-            p.resetScoreboard();
-        }
-    }
 
-    public static void removeBossBar(CustomPlayer p) {
-        if (!p.isOnline()) return;
-        if (!p.getDummyBossBars().isEmpty()) {
-            for (DummyBossBar bar : p.getDummyBossBars().values()) {
-                bar.destroy(); 
-            }
-        }
-
-        p.resetBossBarId();
-    }
+    //change world
 
     public static void changeWorld(CustomPlayer p, Position pos, boolean lobby) {
         BrlnsReb plugin = BrlnsReb.getInstance();
@@ -65,26 +47,8 @@ public class PlayerUtils {
         }
     }
 
-    public static void resetUiAndInventories(CustomPlayer p) {
-        clearInventory(p);
-        removeScoreboard(p);
-        removeBossBar(p);
-    }
 
-    public static void resetVars(CustomPlayer p) {
-        p.setAttackVars(DamageMode.INVULNERABLE, false, false);
-        p.interactMode = InteractMode.LIMITED;
-    }
-
-    public static void resetPlayer(CustomPlayer p, int gamemode, int food) {
-        p.setGamemode(gamemode);
-
-        p.removeAllEffects();
-
-        p.setHealthCurrent(p.getHealthMax());
-        p.getFoodData().setEnabled(false);
-        p.getFoodData().setFood(food);
-    }
+    //lobby-specific
 
     public static void setLobbyState(CustomPlayer p, PlayerStateType newState) {
         if (!p.isOnline()) return;
@@ -109,13 +73,55 @@ public class PlayerUtils {
         p.updateExp();
     }
 
-    private static void giveEffect(Player player, EffectType type, int duration, int amplifier, boolean isVisible) {
-        Effect effect = Effect.get(type);
-        effect.setDuration(duration);
-        effect.setAmplifier(amplifier);
-        effect.setVisible(isVisible);
-        player.addEffect(effect);
+
+    //reset player
+
+    public static void resetUiAndInventories(CustomPlayer p) {
+        clearInventory(p);
+        removeScoreboard(p);
+        removeBossBar(p);
     }
+
+    public static void resetVars(CustomPlayer p) {
+        p.setAttackVars(DamageMode.INVULNERABLE, false, false);
+        p.interactMode = InteractMode.LIMITED;
+    }
+
+    public static void resetPlayer(CustomPlayer p, int gamemode, int food) {
+        p.setGamemode(gamemode);
+
+        p.removeAllEffects();
+
+        p.setHealthCurrent(p.getHealthMax());
+        p.getFoodData().setEnabled(false);
+        p.getFoodData().setFood(food);
+    }
+
+
+    //ui
+
+    public static void removeScoreboard(CustomPlayer p) {
+        if (!p.isOnline()) return;
+        if (p.hasScoreboard()) {
+            p.removeScoreboard();
+            p.getScoreboard().removeViewer(p, DisplaySlot.SIDEBAR);
+            p.resetScoreboard();
+        }
+    }
+
+    public static void removeBossBar(CustomPlayer p) {
+        if (!p.isOnline()) return;
+        if (!p.getDummyBossBars().isEmpty()) {
+            for (DummyBossBar bar : p.getDummyBossBars().values()) {
+                bar.destroy(); 
+            }
+        }
+
+        p.resetBossBarId();
+    }
+
+
+    //inventory
 
     public static void clearInventory(Collection<? extends Player> players) {
         for (Player p : players) {
@@ -161,6 +167,17 @@ public class PlayerUtils {
                 if (!continueSearch) break;
             }
         }
+    }
+
+
+    //misc
+
+    private static void giveEffect(Player player, EffectType type, int duration, int amplifier, boolean isVisible) {
+        Effect effect = Effect.get(type);
+        effect.setDuration(duration);
+        effect.setAmplifier(amplifier);
+        effect.setVisible(isVisible);
+        player.addEffect(effect);
     }
 
     public static CustomPlayer getPlayer(UUID uuid) {
