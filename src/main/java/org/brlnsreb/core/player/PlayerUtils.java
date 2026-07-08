@@ -65,12 +65,31 @@ public class PlayerUtils {
         }
     }
 
-    public static void setLobbyState(CustomPlayer p, PlayerStateType newState) {
-        if (!p.isOnline()) return;
-
+    public static void resetUiAndInventories(CustomPlayer p) {
         clearInventory(p);
         removeScoreboard(p);
         removeBossBar(p);
+    }
+
+    public static void resetVars(CustomPlayer p) {
+        p.setAttackVars(DamageMode.INVULNERABLE, false, false);
+        p.interactMode = InteractMode.LIMITED;
+    }
+
+    public static void resetPlayer(CustomPlayer p, int gamemode, int food) {
+        p.setGamemode(gamemode);
+
+        p.removeAllEffects();
+
+        p.setHealthCurrent(p.getHealthMax());
+        p.getFoodData().setEnabled(false);
+        p.getFoodData().setFood(food);
+    }
+
+    public static void setLobbyState(CustomPlayer p, PlayerStateType newState) {
+        if (!p.isOnline()) return;
+
+        resetUiAndInventories(p);
 
         switch (p.state) {
             case LOBBY, WAITING_LOBBY, END_LOBBY:
@@ -83,18 +102,10 @@ public class PlayerUtils {
         }
 
         p.state = newState;
-        p.setAttackVars(DamageMode.INVULNERABLE, false, false);
-        p.interactMode = InteractMode.LIMITED;
+        resetVars(p);
+        resetPlayer(p, Player.ADVENTURE, 18);
 
-        p.setGamemode(Player.ADVENTURE);
-
-        p.removeAllEffects();
         giveEffect(p, EffectType.NIGHT_VISION, 99999999, 2, false);
-
-        p.setHealthCurrent(p.getHealthMax());
-        p.getFoodData().setEnabled(false);
-        p.getFoodData().setFood(18);
-
         p.updateExp();
     }
 

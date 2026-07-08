@@ -15,6 +15,7 @@ import org.brlnsreb.utils.TimerSystem;
 import org.brlnsreb.utils.voting.TimeOfDay;
 import org.brlnsreb.utils.voting.Weather;
 
+import cn.nukkit.Player;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Position;
 import cn.nukkit.utils.Config;
@@ -71,6 +72,11 @@ public abstract class MinigameGame {
 
     public void onJoinAsSpectator(CustomPlayer player) {
         PlayerUtils.changeWorld(player, onJoinPosition(player), false);
+
+        if (player.state == PlayerStateType.PLAYING) {      //reset everything
+            PlayerUtils.resetUiAndInventories(player);
+            PlayerUtils.resetPlayer(player, Player.ADVENTURE, 20);
+        }
 
         player.setGameSpectator();
         spectatorItems.giveTeleporter(player);
