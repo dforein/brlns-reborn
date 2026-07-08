@@ -140,31 +140,31 @@ public class PlayerUtils {
     }
 
     public static void clearItem(Player player, String itemId) {
-        clearItem(player, itemId, false);
+        clearItem(player, itemId, true);
     }
 
-    public static void clearItem(Player player, String itemId, boolean continueSearch) {
+    public static void clearItem(Player player, String itemId, boolean onlyFirstFound) {
         for (int i = 0; i < player.getInventory().getSize(); i++) {
             Item itemPointed = player.getInventory().getItem(i);
 
             if (itemPointed.getId().equals(itemId)) {
                 player.getInventory().clear(i);
-                if (!continueSearch) break;
+                if (onlyFirstFound) break;
             }
         }
     }
     
     public static void clearItem(Player player, String itemId, String tag) {
-        clearItem(player, itemId, tag, false);
+        clearItem(player, itemId, tag, true);
     }
 
-    public static void clearItem(Player player, String itemId, String tag, boolean continueSearch) {
+    public static void clearItem(Player player, String itemId, String tag, boolean onlyFirstFound) {
         for (int i = 0; i < player.getInventory().getSize(); i++) {
             Item itemPointed = player.getInventory().getItem(i);
 
             if (itemPointed.getId().equals(itemId) && itemPointed.hasTag(tag)) {
                 player.getInventory().clear(i);
-                if (!continueSearch) break;
+                if (onlyFirstFound) break;
             }
         }
     }
