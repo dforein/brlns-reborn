@@ -35,7 +35,7 @@ public class EndLobby extends Lobby {
     //join logic
 
     protected PlayerStateType onJoinState() {
-        return PlayerStateType.LOBBY;
+        return PlayerStateType.END_LOBBY;
     }
 
     protected void onJoinBossBar(CustomPlayer player) {}

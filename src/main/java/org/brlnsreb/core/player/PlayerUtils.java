@@ -72,11 +72,14 @@ public class PlayerUtils {
         removeScoreboard(p);
         removeBossBar(p);
 
-        if (p.state == PlayerStateType.LOBBY || p.state == PlayerStateType.WAITING_LOBBY) {
-            p.state = newState;
-            p.resetNameTag();
-            
-            return;                 //already coming from a lobby, no need to execute the following code
+        switch (p.state) {
+            case LOBBY, WAITING_LOBBY, END_LOBBY:
+                p.state = newState;
+                p.resetNameTag();
+                return;                 //already coming from a lobby, no need to execute the following code
+        
+            default:
+                break;
         }
 
         p.state = newState;
@@ -89,6 +92,7 @@ public class PlayerUtils {
         giveEffect(p, EffectType.NIGHT_VISION, 99999999, 2, false);
 
         p.setHealthCurrent(p.getHealthMax());
+        p.getFoodData().setEnabled(false);
         p.getFoodData().setFood(18);
 
         p.updateExp();
