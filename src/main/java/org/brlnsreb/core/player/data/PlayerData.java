@@ -9,6 +9,9 @@ import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.core.player.data.database.PlayerDataManager;
 
+import cn.nukkit.Player;
+import cn.nukkit.Server;
+
 public class PlayerData {
 
     public String name;      //this is also the account username, if it's null the player is not logged in
@@ -22,6 +25,8 @@ public class PlayerData {
     private Set<String> sentFriendRequests = ConcurrentHashMap.newKeySet();
     private boolean friendsAlerts = true;      //if active, the player receives alerts of friends joining the server/a minigame (default: true)
     private boolean friendsNotify = true;      //if active, friends receive alerts of the player joining the server/a minigame (default: true)
+
+    private UUID lastPvtPlayerId = null;
 
     public PlayerData() {
         resetData();
@@ -186,5 +191,15 @@ public class PlayerData {
     public Set<String> getSentFriendRequests() { return this.sentFriendRequests; }
     public boolean getFriendsAlerts() { return this.friendsAlerts; }
     public boolean getFriendsNotify() { return this.friendsNotify; }
+
+
+    //PVT and reply commands
+
+    public void setLastPvtPlayer(Player player) { this.lastPvtPlayerId = player.getUniqueId(); }
+    public CustomPlayer getLastPvtPlayer() {
+        CustomPlayer player = (CustomPlayer) Server.getInstance().getPlayer(lastPvtPlayerId).orElse(null);
+        this.lastPvtPlayerId = null;
+        return player;
+    }
 
 }
