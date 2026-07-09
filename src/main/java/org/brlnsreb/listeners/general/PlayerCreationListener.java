@@ -14,5 +14,5 @@ public class PlayerCreationListener implements Listener {
     public void onPlayerCreation(PlayerCreationEvent event) {
         event.setPlayerClass(CustomPlayer.class);
     }
-    
+
 }

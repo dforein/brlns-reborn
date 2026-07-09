@@ -6,6 +6,8 @@ import java.util.UUID;
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer.DamageMode;
 import org.brlnsreb.core.player.CustomPlayer.InteractMode;
+import org.cloudburstmc.protocol.bedrock.data.PlayerListPacketType;
+import org.cloudburstmc.protocol.bedrock.packet.PlayerListPacket;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
@@ -41,6 +43,8 @@ public class PlayerUtils {
                 p.spawnToAll(); 
                 p.setViewDistance(viewDistance);
             }, 20);
+
+            updateOnlinePlayer(p, true);    //remove the name for players who aren't in the same level
 
         } catch (Exception e) {
             plugin.getLogger().error("Error teleporting player: " + e.getMessage());
@@ -167,6 +171,36 @@ public class PlayerUtils {
                 player.getInventory().clear(i);
                 if (onlyFirstFound) break;
             }
+        }
+    }
+
+
+    //player list packets
+
+    public static void updateOnlinePlayer(Player player, boolean removeAllServer) {
+        removeOnlinePlayer(player, removeAllServer);
+        addOnlinePlayer(player, false);
+    }
+
+    public static void addOnlinePlayer(Player player, boolean allServer) {
+        sendPlayerListPacket(player, PlayerListPacketType.ADD, allServer);
+    }
+
+    public static void removeOnlinePlayer(Player player, boolean allServer) {
+        sendPlayerListPacket(player, PlayerListPacketType.REMOVE, allServer);
+    }
+
+    private static void sendPlayerListPacket(Player player, PlayerListPacketType action, boolean allServer) {
+        final PlayerListPacket pk = new PlayerListPacket();
+        pk.setAction(action);
+        pk.getEntries().add(new PlayerListPacket.Entry(player.getUniqueId()));
+
+        Collection<Player> players;
+        if (allServer) players = Server.getInstance().getOnlinePlayers().values();
+        else players = player.getLevel().getPlayers().values();
+        
+        for (Player p : players) {
+            p.sendPacket(pk);
         }
     }
 

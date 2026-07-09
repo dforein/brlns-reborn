@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.core.player.data.PlayerData;
 import org.brlnsreb.core.player.data.StatType;
 import org.brlnsreb.utils.database.DBResults;
@@ -123,6 +124,8 @@ public class AccountsManager {
             }
 
             player.updatePresetNameTags();
+            player.setDisplayName(name);
+            PlayerUtils.updateOnlinePlayer(player, false);
         });
     }
 
@@ -134,6 +137,8 @@ public class AccountsManager {
 
         data.resetData();
         player.updatePresetNameTags();
+        player.setDisplayName(player.getName());
+        PlayerUtils.updateOnlinePlayer(player, false);
 
         return outcome;
     }

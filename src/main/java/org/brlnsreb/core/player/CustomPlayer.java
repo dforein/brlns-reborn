@@ -87,9 +87,33 @@ public class CustomPlayer extends Player {
 
         PlayerDataManager.onServerJoin(this).thenAccept(outcome -> {
             if (outcome == Outcome.DB_ERROR) return;
+
             this.updatePresetNameTags();
             GeneralLobby.getInstance().onJoin(this);
+
+            if (!updateDisplayName()) updateDisplayNameDelayed();
         });
+    }
+
+    private void updateDisplayNameDelayed() {
+        Server.getInstance().getScheduler().scheduleDelayedTask(BrlnsReb.getInstance(), () -> {
+            if (!updateDisplayName()) updateDisplayNameDelayed();
+        }, 10);
+    }
+
+    private boolean updateDisplayName() {
+        if (this.spawned) {
+            this.setDisplayName(this.data.name);
+            PlayerUtils.updateOnlinePlayer(this, false);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void doFirstSpawn() {
+        PlayerUtils.updateOnlinePlayer(this, true);     //remove the name for players who aren't in the same level (general lobby)
+        super.doFirstSpawn();
     }
 
 

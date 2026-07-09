@@ -21,6 +21,7 @@ public class PlayerDataManager {
 
     public static CompletableFuture<Outcome> onServerJoin(CustomPlayer player) {
         if (!DatabaseManager.isEnabled()) return CompletableFuture.completedFuture(Outcome.DB_ERROR);
+        player.canRunAsync();
 
         UUID playerId = player.getUniqueId();
 
