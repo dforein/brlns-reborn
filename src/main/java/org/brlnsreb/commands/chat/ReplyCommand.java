@@ -24,21 +24,30 @@ public class ReplyCommand extends Command {
 
     @Override
     public void buildCommandTree(RouteTree tree) {
-        tree.getRoot().senderType(SenderType.PLAYER)
+        tree.getRoot().senderType(SenderType.PLAYER)                   //whatever player, also non-logged
             .then(RouteNode.argument("message", new StringNode())
                 .exec(ctx -> {
-                    CustomPlayer replyingPlayer = (CustomPlayer) ctx.getSender();
-                    CustomPlayer originalPvtPlayer = replyingPlayer.getPlayerData().getLastPvtPlayer();
+                    CustomPlayer sender = (CustomPlayer) ctx.getSender();
+                    CustomPlayer receiver = sender.getPlayerData().getLastPvtPlayer();
 
-                    if (originalPvtPlayer == null) {
+                    if (receiver == null) {
                         return CommandResult.fail("§l§cERROR§r§c You didn't receive any PVT!");     //TEXT
                     }
 
-                    originalPvtPlayer.sendMessage(
-                        "§l§aPVT§r §3" 
-                        + replyingPlayer.getPlayerData().name 
-                        + " §7> §3you§7: §b" 
-                        + ctx.getArg("message")
+                    sender.sendMessage(
+                        "§l§aPVT§r §3%s §7> §3%s§7: §b%s".formatted(       //TEXT
+                            "you",
+                            receiver.getPlayerData().name,
+                            ctx.getArg("message")
+                        )
+                    );
+
+                    receiver.sendMessage(
+                        "§l§aPVT§r §3%s §7> §3%s§7: §b%s".formatted(        //TEXT
+                            sender.getPlayerData().name,
+                            "you",
+                            ctx.getArg("message")
+                        )
                     );
 
                     return CommandResult.success();

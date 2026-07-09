@@ -2,6 +2,7 @@ package org.brlnsreb.listeners.general;
 
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.data.database.AccountsManager;
+import org.brlnsreb.core.player.data.database.FriendsManager;
 
 import cn.nukkit.Player;
 import cn.nukkit.event.EventHandler;
@@ -29,6 +30,7 @@ public class PlayerQuitListener implements Listener {
         CustomPlayer player = (CustomPlayer) p;
 
         AccountsManager.savePlayerData(player);
+        FriendsManager.removeOnlineFriend(player.getPlayerData());
         player.getMatch().onLeave(player);
         player.save();
     }

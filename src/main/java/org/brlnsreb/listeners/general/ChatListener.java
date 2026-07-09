@@ -19,13 +19,14 @@ public class ChatListener implements Listener {
         CustomPlayer player = (CustomPlayer) event.getPlayer();
 
         if (player.state == PlayerStateType.PLAYING) {
-            if (!player.getMatch().getGame().onChat(player)) {
+            if (!player.getMatch().getGame().onChat(player, event)) {
                 event.setCancelled();
                 return;
             }
-            event.setFormat(player.ingameChatName + ": %s");
+            event.setFormat(player.ingameChatName + "§7: %s");
         } else {
-            event.setFormat(player.getDisplayName() + ": %s");
+            int floorLevel = player.getPlayerData().getFloorLevel();
+            event.setFormat((floorLevel < 1000 ? " " : "") + player.getNameTag() + "§7: %s");
         }
 
         filterPlayerBySenderLevel(event);

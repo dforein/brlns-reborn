@@ -16,6 +16,7 @@ import org.brlnsreb.utils.voting.TimeOfDay;
 import org.brlnsreb.utils.voting.Weather;
 
 import cn.nukkit.Player;
+import cn.nukkit.event.player.PlayerChatEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Position;
 import cn.nukkit.utils.Config;
@@ -174,6 +175,6 @@ public abstract class MinigameGame {
     //events from listeners
 
     public abstract void onItemUse(CustomPlayer player, Item item);
-    public abstract boolean onChat(CustomPlayer player);
+    public abstract boolean onChat(CustomPlayer player, PlayerChatEvent event);
 
 }

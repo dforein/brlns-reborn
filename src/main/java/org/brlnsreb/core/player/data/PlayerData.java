@@ -1,5 +1,6 @@
 package org.brlnsreb.core.player.data;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,6 +22,7 @@ public class PlayerData {
     private int levelFloor;
     private ConcurrentHashMap<Integer, int[]> stats = new ConcurrentHashMap<>();  //HashMap<[if global: 0; else MinigameType id], [array of stats values, value indexes: StatType id]>
     private Set<String> friends = ConcurrentHashMap.newKeySet();
+    private Set<String> onlineFriends = new HashSet<>();
     private Set<String> receivedFriendRequests = ConcurrentHashMap.newKeySet();
     private Set<String> sentFriendRequests = ConcurrentHashMap.newKeySet();
     private boolean friendsAlerts = true;      //if active, the player receives alerts of friends joining the server/a minigame (default: true)
@@ -40,6 +42,7 @@ public class PlayerData {
         this.levelFloor = -1;
         this.stats.clear();
         this.friends.clear();
+        this.onlineFriends.clear();
         this.receivedFriendRequests.clear();
         this.sentFriendRequests.clear();
     }
@@ -164,6 +167,16 @@ public class PlayerData {
         this.friends.add(name);
         this.receivedFriendRequests.remove(name);
         this.sentFriendRequests.remove(name);
+
+        if (PlayerDataManager.getPlayerId(name) != null) {
+            this.onlineFriends.add(name);
+        }
+    }
+
+    public void addOnlineFriend(String name) {
+        if (isFriendWith(name)) {
+            this.onlineFriends.add(name);
+        }
     }
 
     public CustomPlayer getFriend(String name) { 
@@ -178,7 +191,11 @@ public class PlayerData {
     public boolean isFriendWith(String name) { return this.friends.contains(name); }
     public boolean isFriendWith(CustomPlayer player) { return isFriendWith(player.getPlayerData().name); }
 
-    public void removeFriend(String name) { this.friends.remove(name); }
+    public void removeFriend(String name) { 
+        this.friends.remove(name); 
+        this.onlineFriends.remove(name);
+    }
+    public void removeOnlineFriend(String name) { this.onlineFriends.remove(name); }
     public void receiveFriendRequest(String name) { this.receivedFriendRequests.add(name); }
     public void removeReceivedFriendRequest(String name) { this.receivedFriendRequests.remove(name); }
     public void sendFriendRequest(String name) { this.sentFriendRequests.add(name); }
@@ -187,6 +204,7 @@ public class PlayerData {
     public void setFriendsNotify(boolean value) { this.friendsNotify = value; }
 
     public Set<String> getFriends() { return this.friends; }
+    public Set<String> getOnlineFriends() { return this.onlineFriends; }
     public Set<String> getReceivedFriendRequests() { return this.receivedFriendRequests; }
     public Set<String> getSentFriendRequests() { return this.sentFriendRequests; }
     public boolean getFriendsAlerts() { return this.friendsAlerts; }

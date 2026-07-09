@@ -37,6 +37,8 @@ public class FriendsManager {
             "SELECT receiver_name FROM friend_requests WHERE sender_name = ?",
             "receiver_name"
         );
+
+        addOnlineFriend(data, accountName);
     }
 
     private static void populateDataSetFromDB(Set<String> dataSet, String accountName, String sql, String field) throws SQLException {
@@ -46,6 +48,22 @@ public class FriendsManager {
         dataSet.clear();
         for (int i = 0; i < queryResults.results.size(); i++) {
             dataSet.add(queryResults.getString(i, field));
+        }
+    }
+
+    private static void addOnlineFriend(PlayerData data, String accountName) {
+        for (String name : data.getFriends()) {
+            PlayerData friendData = PlayerDataManager.getPlayerData(name);
+            if (friendData == null) continue;
+            friendData.addOnlineFriend(accountName);
+        }
+    }
+
+    public static void removeOnlineFriend(PlayerData data) {
+        for (String name : data.getOnlineFriends()) {
+            PlayerData friendData = PlayerDataManager.getPlayerData(name);
+            if (friendData == null) continue;
+            friendData.removeOnlineFriend(data.name);
         }
     }
 

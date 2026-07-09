@@ -26,21 +26,31 @@ public class PVTCommand extends Command {
 
     @Override
     public void buildCommandTree(RouteTree tree) {
-        tree.getRoot().senderType(SenderType.PLAYER)
+        tree.getRoot().senderType(SenderType.PLAYER)                    //whatever player, also non-logged
             .then(RouteNode.argument("player", new PlayersNode())
                 .then(RouteNode.argument("message", new StringNode()))
                     .exec(ctx -> {
+                        CustomPlayer sender = (CustomPlayer) ctx.getSender();
                         CustomPlayer receiver = PlayerUtils.getPlayer(ctx.getArg("player"));
 
                         if (receiver == null) {
                             return CommandResult.fail("§l§cERROR§r§c No player found with such name");     //TEXT
                         }
 
+                        sender.sendMessage(
+                            "§l§aPVT§r §3%s §7> §3%s§7: §b%s".formatted(       //TEXT
+                                "you",
+                                receiver.getPlayerData().name,
+                                ctx.getArg("message")
+                            )
+                        );
+
                         receiver.sendMessage(
-                            "§l§aPVT§r §3" 
-                            + ctx.getSender()
-                            + " §7> §3you§7: §b" 
-                            + ctx.getArg("message")
+                            "§l§aPVT§r §3%s §7> §3%s§7: §b%s".formatted(        //TEXT
+                                sender.getPlayerData().name,
+                                "you",
+                                ctx.getArg("message")
+                            )
                         );
 
                         return CommandResult.success();
