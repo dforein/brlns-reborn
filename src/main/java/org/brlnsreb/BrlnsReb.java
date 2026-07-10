@@ -4,6 +4,7 @@ import org.powernukkitx.Player;
 import org.powernukkitx.Server;
 import org.powernukkitx.level.Level;
 import org.powernukkitx.plugin.PluginBase;
+import org.powernukkitx.registry.RegisterException;
 import org.powernukkitx.registry.Registries;
 import org.powernukkitx.utils.Config;
 import org.powernukkitx.utils.TextFormat;
@@ -54,7 +55,7 @@ public class BrlnsReb extends PluginBase {
             Registries.ENTITY.registerCustomEntity(this, NPCEntity.class);
             Registries.ENTITY.rebuildTag();
             
-        } catch (cn.nukkit.registry.RegisterException e) {
+        } catch (RegisterException e) {
             getLogger().error("Error during entities registration: " + e.getMessage());
             throw new RuntimeException(e);
         }

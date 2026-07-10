@@ -1,11 +1,11 @@
 package org.brlnsreb.commands;
 
-import cn.nukkit.Player;
-import cn.nukkit.command.CommandSender;
-import cn.nukkit.command.data.CommandParameter;
-import cn.nukkit.command.tree.node.PlayersNode;
-import cn.nukkit.plugin.annotation.CommandDefinition;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.Player;
+import org.powernukkitx.command.CommandSender;
+import org.powernukkitx.command.data.CommandParameter;
+import org.powernukkitx.command.tree.node.PlayersNode;
+import org.powernukkitx.plugin.annotation.CommandDefinition;
+import org.powernukkitx.utils.TextFormat;
 
 import org.cloudburstmc.protocol.bedrock.data.command.CommandParamType;
 
@@ -15,7 +15,7 @@ import org.cloudburstmc.protocol.bedrock.data.command.CommandParamType;
     usage = "/ping or /ping <player>"
 )
 
-public class PingCommand extends cn.nukkit.command.Command {
+public class PingCommand extends org.powernukkitx.command.Command {
     
     public PingCommand() {
         this.getCommandParameters().clear();

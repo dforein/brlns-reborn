@@ -14,7 +14,7 @@ import org.powernukkitx.utils.TextFormat;
     description = "Go to lobby"
 )
 
-public class HubCommand extends cn.nukkit.command.Command {
+public class HubCommand extends org.powernukkitx.command.Command {
     
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {

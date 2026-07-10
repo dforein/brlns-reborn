@@ -12,7 +12,7 @@ import org.powernukkitx.utils.TextFormat;
     description = "Toggle saving worlds at server shutdown"
 )
 
-public class ToggleSaveCommand extends cn.nukkit.command.Command {
+public class ToggleSaveCommand extends org.powernukkitx.command.Command {
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {

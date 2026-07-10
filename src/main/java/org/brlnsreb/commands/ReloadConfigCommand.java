@@ -15,7 +15,7 @@ import org.powernukkitx.utils.TextFormat;
     description = "Reload all configs"
 )
 
-public class ReloadConfigCommand extends cn.nukkit.command.Command {
+public class ReloadConfigCommand extends org.powernukkitx.command.Command {
     
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {

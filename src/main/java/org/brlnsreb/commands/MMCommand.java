@@ -1,7 +1,7 @@
 package org.brlnsreb.commands;
 
-import cn.nukkit.command.CommandSender;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.command.CommandSender;
+import org.powernukkitx.utils.TextFormat;
 
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import org.brlnsreb.commands.mmsubcommands.MMJoinCommand;
 import org.brlnsreb.commands.mmsubcommands.MMJoinAllCommand;
 import org.brlnsreb.commands.mmsubcommands.MMLeaveCommand;
 
-public class MMCommand extends cn.nukkit.command.Command {
+public class MMCommand extends org.powernukkitx.command.Command {
 
     private final List<BasicSubCommand> simpleSubCommandsList = new ArrayList<>();
 

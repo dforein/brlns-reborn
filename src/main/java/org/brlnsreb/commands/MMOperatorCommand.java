@@ -1,8 +1,8 @@
 package org.brlnsreb.commands;
 
-import cn.nukkit.command.CommandSender;
-import cn.nukkit.command.data.CommandParameter;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.command.CommandSender;
+import org.powernukkitx.command.data.CommandParameter;
+import org.powernukkitx.utils.TextFormat;
 
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import org.brlnsreb.commands.mmsubcommands.MMMapCommand;
 import org.brlnsreb.commands.mmsubcommands.MMStartCommand;
 import org.brlnsreb.commands.mmsubcommands.MMStopCommand;
 
-public class MMOperatorCommand extends cn.nukkit.command.Command {
+public class MMOperatorCommand extends org.powernukkitx.command.Command {
 
     private final List<BasicSubCommand> simpleSubCommandsList = new ArrayList<>();
     private final List<ComplexSubCommand> complexSubCommandsList = new ArrayList<>();

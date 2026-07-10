@@ -12,7 +12,7 @@ import org.powernukkitx.utils.TextFormat;
     description = "Toggle global server chat or local level chat"
 )
 
-public class GlobalChatCommand extends cn.nukkit.command.Command {
+public class GlobalChatCommand extends org.powernukkitx.command.Command {
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
