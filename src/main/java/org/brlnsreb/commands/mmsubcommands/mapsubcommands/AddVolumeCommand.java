@@ -7,11 +7,11 @@ import org.cloudburstmc.protocol.bedrock.data.command.CommandParamType;
 import org.brlnsreb.commands.subcommands.SimpleSubCommand;
 import org.brlnsreb.minigames.mm.MurderMysteryGame;
 
-import cn.nukkit.Player;
-import cn.nukkit.command.CommandSender;
-import cn.nukkit.command.data.CommandParameter;
-import cn.nukkit.math.Vector3;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.Player;
+import org.powernukkitx.command.CommandSender;
+import org.powernukkitx.command.data.CommandParameter;
+import org.powernukkitx.math.Vector3;
+import org.powernukkitx.utils.TextFormat;
 
 public class AddVolumeCommand extends SimpleSubCommand {
     

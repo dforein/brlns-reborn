@@ -2,7 +2,7 @@ package org.brlnsreb.commands.subcommands;
 
 import java.util.LinkedList;
 
-import cn.nukkit.command.data.CommandParameter;
+import org.powernukkitx.command.data.CommandParameter;
 
 public abstract class SimpleSubCommand extends BasicSubCommand {
     

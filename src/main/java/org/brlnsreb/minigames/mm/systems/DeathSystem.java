@@ -1,19 +1,19 @@
 package org.brlnsreb.minigames.mm.systems;
 
-import cn.nukkit.Player;
-import cn.nukkit.block.Block;
-import cn.nukkit.block.BlockRedstoneWire;
-import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.effect.Effect;
-import cn.nukkit.entity.effect.EffectType;
-import cn.nukkit.entity.item.EntityItem;
-import cn.nukkit.item.Item;
-import cn.nukkit.level.Level;
-import cn.nukkit.level.Position;
-import cn.nukkit.level.format.IChunk;
-import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.utils.ItemHelper;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.Player;
+import org.powernukkitx.block.Block;
+import org.powernukkitx.block.BlockRedstoneWire;
+import org.powernukkitx.entity.Entity;
+import org.powernukkitx.entity.effect.Effect;
+import org.powernukkitx.entity.effect.EffectType;
+import org.powernukkitx.entity.item.EntityItem;
+import org.powernukkitx.item.Item;
+import org.powernukkitx.level.Level;
+import org.powernukkitx.level.Position;
+import org.powernukkitx.level.format.IChunk;
+import org.powernukkitx.nbt.tag.CompoundTag;
+import org.powernukkitx.utils.ItemHelper;
+import org.powernukkitx.utils.TextFormat;
 
 import java.util.List;
 import java.util.ArrayList;

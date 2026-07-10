@@ -1,16 +1,16 @@
 package org.brlnsreb.minigames.mm.listeners;
 
-import cn.nukkit.Player;
-import cn.nukkit.Server;
-import cn.nukkit.event.EventHandler;
-import cn.nukkit.event.EventPriority;
-import cn.nukkit.event.Listener;
-import cn.nukkit.event.player.PlayerQuitEvent;
-import cn.nukkit.level.Level;
-import cn.nukkit.math.Vector3;
-import cn.nukkit.event.player.PlayerKickEvent;
-import cn.nukkit.event.player.PlayerLoginEvent;
-import cn.nukkit.event.player.PlayerJoinEvent;
+import org.powernukkitx.Player;
+import org.powernukkitx.Server;
+import org.powernukkitx.event.EventHandler;
+import org.powernukkitx.event.EventPriority;
+import org.powernukkitx.event.Listener;
+import org.powernukkitx.event.player.PlayerQuitEvent;
+import org.powernukkitx.level.Level;
+import org.powernukkitx.math.Vector3;
+import org.powernukkitx.event.player.PlayerKickEvent;
+import org.powernukkitx.event.player.PlayerLoginEvent;
+import org.powernukkitx.event.player.PlayerJoinEvent;
 
 import org.brlnsreb.core.minigame.match.GameStateType;
 import org.brlnsreb.minigames.mm.MurderMysteryGame;
@@ -82,8 +82,6 @@ public class MMPlayerJoinQuitListener implements Listener {
             
             game.returnToLobby(player);
         }
-
-        player.getFoodData().setEnabled(false);
 
         QuitTracker quitTracker = game.getQuitTracker();
 

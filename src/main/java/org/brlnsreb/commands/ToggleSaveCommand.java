@@ -2,9 +2,9 @@ package org.brlnsreb.commands;
 
 import org.brlnsreb.BrlnsReb;
 
-import cn.nukkit.command.CommandSender;
-import cn.nukkit.plugin.annotation.CommandDefinition;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.command.CommandSender;
+import org.powernukkitx.plugin.annotation.CommandDefinition;
+import org.powernukkitx.utils.TextFormat;
 
 @CommandDefinition(
     name = "togglesave", 

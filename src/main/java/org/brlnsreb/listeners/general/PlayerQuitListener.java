@@ -4,13 +4,13 @@ import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.data.database.AccountsManager;
 import org.brlnsreb.core.player.data.database.FriendsManager;
 
-import cn.nukkit.Player;
-import cn.nukkit.event.EventHandler;
-import cn.nukkit.event.EventPriority;
-import cn.nukkit.event.Listener;
-import cn.nukkit.event.player.PlayerKickEvent;
-import cn.nukkit.event.player.PlayerQuitEvent;
-import cn.nukkit.plugin.annotation.EventListener;
+import org.powernukkitx.Player;
+import org.powernukkitx.event.EventHandler;
+import org.powernukkitx.event.EventPriority;
+import org.powernukkitx.event.Listener;
+import org.powernukkitx.event.player.PlayerKickEvent;
+import org.powernukkitx.event.player.PlayerQuitEvent;
+import org.powernukkitx.plugin.annotation.EventListener;
 
 @EventListener
 public class PlayerQuitListener implements Listener {

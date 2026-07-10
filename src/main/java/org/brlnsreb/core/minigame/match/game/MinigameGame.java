@@ -15,12 +15,12 @@ import org.brlnsreb.utils.TimerSystem;
 import org.brlnsreb.utils.voting.TimeOfDay;
 import org.brlnsreb.utils.voting.Weather;
 
-import cn.nukkit.Player;
-import cn.nukkit.event.player.PlayerChatEvent;
-import cn.nukkit.item.Item;
-import cn.nukkit.level.Position;
-import cn.nukkit.utils.Config;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.Player;
+import org.powernukkitx.event.player.PlayerChatEvent;
+import org.powernukkitx.item.Item;
+import org.powernukkitx.level.Position;
+import org.powernukkitx.utils.Config;
+import org.powernukkitx.utils.TextFormat;
 
 public abstract class MinigameGame {
 

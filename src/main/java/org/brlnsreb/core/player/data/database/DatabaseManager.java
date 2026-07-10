@@ -8,8 +8,8 @@ import org.brlnsreb.utils.database.SQLConsumer;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import cn.nukkit.utils.Config;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.utils.Config;
+import org.powernukkitx.utils.TextFormat;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

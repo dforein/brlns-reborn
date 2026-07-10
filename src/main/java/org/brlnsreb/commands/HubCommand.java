@@ -3,10 +3,10 @@ package org.brlnsreb.commands;
 import org.brlnsreb.core.minigame.match.MinigameMatch;
 import org.brlnsreb.core.player.CustomPlayer;
 
-import cn.nukkit.Player;
-import cn.nukkit.command.CommandSender;
-import cn.nukkit.plugin.annotation.CommandDefinition;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.Player;
+import org.powernukkitx.command.CommandSender;
+import org.powernukkitx.plugin.annotation.CommandDefinition;
+import org.powernukkitx.utils.TextFormat;
 
 @CommandDefinition(
     name = "hub",

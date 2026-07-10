@@ -1,8 +1,8 @@
 package org.brlnsreb.core.minigame.match.game;
 
-import cn.nukkit.level.Level;
-import cn.nukkit.math.Vector3;
-import cn.nukkit.utils.Config;
+import org.powernukkitx.level.Level;
+import org.powernukkitx.math.Vector3;
+import org.powernukkitx.utils.Config;
 
 import java.util.List;
 

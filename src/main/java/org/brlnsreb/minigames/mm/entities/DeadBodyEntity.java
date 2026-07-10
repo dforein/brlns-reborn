@@ -3,15 +3,15 @@ package org.brlnsreb.minigames.mm.entities;
 import org.cloudburstmc.protocol.bedrock.data.actor.ActorFlags;
 import org.jetbrains.annotations.NotNull;
 
-import cn.nukkit.Player;
-import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.EntityAnimation;
-import cn.nukkit.entity.EntityHuman;
-import cn.nukkit.entity.custom.CustomEntity;
-import cn.nukkit.entity.custom.CustomEntityDefinition;
-import cn.nukkit.event.entity.EntityDamageEvent;
-import cn.nukkit.level.format.IChunk;
-import cn.nukkit.nbt.tag.CompoundTag;
+import org.powernukkitx.Player;
+import org.powernukkitx.entity.Entity;
+import org.powernukkitx.entity.EntityAnimation;
+import org.powernukkitx.entity.EntityHuman;
+import org.powernukkitx.entity.custom.CustomEntity;
+import org.powernukkitx.entity.custom.CustomEntityDefinition;
+import org.powernukkitx.event.entity.EntityDamageEvent;
+import org.powernukkitx.level.format.IChunk;
+import org.powernukkitx.nbt.tag.CompoundTag;
 
 public class DeadBodyEntity extends EntityHuman implements CustomEntity {
 

@@ -2,8 +2,8 @@ package org.brlnsreb.utils;
 
 import org.brlnsreb.BrlnsReb;
 
-import cn.nukkit.Server;
-import cn.nukkit.scheduler.Task;
+import org.powernukkitx.Server;
+import org.powernukkitx.scheduler.Task;
 
 public class TimerSystem {
     

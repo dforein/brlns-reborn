@@ -1,10 +1,10 @@
 package org.brlnsreb.minigames.mm.ui;
 
-import cn.nukkit.Player;
-import cn.nukkit.Server;
-import cn.nukkit.form.window.SimpleForm;
-import cn.nukkit.scheduler.TaskHandler;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.Player;
+import org.powernukkitx.Server;
+import org.powernukkitx.form.window.SimpleForm;
+import org.powernukkitx.scheduler.TaskHandler;
+import org.powernukkitx.utils.TextFormat;
 
 import org.brlnsreb.core.minigame.match.GameStateType;
 import org.brlnsreb.minigames.mm.MurderMysteryGame;

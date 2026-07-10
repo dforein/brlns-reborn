@@ -4,10 +4,10 @@ import org.brlnsreb.minigames.mm.MurderMysteryGame;
 import org.brlnsreb.minigames.mm.roles.GamePlayer;
 import org.brlnsreb.minigames.mm.roles.MMRole;
 
-import cn.nukkit.event.EventHandler;
-import cn.nukkit.event.Listener;
-import cn.nukkit.event.player.PlayerDropItemEvent;
-import cn.nukkit.event.player.PlayerItemHeldEvent;
+import org.powernukkitx.event.EventHandler;
+import org.powernukkitx.event.Listener;
+import org.powernukkitx.event.player.PlayerDropItemEvent;
+import org.powernukkitx.event.player.PlayerItemHeldEvent;
 
 public class MMPlayerInventoryListener implements Listener {
 

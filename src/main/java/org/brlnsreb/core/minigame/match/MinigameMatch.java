@@ -1,7 +1,7 @@
 package org.brlnsreb.core.minigame.match;
 
-import cn.nukkit.item.Item;
-import cn.nukkit.utils.Config;
+import org.powernukkitx.item.Item;
+import org.powernukkitx.utils.Config;
 
 import java.util.HashSet;
 import java.util.Set;

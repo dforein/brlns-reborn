@@ -2,8 +2,8 @@ package org.brlnsreb.minigames.mm.match.waitinglobby.items;
 
 import org.brlnsreb.core.minigame.match.waitinglobby.items.WaitingLobbyItemManager;
 
-import cn.nukkit.Player;
-import cn.nukkit.utils.Config;
+import org.powernukkitx.Player;
+import org.powernukkitx.utils.Config;
 
 public class MMWaitingLobbyItemManager extends WaitingLobbyItemManager {
     

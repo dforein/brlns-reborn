@@ -10,8 +10,8 @@ import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.core.player.data.database.PlayerDataManager;
 
-import cn.nukkit.Player;
-import cn.nukkit.Server;
+import org.powernukkitx.Player;
+import org.powernukkitx.Server;
 
 public class PlayerData {
 

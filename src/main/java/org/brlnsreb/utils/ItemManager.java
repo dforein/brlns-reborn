@@ -1,10 +1,10 @@
 package org.brlnsreb.utils;
 
-import cn.nukkit.Player;
-import cn.nukkit.item.Item;
-import cn.nukkit.item.enchantment.Enchantment;
-import cn.nukkit.utils.Config;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.Player;
+import org.powernukkitx.item.Item;
+import org.powernukkitx.item.enchantment.Enchantment;
+import org.powernukkitx.utils.Config;
+import org.powernukkitx.utils.TextFormat;
 
 public class ItemManager {
 

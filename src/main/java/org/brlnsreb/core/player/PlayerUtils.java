@@ -9,15 +9,15 @@ import org.brlnsreb.core.player.CustomPlayer.InteractMode;
 import org.cloudburstmc.protocol.bedrock.data.PlayerListPacketType;
 import org.cloudburstmc.protocol.bedrock.packet.PlayerListPacket;
 
-import cn.nukkit.Player;
-import cn.nukkit.Server;
-import cn.nukkit.entity.effect.Effect;
-import cn.nukkit.entity.effect.EffectType;
-import cn.nukkit.item.Item;
-import cn.nukkit.level.Position;
-import cn.nukkit.math.Vector3;
-import cn.nukkit.scoreboard.data.DisplaySlot;
-import cn.nukkit.utils.DummyBossBar;
+import org.powernukkitx.Player;
+import org.powernukkitx.Server;
+import org.powernukkitx.entity.effect.Effect;
+import org.powernukkitx.entity.effect.EffectType;
+import org.powernukkitx.item.Item;
+import org.powernukkitx.level.Position;
+import org.powernukkitx.math.Vector3;
+import org.powernukkitx.scoreboard.data.DisplaySlot;
+import org.powernukkitx.utils.DummyBossBar;
 
 public class PlayerUtils {
 

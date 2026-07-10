@@ -14,6 +14,7 @@ import org.cloudburstmc.protocol.bedrock.data.skin.PersonaPieceData;
 import org.cloudburstmc.protocol.bedrock.data.skin.PersonaPieceTintData;
 import org.cloudburstmc.protocol.common.util.Preconditions;
 import org.jetbrains.annotations.NotNull;
+import org.powernukkitx.Player.PlayerInfo;
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.match.game.MinigameGameExpand;
@@ -24,21 +25,21 @@ import org.brlnsreb.core.minigame.match.MinigameMatch;
 import org.brlnsreb.core.minigame.match.MinigameMatchExpand;
 import org.brlnsreb.generallobby.GeneralLobby;
 
-import cn.nukkit.Player;
-import cn.nukkit.Server;
-import cn.nukkit.block.Block;
-import cn.nukkit.entity.Entity;
-import cn.nukkit.event.entity.EntityDamageByEntityEvent;
-import cn.nukkit.event.entity.EntityDamageEvent;
-import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
-import cn.nukkit.level.Position;
-import cn.nukkit.math.BlockFace;
-import cn.nukkit.math.Vector3;
-import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.nbt.tag.DoubleTag;
-import cn.nukkit.nbt.tag.ListTag;
-import cn.nukkit.nbt.tag.StringTag;
-import cn.nukkit.scoreboard.Scoreboard;
+import org.powernukkitx.Player;
+import org.powernukkitx.Server;
+import org.powernukkitx.block.Block;
+import org.powernukkitx.entity.Entity;
+import org.powernukkitx.event.entity.EntityDamageByEntityEvent;
+import org.powernukkitx.event.entity.EntityDamageEvent;
+import org.powernukkitx.event.entity.EntityDamageEvent.DamageCause;
+import org.powernukkitx.level.Position;
+import org.powernukkitx.math.BlockFace;
+import org.powernukkitx.math.Vector3;
+import org.powernukkitx.nbt.tag.CompoundTag;
+import org.powernukkitx.nbt.tag.DoubleTag;
+import org.powernukkitx.nbt.tag.ListTag;
+import org.powernukkitx.nbt.tag.StringTag;
+import org.powernukkitx.scoreboard.Scoreboard;
 
 public class CustomPlayer extends Player {
 
@@ -248,6 +249,8 @@ public class CustomPlayer extends Player {
     public boolean attack(EntityDamageEvent source) {
         switch (this.damageMode) {
             case INVULNERABLE:
+                if (this.attackEvent) Server.getInstance().getPluginManager().callEvent(source);
+                //in the other cases, it's always called when super.attack is called
                 break;
 
             case ONLY_PLAYERS:

@@ -12,7 +12,7 @@ import org.brlnsreb.core.auth.AuthSystem;
 import org.brlnsreb.core.minigame.match.MinigameMatch;
 import org.brlnsreb.core.player.CustomPlayer;
 
-import cn.nukkit.utils.Config;
+import org.powernukkitx.utils.Config;
 
 public abstract class Minigame {
     

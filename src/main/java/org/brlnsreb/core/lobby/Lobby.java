@@ -14,10 +14,10 @@ import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.utils.YamlUtil;
 
-import cn.nukkit.entity.Entity;
-import cn.nukkit.level.Level;
-import cn.nukkit.level.Position;
-import cn.nukkit.utils.Config;
+import org.powernukkitx.entity.Entity;
+import org.powernukkitx.level.Level;
+import org.powernukkitx.level.Position;
+import org.powernukkitx.utils.Config;
 
 public abstract class Lobby {
 

@@ -14,11 +14,11 @@ import java.util.stream.Stream;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.YamlUtil;
 
-import cn.nukkit.Server;
-import cn.nukkit.level.GameRule;
-import cn.nukkit.level.GameRules;
-import cn.nukkit.level.Level;
-import cn.nukkit.utils.Config;
+import org.powernukkitx.Server;
+import org.powernukkitx.level.GameRule;
+import org.powernukkitx.level.GameRules;
+import org.powernukkitx.level.Level;
+import org.powernukkitx.utils.Config;
 
 public class WorldManager {
 

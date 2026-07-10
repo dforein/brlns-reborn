@@ -2,13 +2,13 @@ package org.brlnsreb.listeners.general;
 
 import org.brlnsreb.core.lobby.entities.HologramEntity;
 
-import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.EntityHuman;
-import cn.nukkit.event.EventHandler;
-import cn.nukkit.event.Listener;
-import cn.nukkit.event.level.ChunkUnloadEvent;
-import cn.nukkit.level.format.IChunk;
-import cn.nukkit.plugin.annotation.EventListener;
+import org.powernukkitx.entity.Entity;
+import org.powernukkitx.entity.EntityHuman;
+import org.powernukkitx.event.EventHandler;
+import org.powernukkitx.event.Listener;
+import org.powernukkitx.event.level.ChunkUnloadEvent;
+import org.powernukkitx.level.format.IChunk;
+import org.powernukkitx.plugin.annotation.EventListener;
 
 @EventListener
 public class EntityChunkListener implements Listener {

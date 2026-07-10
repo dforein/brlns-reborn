@@ -1,6 +1,6 @@
 package org.brlnsreb.utils.voting;
 
-import cn.nukkit.level.Level;
+import org.powernukkitx.level.Level;
 
 public enum Weather {
     CLEAR("Clear"),

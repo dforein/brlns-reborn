@@ -7,13 +7,13 @@ import org.brlnsreb.core.player.data.database.PlayerDataManager;
 import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.abstraction.MenuAbstract;
 
-import cn.nukkit.Player;
-import cn.nukkit.Server;
-import cn.nukkit.form.response.CustomResponse;
-import cn.nukkit.form.window.CustomForm;
-import cn.nukkit.form.window.SimpleForm;
-import cn.nukkit.scheduler.ServerScheduler;
-import cn.nukkit.utils.Config;
+import org.powernukkitx.Player;
+import org.powernukkitx.Server;
+import org.powernukkitx.form.response.CustomResponse;
+import org.powernukkitx.form.window.CustomForm;
+import org.powernukkitx.form.window.SimpleForm;
+import org.powernukkitx.scheduler.ServerScheduler;
+import org.powernukkitx.utils.Config;
 
 public class AuthSystem extends MenuAbstract {
 

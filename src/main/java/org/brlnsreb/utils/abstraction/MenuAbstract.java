@@ -5,9 +5,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import cn.nukkit.Player;
-import cn.nukkit.Server;
-import cn.nukkit.form.window.Form;
+import org.powernukkitx.Player;
+import org.powernukkitx.Server;
+import org.powernukkitx.form.window.Form;
 
 public abstract class MenuAbstract {
 

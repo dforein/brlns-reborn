@@ -5,9 +5,9 @@ import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.generallobby.GeneralLobby;
 import org.brlnsreb.utils.YamlUtil;
 
-import cn.nukkit.command.CommandSender;
-import cn.nukkit.plugin.annotation.CommandDefinition;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.command.CommandSender;
+import org.powernukkitx.plugin.annotation.CommandDefinition;
+import org.powernukkitx.utils.TextFormat;
 
 @CommandDefinition(
     name = "reloadconfig", 

@@ -12,10 +12,10 @@ import org.cloudburstmc.protocol.bedrock.data.command.CommandParamType;
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.commands.subcommands.SimpleSubCommand;
 
-import cn.nukkit.command.CommandSender;
-import cn.nukkit.command.data.CommandParameter;
-import cn.nukkit.utils.Config;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.command.CommandSender;
+import org.powernukkitx.command.data.CommandParameter;
+import org.powernukkitx.utils.Config;
+import org.powernukkitx.utils.TextFormat;
 
 public class EditCommand extends SimpleSubCommand {
     

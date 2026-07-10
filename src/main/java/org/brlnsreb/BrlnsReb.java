@@ -1,12 +1,12 @@
 package org.brlnsreb;
 
-import cn.nukkit.Player;
-import cn.nukkit.Server;
-import cn.nukkit.level.Level;
-import cn.nukkit.plugin.PluginBase;
-import cn.nukkit.registry.Registries;
-import cn.nukkit.utils.Config;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.Player;
+import org.powernukkitx.Server;
+import org.powernukkitx.level.Level;
+import org.powernukkitx.plugin.PluginBase;
+import org.powernukkitx.registry.Registries;
+import org.powernukkitx.utils.Config;
+import org.powernukkitx.utils.TextFormat;
 
 import org.brlnsreb.utils.YamlUtil;
 

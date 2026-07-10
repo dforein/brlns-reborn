@@ -1,9 +1,9 @@
 package org.brlnsreb.utils.abstraction;
 
-import cn.nukkit.scoreboard.Scoreboard;
-import cn.nukkit.scoreboard.data.DisplaySlot;
-import cn.nukkit.scoreboard.scorer.FakeScorer;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.scoreboard.Scoreboard;
+import org.powernukkitx.scoreboard.data.DisplaySlot;
+import org.powernukkitx.scoreboard.scorer.FakeScorer;
+import org.powernukkitx.utils.TextFormat;
 
 import java.util.Collection;
 import java.util.HashMap;

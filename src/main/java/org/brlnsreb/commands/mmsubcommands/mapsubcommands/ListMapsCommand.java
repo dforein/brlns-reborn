@@ -5,8 +5,8 @@ import java.util.List;
 import org.brlnsreb.commands.subcommands.SimpleSubCommand;
 import org.brlnsreb.minigames.mm.MurderMysteryGame;
 
-import cn.nukkit.command.CommandSender;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.command.CommandSender;
+import org.powernukkitx.utils.TextFormat;
 
 public class ListMapsCommand extends SimpleSubCommand {
     

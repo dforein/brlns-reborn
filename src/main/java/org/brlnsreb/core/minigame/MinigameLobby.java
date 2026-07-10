@@ -10,8 +10,8 @@ import org.brlnsreb.generallobby.items.MainLobbyItemManager;
 import org.brlnsreb.generallobby.ui.MainLobbyBossBar;
 import org.brlnsreb.utils.YamlUtil;
 
-import cn.nukkit.Server;
-import cn.nukkit.utils.Config;
+import org.powernukkitx.Server;
+import org.powernukkitx.utils.Config;
 
 public abstract class MinigameLobby extends Lobby {
 

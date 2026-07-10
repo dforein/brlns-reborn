@@ -11,7 +11,7 @@ import org.brlnsreb.utils.voting.TimeOfDay;
 import org.brlnsreb.utils.voting.VotingMapTimeMenu;
 import org.brlnsreb.utils.voting.VotingSystem;
 
-import cn.nukkit.item.Item;
+import org.powernukkitx.item.Item;
 
 public class MMWaitingLobby extends WaitingLobby {
 

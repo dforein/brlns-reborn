@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import org.brlnsreb.BrlnsReb;
 
-import cn.nukkit.utils.Config;
+import org.powernukkitx.utils.Config;
 
 public class ConfigManager {
     

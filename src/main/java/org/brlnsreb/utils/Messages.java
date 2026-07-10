@@ -3,10 +3,10 @@ package org.brlnsreb.utils;
 import java.util.Collection;
 import java.util.Set;
 
-import cn.nukkit.Player;
-import cn.nukkit.Server;
-import cn.nukkit.utils.Config;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.Player;
+import org.powernukkitx.Server;
+import org.powernukkitx.utils.Config;
+import org.powernukkitx.utils.TextFormat;
 
 public class Messages {
 

@@ -8,11 +8,11 @@ import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.abstraction.BossBarAbstract;
 
-import cn.nukkit.Player;
-import cn.nukkit.Server;
-import cn.nukkit.level.Level;
-import cn.nukkit.scheduler.TaskHandler;
-import cn.nukkit.utils.Config;
+import org.powernukkitx.Player;
+import org.powernukkitx.Server;
+import org.powernukkitx.level.Level;
+import org.powernukkitx.scheduler.TaskHandler;
+import org.powernukkitx.utils.Config;
 
 public class MainLobbyBossBar extends BossBarAbstract {
 

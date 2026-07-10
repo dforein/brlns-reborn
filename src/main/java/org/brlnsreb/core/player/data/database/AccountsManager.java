@@ -13,8 +13,8 @@ import org.brlnsreb.core.player.data.StatType;
 import org.brlnsreb.utils.database.DBResults;
 import org.mindrot.jbcrypt.BCrypt;
 
-import cn.nukkit.Server;
-import cn.nukkit.scheduler.ServerScheduler;
+import org.powernukkitx.Server;
+import org.powernukkitx.scheduler.ServerScheduler;
 
 public class AccountsManager {
 

@@ -5,12 +5,12 @@ import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.generallobby.ui.GamesMenu;
 import org.brlnsreb.utils.abstraction.MenuAbstract;
 
-import cn.nukkit.event.EventHandler;
-import cn.nukkit.event.Listener;
-import cn.nukkit.event.player.PlayerFormRespondedEvent;
-import cn.nukkit.form.response.CustomResponse;
-import cn.nukkit.form.response.SimpleResponse;
-import cn.nukkit.plugin.annotation.EventListener;
+import org.powernukkitx.event.EventHandler;
+import org.powernukkitx.event.Listener;
+import org.powernukkitx.event.player.PlayerFormRespondedEvent;
+import org.powernukkitx.form.response.CustomResponse;
+import org.powernukkitx.form.response.SimpleResponse;
+import org.powernukkitx.plugin.annotation.EventListener;
 
 @EventListener
 public class FormResponseListener implements Listener {

@@ -1,6 +1,6 @@
 package org.brlnsreb.utils.voting;
 
-import cn.nukkit.Player;
+import org.powernukkitx.Player;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 

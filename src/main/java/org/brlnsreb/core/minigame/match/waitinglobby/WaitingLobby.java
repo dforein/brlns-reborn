@@ -22,10 +22,10 @@ import org.brlnsreb.utils.voting.TimeOfDay;
 import org.brlnsreb.utils.voting.VotingSystem;
 import org.brlnsreb.utils.voting.Weather;
 
-import cn.nukkit.Player;
-import cn.nukkit.item.Item;
-import cn.nukkit.level.Sound;
-import cn.nukkit.utils.Config;
+import org.powernukkitx.Player;
+import org.powernukkitx.item.Item;
+import org.powernukkitx.level.Sound;
+import org.powernukkitx.utils.Config;
 
 public abstract class WaitingLobby extends Lobby {
 

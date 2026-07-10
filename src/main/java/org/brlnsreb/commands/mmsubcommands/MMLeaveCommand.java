@@ -3,9 +3,9 @@ package org.brlnsreb.commands.mmsubcommands;
 import org.brlnsreb.commands.subcommands.BasicSubCommand;
 import org.brlnsreb.minigames.mm.MurderMysteryGame;
 
-import cn.nukkit.command.CommandSender;
-import cn.nukkit.utils.TextFormat;
-import cn.nukkit.Player;
+import org.powernukkitx.command.CommandSender;
+import org.powernukkitx.utils.TextFormat;
+import org.powernukkitx.Player;
 
 public class MMLeaveCommand extends BasicSubCommand {
 

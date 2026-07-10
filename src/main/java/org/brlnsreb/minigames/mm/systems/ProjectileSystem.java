@@ -3,11 +3,11 @@ package org.brlnsreb.minigames.mm.systems;
 import org.brlnsreb.minigames.mm.config.MMConfig;
 import org.brlnsreb.minigames.mm.entities.ThrownSwordEntity;
 
-import cn.nukkit.Player;
-import cn.nukkit.entity.Entity;
-import cn.nukkit.level.Level;
-import cn.nukkit.math.Vector3;
-import cn.nukkit.nbt.tag.CompoundTag;
+import org.powernukkitx.Player;
+import org.powernukkitx.entity.Entity;
+import org.powernukkitx.level.Level;
+import org.powernukkitx.math.Vector3;
+import org.powernukkitx.nbt.tag.CompoundTag;
 
 public class ProjectileSystem {
     

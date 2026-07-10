@@ -5,9 +5,9 @@ import java.util.Collection;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerUtils;
 
-import cn.nukkit.utils.BossBarColor;
-import cn.nukkit.utils.DummyBossBar;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.utils.BossBarColor;
+import org.powernukkitx.utils.DummyBossBar;
+import org.powernukkitx.utils.TextFormat;
 
 public abstract class BossBarAbstract {
 

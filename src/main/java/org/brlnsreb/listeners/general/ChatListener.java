@@ -4,12 +4,12 @@ import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 
-import cn.nukkit.event.EventHandler;
-import cn.nukkit.event.Listener;
-import cn.nukkit.event.player.PlayerChatEvent;
-import cn.nukkit.Player;
-import cn.nukkit.level.Level;
-import cn.nukkit.plugin.annotation.EventListener;
+import org.powernukkitx.event.EventHandler;
+import org.powernukkitx.event.Listener;
+import org.powernukkitx.event.player.PlayerChatEvent;
+import org.powernukkitx.Player;
+import org.powernukkitx.level.Level;
+import org.powernukkitx.plugin.annotation.EventListener;
 
 @EventListener
 public class ChatListener implements Listener {

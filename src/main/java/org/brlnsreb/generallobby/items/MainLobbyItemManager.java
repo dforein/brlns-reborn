@@ -6,9 +6,9 @@ import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.generallobby.ui.GamesMenu;
 import org.brlnsreb.utils.ItemManager;
 
-import cn.nukkit.Player;
-import cn.nukkit.item.Item;
-import cn.nukkit.utils.Config;
+import org.powernukkitx.Player;
+import org.powernukkitx.item.Item;
+import org.powernukkitx.utils.Config;
 
 public class MainLobbyItemManager extends ItemManager {
 

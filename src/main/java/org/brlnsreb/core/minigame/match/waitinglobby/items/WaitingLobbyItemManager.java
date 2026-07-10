@@ -7,12 +7,12 @@ import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.utils.ItemManager;
 import org.brlnsreb.utils.YamlUtil;
 
-import cn.nukkit.Player;
-import cn.nukkit.item.Item;
-import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.nbt.tag.ListTag;
-import cn.nukkit.utils.Config;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.Player;
+import org.powernukkitx.item.Item;
+import org.powernukkitx.nbt.tag.CompoundTag;
+import org.powernukkitx.nbt.tag.ListTag;
+import org.powernukkitx.utils.Config;
+import org.powernukkitx.utils.TextFormat;
 
 public abstract class WaitingLobbyItemManager extends ItemManager {
 

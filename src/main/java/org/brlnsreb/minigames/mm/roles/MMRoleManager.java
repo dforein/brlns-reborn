@@ -1,7 +1,7 @@
 package org.brlnsreb.minigames.mm.roles;
 
-import cn.nukkit.Player;
-import cn.nukkit.IPlayer;
+import org.powernukkitx.Player;
+import org.powernukkitx.IPlayer;
 
 import java.util.*;
 

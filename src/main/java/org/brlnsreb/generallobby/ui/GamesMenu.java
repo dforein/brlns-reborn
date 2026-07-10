@@ -8,9 +8,9 @@ import org.brlnsreb.generallobby.GeneralLobby;
 import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.abstraction.MenuAbstract;
 
-import cn.nukkit.Player;
-import cn.nukkit.form.window.SimpleForm;
-import cn.nukkit.utils.Config;
+import org.powernukkitx.Player;
+import org.powernukkitx.form.window.SimpleForm;
+import org.powernukkitx.utils.Config;
 
 public class GamesMenu extends MenuAbstract {
 

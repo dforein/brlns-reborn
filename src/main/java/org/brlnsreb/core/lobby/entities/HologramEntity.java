@@ -2,14 +2,14 @@ package org.brlnsreb.core.lobby.entities;
 
 import org.cloudburstmc.protocol.bedrock.data.actor.ActorFlags;
 
-import cn.nukkit.Player;
-import cn.nukkit.entity.item.EntityArmorStand;
-import cn.nukkit.event.entity.EntityDamageEvent;
-import cn.nukkit.item.Item;
-import cn.nukkit.level.format.IChunk;
-import cn.nukkit.math.Vector3;
-import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.Player;
+import org.powernukkitx.entity.item.EntityArmorStand;
+import org.powernukkitx.event.entity.EntityDamageEvent;
+import org.powernukkitx.item.Item;
+import org.powernukkitx.level.format.IChunk;
+import org.powernukkitx.math.Vector3;
+import org.powernukkitx.nbt.tag.CompoundTag;
+import org.powernukkitx.utils.TextFormat;
 
 public class HologramEntity extends EntityArmorStand {
 

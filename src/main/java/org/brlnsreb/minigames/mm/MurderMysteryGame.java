@@ -1,17 +1,17 @@
 package org.brlnsreb.minigames.mm;
 
-import cn.nukkit.Player;
-import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.effect.Effect;
-import cn.nukkit.entity.effect.EffectType;
-import cn.nukkit.level.Level;
-import cn.nukkit.level.Location;
-import cn.nukkit.level.Position;
-import cn.nukkit.level.Sound;
-import cn.nukkit.math.Vector3;
-import cn.nukkit.scheduler.Task;
-import cn.nukkit.utils.Config;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.Player;
+import org.powernukkitx.entity.Entity;
+import org.powernukkitx.entity.effect.Effect;
+import org.powernukkitx.entity.effect.EffectType;
+import org.powernukkitx.level.Level;
+import org.powernukkitx.level.Location;
+import org.powernukkitx.level.Position;
+import org.powernukkitx.level.Sound;
+import org.powernukkitx.math.Vector3;
+import org.powernukkitx.scheduler.Task;
+import org.powernukkitx.utils.Config;
+import org.powernukkitx.utils.TextFormat;
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.minigame.match.game.Arena;
 import org.brlnsreb.core.minigame.match.GameStateType;
@@ -832,8 +832,6 @@ public class MurderMysteryGame {
             
             ItemManager.clearInventory(p);
 
-            p.setCheckMovement(false);
-
             p.setViewDistance(2);
             p.despawnFromAll();
             
@@ -851,10 +849,6 @@ public class MurderMysteryGame {
                     p.setViewDistance(viewDistance);
                 }
             }, 20);
-
-            plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
-                if (p.isOnline()) { p.setCheckMovement(true); }
-            }, 80);
 
         } catch (Exception e) {
             plugin.getLogger().error("Error returning player to lobby: " + e.getMessage());

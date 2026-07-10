@@ -1,15 +1,15 @@
 package org.brlnsreb.minigames.mm.listeners;
 
-import cn.nukkit.Player;
-import cn.nukkit.entity.item.EntityItem;
-import cn.nukkit.event.EventHandler;
-import cn.nukkit.event.EventPriority;
-import cn.nukkit.event.Listener;
-import cn.nukkit.event.inventory.InventoryPickupItemEvent;
-import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemGoldIngot;
-import cn.nukkit.item.ItemGoldenHoe;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.Player;
+import org.powernukkitx.entity.item.EntityItem;
+import org.powernukkitx.event.EventHandler;
+import org.powernukkitx.event.EventPriority;
+import org.powernukkitx.event.Listener;
+import org.powernukkitx.event.inventory.InventoryPickupItemEvent;
+import org.powernukkitx.item.Item;
+import org.powernukkitx.item.ItemGoldIngot;
+import org.powernukkitx.item.ItemGoldenHoe;
+import org.powernukkitx.utils.TextFormat;
 
 import org.brlnsreb.core.minigame.match.GameStateType;
 import org.brlnsreb.minigames.mm.MurderMysteryGame;

@@ -2,10 +2,10 @@ package org.brlnsreb.listeners.general;
 
 import org.brlnsreb.core.player.CustomPlayer;
 
-import cn.nukkit.event.EventHandler;
-import cn.nukkit.event.Listener;
-import cn.nukkit.event.block.BlockPlaceEvent;
-import cn.nukkit.plugin.annotation.EventListener;
+import org.powernukkitx.event.EventHandler;
+import org.powernukkitx.event.Listener;
+import org.powernukkitx.event.block.BlockPlaceEvent;
+import org.powernukkitx.plugin.annotation.EventListener;
 
 @EventListener
 public class BlockPlaceListener implements Listener {

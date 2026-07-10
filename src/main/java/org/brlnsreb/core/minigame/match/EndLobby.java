@@ -5,7 +5,7 @@ import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 
-import cn.nukkit.utils.Config;
+import org.powernukkitx.utils.Config;
 
 public class EndLobby extends Lobby {
 

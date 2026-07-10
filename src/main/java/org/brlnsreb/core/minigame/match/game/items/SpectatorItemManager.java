@@ -4,8 +4,8 @@ import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.utils.ItemManager;
 import org.brlnsreb.utils.YamlUtil;
 
-import cn.nukkit.Player;
-import cn.nukkit.item.Item;
+import org.powernukkitx.Player;
+import org.powernukkitx.item.Item;
 
 public class SpectatorItemManager extends ItemManager {
     

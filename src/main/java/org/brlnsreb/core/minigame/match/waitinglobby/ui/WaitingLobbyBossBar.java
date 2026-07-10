@@ -8,8 +8,8 @@ import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.abstraction.BossBarAbstract;
 
-import cn.nukkit.Player;
-import cn.nukkit.utils.Config;
+import org.powernukkitx.Player;
+import org.powernukkitx.utils.Config;
 
 public class WaitingLobbyBossBar extends BossBarAbstract {
 

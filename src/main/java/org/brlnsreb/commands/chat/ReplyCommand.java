@@ -2,13 +2,13 @@ package org.brlnsreb.commands.chat;
 
 import org.brlnsreb.core.player.CustomPlayer;
 
-import cn.nukkit.command.Command;
-import cn.nukkit.command.CommandResult;
-import cn.nukkit.command.SenderType;
-import cn.nukkit.command.route.RouteTree;
-import cn.nukkit.command.route.node.RouteNode;
-import cn.nukkit.command.tree.node.StringNode;
-import cn.nukkit.plugin.annotation.CommandDefinition;
+import org.powernukkitx.command.Command;
+import org.powernukkitx.command.CommandResult;
+import org.powernukkitx.command.SenderType;
+import org.powernukkitx.command.route.RouteTree;
+import org.powernukkitx.command.route.node.RouteNode;
+import org.powernukkitx.command.tree.node.StringNode;
+import org.powernukkitx.plugin.annotation.CommandDefinition;
 
 @CommandDefinition(
     name = "reply",

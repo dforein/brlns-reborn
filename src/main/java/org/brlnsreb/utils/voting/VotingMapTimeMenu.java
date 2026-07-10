@@ -1,9 +1,9 @@
 package org.brlnsreb.utils.voting;
 
-import cn.nukkit.Player;
-import cn.nukkit.form.window.CustomForm;
-import cn.nukkit.utils.Config;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.Player;
+import org.powernukkitx.form.window.CustomForm;
+import org.powernukkitx.utils.Config;
+import org.powernukkitx.utils.TextFormat;
 
 import org.brlnsreb.core.minigame.match.waitinglobby.WaitingLobby;
 import org.brlnsreb.utils.Messages;

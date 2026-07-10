@@ -2,8 +2,8 @@ package org.brlnsreb.minigames.mm.roles;
 
 import java.util.UUID;
 
-import cn.nukkit.Player;
-import cn.nukkit.Server;
+import org.powernukkitx.Player;
+import org.powernukkitx.Server;
 
 public class GamePlayer {
     //TODO: abstract to interface, so that it can be put inside customplayer in a mutable variable
