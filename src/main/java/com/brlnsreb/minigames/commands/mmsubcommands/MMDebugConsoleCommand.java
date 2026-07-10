@@ -8,9 +8,9 @@ import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.commands.subcommands.BasicSubCommand;
 import com.brlnsreb.minigames.mm.config.MMConfig;
 
-import cn.nukkit.command.CommandSender;
-import cn.nukkit.command.data.CommandParameter;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.command.CommandSender;
+import org.powernukkitx.command.data.CommandParameter;
+import org.powernukkitx.utils.TextFormat;
 
 public class MMDebugConsoleCommand extends BasicSubCommand {
     

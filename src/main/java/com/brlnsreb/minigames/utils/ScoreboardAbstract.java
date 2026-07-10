@@ -1,10 +1,10 @@
 package com.brlnsreb.minigames.utils;
 
-import cn.nukkit.Player;
-import cn.nukkit.scoreboard.Scoreboard;
-import cn.nukkit.scoreboard.data.DisplaySlot;
-import cn.nukkit.scoreboard.scorer.FakeScorer;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.Player;
+import org.powernukkitx.scoreboard.Scoreboard;
+import org.powernukkitx.scoreboard.data.DisplaySlot;
+import org.powernukkitx.scoreboard.scorer.FakeScorer;
+import org.powernukkitx.utils.TextFormat;
 
 import java.util.HashMap;
 import java.util.Map;

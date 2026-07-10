@@ -1,7 +1,7 @@
 package com.brlnsreb.minigames.mm.roles;
 
-import cn.nukkit.Player;
-import cn.nukkit.IPlayer;
+import org.powernukkitx.Player;
+import org.powernukkitx.IPlayer;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.config.MMConfig;
 import com.brlnsreb.minigames.mm.items.ItemManager;

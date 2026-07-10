@@ -10,11 +10,12 @@ import org.cloudburstmc.protocol.bedrock.data.skin.PersonaPieceData;
 import org.cloudburstmc.protocol.bedrock.data.skin.PersonaPieceTintData;
 import org.jetbrains.annotations.NotNull;
 
-import cn.nukkit.Player;
-import cn.nukkit.event.entity.EntityDamageEvent;
-import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.nbt.tag.ListTag;
-import cn.nukkit.nbt.tag.StringTag;
+import org.powernukkitx.Player;
+import org.powernukkitx.Server;
+import org.powernukkitx.event.entity.EntityDamageEvent;
+import org.powernukkitx.nbt.tag.CompoundTag;
+import org.powernukkitx.nbt.tag.ListTag;
+import org.powernukkitx.nbt.tag.StringTag;
 
 public class CustomPlayer extends Player {
 
@@ -57,10 +58,12 @@ public class CustomPlayer extends Player {
 
         if (takeDamage) {
             return super.attack(source);
+        } else {
+            Server.getInstance().getPluginManager().callEvent(source);  //to trigger the attack listener
         }
         
         //source.setCancelled();
-        return false;
+        return true;
     }
 
     @Override

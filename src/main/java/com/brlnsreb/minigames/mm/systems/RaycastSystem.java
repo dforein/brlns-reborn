@@ -1,9 +1,9 @@
 package com.brlnsreb.minigames.mm.systems;
 
-import cn.nukkit.Player;
-import cn.nukkit.level.Level;
-import cn.nukkit.level.particle.DustParticle;
-import cn.nukkit.math.Vector3;
+import org.powernukkitx.Player;
+import org.powernukkitx.level.Level;
+import org.powernukkitx.level.particle.DustParticle;
+import org.powernukkitx.math.Vector3;
 
 import com.brlnsreb.minigames.core.player.CustomPlayer;
 import com.brlnsreb.minigames.mm.config.MMConfig;

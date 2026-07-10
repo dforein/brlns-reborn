@@ -3,12 +3,12 @@ import com.brlnsreb.minigames.MinigameCore;
 
 import java.util.List;
 
-import cn.nukkit.Player;
-import cn.nukkit.item.Item;
-import cn.nukkit.item.enchantment.Enchantment;
-import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.nbt.tag.ListTag;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.Player;
+import org.powernukkitx.item.Item;
+import org.powernukkitx.item.enchantment.Enchantment;
+import org.powernukkitx.nbt.tag.CompoundTag;
+import org.powernukkitx.nbt.tag.ListTag;
+import org.powernukkitx.utils.TextFormat;
 
 public class ItemManager {
 
@@ -80,6 +80,9 @@ public class ItemManager {
         Item sword = Item.get(Item.IRON_SWORD);
         sword.addEnchantment(Enchantment.get(Enchantment.ID_DAMAGE_ALL).setLevel(5));
         sword.setCustomName(TextFormat.colorize(swordName));
+        CompoundTag tag = sword.getNbt();
+        tag.putByte("Unbreakable", 1);
+        sword.setNbt(tag);
         
         Item blazeRod = Item.get(Item.BLAZE_ROD);
         blazeRod.setCustomName(TextFormat.colorize(blazeRodName));
@@ -95,6 +98,9 @@ public class ItemManager {
 
         Item hoe = Item.get(Item.GOLDEN_HOE);
         hoe.setCustomName(TextFormat.colorize(hoeName));
+        CompoundTag tag = hoe.hasNbt() ? hoe.getNbt() : new CompoundTag();
+        tag.putByte("Unbreakable", 1);
+        hoe.setNbt(tag);
         
         player.getInventory().setItem(1, hoe);
     }

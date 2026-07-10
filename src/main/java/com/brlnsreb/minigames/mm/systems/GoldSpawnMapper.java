@@ -1,12 +1,12 @@
 package com.brlnsreb.minigames.mm.systems;
 
-import cn.nukkit.Player;
-import cn.nukkit.block.Block;
-import cn.nukkit.block.BlockBarrier;
-import cn.nukkit.level.Level;
-import cn.nukkit.level.Position;
-import cn.nukkit.math.Vector3;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.Player;
+import org.powernukkitx.block.Block;
+import org.powernukkitx.block.BlockBarrier;
+import org.powernukkitx.level.Level;
+import org.powernukkitx.level.Position;
+import org.powernukkitx.math.Vector3;
+import org.powernukkitx.utils.TextFormat;
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.core.minigame.Arena;
 import com.google.gson.Gson;

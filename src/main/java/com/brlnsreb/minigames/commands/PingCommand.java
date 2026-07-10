@@ -1,11 +1,11 @@
 package com.brlnsreb.minigames.commands;
 
-import cn.nukkit.Player;
-import cn.nukkit.command.Command;
-import cn.nukkit.command.CommandSender;
-import cn.nukkit.command.data.CommandParameter;
-import cn.nukkit.command.tree.node.PlayersNode;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.Player;
+import org.powernukkitx.command.Command;
+import org.powernukkitx.command.CommandSender;
+import org.powernukkitx.command.data.CommandParameter;
+import org.powernukkitx.command.tree.node.PlayersNode;
+import org.powernukkitx.utils.TextFormat;
 
 import org.cloudburstmc.protocol.bedrock.data.command.CommandParamType;
 

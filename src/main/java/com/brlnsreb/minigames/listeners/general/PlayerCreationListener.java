@@ -2,9 +2,9 @@ package com.brlnsreb.minigames.listeners.general;
 
 import com.brlnsreb.minigames.core.player.CustomPlayer;
 
-import cn.nukkit.event.EventHandler;
-import cn.nukkit.event.Listener;
-import cn.nukkit.event.player.PlayerCreationEvent;
+import org.powernukkitx.event.EventHandler;
+import org.powernukkitx.event.Listener;
+import org.powernukkitx.event.player.PlayerCreationEvent;
 
 public class PlayerCreationListener implements Listener {
 

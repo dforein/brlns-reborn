@@ -1,6 +1,6 @@
 package com.brlnsreb.minigames.mm.ui;
 
-import cn.nukkit.Player;
+import org.powernukkitx.Player;
 
 import com.brlnsreb.minigames.utils.BossBarAbstract;
 

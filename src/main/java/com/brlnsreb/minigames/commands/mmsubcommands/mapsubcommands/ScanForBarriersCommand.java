@@ -8,13 +8,13 @@ import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
 import com.brlnsreb.minigames.core.minigame.Arena;
 import com.brlnsreb.minigames.MinigameCore;
 
-import cn.nukkit.Player;
-import cn.nukkit.command.CommandSender;
-import cn.nukkit.command.data.CommandParameter;
-import cn.nukkit.level.Level;
-import cn.nukkit.math.Vector3;
-import cn.nukkit.utils.Config;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.Player;
+import org.powernukkitx.command.CommandSender;
+import org.powernukkitx.command.data.CommandParameter;
+import org.powernukkitx.level.Level;
+import org.powernukkitx.math.Vector3;
+import org.powernukkitx.utils.Config;
+import org.powernukkitx.utils.TextFormat;
 
 public class ScanForBarriersCommand extends SimpleSubCommand {
     

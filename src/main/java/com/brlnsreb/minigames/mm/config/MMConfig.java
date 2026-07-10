@@ -1,12 +1,12 @@
 package com.brlnsreb.minigames.mm.config;
 
-import cn.nukkit.utils.Config;
-import cn.nukkit.utils.ConfigSection;
+import org.powernukkitx.utils.Config;
+import org.powernukkitx.utils.ConfigSection;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.nukkit.math.Vector3;
+import org.powernukkitx.math.Vector3;
 
 // TODO: separate messages.yml from config.yml and categorize by minigame
 // TODO: config abstraction into Utils

@@ -2,9 +2,9 @@ package com.brlnsreb.minigames.commands;
 
 import com.brlnsreb.minigames.MinigameCore;
 
-import cn.nukkit.command.Command;
-import cn.nukkit.command.CommandSender;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.command.Command;
+import org.powernukkitx.command.CommandSender;
+import org.powernukkitx.utils.TextFormat;
 
 public class ReloadConfigCommand extends Command {
 

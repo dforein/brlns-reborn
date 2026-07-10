@@ -1,14 +1,14 @@
 package com.brlnsreb.minigames.mm.systems;
 
-import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.item.EntityItem;
-import cn.nukkit.item.Item;
-import cn.nukkit.level.Level;
-import cn.nukkit.level.Position;
-import cn.nukkit.math.Vector3;
-import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.scheduler.Task;
-import cn.nukkit.utils.ItemHelper;
+import org.powernukkitx.entity.Entity;
+import org.powernukkitx.entity.item.EntityItem;
+import org.powernukkitx.item.Item;
+import org.powernukkitx.level.Level;
+import org.powernukkitx.level.Position;
+import org.powernukkitx.math.Vector3;
+import org.powernukkitx.nbt.tag.CompoundTag;
+import org.powernukkitx.scheduler.Task;
+import org.powernukkitx.utils.ItemHelper;
 
 import com.brlnsreb.minigames.MinigameCore;
 import com.brlnsreb.minigames.core.minigame.Arena;

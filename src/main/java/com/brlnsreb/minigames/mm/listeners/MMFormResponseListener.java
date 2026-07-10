@@ -1,11 +1,11 @@
 package com.brlnsreb.minigames.mm.listeners;
 
-import cn.nukkit.Player;
-import cn.nukkit.event.EventHandler;
-import cn.nukkit.event.Listener;
-import cn.nukkit.event.player.PlayerFormRespondedEvent;
-import cn.nukkit.form.window.CustomForm;
-import cn.nukkit.form.response.SimpleResponse;
+import org.powernukkitx.Player;
+import org.powernukkitx.event.EventHandler;
+import org.powernukkitx.event.Listener;
+import org.powernukkitx.event.player.PlayerFormRespondedEvent;
+import org.powernukkitx.form.window.CustomForm;
+import org.powernukkitx.form.response.SimpleResponse;
 
 import com.brlnsreb.minigames.core.minigame.GameState;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;

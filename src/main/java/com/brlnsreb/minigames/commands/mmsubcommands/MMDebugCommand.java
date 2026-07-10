@@ -11,18 +11,18 @@ import com.brlnsreb.minigames.core.player.CustomPlayer;
 import com.brlnsreb.minigames.lobby.entities.NPCEntity;
 import com.brlnsreb.minigames.mm.config.MMConfig;
 
-import cn.nukkit.Player;
-import cn.nukkit.command.CommandSender;
-import cn.nukkit.command.data.CommandParameter;
-import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.item.EntityItem;
-import cn.nukkit.item.Item;
-import cn.nukkit.level.Position;
-import cn.nukkit.level.format.IChunk;
-import cn.nukkit.level.particle.FloatingTextParticle;
-import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.utils.ItemHelper;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.Player;
+import org.powernukkitx.command.CommandSender;
+import org.powernukkitx.command.data.CommandParameter;
+import org.powernukkitx.entity.Entity;
+import org.powernukkitx.entity.item.EntityItem;
+import org.powernukkitx.item.Item;
+import org.powernukkitx.level.Position;
+import org.powernukkitx.level.format.IChunk;
+import org.powernukkitx.level.particle.FloatingTextParticle;
+import org.powernukkitx.nbt.tag.CompoundTag;
+import org.powernukkitx.utils.ItemHelper;
+import org.powernukkitx.utils.TextFormat;
 
 public class MMDebugCommand extends BasicSubCommand {
     

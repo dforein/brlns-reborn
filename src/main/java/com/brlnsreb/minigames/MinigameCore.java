@@ -1,12 +1,13 @@
 package com.brlnsreb.minigames;
 
-import cn.nukkit.command.SimpleCommandMap;
-import cn.nukkit.level.Level;
-import cn.nukkit.math.Vector3;
-import cn.nukkit.plugin.PluginBase;
-import cn.nukkit.plugin.PluginManager;
-import cn.nukkit.registry.Registries;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.command.SimpleCommandMap;
+import org.powernukkitx.level.Level;
+import org.powernukkitx.math.Vector3;
+import org.powernukkitx.plugin.PluginBase;
+import org.powernukkitx.plugin.PluginManager;
+import org.powernukkitx.registry.RegisterException;
+import org.powernukkitx.registry.Registries;
+import org.powernukkitx.utils.TextFormat;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.entities.DeadBodyEntity;
 import com.brlnsreb.minigames.mm.entities.ThrownSwordEntity;
@@ -45,7 +46,7 @@ public class MinigameCore extends PluginBase {
             Registries.ENTITY.registerCustomEntity(this, NPCEntity.class);
             Registries.ENTITY.rebuildTag();
             
-        } catch (cn.nukkit.registry.RegisterException e) {
+        } catch (RegisterException e) {
             this.getLogger().error("Error during entities registration: " + e.getMessage());
             throw new RuntimeException(e);
         }

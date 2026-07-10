@@ -1,8 +1,8 @@
 package com.brlnsreb.minigames.mm.listeners;
 
-import cn.nukkit.event.EventHandler;
-import cn.nukkit.event.Listener;
-import cn.nukkit.event.player.PlayerDropItemEvent;
+import org.powernukkitx.event.EventHandler;
+import org.powernukkitx.event.Listener;
+import org.powernukkitx.event.player.PlayerDropItemEvent;
 
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 

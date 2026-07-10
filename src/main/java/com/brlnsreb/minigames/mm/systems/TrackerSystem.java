@@ -1,6 +1,6 @@
 package com.brlnsreb.minigames.mm.systems;
 
-import cn.nukkit.Player;
+import org.powernukkitx.Player;
 import com.brlnsreb.minigames.mm.roles.GamePlayer;
 import com.brlnsreb.minigames.mm.roles.MMRole;
 import java.util.Collection;

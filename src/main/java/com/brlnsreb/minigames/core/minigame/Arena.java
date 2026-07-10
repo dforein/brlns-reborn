@@ -1,7 +1,7 @@
 package com.brlnsreb.minigames.core.minigame;
 
-import cn.nukkit.level.Level;
-import cn.nukkit.math.Vector3;
+import org.powernukkitx.level.Level;
+import org.powernukkitx.math.Vector3;
 import java.util.List;
 import java.util.ArrayList;
 

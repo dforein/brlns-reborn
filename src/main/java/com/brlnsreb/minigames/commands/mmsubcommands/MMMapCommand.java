@@ -25,9 +25,9 @@ import com.brlnsreb.minigames.commands.subcommands.ComplexSubCommand;
 import com.brlnsreb.minigames.commands.subcommands.SimpleSubCommand;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 
-import cn.nukkit.command.CommandSender;
-import cn.nukkit.command.data.CommandParameter;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.command.CommandSender;
+import org.powernukkitx.command.data.CommandParameter;
+import org.powernukkitx.utils.TextFormat;
 
 public class MMMapCommand extends ComplexSubCommand {
 

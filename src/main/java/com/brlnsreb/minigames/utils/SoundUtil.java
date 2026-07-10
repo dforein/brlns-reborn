@@ -5,8 +5,8 @@ import java.util.Collection;
 import org.cloudburstmc.math.vector.Vector3f;
 import org.cloudburstmc.protocol.bedrock.packet.PlaySoundPacket;
 
-import cn.nukkit.Player;
-import cn.nukkit.math.Vector3;
+import org.powernukkitx.Player;
+import org.powernukkitx.math.Vector3;
 
 public class SoundUtil {
 

@@ -5,20 +5,20 @@ import java.util.function.Consumer;
 import org.cloudburstmc.protocol.bedrock.data.actor.ActorFlags;
 import org.jetbrains.annotations.NotNull;
 
-import cn.nukkit.Player;
-import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.EntityHuman;
-import cn.nukkit.entity.custom.CustomEntity;
-import cn.nukkit.entity.custom.CustomEntityDefinition;
-import cn.nukkit.entity.data.human.Skin;
-import cn.nukkit.event.entity.EntityDamageByEntityEvent;
-import cn.nukkit.event.entity.EntityDamageEvent;
-import cn.nukkit.item.Item;
-import cn.nukkit.level.Position;
-import cn.nukkit.level.format.IChunk;
-import cn.nukkit.level.particle.FloatingTextParticle;
-import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.Player;
+import org.powernukkitx.entity.Entity;
+import org.powernukkitx.entity.EntityHuman;
+import org.powernukkitx.entity.custom.CustomEntity;
+import org.powernukkitx.entity.custom.CustomEntityDefinition;
+import org.powernukkitx.entity.data.human.Skin;
+import org.powernukkitx.event.entity.EntityDamageByEntityEvent;
+import org.powernukkitx.event.entity.EntityDamageEvent;
+import org.powernukkitx.item.Item;
+import org.powernukkitx.level.Position;
+import org.powernukkitx.level.format.IChunk;
+import org.powernukkitx.level.particle.FloatingTextParticle;
+import org.powernukkitx.nbt.tag.CompoundTag;
+import org.powernukkitx.utils.TextFormat;
 
 public class NPCEntity extends EntityHuman implements CustomEntity {
 

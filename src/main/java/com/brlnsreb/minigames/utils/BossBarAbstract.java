@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import cn.nukkit.Player;
-import cn.nukkit.utils.BossBarColor;
-import cn.nukkit.utils.DummyBossBar;
+import org.powernukkitx.Player;
+import org.powernukkitx.utils.BossBarColor;
+import org.powernukkitx.utils.DummyBossBar;
 
 public abstract class BossBarAbstract {
     

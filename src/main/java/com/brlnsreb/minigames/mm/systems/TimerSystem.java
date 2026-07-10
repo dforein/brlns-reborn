@@ -2,7 +2,7 @@ package com.brlnsreb.minigames.mm.systems;
 
 import com.brlnsreb.minigames.MinigameCore;
 
-import cn.nukkit.scheduler.Task;
+import org.powernukkitx.scheduler.Task;
 
 public class TimerSystem {
     

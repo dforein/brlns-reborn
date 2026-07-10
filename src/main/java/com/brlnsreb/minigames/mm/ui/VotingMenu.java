@@ -1,9 +1,9 @@
 package com.brlnsreb.minigames.mm.ui;
 
-import cn.nukkit.Player;
-import cn.nukkit.form.element.custom.ElementDropdown;
-import cn.nukkit.form.window.CustomForm;
-import cn.nukkit.utils.TextFormat;
+import org.powernukkitx.Player;
+import org.powernukkitx.form.element.custom.ElementDropdown;
+import org.powernukkitx.form.window.CustomForm;
+import org.powernukkitx.utils.TextFormat;
 import com.brlnsreb.minigames.mm.MurderMysteryGame;
 import com.brlnsreb.minigames.mm.config.MMConfig;
 import com.brlnsreb.minigames.mm.systems.VotingSystem;

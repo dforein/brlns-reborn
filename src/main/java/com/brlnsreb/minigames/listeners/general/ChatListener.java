@@ -2,11 +2,11 @@ package com.brlnsreb.minigames.listeners.general;
 
 import com.brlnsreb.minigames.MinigameCore;
 
-import cn.nukkit.event.EventHandler;
-import cn.nukkit.event.Listener;
-import cn.nukkit.event.player.PlayerChatEvent;
-import cn.nukkit.Player;
-import cn.nukkit.level.Level;
+import org.powernukkitx.event.EventHandler;
+import org.powernukkitx.event.Listener;
+import org.powernukkitx.event.player.PlayerChatEvent;
+import org.powernukkitx.Player;
+import org.powernukkitx.level.Level;
 
 public class ChatListener implements Listener{
 

@@ -6,12 +6,12 @@ import java.util.List;
 
 import com.brlnsreb.minigames.MinigameCore;
 
-import cn.nukkit.command.Command;
-import cn.nukkit.command.CommandSender;
-import cn.nukkit.command.data.CommandParameter;
-import cn.nukkit.utils.TextFormat;
-import cn.nukkit.Player;
-import cn.nukkit.level.Level;
+import org.powernukkitx.command.Command;
+import org.powernukkitx.command.CommandSender;
+import org.powernukkitx.command.data.CommandParameter;
+import org.powernukkitx.utils.TextFormat;
+import org.powernukkitx.Player;
+import org.powernukkitx.level.Level;
 
 public class WorldCommand extends Command {
     //UNUSED COMMAND (just for practice, and blueprint)

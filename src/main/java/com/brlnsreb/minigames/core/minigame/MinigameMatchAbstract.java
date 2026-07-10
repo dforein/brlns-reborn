@@ -1,6 +1,6 @@
 package com.brlnsreb.minigames.core.minigame;
 
-import cn.nukkit.Player;
+import org.powernukkitx.Player;
 import java.util.List;
 
 // TODO: implement and refine this astraction

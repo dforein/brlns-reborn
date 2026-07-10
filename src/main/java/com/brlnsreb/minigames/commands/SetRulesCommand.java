@@ -2,14 +2,14 @@ package com.brlnsreb.minigames.commands;
 
 import com.brlnsreb.minigames.MinigameCore;
 
-import cn.nukkit.command.Command;
-import cn.nukkit.command.CommandSender;
-import cn.nukkit.command.data.CommandParameter;
-import cn.nukkit.utils.TextFormat;
-import cn.nukkit.Player;
-import cn.nukkit.level.GameRule;
-import cn.nukkit.level.GameRules;
-import cn.nukkit.level.format.LevelProvider;
+import org.powernukkitx.command.Command;
+import org.powernukkitx.command.CommandSender;
+import org.powernukkitx.command.data.CommandParameter;
+import org.powernukkitx.utils.TextFormat;
+import org.powernukkitx.Player;
+import org.powernukkitx.level.GameRule;
+import org.powernukkitx.level.GameRules;
+import org.powernukkitx.level.format.LevelProvider;
 
 public class SetRulesCommand extends Command {
 
@@ -73,6 +73,7 @@ public class SetRulesCommand extends Command {
         //universal (gets updated every time a new game needs something particular)
         plugin.getServer().setDefaultGamemode(Player.ADVENTURE);
         plugin.getServer().setDifficulty(0);
+        gameRules.setGameRule(GameRule.PVP, true);
         gameRules.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         gameRules.setGameRule(GameRule.DO_ENTITY_DROPS, false);
         gameRules.setGameRule(GameRule.DO_FIRE_TICK, false);

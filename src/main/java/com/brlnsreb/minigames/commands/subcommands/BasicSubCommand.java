@@ -2,9 +2,9 @@ package com.brlnsreb.minigames.commands.subcommands;
 
 import java.util.LinkedList;
 
-import cn.nukkit.command.Command;
-import cn.nukkit.command.CommandSender;
-import cn.nukkit.command.data.CommandParameter;
+import org.powernukkitx.command.Command;
+import org.powernukkitx.command.CommandSender;
+import org.powernukkitx.command.data.CommandParameter;
 
 public abstract class BasicSubCommand extends Command {
     

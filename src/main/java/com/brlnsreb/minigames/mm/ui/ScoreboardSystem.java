@@ -1,7 +1,7 @@
 package com.brlnsreb.minigames.mm.ui;
 
-import cn.nukkit.Player;
-import cn.nukkit.scoreboard.Scoreboard;
+import org.powernukkitx.Player;
+import org.powernukkitx.scoreboard.Scoreboard;
 
 import java.util.UUID;
 
