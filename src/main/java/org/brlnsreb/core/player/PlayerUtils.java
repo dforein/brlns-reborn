@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer.DamageMode;
 import org.brlnsreb.core.player.CustomPlayer.InteractMode;
+import org.brlnsreb.core.player.data.database.PlayerDataManager;
 import org.cloudburstmc.protocol.bedrock.data.PlayerListPacketType;
 import org.cloudburstmc.protocol.bedrock.packet.PlayerListPacket;
 
@@ -215,7 +216,12 @@ public class PlayerUtils {
         player.addEffect(effect);
     }
 
+    public static CustomPlayer getPlayer(String name) {
+        return getPlayer(PlayerDataManager.getPlayerId(name));
+    }
+
     public static CustomPlayer getPlayer(UUID uuid) {
+        if (uuid == null) return null;
         return (CustomPlayer) Server.getInstance().getPlayer(uuid).orElse(null);
     }
 

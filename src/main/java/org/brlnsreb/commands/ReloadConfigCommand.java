@@ -25,7 +25,7 @@ public class ReloadConfigCommand extends org.powernukkitx.command.Command {
         YamlUtil.resetCache();
 
         MinigameManager.onConfigReload();
-        GeneralLobby.getInstance().onConfigReload();
+        GeneralLobby.instance.onConfigReload();
 
         sender.sendMessage(TextFormat.GREEN + "Config file reloaded!");
         return true;

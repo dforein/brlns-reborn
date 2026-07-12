@@ -1,8 +1,6 @@
 package org.brlnsreb.core.player.data;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.brlnsreb.core.minigame.Minigame;
@@ -11,40 +9,50 @@ import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.core.player.data.database.PlayerDataManager;
 
 import org.powernukkitx.Player;
-import org.powernukkitx.Server;
 
 public class PlayerData {
 
     public String name;      //this is also the account username, if it's null the player is not logged in
-    private volatile int coins;
-    private volatile int exp;
+    
+    private int coins;
+    private int exp;
     private double level;
     private int levelFloor;
+    
     private ConcurrentHashMap<Integer, int[]> stats = new ConcurrentHashMap<>();  //HashMap<[if global: 0; else MinigameType id], [array of stats values, value indexes: StatType id]>
-    private Set<String> friends = ConcurrentHashMap.newKeySet();
-    private Set<String> onlineFriends = new HashSet<>();
-    private Set<String> receivedFriendRequests = ConcurrentHashMap.newKeySet();
-    private Set<String> sentFriendRequests = ConcurrentHashMap.newKeySet();
-    private boolean friendsAlerts = true;      //if active, the player receives alerts of friends joining the server/a minigame (default: true)
-    private boolean friendsNotify = true;      //if active, friends receive alerts of the player joining the server/a minigame (default: true)
+    
+    private Map<String, String> offlineFriends = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private Map<String, String> onlineFriends = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private Map<String, String> receivedFriendRequests = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private Map<String, String> sentFriendRequests = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private boolean friendAlerts = true;      //if active, the player receives alerts of friends joining the server/a minigame
+    private boolean friendNotify = true;      //if active, friends receive alerts of the player joining the server/a minigame
+    private boolean friendRequests = true;    //if active, the player can receive friend requests (default: true)
 
     private UUID lastPvtPlayerId = null;
+
+    private final Object accountLock = new Object();
+    private final Object friendLock = new Object();
 
     public PlayerData() {
         resetData();
     }
 
     public void resetData() {
-        this.name = null;
-        this.coins = -1;
-        this.exp = -1;
-        this.level = -1.0;
-        this.levelFloor = -1;
+        synchronized (accountLock) {
+            this.name = null;
+            this.coins = -1;
+            this.exp = -1;
+            this.level = -1.0;
+            this.levelFloor = -1;
+        }
         this.stats.clear();
-        this.friends.clear();
-        this.onlineFriends.clear();
-        this.receivedFriendRequests.clear();
-        this.sentFriendRequests.clear();
+        synchronized (friendLock) {
+            this.offlineFriends.clear();
+            this.onlineFriends.clear();
+            this.receivedFriendRequests.clear();
+            this.sentFriendRequests.clear();
+        }
     }
 
     public boolean isLogged() {
@@ -54,29 +62,36 @@ public class PlayerData {
 
     //coins
 
-    public void setCoins(int coins) { this.coins = coins; }
+    public void setCoins(int coins) {
+        synchronized (accountLock) { this.coins = coins; }
+    }
 
     public void addCoins(int deltaCoins) {
-        if (this.coins < -deltaCoins) {
-            this.coins = 0;
-        } else {
-            this.coins += deltaCoins;
+        synchronized (accountLock) {
+            if (this.coins < -deltaCoins) {
+                this.coins = 0;
+            } else {
+                this.coins += deltaCoins;
+            }
         }
     }
 
     public boolean checkCost(int coinsCost) {
-        return coinsCost <= this.coins;
+        synchronized (accountLock) { return coinsCost <= this.coins; }
     }
 
-    public int getCoins() { return this.coins; }
-
+    public int getCoins() {
+        synchronized (accountLock) { return this.coins; }
+    }
 
     //exp and levels
 
-    public void setExp(int exp) { this.exp = exp; }
+    public void setExp(int exp) { 
+        synchronized (accountLock) { this.exp = exp; }
+    }
 
     public void addExp(int deltaExp) {
-        this.setExp(this.exp + deltaExp);
+        synchronized (accountLock) { this.setExp(this.exp + deltaExp); }
     }
 
     public void updateLevel() {
@@ -86,32 +101,35 @@ public class PlayerData {
          * use of exp boosters at higher level (=> higher player longevity) to correct some 
          * weird data (i.e. abnormal level growth compared to the other values at lower levels)
          */
+        synchronized (accountLock) {
+            int expThreshold = 562500;          //equivalent to 150 levels
+            int levelThreshold = 150;
+            double expPerHighLevel = 7500.0;    //reciprocal of the derivative of the level function lvl(exp) at x=150
 
-        int expThreshold = 562500;          //equivalent to 150 levels
-        int levelThreshold = 150;
-        double expPerHighLevel = 7500.0;    //reciprocal of the derivative of the level function lvl(exp) at x=150
-
-        if (this.exp < expThreshold) {
-            this.level = Math.sqrt((double) this.exp) / 5.0;     //lvl(exp)
-            this.levelFloor = (int) this.level;
-        } else {
-            // using the derivative of lvl(exp) to get a linear constant growth
-            int temp = this.exp - expThreshold;
-            this.level = levelThreshold + temp / expPerHighLevel;
-            this.levelFloor = (int) this.level;
+            if (this.exp < expThreshold) {
+                this.level = Math.sqrt((double) this.exp) / 5.0;     //lvl(exp)
+                this.levelFloor = (int) this.level;
+            } else {
+                // using the derivative of lvl(exp) to get a linear constant growth
+                int temp = this.exp - expThreshold;
+                this.level = levelThreshold + temp / expPerHighLevel;
+                this.levelFloor = (int) this.level;
+            }
         }
     }
 
-    public int getExp() { return this.exp; }
-    public double getLevel() { return this.level; }
-    public int getFloorLevel() { return this.levelFloor; }
+    public int getExp() { synchronized (accountLock) { return this.exp; } }
+    public double getLevel() { synchronized (accountLock) { return this.level; } }
+    public int getFloorLevel() { synchronized (accountLock) { return this.levelFloor; } }
 
 
     //stats
 
     public void setStat(int minigameId, int statType, int value) {
         int[] minigameStats = getMinigameStats(minigameId);
-        minigameStats[statType - 1] = value;
+        synchronized (minigameStats) {
+            minigameStats[statType - 1] = value;
+        }
     }
 
     public void incrementGlobalStat(StatType stat) {
@@ -120,22 +138,17 @@ public class PlayerData {
 
     public void incrementStat(int minigameId, StatType stat) {
         int[] minigameStats = getMinigameStats(minigameId);
-        minigameStats[stat.id - 1]++;
+        synchronized (minigameStats) {
+            minigameStats[stat.id - 1]++;
+        }
     }
 
     private int[] getMinigameStats(int minigameId) {
-        int[] minigameStats = this.stats.get(minigameId);
-
-        if (minigameStats == null) {
-            this.stats.put(minigameId, new int[StatType.size]);
-            minigameStats = this.stats.get(minigameId);
-
-            for (int i = 0; i < StatType.size; i++) {
-                minigameStats[i] = -1;
-            }
-        }
-
-        return minigameStats;
+        return this.stats.computeIfAbsent(minigameId, k -> {
+            int[] newStats = new int[StatType.size];
+            Arrays.fill(newStats, -1);
+            return newStats;
+        });
     }
 
     public int getStat(Minigame minigame, StatType stat) {
@@ -143,7 +156,11 @@ public class PlayerData {
     }
 
     public int getStat(int minigameId, StatType stat) {
-        return this.stats.get(minigameId)[stat.id - 1];
+        int[] minigameStats = this.stats.get(minigameId);
+        if (minigameStats == null) return -1;
+        synchronized (minigameStats) {
+            return minigameStats[stat.id - 1];
+        }
     }
 
     public int getStatsAmount() {
@@ -163,23 +180,49 @@ public class PlayerData {
 
     //friends
 
-    public void addFriend(String name) {
-        this.friends.add(name);
-        this.receivedFriendRequests.remove(name);
-        this.sentFriendRequests.remove(name);
+    public void addFriend(String name, boolean removeRequests) {
+        synchronized (friendLock) {
+            if (PlayerDataManager.getPlayerId(name) == null) {
+                this.offlineFriends.put(name.toLowerCase(), name);
+            } else {
+                this.onlineFriends.put(name.toLowerCase(), name);
+            }
 
-        if (PlayerDataManager.getPlayerId(name) != null) {
-            this.onlineFriends.add(name);
+            if (removeRequests) {
+                this.receivedFriendRequests.remove(name.toLowerCase());
+                this.sentFriendRequests.remove(name.toLowerCase());
+            }
+        }
+    }
+
+    public void removeFriend(String name) { 
+        synchronized (friendLock) {
+            this.offlineFriends.remove(name.toLowerCase()); 
+            this.onlineFriends.remove(name.toLowerCase());
         }
     }
 
     public void addOnlineFriend(String name) {
-        if (isFriendWith(name)) {
-            this.onlineFriends.add(name);
+        addOnlineFriend(name.toLowerCase(), name);
+    }
+
+    public void addOnlineFriend(String nameLowerCase, String name) {
+        synchronized (friendLock) {
+            if (isFriendWith(name)) {
+                this.onlineFriends.put(nameLowerCase, name);
+                this.offlineFriends.remove(nameLowerCase);
+            }
         }
     }
 
-    public CustomPlayer getFriend(String name) { 
+    public void removeOnlineFriend(String name) { 
+        synchronized (friendLock) {
+            String removed = this.onlineFriends.remove(name.toLowerCase()); 
+            if (removed != null) this.offlineFriends.put(name.toLowerCase(), name);
+        }
+    }
+
+    public CustomPlayer getFriend(String name) {
         if (!isFriendWith(name)) return null;
         
         UUID friendId = PlayerDataManager.getPlayerId(name);
@@ -188,36 +231,56 @@ public class PlayerData {
         return PlayerUtils.getPlayer(friendId);
     }
 
-    public boolean isFriendWith(String name) { return this.friends.contains(name); }
+    public boolean isFriendWith(String name) { 
+        synchronized (friendLock) {
+            return this.offlineFriends.containsKey(name.toLowerCase())
+                || this.onlineFriends.containsKey(name.toLowerCase()); 
+        }
+    }
+
     public boolean isFriendWith(CustomPlayer player) { return isFriendWith(player.getPlayerData().name); }
 
-    public void removeFriend(String name) { 
-        this.friends.remove(name); 
-        this.onlineFriends.remove(name);
+    public boolean hasSentRequestTo(String name) {
+        return this.sentFriendRequests.containsKey(name.toLowerCase());
     }
-    public void removeOnlineFriend(String name) { this.onlineFriends.remove(name); }
-    public void receiveFriendRequest(String name) { this.receivedFriendRequests.add(name); }
-    public void removeReceivedFriendRequest(String name) { this.receivedFriendRequests.remove(name); }
-    public void sendFriendRequest(String name) { this.sentFriendRequests.add(name); }
-    public void removeSentFriendRequest(String name) { this.sentFriendRequests.remove(name); }
-    public void setFriendsAlerts(boolean value) { this.friendsAlerts = value; }
-    public void setFriendsNotify(boolean value) { this.friendsNotify = value; }
 
-    public Set<String> getFriends() { return this.friends; }
-    public Set<String> getOnlineFriends() { return this.onlineFriends; }
-    public Set<String> getReceivedFriendRequests() { return this.receivedFriendRequests; }
-    public Set<String> getSentFriendRequests() { return this.sentFriendRequests; }
-    public boolean getFriendsAlerts() { return this.friendsAlerts; }
-    public boolean getFriendsNotify() { return this.friendsNotify; }
+    public boolean hasReceivedRequestFrom(String name) {
+        return this.receivedFriendRequests.containsKey(name.toLowerCase());
+    }
+
+    public void receiveFriendRequest(String name) { synchronized (friendLock) { this.receivedFriendRequests.put(name.toLowerCase(), name); } }
+    public void removeReceivedFriendRequest(String name) { synchronized (friendLock) { this.receivedFriendRequests.remove(name.toLowerCase()); } }
+    public void sendFriendRequest(String name) { synchronized (friendLock) { this.sentFriendRequests.put(name.toLowerCase(), name); } }
+    public void removeSentFriendRequest(String name) { synchronized (friendLock) { this.sentFriendRequests.remove(name.toLowerCase()); } }
+    public void setFriendAlerts(boolean value) { synchronized (friendLock) { this.friendAlerts = value; } }
+    public void setFriendNotify(boolean value) { synchronized (friendLock) { this.friendNotify = value; } }
+    public void setFriendRequestsFlag(boolean value) { synchronized (friendLock) { this.friendRequests = value; } }
+
+    public Map<String, String> getOfflineFriends() { synchronized (friendLock) { return this.offlineFriends; } }
+    public Map<String, String> getOnlineFriends() { synchronized (friendLock) { return this.onlineFriends; } }
+    public List<String> getOnlineFriendsKeysCopy() {
+        synchronized (friendLock) { return new ArrayList<>(this.onlineFriends.keySet()); }
+    }
+    public Map<String, String> getReceivedFriendRequests() { synchronized (friendLock) { return this.receivedFriendRequests; } }
+    public Map<String, String> getSentFriendRequests() { synchronized (friendLock) { return this.sentFriendRequests; } }
+    public boolean getFriendAlerts() { synchronized (friendLock) { return this.friendAlerts; } }
+    public boolean getFriendNotify() { synchronized (friendLock) { return this.friendNotify; } }
+    public boolean getFriendRequestsFlag() { synchronized (friendLock) {return this.friendRequests; } }
 
 
     //PVT and reply commands
 
     public void setLastPvtPlayer(Player player) { this.lastPvtPlayerId = player.getUniqueId(); }
     public CustomPlayer getLastPvtPlayer() {
-        CustomPlayer player = (CustomPlayer) Server.getInstance().getPlayer(lastPvtPlayerId).orElse(null);
+        if (lastPvtPlayerId == null) return null;
+        CustomPlayer player = PlayerUtils.getPlayer(lastPvtPlayerId);
         this.lastPvtPlayerId = null;
         return player;
     }
+
+
+    //locks
+    public Object getAccountLock() { return this.accountLock; }
+    public Object getFriendLock() { return this.friendLock; }
 
 }

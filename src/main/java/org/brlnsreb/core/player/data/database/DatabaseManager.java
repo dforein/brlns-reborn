@@ -86,6 +86,7 @@ public class DatabaseManager {
     }
 
     public boolean retryInit() {
+        if (dataSource != null && !dataSource.isClosed()) dataSource.close();
         enabled = initConnectionPool();
         return enabled;
     }

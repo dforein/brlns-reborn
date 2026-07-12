@@ -35,7 +35,7 @@ public class GamesMenu extends MenuAbstract {
 
     public static void handleResponse(CustomPlayer player, int buttonId) {
         if (buttonId == 0) {
-            GeneralLobby.getInstance().onJoin(player);
+            GeneralLobby.instance.onJoin(player);
         } else {
             MinigameManager.getMinigames().get(buttonId - 1).onLobbyJoin(player);
         }

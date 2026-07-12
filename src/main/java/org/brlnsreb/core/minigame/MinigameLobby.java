@@ -26,7 +26,7 @@ public abstract class MinigameLobby extends Lobby {
         //leave npc
         spawnNpc(
             configPath() + "npc.",
-            (CustomPlayer player) -> { GeneralLobby.getInstance().onJoin(player); }
+            (CustomPlayer player) -> { GeneralLobby.instance.onJoin(player); }
         );
 
         this.bossBar = new MainLobbyBossBar(config.getString("name"));

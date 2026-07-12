@@ -16,6 +16,7 @@ import org.powernukkitx.utils.Config;
 
 public abstract class Minigame {
     
+    protected final MinigameType minigameType;
     protected final int id;
     protected final String nameTag;
 
@@ -28,9 +29,10 @@ public abstract class Minigame {
     protected final BitSet busyMatchNumbers;
     protected Queue<MinigameMatch> pendingMatches;
 
-    public Minigame(MinigameType minigame) {
-        this.id = minigame.getId();
-        this.nameTag = minigame.getNameTag();
+    public Minigame(MinigameType minigameType) {
+        this.minigameType = minigameType;
+        this.id = minigameType.id;
+        this.nameTag = minigameType.nameTag;
 
         plugin = BrlnsReb.getInstance();
 
@@ -141,6 +143,7 @@ public abstract class Minigame {
     public HashSet<? extends MinigameMatch> getMatches() { return matches; }
     public MinigameMatch getMainPendingMatch() { return pendingMatches.element(); }
     public int getId() { return id; }
+    public MinigameType getMinigameType() { return minigameType; };
     public String getNameTag() { return nameTag; }
     public Config getConfig() { return config; }
     public Config getMessages() { return messages; }

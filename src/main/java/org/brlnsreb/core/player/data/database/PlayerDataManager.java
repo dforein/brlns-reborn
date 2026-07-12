@@ -13,10 +13,11 @@ import org.brlnsreb.utils.database.DBResults;
 public class PlayerDataManager {
     
     private static final ConcurrentHashMap<UUID, PlayerData> dataMap = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<String, UUID> nameIdMap = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, UUID> nameIdMap = new ConcurrentHashMap<>();     //*lowercase* name -to-> uuid, for case insensitive searches
 
     public static void init() {
         AccountsManager.init();
+        FriendsManager.init();
     }
 
     public static CompletableFuture<Outcome> onServerJoin(CustomPlayer player) {
@@ -44,7 +45,7 @@ public class PlayerDataManager {
 
                 AccountsManager.loadAccountDataSync(player, accountName);
                 FriendsManager.loadFriendDataSync(player, accountName);
-                nameIdMap.put(accountName, playerId);
+                nameIdMap.put(accountName.toLowerCase(), playerId);
                 
                 //update the last login timestamp
                 DatabaseManager.executeUpdate(
@@ -81,7 +82,7 @@ public class PlayerDataManager {
                 Outcome outcome = AccountsManager.createNewAccount(player, name, password);
                 if (outcome != Outcome.OK) return outcome;
 
-                nameIdMap.put(name, player.getUniqueId());
+                nameIdMap.put(name.toLowerCase(), player.getUniqueId());
 
                 return Outcome.OK;
 
@@ -108,14 +109,15 @@ public class PlayerDataManager {
                 if (player.getPlayerData().isLogged()) return Outcome.PLAYER_ALREADY_LOGGED_IN;
 
                 //check whether another player is already logged into the account
-                if (nameIdMap.get(name) != null) return Outcome.PLAYER_ALREADY_LOGGED_IN;
+                if (nameIdMap.putIfAbsent(name.toLowerCase(), player.getUniqueId()) != null) return Outcome.PLAYER_ALREADY_LOGGED_IN;
 
                 //try to load account
                 Outcome outcome = AccountsManager.checkAndLoadAccountDataSync(player, name, password);
-                if (outcome != Outcome.OK) return outcome;
+                if (outcome != Outcome.OK) {
+                    nameIdMap.remove(name.toLowerCase(), player.getUniqueId());
+                    return outcome;
+                }
                 FriendsManager.loadFriendDataSync(player, name);
-
-                nameIdMap.put(name, player.getUniqueId());
 
                 //remove old player-account association, if it exists
                 DBResults playerResults = DatabaseManager.executeSelect(
@@ -163,7 +165,7 @@ public class PlayerDataManager {
 
                 //execute player logout
                 AccountsManager.playerLogoutSync(player);
-                nameIdMap.remove(player.getPlayerData().name);
+                nameIdMap.remove(player.getPlayerData().name.toLowerCase());
 
                 
                 return Outcome.OK;
@@ -189,12 +191,12 @@ public class PlayerDataManager {
     }
 
     public static PlayerData getPlayerData(String name) {
-        UUID uuid = nameIdMap.get(name);
+        UUID uuid = getPlayerId(name);
         return uuid == null ? null : dataMap.get(uuid);
     }
 
     public static UUID getPlayerId(String name) {
-        return nameIdMap.get(name);
+        return nameIdMap.get(name.toLowerCase());
     }
 
 }

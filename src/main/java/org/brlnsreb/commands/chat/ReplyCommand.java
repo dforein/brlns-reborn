@@ -1,13 +1,13 @@
 package org.brlnsreb.commands.chat;
 
 import org.brlnsreb.core.player.CustomPlayer;
-
+import org.brlnsreb.utils.ChatMsgs;
 import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandResult;
 import org.powernukkitx.command.SenderType;
 import org.powernukkitx.command.route.RouteTree;
 import org.powernukkitx.command.route.node.RouteNode;
-import org.powernukkitx.command.tree.node.StringNode;
+import org.powernukkitx.command.tree.node.RawTextNode;
 import org.powernukkitx.plugin.annotation.CommandDefinition;
 
 @CommandDefinition(
@@ -25,13 +25,13 @@ public class ReplyCommand extends Command {
     @Override
     public void buildCommandTree(RouteTree tree) {
         tree.getRoot().senderType(SenderType.PLAYER)                   //whatever player, also non-logged
-            .then(RouteNode.argument("message", new StringNode())
+            .then(RouteNode.argument("message", new RawTextNode())
                 .exec(ctx -> {
                     CustomPlayer sender = (CustomPlayer) ctx.getSender();
                     CustomPlayer receiver = sender.getPlayerData().getLastPvtPlayer();
 
                     if (receiver == null) {
-                        return CommandResult.fail("§l§cERROR§r§c You didn't receive any PVT!");     //TEXT
+                        return CommandResult.fail(ChatMsgs.errorPfx + "You didn't receive any PVT!");     //TEXT
                     }
 
                     sender.sendMessage(

@@ -20,6 +20,8 @@ import org.powernukkitx.utils.Config;
 
 public class GeneralLobby extends Lobby {
 
+    public static final String displayNameTag = "§l§dHUB§r";
+    
     public static GeneralLobby instance;
 
     private final MainLobbyBossBar bossBar;

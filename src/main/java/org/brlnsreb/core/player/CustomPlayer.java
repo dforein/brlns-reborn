@@ -14,7 +14,6 @@ import org.cloudburstmc.protocol.bedrock.data.skin.PersonaPieceData;
 import org.cloudburstmc.protocol.bedrock.data.skin.PersonaPieceTintData;
 import org.cloudburstmc.protocol.common.util.Preconditions;
 import org.jetbrains.annotations.NotNull;
-import org.powernukkitx.Player.PlayerInfo;
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.match.game.MinigameGameExpand;
@@ -69,7 +68,7 @@ public class CustomPlayer extends Player {
 
     public PlayerStateType state = PlayerStateType.LOBBY;
     public Minigame currentMinigame = null;
-    private WeakReference<MinigameMatch> currentMatch = null;
+    private WeakReference<MinigameMatch> currentMatch = new WeakReference<MinigameMatch>(null);
     
     public String lobbyName;
     public String waitingLobbyName;
@@ -90,7 +89,7 @@ public class CustomPlayer extends Player {
             if (outcome == Outcome.DB_ERROR) return;
 
             this.updatePresetNameTags();
-            GeneralLobby.getInstance().onJoin(this);
+            GeneralLobby.instance.onJoin(this);
 
             if (!updateDisplayName()) updateDisplayNameDelayed();
         });
@@ -98,6 +97,7 @@ public class CustomPlayer extends Player {
 
     private void updateDisplayNameDelayed() {
         Server.getInstance().getScheduler().scheduleDelayedTask(BrlnsReb.getInstance(), () -> {
+            if (!this.isOnline()) return;
             if (!updateDisplayName()) updateDisplayNameDelayed();
         }, 10);
     }
@@ -266,7 +266,7 @@ public class CustomPlayer extends Player {
                 return checkAndAttack(source);
 
             case FULL_NO_FALL_DAMAGE:
-                if (!(source.getCause() == DamageCause.FALL)) break;
+                if (source.getCause() == DamageCause.FALL) break;
                 return checkAndAttack(source);
 
             case ONLY_INANIMATE:

@@ -42,7 +42,8 @@ public class AccountsManager {
     public static Outcome checkAndLoadAccountDataSync(CustomPlayer player, String name, String password) throws SQLException {
         DBResults dataResults = DatabaseManager.executeSelect(
             """
-            SELECT a.password_hash, a.coins, a.exp, s.minigame_id, s.stat_type, s.value
+            SELECT a.password_hash, a.coins, a.exp, a.friend_alerts, a.friend_notify,
+                s.minigame_id, s.stat_type, s.value
             FROM accounts a
             LEFT JOIN stats s ON a.name = s.player_name
             WHERE a.name = ?
@@ -98,6 +99,8 @@ public class AccountsManager {
             data.setExp(0);
 
             player.updatePresetNameTags();
+            player.setDisplayName(name);
+            PlayerUtils.updateOnlinePlayer(player, false);
         });
 
         return Outcome.OK;
@@ -110,8 +113,8 @@ public class AccountsManager {
             data.name = name;
             data.setCoins(dataResults.getInt("coins"));
             data.setExp(dataResults.getInt("exp"));
-            data.setFriendsAlerts(dataResults.getBoolean("friend_alerts"));
-            data.setFriendsNotify(dataResults.getBoolean("friend_notify"));
+            data.setFriendAlerts(dataResults.getBoolean("friend_alerts"));
+            data.setFriendNotify(dataResults.getBoolean("friend_notify"));
 
             for (int i = 0; i < dataResults.results.size(); i++) {
                 if (dataResults.results.get(i).get("minigame_id") == null) continue;
@@ -135,6 +138,7 @@ public class AccountsManager {
         Outcome outcome = savePlayerDataSync(data);
         if (outcome != Outcome.OK) return outcome;
 
+        FriendsManager.removeOnlineFriend(data);
         data.resetData();
         player.updatePresetNameTags();
         player.setDisplayName(player.getName());

@@ -9,6 +9,8 @@ import org.powernukkitx.utils.TextFormat;
 
 import org.cloudburstmc.protocol.bedrock.data.command.CommandParamType;
 
+//TODO: rewrite ping command
+
 @CommandDefinition(
     name = "ping",
     description = "Check your ping",

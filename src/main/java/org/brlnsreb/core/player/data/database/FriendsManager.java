@@ -1,7 +1,8 @@
 package org.brlnsreb.core.player.data.database;
 
 import java.sql.SQLException;
-import java.util.Set;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.function.Consumer;
@@ -9,29 +10,40 @@ import java.util.function.Consumer;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.data.PlayerData;
 import org.brlnsreb.utils.database.DBResults;
+import org.powernukkitx.Server;
+import org.powernukkitx.scheduler.ServerScheduler;
 
 public class FriendsManager {
+
+    private static ServerScheduler scheduler;
+
+    public static void init() {
+        scheduler = Server.getInstance().getScheduler();
+    }
+
+    //friends init
 
     public static void loadFriendDataSync(CustomPlayer player, String accountName) throws SQLException {
         PlayerData data = player.getPlayerData();
 
         //friends
-        populateDataSetFromDB(
-            data.getFriends(),
+        populateDataMapFromDB(
+            data.getOfflineFriends(),
             accountName,
             "SELECT friend_name FROM friends WHERE player_name = ?",
             "friend_name"  
         );
 
         //received friend requests
-        populateDataSetFromDB(
+        populateDataMapFromDB(
             data.getReceivedFriendRequests(),
             accountName,
             "SELECT sender_name FROM friend_requests WHERE receiver_name = ?",
-            "sender_name");
+            "sender_name"
+        );
 
         //sent friend requests
-        populateDataSetFromDB(
+        populateDataMapFromDB(
             data.getSentFriendRequests(),
             accountName,
             "SELECT receiver_name FROM friend_requests WHERE sender_name = ?",
@@ -41,32 +53,44 @@ public class FriendsManager {
         addOnlineFriend(data, accountName);
     }
 
-    private static void populateDataSetFromDB(Set<String> dataSet, String accountName, String sql, String field) throws SQLException {
+    private static void populateDataMapFromDB(Map<String, String> dataMap, String accountName, String sql, String field) throws SQLException {
         DBResults queryResults = DatabaseManager.executeSelect(sql, accountName);
         if (queryResults.isEmpty()) return;
 
-        dataSet.clear();
-        for (int i = 0; i < queryResults.results.size(); i++) {
-            dataSet.add(queryResults.getString(i, field));
-        }
+        scheduler.scheduleTask(() -> {
+            dataMap.clear();
+
+            for (int i = 0; i < queryResults.results.size(); i++) {
+                String value = queryResults.getString(i, field);
+                dataMap.put(value.toLowerCase(), value);
+            }
+        });
     }
 
+
+    //online - offline
+
     private static void addOnlineFriend(PlayerData data, String accountName) {
-        for (String name : data.getFriends()) {
-            PlayerData friendData = PlayerDataManager.getPlayerData(name);
+        //player login
+        for (Entry<String, String> name : data.getOfflineFriends().entrySet()) {
+            PlayerData friendData = PlayerDataManager.getPlayerData(name.getKey());
             if (friendData == null) continue;
+            data.addOnlineFriend(name.getKey(), name.getValue());
             friendData.addOnlineFriend(accountName);
         }
     }
 
     public static void removeOnlineFriend(PlayerData data) {
-        for (String name : data.getOnlineFriends()) {
-            PlayerData friendData = PlayerDataManager.getPlayerData(name);
+        //player logout
+        for (Entry<String, String> name : data.getOnlineFriends().entrySet()) {
+            PlayerData friendData = PlayerDataManager.getPlayerData(name.getKey());
             if (friendData == null) continue;
             friendData.removeOnlineFriend(data.name);
         }
     }
 
+
+    //friend requests
 
     public static CompletableFuture<Outcome> sendRequest(String senderName, String receiverName) {
         return CompletableFuture.supplyAsync(() -> {
@@ -80,11 +104,12 @@ public class FriendsManager {
 
                 if (data != null) {
                     //(1) check if the request was already sent
-                    if (data.getSentFriendRequests().contains(receiverName)) return Outcome.REQUEST_ALREADY_SENT;
+                    if (data.hasSentRequestTo(receiverName)) return Outcome.REQUEST_ALREADY_SENT;
 
                     //(2) check if the other player sent as well a request in the past, in such case accept directly
-                    if (data.getReceivedFriendRequests().contains(receiverName)) {
-                        return acceptRequestSync(receiverName, senderName);
+                    if (data.hasReceivedRequestFrom(receiverName)) {
+                        acceptRequestSync(receiverName, senderName);    //the receiver is a past sender, so i put the receiver as the sender arg
+                        return Outcome.ADDED_FRIEND;
                     }
                 } else {
                     //the player is not online, use DB queries
@@ -101,9 +126,14 @@ public class FriendsManager {
                         receiverName, senderName
                     );
                     if (!reverseRequest.isEmpty()) {
-                        return acceptRequestSync(receiverName, senderName);
+                        acceptRequestSync(receiverName, senderName);
+                        return Outcome.ADDED_FRIEND;
                     }
                 }
+
+                //check if requests are enabled for the receiver
+                PlayerData receiverData = PlayerDataManager.getPlayerData(receiverName);
+                if (receiverData != null && !receiverData.getFriendRequestsFlag()) return Outcome.REQUESTS_DISABLED;
                 
                 //checks passed, add new friend request
                 DatabaseManager.executeUpdate(
@@ -127,9 +157,9 @@ public class FriendsManager {
 
     private static Outcome acceptRequestSync(String senderName, String receiverName) throws SQLException {
         //check if request is present
-        PlayerData data = PlayerDataManager.getPlayerData(senderName);
+        PlayerData data = PlayerDataManager.getPlayerData(receiverName);
         if (data != null) {
-            if (!data.getReceivedFriendRequests().contains(senderName)) return Outcome.REQUEST_NOT_FOUND;
+            if (!data.hasReceivedRequestFrom(senderName)) return Outcome.REQUEST_NOT_FOUND;
         } else {
             DBResults request = DatabaseManager.executeSelect(
                 "SELECT * FROM friend_requests WHERE sender_name = ? AND receiver_name = ?",
@@ -151,8 +181,8 @@ public class FriendsManager {
                 receiverName, senderName);
         });
 
-        updateIfOnline(senderName, sdata -> sdata.addFriend(receiverName));
-        updateIfOnline(receiverName, rdata -> rdata.addFriend(senderName));
+        updateIfOnline(senderName, sdata -> sdata.addFriend(receiverName, true));
+        updateIfOnline(receiverName, rdata -> rdata.addFriend(senderName, true));
 
         return Outcome.OK;
     }
@@ -170,7 +200,7 @@ public class FriendsManager {
         });
     }
 
-    public static CompletableFuture<Outcome> declineRequest(String receiverName, String senderName) {
+    public static CompletableFuture<Outcome> denyRequest(String receiverName, String senderName) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 int rows = DatabaseManager.executeUpdate(
@@ -192,6 +222,9 @@ public class FriendsManager {
             return Outcome.DB_ERROR;
         });
     }
+
+
+    //removing friend
 
     public static CompletableFuture<Outcome> removeFriend(String playerName, String friendName) {
         return CompletableFuture.supplyAsync(() -> {
@@ -221,6 +254,9 @@ public class FriendsManager {
         });
     }
 
+
+    //save friends settings in DB
+
     public static CompletableFuture<Outcome> saveFriendsSettings(CustomPlayer player) {
         if (!player.canRunAsync()) {
             return CompletableFuture.completedFuture(
@@ -245,7 +281,7 @@ public class FriendsManager {
                 SET friend_alerts = ?, friend_notify = ?
                 WHERE name = ?
                 """,
-                data.getFriendsAlerts(), data.getFriendsNotify(), 
+                data.getFriendAlerts(), data.getFriendNotify(), 
                 data.name
             );
 
@@ -255,6 +291,9 @@ public class FriendsManager {
             return Outcome.DB_ERROR;
         }
     }
+
+
+    //utils
 
     private static boolean areFriends(String playerName, String friendName) throws SQLException {
         PlayerData data;
@@ -275,6 +314,6 @@ public class FriendsManager {
 
     private static void updateIfOnline(String name, Consumer<PlayerData> action) {
         PlayerData data = PlayerDataManager.getPlayerData(name);
-        if (data != null) action.accept(data);
+        if (data != null) scheduler.scheduleTask(() -> action.accept(data));
     }
 }

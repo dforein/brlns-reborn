@@ -1,7 +1,8 @@
 package org.brlnsreb.commands.chat;
 
-import java.util.Set;
+import java.util.List;
 
+import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.data.PlayerData;
 
@@ -32,16 +33,16 @@ public class GRMCommand extends Command {
                 .exec(ctx -> {
                     CustomPlayer sender = (CustomPlayer) ctx.getSender();
                     PlayerData senderData = sender.getPlayerData();
-                    String minigameNameTag = sender.currentMinigame.getNameTag();
-                    Set<String> receivers = sender.getPlayerData().getFriends();
+                    Minigame minigame = sender.currentMinigame;
+                    List<String> receivers = sender.getPlayerData().getOnlineFriendsKeysCopy();
 
                     for (String name : receivers) {
                         CustomPlayer friend = senderData.getFriend(name);
                         if (friend == null) continue;
                         
                         friend.sendMessage(
-                            "§l§aGRM §d%s§r §3%s§7: §7%s".formatted(      //TEXT
-                                minigameNameTag != null ? minigameNameTag.toUpperCase() : "HUB",
+                            "§l§aGRM %s §3%s§7: §7%s".formatted(      //TEXT
+                                minigame != null ? minigame.getMinigameType().displayNameTag : "HUB",
                                 senderData.name,
                                 ctx.getArg("message")
                             )

@@ -1,7 +1,8 @@
 package org.brlnsreb.commands.chat;
 
-import java.util.Set;
+import java.util.List;
 
+import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.data.PlayerData;
 
@@ -32,8 +33,8 @@ public class FRMCommand extends Command {
                 .exec(ctx -> {
                     CustomPlayer sender = (CustomPlayer) ctx.getSender();
                     PlayerData senderData = sender.getPlayerData();
-                    String minigameNameTag = sender.currentMinigame.getNameTag();
-                    Set<String> friends = senderData.getOnlineFriends();
+                    Minigame minigame = sender.currentMinigame;
+                    List<String> friends = senderData.getOnlineFriendsKeysCopy();
 
                     int receiversCount = 0;
                     for (String name : friends) {
@@ -42,8 +43,8 @@ public class FRMCommand extends Command {
                         if (!friend.getLevel().equals(sender.getLevel())) continue;
  
                         friend.sendMessage(
-                            "§l§aFRM §d%s§r §3%s§7: §7%s".formatted(      //TEXT
-                                minigameNameTag != null ? minigameNameTag.toUpperCase() : "HUB",
+                            "§l§aFRM %s §3%s§7: §7%s".formatted(      //TEXT
+                                minigame != null ? minigame.getMinigameType().displayNameTag : "HUB",
                                 senderData.name,
                                 ctx.getArg("message")
                             )
@@ -52,7 +53,7 @@ public class FRMCommand extends Command {
                     }
                     
                     sender.sendMessage(
-                        "§l§aFRM §dCURRENT§r §a%d §eyou§7: §7%s".formatted(      //TODO: text §7 or §e? CURRENT? //TEXT
+                        "§l§aFRM §dCURRENT§r §a%d §eyou§7: §7%s".formatted(      //TODO: CURRENT? //TEXT
                             receiversCount,
                             ctx.getArg("message")
                         )
