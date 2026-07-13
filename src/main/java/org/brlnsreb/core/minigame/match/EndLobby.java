@@ -4,7 +4,7 @@ import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
-
+import org.brlnsreb.utils.YamlUtil;
 import org.powernukkitx.utils.Config;
 
 public class EndLobby extends Lobby {
@@ -38,6 +38,13 @@ public class EndLobby extends Lobby {
         return PlayerStateType.END_LOBBY;
     }
 
+    protected void onJoinMessages(CustomPlayer player) {
+        player.sendTitle(
+            YamlUtil.getStr(requireConfigPath() + "title", config), 
+            YamlUtil.getStr(requireConfigPath() + "subtitle", config)
+        );
+    }
+
     protected void onJoinBossBar(CustomPlayer player) {}
     protected void onJoinItems(CustomPlayer player) {}
 
@@ -45,5 +52,5 @@ public class EndLobby extends Lobby {
     
     public Config getConfig() { return ConfigManager.getGlobalConfig(); }
     public Config getMessages() { return null; }
-    public String requireConfigPath() { return "end-lobby."; }
+    public String requireConfigPath() { return "match.end-lobby."; }
 }

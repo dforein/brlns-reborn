@@ -11,14 +11,11 @@ import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.core.auth.AuthSystem;
 import org.brlnsreb.core.minigame.match.MinigameMatch;
 import org.brlnsreb.core.player.CustomPlayer;
-
 import org.powernukkitx.utils.Config;
 
 public abstract class Minigame {
     
-    protected final MinigameType minigameType;
-    protected final int id;
-    protected final String nameTag;
+    public final MinigameType mgt;
 
     protected final BrlnsReb plugin;
     protected Config config;
@@ -30,14 +27,12 @@ public abstract class Minigame {
     protected Queue<MinigameMatch> pendingMatches;
 
     public Minigame(MinigameType minigameType) {
-        this.minigameType = minigameType;
-        this.id = minigameType.id;
-        this.nameTag = minigameType.nameTag;
+        this.mgt = minigameType;
 
         plugin = BrlnsReb.getInstance();
 
-        this.config = ConfigManager.getConfig(this.nameTag + "/config.yml");
-        this.messages = ConfigManager.getConfig(this.nameTag + "/messages.yml");
+        this.config = ConfigManager.getConfig(this.mgt.nameTag + "/config.yml");
+        this.messages = ConfigManager.getConfig(this.mgt.nameTag + "/messages.yml");
 
         this.lobby = createLobby();
         this.matches = new HashSet<>();
@@ -142,9 +137,6 @@ public abstract class Minigame {
     public MinigameLobby getLobby() { return lobby; }
     public HashSet<? extends MinigameMatch> getMatches() { return matches; }
     public MinigameMatch getMainPendingMatch() { return pendingMatches.element(); }
-    public int getId() { return id; }
-    public MinigameType getMinigameType() { return minigameType; };
-    public String getNameTag() { return nameTag; }
     public Config getConfig() { return config; }
     public Config getMessages() { return messages; }
 

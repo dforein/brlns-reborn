@@ -1,6 +1,9 @@
 # &3&o《》
 # &2▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
 
+lobby:
+  friend-joined: "&3%s &ais now playing %s"
+
 match:
   action-bar:
     on-join: '&3%s &7joined (&a%d&7/&a%d&7)'
@@ -14,6 +17,9 @@ match:
     - 'a'
     - '9'
   force-stop: '&cMatch is stopping!'
+  end-lobby:
+    title: '&cYOU ARE DEAD'
+    subtitle: '&6Oh no... too bad'
 
 auth:
   menu:

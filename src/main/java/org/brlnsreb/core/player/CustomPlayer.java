@@ -64,15 +64,15 @@ public class CustomPlayer extends Player {
     public boolean attackEvent = false;
 
     public InteractMode interactMode = InteractMode.LIMITED;
-    private static HashMap<Integer, HashSet<Vector3>> playerBlocks = new HashMap<>();   //Integer -> levelId
+    private static HashMap<Integer, HashSet<Vector3>> playerBlocks = new HashMap<>();   //Integer = levelId
 
     public PlayerStateType state = PlayerStateType.LOBBY;
     public Minigame currentMinigame = null;
-    private WeakReference<MinigameMatch> currentMatch = new WeakReference<MinigameMatch>(null);
+    private WeakReference<MinigameMatch> currentMatch = new WeakReference<>(null);
     
-    public String lobbyName;
-    public String waitingLobbyName;
-    public String ingameChatName;
+    public String lobbyNameTag;
+    public String waitingLobbyNameTag;
+    public String ingameChatNameTag;
 
     private PlayerData data;
 
@@ -89,7 +89,7 @@ public class CustomPlayer extends Player {
             if (outcome == Outcome.DB_ERROR) return;
 
             this.updatePresetNameTags();
-            GeneralLobby.instance.onJoin(this);
+            GeneralLobby.instance.onServerJoin(this);
 
             if (!updateDisplayName()) updateDisplayNameDelayed();
         });
@@ -155,10 +155,10 @@ public class CustomPlayer extends Player {
     public PlayerData getPlayerData() { return this.data; }
 
     public void updatePresetNameTags() {
-        this.lobbyName = "§8" + (data.getFloorLevel() < 0 ? "?" : data.getFloorLevel()) +
+        this.lobbyNameTag = "§8" + (data.getFloorLevel() < 0 ? "?" : data.getFloorLevel()) +
                                   " §7" + (data.isLogged() ? data.name : this.getName());
         
-        this.waitingLobbyName = "§8" + (data.getFloorLevel() < 0 ? "?" : data.getFloorLevel()) +
+        this.waitingLobbyNameTag = "§8" + (data.getFloorLevel() < 0 ? "?" : data.getFloorLevel()) +
                                          " §a" + (data.isLogged() ? data.name : this.getName());
 
         this.setPresetNameTag();
@@ -166,8 +166,8 @@ public class CustomPlayer extends Player {
 
     public void setPresetNameTag() {
         switch (this.state) {
-            case LOBBY -> this.setNameTag(this.lobbyName);
-            case WAITING_LOBBY -> this.setNameTag(this.waitingLobbyName);
+            case LOBBY -> this.setNameTag(this.lobbyNameTag);
+            case WAITING_LOBBY -> this.setNameTag(this.waitingLobbyNameTag);
             case END_LOBBY -> this.setNameTag("§l§fGHOST§r " + data.name);
             default -> BrlnsReb.getInstance().getLogger().alert("CustomPlayer::resetNameTag, unrecognized state: " + state.toString());
         } 

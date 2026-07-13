@@ -1,6 +1,9 @@
 package org.brlnsreb.generallobby;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.brlnsreb.BrlnsReb;
@@ -11,8 +14,11 @@ import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
+import org.brlnsreb.core.player.PlayerUtils;
+import org.brlnsreb.core.player.data.PlayerData;
 import org.brlnsreb.generallobby.items.MainLobbyItemManager;
 import org.brlnsreb.generallobby.ui.MainLobbyBossBar;
+import org.brlnsreb.utils.ChatMsgs;
 import org.brlnsreb.utils.YamlUtil;
 
 import org.powernukkitx.Server;
@@ -40,8 +46,87 @@ public class GeneralLobby extends Lobby {
         this.spawnAllNpcs();
     }
 
+    public void onServerJoin(CustomPlayer player) {
+        PlayerUtils.changeWorld(player, spawnPos, true);
+
+        onServerJoinMessages(player);
+
+        PlayerUtils.setLobbyState(player, onJoinState());
+
+        onJoinBossBar(player);
+        onJoinItems(player);
+    } 
+
+    protected void onServerJoinMessages(CustomPlayer player) {
+        friendAlertsNotify(player, null, "");
+    }
+
     protected PlayerStateType onJoinState() { 
         return PlayerStateType.LOBBY; 
+    }
+
+    protected void onJoinMessages(CustomPlayer player) {
+        friendAlertsNotify(player, null, ChatMsgs.brokenlens);
+    }
+
+    public static void friendAlertsNotify(CustomPlayer player, Minigame minigame, String notifyMsgMinigame) {
+        PlayerData data = player.getPlayerData();
+        if (!data.isLogged()) return;
+
+        boolean notify = data.getFriendNotify() && !player.currentMinigame.equals(minigame);
+        boolean alerts = data.getFriendAlerts();
+
+        String notifyMessage = notify 
+            ? ChatMsgs.infoPfx
+                + YamlUtil.getStr("lobby.friend-joined", ConfigManager.getGlobalMessages())
+                    .formatted(data.name, notifyMsgMinigame)
+            : null;
+
+        Map<Minigame, List<String>> minigameGroups = new LinkedHashMap<>();
+        List<String> hubFriends = new ArrayList<>();
+        int alertsCount = 0;
+
+        List<String> friends = data.getOnlineFriendsKeysCopy();
+
+        for (String friendName : friends) {
+            CustomPlayer friend = data.getFriend(friendName);
+            if (friend == null) continue;
+
+            if (notify) {
+                friend.sendMessage(notifyMessage);
+            }
+
+            if (alerts) {
+                alertsCount++;
+                if (friend.currentMinigame == null) {
+                    hubFriends.add(friend.getPlayerData().name);
+                } else {
+                    minigameGroups.computeIfAbsent(friend.currentMinigame, k -> new ArrayList<>())
+                        .add(friend.getPlayerData().name);
+                }
+            }
+        }
+
+        if (alerts && alertsCount > 0) {
+            StringBuilder alertsBuilder = new StringBuilder();
+
+            if (!hubFriends.isEmpty()) {
+                alertsBuilder.append(" ")
+                            .append(GeneralLobby.displayNameTag)
+                            .append("§7: §3")
+                            .append(String.join("§7, §3", hubFriends));
+            }
+
+            for (Map.Entry<Minigame, List<String>> entry : minigameGroups.entrySet()) {
+                alertsBuilder.append(" ")
+                            .append(entry.getKey().mgt.displayNameTag)
+                            .append("§7: §3")
+                            .append(String.join("§7, §3", entry.getValue()));
+            }
+
+            String alertsMessage = ChatMsgs.infoPfx + "§d" + alertsCount + " §afriend(s) online:" + alertsBuilder.toString();
+            player.sendMessage(alertsMessage);
+        }
     }
 
     protected void onJoinBossBar(CustomPlayer player) {
@@ -75,7 +160,7 @@ public class GeneralLobby extends Lobby {
 
     private void updateNpcSubtitle(NPCEntity npc) {
         String subtitle = YamlUtil.getStr(configPath() + "npc.text2", config).formatted(
-            minigame.getNameTag(),
+            minigame.mgt.nameTag,
             minigame.getMainPendingMatch().getNumber(),
             minigame.getMainPendingMatch().getPlayers().size()
         );

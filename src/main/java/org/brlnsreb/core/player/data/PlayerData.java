@@ -152,7 +152,7 @@ public class PlayerData {
     }
 
     public int getStat(Minigame minigame, StatType stat) {
-        return getStat(minigame.getId(), stat);
+        return getStat(minigame.mgt.id, stat);
     }
 
     public int getStat(int minigameId, StatType stat) {

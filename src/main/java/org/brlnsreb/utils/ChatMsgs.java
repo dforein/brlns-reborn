@@ -1,6 +1,7 @@
 package org.brlnsreb.utils;
 
 public class ChatMsgs {
+    public static final String brokenlens = "&l&eBroken&4Lens§r";
     public static final String brokenlensPfx = "&l&eBroken&4Lens§r §d";
     public static final String successPfx = "§l§aSUCCESS§r §a";
     public static final String errorPfx = "§l§cERROR§r §c";

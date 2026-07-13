@@ -376,7 +376,7 @@ public class FriendCommand extends Command {
                 message += "§aOnline §7(§d" 
                     + (friend.currentMinigame == null 
                         ? GeneralLobby.displayNameTag
-                        : friend.currentMinigame.getMinigameType().displayNameTag)
+                        : friend.currentMinigame.mgt.displayNameTag)
                     + "§7)";
             }
             

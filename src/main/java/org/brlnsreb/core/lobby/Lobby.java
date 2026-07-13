@@ -59,6 +59,8 @@ public abstract class Lobby {
     public boolean onJoin(CustomPlayer player) {
         PlayerUtils.changeWorld(player, spawnPos, true);
 
+        onJoinMessages(player);
+
         player.currentMinigame = minigame;
         PlayerUtils.setLobbyState(player, onJoinState());
 
@@ -71,6 +73,7 @@ public abstract class Lobby {
     }
 
     protected abstract PlayerStateType onJoinState();
+    protected abstract void onJoinMessages(CustomPlayer player);    //chat, titles, etc.
     protected abstract void onJoinBossBar(CustomPlayer player);
     protected abstract void onJoinItems(CustomPlayer player);
 

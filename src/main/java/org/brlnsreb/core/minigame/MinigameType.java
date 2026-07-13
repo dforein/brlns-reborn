@@ -18,9 +18,6 @@ public enum MinigameType {
         this.displayNameTag = "§l§d" + nameTag.toUpperCase() + "§r";
         this.prefix = "§l" + prefix + " §r";
     }
-
-    public int getId() { return id; }
-    public String getNameTag() { return nameTag; }
     
     public static MinigameType fromId(int id) {
         for (MinigameType mg : values()) {

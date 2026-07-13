@@ -33,8 +33,13 @@ public abstract class MinigameLobby extends Lobby {
         this.bossBar.startBossBarUpdates(level);
     }
 
+
     protected PlayerStateType onJoinState() { 
         return PlayerStateType.LOBBY; 
+    }
+    
+    protected void onJoinMessages(CustomPlayer player) {
+        GeneralLobby.friendAlertsNotify(player, minigame, minigame.mgt.displayName);
     }
 
     protected void onJoinBossBar(CustomPlayer player) {
@@ -44,6 +49,7 @@ public abstract class MinigameLobby extends Lobby {
     protected void onJoinItems(CustomPlayer player) {
         MainLobbyItemManager.getInstance().giveMinigameLobbyItems(player);
     }
+
 
     public void onReplaceMainPendingMatch(int matchNumber) {
         updateJoinNpcSubtitle();
@@ -69,7 +75,7 @@ public abstract class MinigameLobby extends Lobby {
 
     private void updateJoinNpcSubtitle() {
         String subtitle = YamlUtil.getStr(configPath() + "npc.text2", config).formatted(
-            minigame.getNameTag(),
+            minigame.mgt.nameTag,
             minigame.getMainPendingMatch().getNumber(),
             minigame.getMainPendingMatch().getPlayers().size()
         );

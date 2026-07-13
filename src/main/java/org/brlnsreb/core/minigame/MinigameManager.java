@@ -34,7 +34,7 @@ public class MinigameManager {
 
     public static Minigame getMinigame(MinigameType minigame) {
         for (Minigame mg : minigames) {
-            if (mg.getId() == minigame.getId()) return mg;
+            if (mg.mgt.id == minigame.id) return mg;
         }
         return null;
     }

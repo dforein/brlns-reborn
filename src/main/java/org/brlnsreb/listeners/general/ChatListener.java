@@ -23,7 +23,7 @@ public class ChatListener implements Listener {
                 event.setCancelled();
                 return;
             }
-            event.setFormat(player.ingameChatName + "§7: %s");
+            event.setFormat(player.ingameChatNameTag + "§7: %s");
         } else {
             int floorLevel = player.getPlayerData().getFloorLevel();
             event.setFormat((floorLevel < 1000 ? " " : "") + player.getNameTag() + "§7: %s");

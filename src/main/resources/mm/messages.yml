@@ -26,8 +26,6 @@ murderer-subtitle: |-
   &estealthy not to get caught by the sheriff
 sheriff-title: '&9YOU ARE SHERIFF'
 sheriff-subtitle: '&l&eProtect the innocents and kill the murderer'
-dead-title: '&cYOU ARE DEAD'
-dead-subtitle: '&6Oh no... too bad'
 sheriff-advice: '&eRight click or hold your screen to shoot your gun'
 murderer-advice: '&eRight click or hold your screen to throw your sword'
 sheriff-friendly-fire: The &9Sheriff &ckilled an innocent and is now DEAD.

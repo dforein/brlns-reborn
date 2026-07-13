@@ -106,9 +106,9 @@ public class BrlnsReb extends PluginBase {
         for (String file : RESOURCES) { 
             saveResource(file, false); 
         }
-        for (MinigameType minigame : MinigameType.values()) {
-            saveResource(minigame.getNameTag() + "/config.yml", false);
-            saveResource(minigame.getNameTag() + "/messages.yml", false);
+        for (MinigameType mgt : MinigameType.values()) {
+            saveResource(mgt.nameTag + "/config.yml", false);
+            saveResource(mgt.nameTag + "/messages.yml", false);
         }
     }
 
