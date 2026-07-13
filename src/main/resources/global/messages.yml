@@ -2,7 +2,8 @@
 # &2▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
 
 lobby:
-  friend-joined: "&3%s &ais now playing %s"
+  friend-server-join: "&3%s &ais now online"
+  friend-minigame-join: "&3%s &ais now playing %s"
 
 match:
   action-bar:

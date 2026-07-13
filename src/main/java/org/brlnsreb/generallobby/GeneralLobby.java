@@ -58,8 +58,9 @@ public class GeneralLobby extends Lobby {
     } 
 
     protected void onServerJoinMessages(CustomPlayer player) {
-        friendAlertsNotify(player, null, "");
+        friendAlertsNotify(player, null, null);
     }
+
 
     protected PlayerStateType onJoinState() { 
         return PlayerStateType.LOBBY; 
@@ -69,35 +70,40 @@ public class GeneralLobby extends Lobby {
         friendAlertsNotify(player, null, ChatMsgs.brokenlens);
     }
 
+    protected void onJoinBossBar(CustomPlayer player) {
+        bossBar.updateLobbyBossBar(player);
+    }
+
+    protected void onJoinItems(CustomPlayer player) {
+        items.giveGeneralLobbyItems(player);
+    }
+
+
     public static void friendAlertsNotify(CustomPlayer player, Minigame minigame, String notifyMsgMinigame) {
         PlayerData data = player.getPlayerData();
         if (!data.isLogged()) return;
 
-        boolean notify = data.getFriendNotify() && !player.currentMinigame.equals(minigame);
         boolean alerts = data.getFriendAlerts();
+        boolean notify = data.getFriendNotify() && !player.currentMinigame.equals(minigame);
+        if (!alerts && !notify) return;
+        
 
-        String notifyMessage = notify 
-            ? ChatMsgs.infoPfx
-                + YamlUtil.getStr("lobby.friend-joined", ConfigManager.getGlobalMessages())
-                    .formatted(data.name, notifyMsgMinigame)
-            : null;
-
-        Map<Minigame, List<String>> minigameGroups = new LinkedHashMap<>();
-        List<String> hubFriends = new ArrayList<>();
-        int alertsCount = 0;
+        String notifyMessage = buildNotifyMessage(notify, notifyMsgMinigame, notifyMsgMinigame);
 
         List<String> friends = data.getOnlineFriendsKeysCopy();
+
+        List<String> hubFriends = new ArrayList<>();
+        Map<Minigame, List<String>> minigameGroups = new LinkedHashMap<>();
+        int friendsCount = 0;
 
         for (String friendName : friends) {
             CustomPlayer friend = data.getFriend(friendName);
             if (friend == null) continue;
 
-            if (notify) {
-                friend.sendMessage(notifyMessage);
-            }
+            if (notify) friend.sendMessage(notifyMessage);
 
             if (alerts) {
-                alertsCount++;
+                friendsCount++;
                 if (friend.currentMinigame == null) {
                     hubFriends.add(friend.getPlayerData().name);
                 } else {
@@ -107,35 +113,41 @@ public class GeneralLobby extends Lobby {
             }
         }
 
-        if (alerts && alertsCount > 0) {
-            StringBuilder alertsBuilder = new StringBuilder();
+        if (alerts && friendsCount > 0) player.sendMessage(buildAlertsMessage(hubFriends, minigameGroups, friendsCount));
+    }
 
-            if (!hubFriends.isEmpty()) {
-                alertsBuilder.append(" ")
-                            .append(GeneralLobby.displayNameTag)
-                            .append("§7: §3")
-                            .append(String.join("§7, §3", hubFriends));
-            }
+    private static String buildNotifyMessage(boolean notify, String playerName, String notifyMsgMinigame) {
+        if (!notify) return null;
 
-            for (Map.Entry<Minigame, List<String>> entry : minigameGroups.entrySet()) {
-                alertsBuilder.append(" ")
-                            .append(entry.getKey().mgt.displayNameTag)
-                            .append("§7: §3")
-                            .append(String.join("§7, §3", entry.getValue()));
-            }
-
-            String alertsMessage = ChatMsgs.infoPfx + "§d" + alertsCount + " §afriend(s) online:" + alertsBuilder.toString();
-            player.sendMessage(alertsMessage);
+        if (notifyMsgMinigame == null) {
+            String template = YamlUtil.getStr("lobby.friend-server-join", ConfigManager.getGlobalMessages());
+            return ChatMsgs.infoPfx + template.formatted(playerName);
+        } else {
+            String template = YamlUtil.getStr("lobby.friend-minigame-join", ConfigManager.getGlobalMessages());
+            return ChatMsgs.infoPfx + template.formatted(playerName, notifyMsgMinigame);
         }
     }
 
-    protected void onJoinBossBar(CustomPlayer player) {
-        bossBar.updateLobbyBossBar(player);
+    private static String buildAlertsMessage(List<String> hubFriends, Map<Minigame, List<String>> minigameGroups, int alertsCount) {
+        StringBuilder alertsBuilder = new StringBuilder();
+
+        if (!hubFriends.isEmpty()) {
+            alertsBuilder.append(" ")
+                        .append(GeneralLobby.displayNameTag)
+                        .append("§7: §3")
+                        .append(String.join("§7, §3", hubFriends));
+        }
+
+        for (Map.Entry<Minigame, List<String>> entry : minigameGroups.entrySet()) {
+            alertsBuilder.append(" ")
+                        .append(entry.getKey().mgt.displayNameTag)
+                        .append("§7: §3")
+                        .append(String.join("§7, §3", entry.getValue()));
+        }
+
+        return ChatMsgs.infoPfx + "§d" + alertsCount + " §afriend(s) online:" + alertsBuilder.toString();
     }
 
-    protected void onJoinItems(CustomPlayer player) {
-        items.giveGeneralLobbyItems(player);
-    }
 
     private void spawnAllNpcs() {
         for (String gameNameTag : config.getStringList("npc.list")) {
