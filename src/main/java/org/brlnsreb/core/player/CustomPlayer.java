@@ -16,12 +16,12 @@ import org.cloudburstmc.protocol.common.util.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.minigame.Minigame;
-import org.brlnsreb.core.minigame.match.game.MinigameGameExpand;
+import org.brlnsreb.core.minigame.match.game.GameExpand;
 import org.brlnsreb.core.player.data.PlayerData;
 import org.brlnsreb.core.player.data.database.Outcome;
 import org.brlnsreb.core.player.data.database.PlayerDataManager;
-import org.brlnsreb.core.minigame.match.MinigameMatch;
-import org.brlnsreb.core.minigame.match.MinigameMatchExpand;
+import org.brlnsreb.core.minigame.match.Match;
+import org.brlnsreb.core.minigame.match.MatchExpand;
 import org.brlnsreb.generallobby.GeneralLobby;
 
 import org.powernukkitx.Player;
@@ -68,7 +68,7 @@ public class CustomPlayer extends Player {
 
     public PlayerStateType state = PlayerStateType.LOBBY;
     public Minigame currentMinigame = null;
-    private WeakReference<MinigameMatch> currentMatch = new WeakReference<>(null);
+    private WeakReference<Match> currentMatch = new WeakReference<>(null);
     
     public String lobbyNameTag;
     public String waitingLobbyNameTag;
@@ -145,8 +145,8 @@ public class CustomPlayer extends Player {
     public boolean isTeleporting() { return this.state == PlayerStateType.TELEPORTING; }
     public void setTeleporting() { this.state = PlayerStateType.TELEPORTING; }
 
-    public void setMatch(MinigameMatch match) { this.currentMatch = new WeakReference<>(match); }
-    public MinigameMatch getMatch() { return this.currentMatch.get(); }
+    public void setMatch(Match match) { this.currentMatch = new WeakReference<>(match); }
+    public Match getMatch() { return this.currentMatch.get(); }
 
 
     //data logic
@@ -304,9 +304,9 @@ public class CustomPlayer extends Player {
         super.attack(source);               //to show the damage animation
         this.setHealthCurrent(this.getHealthMax());
 
-        MinigameMatch match = getMatch();
-        if (match != null && match instanceof MinigameMatchExpand) {
-            ((MinigameGameExpand) match.getGame()).onDeath(this);
+        Match match = getMatch();
+        if (match != null && match instanceof MatchExpand) {
+            ((GameExpand) match.getGame()).onDeath(this);
         }
 
         return true;

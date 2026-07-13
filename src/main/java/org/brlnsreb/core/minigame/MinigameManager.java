@@ -2,7 +2,7 @@ package org.brlnsreb.core.minigame;
 
 import java.util.List;
 
-import org.brlnsreb.core.minigame.match.MinigameMatch;
+import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.minigames.mm.MurderMystery;
 
 public class MinigameManager {
@@ -17,7 +17,7 @@ public class MinigameManager {
 
     public static void forceStop(boolean shutdown) {
         for (Minigame mg : minigames) {
-            for (MinigameMatch match : mg.getMatches()) {
+            for (Match match : mg.getMatches()) {
                 if (shutdown){
                     //no need to destroy the matches, the whole server will shutdown
                     match.getGame().forceStop();

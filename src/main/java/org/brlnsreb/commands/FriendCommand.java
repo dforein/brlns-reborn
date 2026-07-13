@@ -2,7 +2,7 @@ package org.brlnsreb.commands;
 
 import java.util.ArrayList;
 
-import org.brlnsreb.core.minigame.match.MinigameMatch;
+import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
@@ -221,7 +221,7 @@ public class FriendCommand extends Command {
                     return CommandResult.fail(ChatMsgs.errorPfx + "You cannot join " + ctx.getArg("name") + " right now, retry in a few seconds.");
                 }
 
-                MinigameMatch match = sender.getMatch();
+                Match match = sender.getMatch();
                 if (match != null) match.onLeave(sender);
                 switch (friend.state) {
                     case LOBBY:

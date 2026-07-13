@@ -9,7 +9,7 @@ import org.powernukkitx.utils.Config;
 
 public class EndLobby extends Lobby {
 
-    public EndLobby(MinigameMatchExpand match) {
+    public EndLobby(MatchExpand match) {
         super(match);
 
         //play again NPC

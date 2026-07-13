@@ -6,7 +6,7 @@ import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.core.minigame.match.game.items.SpectatorItemManager;
 import org.brlnsreb.core.minigame.match.GameState;
 import org.brlnsreb.core.minigame.match.GameStateType;
-import org.brlnsreb.core.minigame.match.MinigameMatch;
+import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
@@ -22,9 +22,9 @@ import org.powernukkitx.level.Position;
 import org.powernukkitx.utils.Config;
 import org.powernukkitx.utils.TextFormat;
 
-public abstract class MinigameGame {
+public abstract class Game {
 
-    protected final MinigameMatch match;
+    protected final Match match;
     protected final GameState state;
     protected final Set<CustomPlayer> players;
     protected final Arena arena;
@@ -35,7 +35,7 @@ public abstract class MinigameGame {
 
     protected TimerSystem timer;
 
-    public MinigameGame(MinigameMatch match, String map, TimeOfDay time, Weather weather) {
+    public Game(Match match, String map, TimeOfDay time, Weather weather) {
         this.config = match.getConfig();
 
         this.match = match;

@@ -9,7 +9,7 @@ import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.minigame.match.GameStateType;
-import org.brlnsreb.core.minigame.match.MinigameMatch;
+import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.minigame.match.waitinglobby.items.WaitingLobbyItemManager;
 import org.brlnsreb.core.minigame.match.waitinglobby.ui.WaitingLobbyBossBar;
 import org.brlnsreb.core.minigame.match.waitinglobby.ui.WaitingLobbyScoreboard;
@@ -53,7 +53,7 @@ public abstract class WaitingLobby extends Lobby {
     protected TimeOfDay selectedTime = null;
     protected Weather selectedWeather = null;
 
-    public WaitingLobby(MinigameMatch match) {
+    public WaitingLobby(Match match) {
         super(match);
 
         this.players = match.getPlayers();
@@ -100,13 +100,6 @@ public abstract class WaitingLobby extends Lobby {
         bossBar.updateWaitingLobbyBossBar(player);
         scoreboard.updateWaitingLobby(player);
 
-        Messages.sendActionBar(
-            players, 
-            "action-bar.on-join", 
-            new Object[] {player.getName(), players.size(), maxPlayers},
-            ConfigManager.getConfig("global/messages")
-        );
-
         checkPlayerNumber(players.size());
 
         return true;
@@ -114,6 +107,15 @@ public abstract class WaitingLobby extends Lobby {
 
     protected PlayerStateType onJoinState() { 
         return PlayerStateType.WAITING_LOBBY; 
+    }
+
+    protected void onJoinMessages(CustomPlayer player) {
+        Messages.sendActionBar(
+            players, 
+            "action-bar.on-join", 
+            new Object[] {player.getName(), players.size(), maxPlayers},
+            ConfigManager.getConfig("global/messages")
+        );
     }
 
     protected void onJoinBossBar(CustomPlayer player) {
@@ -216,7 +218,7 @@ public abstract class WaitingLobby extends Lobby {
 
     protected abstract void requireVotingMenu();
 
-    //OVERRIDE
+    //OVERRIDE if you need more voting options
     protected void prepareVoting() {
         if (mapVoting.getAvailableOptions().isEmpty()) {
             List<String> availableMaps = minigame.getAvailableMaps();
@@ -231,7 +233,7 @@ public abstract class WaitingLobby extends Lobby {
         }
     }
 
-    //OVERRIDE
+    //OVERRIDE if you need more voting options
     protected void finalizeVoting() {
         if (selectedMap != null) return;
 

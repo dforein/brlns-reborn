@@ -20,7 +20,7 @@ public class BossBarSystem extends BossBarAbstract {
 
     public void updateExpAndDistance(CustomPlayer player, int expCount, double distance) {
         updateBossBar(player,
-            "§l§7- §aNEAREST: %.2fm §7¦ §a%d EXP §7-".formatted(distance, expCount)
+            "§l§7- §aNEAREST: " + "%.2f".formatted(distance) + "m §7¦ §a" + expCount + " EXP §7-"
         );
     }
 }

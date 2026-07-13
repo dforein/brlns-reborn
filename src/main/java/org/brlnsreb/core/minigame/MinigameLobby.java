@@ -39,6 +39,7 @@ public abstract class MinigameLobby extends Lobby {
     }
     
     protected void onJoinMessages(CustomPlayer player) {
+        player.sendTitle(minigame.mgt.displayName, "§eplay.brlns.reb");
         GeneralLobby.friendAlertsNotify(player, minigame, minigame.mgt.displayName);
     }
 

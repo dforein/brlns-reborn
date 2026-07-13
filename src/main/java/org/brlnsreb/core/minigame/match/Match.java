@@ -11,14 +11,14 @@ import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.minigame.MinigameType;
-import org.brlnsreb.core.minigame.match.game.MinigameGame;
+import org.brlnsreb.core.minigame.match.game.Game;
 import org.brlnsreb.core.minigame.match.waitinglobby.WaitingLobby;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.Messages;
 import org.brlnsreb.utils.voting.TimeOfDay;
 import org.brlnsreb.utils.voting.Weather;
 
-public abstract class MinigameMatch {
+public abstract class Match {
     
     protected final int id;
     protected final GameState state;
@@ -27,17 +27,17 @@ public abstract class MinigameMatch {
     protected final Minigame minigame;
 
     protected WaitingLobby waitingLobby;
-    protected MinigameGame game;
+    protected Game game;
 
     protected Config config;
     protected Config messages;
     protected final Messages msgUtil;
 
-    public MinigameMatch(MinigameType minigame, int matchNumber) {
+    public Match(MinigameType minigame, int matchNumber) {
         this(MinigameManager.getMinigame(minigame), matchNumber);
     }
     
-    public MinigameMatch(Minigame minigame, int matchNumber) {
+    public Match(Minigame minigame, int matchNumber) {
         this.id = ThreadLocalRandom.current().nextInt(10000000, 99999999);
         this.state = new GameState();
         this.players = new HashSet<>();
@@ -52,7 +52,7 @@ public abstract class MinigameMatch {
     }
 
     protected abstract WaitingLobby createWaitingLobby();
-    protected abstract MinigameGame createGame(String map, TimeOfDay time, Weather weather);
+    protected abstract Game createGame(String map, TimeOfDay time, Weather weather);
     
 
     //join-leave logic
@@ -169,7 +169,7 @@ public abstract class MinigameMatch {
     public GameStateType getCurrentState() { return state.current; }
     public Set<CustomPlayer> getPlayers() { return players; }
     public int getNumber() { return number; }
-    public MinigameGame getGame() { return game; }
+    public Game getGame() { return game; }
     public Minigame getMinigame() { return minigame; }
     public Config getConfig() { return minigame.getConfig(); }
     public Config getMessages() { return minigame.getMessages(); }

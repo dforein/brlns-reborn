@@ -1,6 +1,6 @@
 package org.brlnsreb.core.minigame.match.waitinglobby.ui;
 
-import org.brlnsreb.core.minigame.match.MinigameMatch;
+import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.abstraction.ScoreboardAbstract;
@@ -10,7 +10,7 @@ public class WaitingLobbyScoreboard extends ScoreboardAbstract {
     private final String minigameName;
     private final int matchId;
 
-    public WaitingLobbyScoreboard(MinigameMatch match) {
+    public WaitingLobbyScoreboard(Match match) {
         this.minigameName = YamlUtil.getStr("name", match.getMessages());
         this.matchId = match.getId();
     }

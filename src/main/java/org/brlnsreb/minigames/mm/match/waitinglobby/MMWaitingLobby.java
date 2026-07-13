@@ -2,7 +2,7 @@ package org.brlnsreb.minigames.mm.match.waitinglobby;
 
 import java.util.List;
 
-import org.brlnsreb.core.minigame.match.MinigameMatch;
+import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.minigame.match.waitinglobby.WaitingLobby;
 import org.brlnsreb.core.minigame.match.waitinglobby.items.WaitingLobbyItemManager;
 import org.brlnsreb.core.player.CustomPlayer;
@@ -17,7 +17,7 @@ public class MMWaitingLobby extends WaitingLobby {
 
     private VotingMapTimeMenu votingMenu;
     
-    public MMWaitingLobby(MinigameMatch match) {
+    public MMWaitingLobby(Match match) {
         super(match);
 
         this.timeVoting = new VotingSystem<>();

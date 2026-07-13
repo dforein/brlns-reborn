@@ -8,7 +8,7 @@ import org.brlnsreb.core.WorldManager;
 import org.brlnsreb.core.lobby.entities.HologramEntity;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.minigame.Minigame;
-import org.brlnsreb.core.minigame.match.MinigameMatch;
+import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
@@ -22,7 +22,7 @@ import org.powernukkitx.utils.Config;
 public abstract class Lobby {
 
     protected final Minigame minigame;
-    protected final MinigameMatch match;
+    protected final Match match;
 
     protected final Level level;
     protected Position spawnPos;
@@ -31,7 +31,7 @@ public abstract class Lobby {
     protected Config messages;
     protected Map<NPCEntity, String> npcConfigPathMap = new HashMap<>();
 
-    public Lobby(Minigame minigame, MinigameMatch match) {
+    public Lobby(Minigame minigame, Match match) {
         this.minigame = minigame;
         this.match = match;
 
@@ -48,7 +48,7 @@ public abstract class Lobby {
         this(minigame, null);
     }
 
-    public Lobby(MinigameMatch match) {
+    public Lobby(Match match) {
         this(match.getMinigame(), match);
     }
 

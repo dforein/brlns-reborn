@@ -9,7 +9,7 @@ import java.util.Queue;
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.core.auth.AuthSystem;
-import org.brlnsreb.core.minigame.match.MinigameMatch;
+import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.powernukkitx.utils.Config;
 
@@ -22,9 +22,9 @@ public abstract class Minigame {
     protected Config messages;
 
     protected final MinigameLobby lobby;
-    protected final HashSet<? extends MinigameMatch> matches;
+    protected final HashSet<? extends Match> matches;
     protected final BitSet busyMatchNumbers;
-    protected Queue<MinigameMatch> pendingMatches;
+    protected Queue<Match> pendingMatches;
 
     public Minigame(MinigameType minigameType) {
         this.mgt = minigameType;
@@ -68,7 +68,7 @@ public abstract class Minigame {
     //lobby and match management logic
 
     protected abstract MinigameLobby createLobby();
-    protected abstract MinigameMatch createMatch(int newMatchNumber);
+    protected abstract Match createMatch(int newMatchNumber);
 
     public boolean createNewPendingMatch() {
         if (!pendingMatches.isEmpty()
@@ -86,7 +86,7 @@ public abstract class Minigame {
         return true;
     }
 
-    public boolean onReplacePendingMatch(MinigameMatch match) {
+    public boolean onReplacePendingMatch(Match match) {
         if (!pendingMatches.contains(match)) return false;
 
         if (!pendingMatches.isEmpty()
@@ -100,7 +100,7 @@ public abstract class Minigame {
         return true;
     }
 
-    public void readdPendingMatch(MinigameMatch match) {
+    public void readdPendingMatch(Match match) {
         if (!pendingMatches.contains(match)) {
             pendingMatches.add(match);
         }
@@ -112,7 +112,7 @@ public abstract class Minigame {
         return n;
     }
 
-    public void onMatchEnding(MinigameMatch match) {
+    public void onMatchEnding(Match match) {
         matches.remove(match);
         busyMatchNumbers.clear(match.getNumber());
     }
@@ -123,7 +123,7 @@ public abstract class Minigame {
         int count = 0;
 
         count += lobby.getLevel().getPlayers().size();
-        for (MinigameMatch match : matches) {
+        for (Match match : matches) {
             count += match.getPlayers().size();
         }
 
@@ -135,8 +135,8 @@ public abstract class Minigame {
     public List<String> getAvailableMaps() { return config.getStringList("map-settings.enabled-maps"); }
 
     public MinigameLobby getLobby() { return lobby; }
-    public HashSet<? extends MinigameMatch> getMatches() { return matches; }
-    public MinigameMatch getMainPendingMatch() { return pendingMatches.element(); }
+    public HashSet<? extends Match> getMatches() { return matches; }
+    public Match getMainPendingMatch() { return pendingMatches.element(); }
     public Config getConfig() { return config; }
     public Config getMessages() { return messages; }
 

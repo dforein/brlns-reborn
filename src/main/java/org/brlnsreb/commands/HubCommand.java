@@ -1,6 +1,6 @@
 package org.brlnsreb.commands;
 
-import org.brlnsreb.core.minigame.match.MinigameMatch;
+import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.player.CustomPlayer;
 
 import org.powernukkitx.Player;
@@ -31,7 +31,7 @@ public class HubCommand extends org.powernukkitx.command.Command {
                 break;
 
             default:
-                MinigameMatch match = player.getMatch();
+                Match match = player.getMatch();
                 if (match != null) match.onLeave(player);
                 player.currentMinigame.onLobbyJoin(player);
                 break;
