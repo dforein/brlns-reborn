@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.player.CustomPlayer;
-import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.data.PlayerData;
 
 import org.powernukkitx.command.Command;
@@ -33,12 +32,6 @@ public class FRMCommand extends Command {
             .then(RouteNode.argument("message", new StringNode())
                 .exec(ctx -> {
                     CustomPlayer sender = (CustomPlayer) ctx.getSender();
-
-                    if (sender.state == PlayerStateType.PLAYING) {
-                        if (!sender.getMatch().getGame().onChat(sender, null)) {
-                            return CommandResult.fail();
-                        }
-                    }
 
                     PlayerData senderData = sender.data;
                     Minigame minigame = sender.currentMinigame;
