@@ -14,10 +14,10 @@ import org.powernukkitx.utils.TextFormat;
 import org.brlnsreb.core.minigame.match.GameStateType;
 import org.brlnsreb.minigames.mm.MurderMysteryGame;
 import org.brlnsreb.minigames.mm.config.MMConfig;
+import org.brlnsreb.minigames.mm.match.game.ui.MMBossBar;
 import org.brlnsreb.minigames.mm.roles.GamePlayer;
 import org.brlnsreb.minigames.mm.roles.MMRole;
 import org.brlnsreb.minigames.mm.systems.ItemManager;
-import org.brlnsreb.minigames.mm.ui.BossBarSystem;
 
 public class MMPlayerPickupListener implements Listener {
     
@@ -113,7 +113,7 @@ public class MMPlayerPickupListener implements Listener {
             }
         }
 
-        BossBarSystem bossBar = game.getBossBar();
+        MMBossBar bossBar = game.getBossBar();
         bossBar.updateExp(player, game.getRoleManager().getGamePlayer(player).getExpEarned());
         
         MMConfig config = game.getConfig();

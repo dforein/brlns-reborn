@@ -18,13 +18,14 @@ import org.brlnsreb.core.minigame.match.GameStateType;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.minigames.mm.config.MMConfig;
 import org.brlnsreb.minigames.mm.entities.DeadBodyEntity;
+import org.brlnsreb.minigames.mm.match.game.ui.MMBossBar;
+import org.brlnsreb.minigames.mm.match.game.ui.MMScoreboard;
+import org.brlnsreb.minigames.mm.match.game.ui.SpectatorMenu;
 import org.brlnsreb.minigames.mm.roles.GamePlayer;
 import org.brlnsreb.minigames.mm.roles.MMRole;
 import org.brlnsreb.minigames.mm.roles.MMRoleManager;
 import org.brlnsreb.minigames.mm.systems.*;
-import org.brlnsreb.minigames.mm.ui.BossBarSystem;
-import org.brlnsreb.minigames.mm.ui.ScoreboardSystem;
-import org.brlnsreb.minigames.mm.ui.SpectatorMenu;
+import org.brlnsreb.utils.SoundUtil;
 import org.brlnsreb.utils.TimerSystem;
 import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.voting.VotingMapTimeMenu;
@@ -45,13 +46,13 @@ public class MurderMysteryGame {
     private String selectedTime;
     
     private TimerSystem timer;
-    private ScoreboardSystem scoreboard;
+    private MMScoreboard scoreboard;
     private RaycastSystem raycast;
     private ProjectileSystem projectile;
     private DeathSystem death;
     private GoldSystem gold;
     private CooldownSystem cooldowns;
-    private BossBarSystem bossBar;
+    private MMBossBar bossBar;
     private GoldSpawnMapper mapper;
     private QuitTracker quitTracker;
     private SpectatorMenu spectatorMenu;
@@ -78,13 +79,13 @@ public class MurderMysteryGame {
         this.players = new HashSet<>();
         this.checkEnoughPlayers = true;
         
-        this.scoreboard = new ScoreboardSystem();
+        this.scoreboard = new MMScoreboard();
         this.raycast = new RaycastSystem(config);
         this.projectile = new ProjectileSystem(config);
         this.death = new DeathSystem(plugin, this);
         this.gold = new GoldSystem(plugin, config);
         this.cooldowns = new CooldownSystem();
-        this.bossBar = new BossBarSystem();
+        this.bossBar = new MMBossBar();
         this.mapper = new GoldSpawnMapper(plugin);
         this.quitTracker = new QuitTracker();
         this.spectatorMenu = new SpectatorMenu(this);
@@ -93,6 +94,7 @@ public class MurderMysteryGame {
         this.votingMenu = new VotingMapTimeMenu(this);
     }
     
+    //DONE
     public int joinPlayer(Player player) {
         if (player == null || !player.isOnline()) return -1;
 
@@ -138,6 +140,7 @@ public class MurderMysteryGame {
         return 0;
     }
 
+    //NO
     private void playersRejoin() {
         List<Player> playersRejoining = new ArrayList<>(getOnlinePlayers());
         players.clear();
@@ -149,6 +152,7 @@ public class MurderMysteryGame {
         }
     }
 
+    //DONE
     private void joinAsSpectator(Player player) {
         players.add(player);
         
@@ -202,6 +206,7 @@ public class MurderMysteryGame {
         }, 60);
     }
 
+    //DONE
     public boolean leavePlayer(Player player) {
         if (player == null || !players.contains(player)) return false;
 
@@ -241,6 +246,7 @@ public class MurderMysteryGame {
         return true;
     }
     
+    //DONE
     public void forceStart() {
         if (timer != null) timer.stop();
 
@@ -250,6 +256,7 @@ public class MurderMysteryGame {
         startGame();
     }
 
+    //DONE
     private void startCountdown() {
         state = GameStateType.LOBBY_COUNTDOWN;
 
@@ -287,6 +294,7 @@ public class MurderMysteryGame {
         });
     }
 
+    //DONE
     private void shortenCountdown() {
         if (countdownShortened) return;
 
@@ -323,6 +331,7 @@ public class MurderMysteryGame {
         broadcast(shortenedMsg);
     }
     
+    //DONE
     private void cancelCountdown() {
         if (timer != null) timer.stop();
         
@@ -332,6 +341,7 @@ public class MurderMysteryGame {
         refreshPlayersState();
     }
     
+    //DONE
     private void startGame() {
         for (Player p : getOnlinePlayers()) {
             bossBar.remove(p);
@@ -374,6 +384,7 @@ public class MurderMysteryGame {
         startPreGameCountdown();
     }
 
+    //DONE
     private void startPreGameCountdown() {
         state = GameStateType.PREGAME_COUNTDOWN;
 
@@ -423,6 +434,7 @@ public class MurderMysteryGame {
         });
     }
 
+    //DONE
     private void startInState() {
         state = GameStateType.IN_GAME;
 
@@ -485,6 +497,7 @@ public class MurderMysteryGame {
         
     }
 
+    //DONE
     private void prepareMapVoting() {
         if (!votingSystem.getAvailableMaps().isEmpty()) return;
         
@@ -501,6 +514,7 @@ public class MurderMysteryGame {
         votingSystem.setAvailableMaps(votingMaps);
     }
 
+    //DONE
     private void finalizeVoting() {
         if (selectedMap != null) return;
 
@@ -533,6 +547,7 @@ public class MurderMysteryGame {
         loadArena(selectedMap);
     }
 
+    //DONE
     private String formatCountdownMessage(int seconds) {
         if (seconds <= 10) {
             return TextFormat.colorize(
@@ -555,6 +570,7 @@ public class MurderMysteryGame {
         }
     }
 
+    //DONE
     private void giveNightVision(Player player) {
         Effect nightVision = Effect.get(EffectType.NIGHT_VISION);
         nightVision.setDuration(9999);
@@ -563,6 +579,7 @@ public class MurderMysteryGame {
         player.addEffect(nightVision);
     }
 
+    //DONE
     private void loadArena(String selectedMap) {
 
         int X = 0;
@@ -642,6 +659,7 @@ public class MurderMysteryGame {
         arena = new Arena(pConfig.getString(path + "name"), level, min, max, spawns);
     }
 
+    //DONE
     private void teleportPlayers() {
         List<Vector3> spawns = arena.getSpawns();
         if (spawns.isEmpty()) {
@@ -679,6 +697,7 @@ public class MurderMysteryGame {
         }
     }
 
+    //DONE
     private void giveItems() {
         for (GamePlayer gp : roleManager.getAllPlayers()) {
             Player p = gp.getPlayer();
@@ -994,6 +1013,7 @@ public class MurderMysteryGame {
         }
     }
     
+    //DONE
     private void startScoreboardUpdates() {
         if (updateTask != null) return;
 
@@ -1007,6 +1027,7 @@ public class MurderMysteryGame {
         plugin.getServer().getScheduler().scheduleRepeatingTask(plugin, updateTask, 10);
     }
     
+    //TODO
     private void stopScoreboardUpdates() {
         if (updateTask != null) {
             updateTask.cancel();
@@ -1014,6 +1035,7 @@ public class MurderMysteryGame {
         }
     }
 
+    //DONE
     private void updateScoreboards() {
         if (timer == null) return;
         
@@ -1044,6 +1066,7 @@ public class MurderMysteryGame {
         }
     }
 
+    //DONE
     private void updatePlayerBossBar(Player p, GamePlayer gp, boolean trackingActive) {
         switch (gp.getRole()) {
             case MURDERER:
@@ -1147,7 +1170,7 @@ public class MurderMysteryGame {
         return new ArrayList<>(players);
     }
 
-    public BossBarSystem getBossBar() {
+    public MMBossBar getBossBar() {
         return bossBar;
     }
 

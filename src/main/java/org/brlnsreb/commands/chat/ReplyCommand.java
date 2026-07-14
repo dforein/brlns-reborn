@@ -1,6 +1,7 @@
 package org.brlnsreb.commands.chat;
 
 import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.utils.ChatMsgs;
 import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandResult;
@@ -28,23 +29,30 @@ public class ReplyCommand extends Command {
             .then(RouteNode.argument("message", new RawTextNode())
                 .exec(ctx -> {
                     CustomPlayer sender = (CustomPlayer) ctx.getSender();
-                    CustomPlayer receiver = sender.getPlayerData().getLastPvtPlayer();
+
+                    if (sender.state == PlayerStateType.PLAYING) {
+                        if (!sender.getMatch().getGame().onChat(sender, null)) {
+                            return CommandResult.fail();
+                        }
+                    }
+                    
+                    CustomPlayer receiver = sender.data.getLastPvtPlayer();
 
                     if (receiver == null) {
-                        return CommandResult.fail(ChatMsgs.errorPfx + "You didn't receive any PVT!");     //TEXT
+                        return CommandResult.fail(ChatMsgs.ERROR_PFX + "You didn't receive any PVT!");     //TEXT
                     }
 
                     sender.sendMessage(
                         "§l§aPVT§r §3%s §7> §3%s§7: §b%s".formatted(       //TEXT
                             "you",
-                            receiver.getPlayerData().name,
+                            receiver.data.name,
                             ctx.getArg("message")
                         )
                     );
 
                     receiver.sendMessage(
                         "§l§aPVT§r §3%s §7> §3%s§7: §b%s".formatted(        //TEXT
-                            sender.getPlayerData().name,
+                            sender.data.name,
                             "you",
                             ctx.getArg("message")
                         )

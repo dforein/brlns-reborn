@@ -51,7 +51,7 @@ public class FriendCommand extends Command {
 
     @Override
     public void buildCommandTree(RouteTree tree) {
-        CommandResult loginFail = CommandResult.fail(ChatMsgs.errorPfx + "You aren't logged in!");  //TEXT
+        CommandResult loginFail = CommandResult.fail(ChatMsgs.ERROR_PFX + "You aren't logged in!");  //TEXT
 
         //friend add <name>
         RouteNode addNode = RouteNode.literal("add")
@@ -64,14 +64,14 @@ public class FriendCommand extends Command {
                     FriendsManager.sendRequest(senderName, ctx.getArg("name")).thenAccept(outcome -> {
                         sender.sendMessage(
                             switch (outcome) {
-                                case OK -> ChatMsgs.successPfx + "Friend request sent to §e" + ctx.getArg("name");
+                                case OK -> ChatMsgs.SUCCESS_PFX + "Friend request sent to §e" + ctx.getArg("name");
                                 //ps: here ADDED_FRIEND isn't OK, it's an extraordinary outcome; while in /friend accept it's normal so it's OK
-                                case ADDED_FRIEND -> ChatMsgs.successPfx + "§e" + ctx.getArg("name") + "§a added to your friend list";
-                                case CANNOT_FRIEND_SELF -> ChatMsgs.errorPfx + "You cannot send a request to yourself!";
-                                case ALREADY_FRIENDS -> ChatMsgs.errorPfx + ctx.getArg("name") + " is already your friend!";
-                                case REQUEST_ALREADY_SENT -> ChatMsgs.errorPfx + "You have already sent a request to " + ctx.getArg("name");
-                                case REQUESTS_DISABLED -> ChatMsgs.errorPfx + "Sorry, requests are not enabled for " + ctx.getArg("name");
-                                default -> ChatMsgs.errorPfx + "Report this error to developers: friend add command";
+                                case ADDED_FRIEND -> ChatMsgs.SUCCESS_PFX + "§e" + ctx.getArg("name") + "§a added to your friend list";
+                                case CANNOT_FRIEND_SELF -> ChatMsgs.ERROR_PFX + "You cannot send a request to yourself!";
+                                case ALREADY_FRIENDS -> ChatMsgs.ERROR_PFX + ctx.getArg("name") + " is already your friend!";
+                                case REQUEST_ALREADY_SENT -> ChatMsgs.ERROR_PFX + "You have already sent a request to " + ctx.getArg("name");
+                                case REQUESTS_DISABLED -> ChatMsgs.ERROR_PFX + "Sorry, requests are not enabled for " + ctx.getArg("name");
+                                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend add command";
                             }
                         );
                     });
@@ -90,10 +90,10 @@ public class FriendCommand extends Command {
                     FriendsManager.removeFriend(senderName, ctx.getArg("name")).thenAccept(outcome -> {
                         sender.sendMessage(
                             switch (outcome) {
-                                case OK -> ChatMsgs.successPfx + "§e" + ctx.getArg("name") + "§a removed from your friend list";
-                                case NOT_FRIENDS -> ChatMsgs.errorPfx + ctx.getArg("name") + " not found in your friend list!";
-                                case DB_ERROR -> ChatMsgs.errorPfx + "Report this error to developers: DB_ERROR";
-                                default -> ChatMsgs.errorPfx + "Report this error to developers: friend remove command";
+                                case OK -> ChatMsgs.SUCCESS_PFX + "§e" + ctx.getArg("name") + "§a removed from your friend list";
+                                case NOT_FRIENDS -> ChatMsgs.ERROR_PFX + ctx.getArg("name") + " not found in your friend list!";
+                                case DB_ERROR -> ChatMsgs.ERROR_PFX + "Report this error to developers: DB_ERROR";
+                                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend remove command";
                             }
                         );
                     });
@@ -112,10 +112,10 @@ public class FriendCommand extends Command {
                     FriendsManager.acceptRequest(requestReceiverName, ctx.getArg("name")).thenAccept(outcome -> {
                         sender.sendMessage(
                             switch (outcome) {
-                                case OK -> ChatMsgs.successPfx + "§e" + ctx.getArg("name") + "§a added to your friend list";
-                                case REQUEST_NOT_FOUND -> ChatMsgs.errorPfx + "Request not found from " + ctx.getArg("name");
-                                case DB_ERROR -> ChatMsgs.errorPfx + "Report this error to developers: DB_ERROR";
-                                default -> ChatMsgs.errorPfx + "Report this error to developers: friend remove command";
+                                case OK -> ChatMsgs.SUCCESS_PFX + "§e" + ctx.getArg("name") + "§a added to your friend list";
+                                case REQUEST_NOT_FOUND -> ChatMsgs.ERROR_PFX + "Request not found from " + ctx.getArg("name");
+                                case DB_ERROR -> ChatMsgs.ERROR_PFX + "Report this error to developers: DB_ERROR";
+                                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend remove command";
                             }
                         );
                     });
@@ -131,17 +131,17 @@ public class FriendCommand extends Command {
                 if (requestReceiverName == null) return loginFail;
 
                 ArrayList<String> requestSenderNames;
-                synchronized (sender.getPlayerData().getFriendLock()) {
-                    requestSenderNames = new ArrayList<>(sender.getPlayerData().getReceivedFriendRequests().values());
+                synchronized (sender.data.getFriendLock()) {
+                    requestSenderNames = new ArrayList<>(sender.data.getReceivedFriendRequests().values());
                 }
 
                 for (String requestSenderName : requestSenderNames) {
                     FriendsManager.acceptRequest(requestReceiverName, requestSenderName).thenAccept(outcome -> {
                         sender.sendMessage(
                             switch (outcome) {
-                                case OK -> ChatMsgs.successPfx + "§e" + requestSenderName + "§a added to your friend list";
-                                case DB_ERROR -> ChatMsgs.errorPfx + "Report this error to developers: DB_ERROR";
-                                default -> ChatMsgs.errorPfx + "Report this error to developers: friend remove command";
+                                case OK -> ChatMsgs.SUCCESS_PFX + "§e" + requestSenderName + "§a added to your friend list";
+                                case DB_ERROR -> ChatMsgs.ERROR_PFX + "Report this error to developers: DB_ERROR";
+                                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend remove command";
                             }
                         );
                     });
@@ -161,10 +161,10 @@ public class FriendCommand extends Command {
                     FriendsManager.denyRequest(requestReceiverName, ctx.getArg("name")).thenAccept(outcome -> {
                         sender.sendMessage(
                             switch (outcome) {
-                                case OK -> ChatMsgs.successPfx + "Denied friend request from §e" + ctx.getArg("name");
-                                case REQUEST_NOT_FOUND -> ChatMsgs.errorPfx + "Request not found from " + ctx.getArg("name");
-                                case DB_ERROR -> ChatMsgs.errorPfx + "Report this error to developers: DB_ERROR";
-                                default -> ChatMsgs.errorPfx + "Report this error to developers: friend remove command";
+                                case OK -> ChatMsgs.SUCCESS_PFX + "Denied friend request from §e" + ctx.getArg("name");
+                                case REQUEST_NOT_FOUND -> ChatMsgs.ERROR_PFX + "Request not found from " + ctx.getArg("name");
+                                case DB_ERROR -> ChatMsgs.ERROR_PFX + "Report this error to developers: DB_ERROR";
+                                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend remove command";
                             }
                         );
                     });
@@ -179,17 +179,17 @@ public class FriendCommand extends Command {
                 if (requestReceiverName == null) return loginFail;
 
                 ArrayList<String> requestSenderNames;
-                synchronized (sender.getPlayerData().getFriendLock()) {
-                    requestSenderNames = new ArrayList<>(sender.getPlayerData().getReceivedFriendRequests().values());
+                synchronized (sender.data.getFriendLock()) {
+                    requestSenderNames = new ArrayList<>(sender.data.getReceivedFriendRequests().values());
                 }
 
                 for (String requestSenderName : requestSenderNames) {
                     FriendsManager.denyRequest(requestReceiverName, requestSenderName).thenAccept(outcome -> {
                         sender.sendMessage(
                             switch (outcome) {
-                                case OK -> ChatMsgs.successPfx + "Denied friend request from §e" + requestSenderName;
-                                case DB_ERROR -> ChatMsgs.errorPfx + "Report this error to developers: DB_ERROR";
-                                default -> ChatMsgs.errorPfx + "Report this error to developers: friend remove command";
+                                case OK -> ChatMsgs.SUCCESS_PFX + "Denied friend request from §e" + requestSenderName;
+                                case DB_ERROR -> ChatMsgs.ERROR_PFX + "Report this error to developers: DB_ERROR";
+                                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend remove command";
                             }
                         );
                     });
@@ -204,21 +204,21 @@ public class FriendCommand extends Command {
                 CustomPlayer sender = getSender(ctx);
                 if (getPlayerName(sender) == null) return loginFail;
 
-                if (!sender.getPlayerData().isFriendWith((String) ctx.getArg("name"))) {
+                if (!sender.data.isFriendWith((String) ctx.getArg("name"))) {
                     return CommandResult.fail(
-                        ChatMsgs.errorPfx + ctx.getArg("name") + " not found in your friend list"
+                        ChatMsgs.ERROR_PFX + ctx.getArg("name") + " not found in your friend list"
                     );
                 }
 
                 CustomPlayer friend = PlayerUtils.getPlayer((String) ctx.getArg("name"));
                 if (friend == null) {
                     return CommandResult.fail(
-                        ChatMsgs.errorPfx + ctx.getArg("name") + " is not online"
+                        ChatMsgs.ERROR_PFX + ctx.getArg("name") + " is not online"
                     );
                 }
 
                 if (friend.state == PlayerStateType.TELEPORTING) {
-                    return CommandResult.fail(ChatMsgs.errorPfx + "You cannot join " + ctx.getArg("name") + " right now, retry in a few seconds.");
+                    return CommandResult.fail(ChatMsgs.ERROR_PFX + "You cannot join " + ctx.getArg("name") + " right now, retry in a few seconds.");
                 }
 
                 Match match = sender.getMatch();
@@ -231,15 +231,19 @@ public class FriendCommand extends Command {
                             friend.currentMinigame.onLobbyJoin(sender);
                         }
                         break;
-                    case WAITING_LOBBY, PLAYING, SPECTATOR, END_LOBBY:
+                    case WAITING_LOBBY, END_LOBBY:
                         friend.getMatch().onJoin(sender);
+                        break;
+                    case PLAYING, SPECTATOR:
+                        friend.getMatch().onJoin(sender);
+                        friend.sendMessage(ChatMsgs.INFO_PFX + "§d" + getPlayerName(sender) + "§a is now spectating.");
                         break;
                     default:
                         GeneralLobby.instance.onJoin(sender);
-                        return CommandResult.fail(ChatMsgs.errorPfx + "Report this error to developers: spectate_join_switch.error");
+                        return CommandResult.fail(ChatMsgs.ERROR_PFX + "Report this error to developers: spectate_join_switch.error");
                 }
 
-                sender.sendMessage(ChatMsgs.successPfx + "You joined " + ctx.getArg("name") + "!");
+                sender.sendMessage(ChatMsgs.SUCCESS_PFX + "You joined " + ctx.getArg("name") + "!");
                 return CommandResult.success();
             });
 
@@ -259,7 +263,7 @@ public class FriendCommand extends Command {
                 }
             })
 
-            .then(RouteNode.argument("pageNumber", new IntNode())
+            .then(RouteNode.argument("pageNumber", new IntNode())       //TODO: use new feature: optional(boolean)
                 .exec(ctx -> {
                     if (listExec(ctx, ctx.getArg("pageNumber"))) {
                         return CommandResult.success();
@@ -274,13 +278,13 @@ public class FriendCommand extends Command {
                 CustomPlayer sender = getSender(ctx);
                 if (getPlayerName(sender) == null) return loginFail;
 
-                PlayerData data = sender.getPlayerData();
+                PlayerData data = sender.data;
                 data.setFriendAlerts(!data.getFriendAlerts());
                 FriendsManager.saveFriendsSettings(sender);
 
                 sender.sendMessage(data.getFriendAlerts()
-                    ? ChatMsgs.successPfx + "Friend join/left alerts enabled."
-                    : ChatMsgs.successPfx + "Friend join/left alerts disabled.");
+                    ? ChatMsgs.SUCCESS_PFX + "Friend join/left alerts enabled."
+                    : ChatMsgs.SUCCESS_PFX + "Friend join/left alerts disabled.");
 
                 return CommandResult.success();
             });
@@ -291,13 +295,13 @@ public class FriendCommand extends Command {
                 CustomPlayer sender = getSender(ctx);
                 if (getPlayerName(sender) == null) return loginFail;
 
-                PlayerData data = sender.getPlayerData();
+                PlayerData data = sender.data;
                 data.setFriendNotify(!data.getFriendNotify());
                 FriendsManager.saveFriendsSettings(sender);
 
                 sender.sendMessage(data.getFriendNotify()
-                    ? ChatMsgs.successPfx + "Online/joinable status on: you will send alerts to your friends."
-                    : ChatMsgs.successPfx + "Online/joinable status off: you will not send alerts to your friends.");
+                    ? ChatMsgs.SUCCESS_PFX + "Online/joinable status on: you will send alerts to your friends."
+                    : ChatMsgs.SUCCESS_PFX + "Online/joinable status off: you will not send alerts to your friends.");
 
                 return CommandResult.success();
             });
@@ -308,8 +312,8 @@ public class FriendCommand extends Command {
                 CustomPlayer sender = getSender(ctx);
                 if (getPlayerName(sender) == null) return loginFail;
 
-                sender.getPlayerData().setFriendRequestsFlag(false);
-                sender.sendMessage(ChatMsgs.successPfx + "Friend invites disabled for the current session.");
+                sender.data.setFriendRequestsFlag(false);
+                sender.sendMessage(ChatMsgs.SUCCESS_PFX + "Friend invites disabled for the current session.");
                 return CommandResult.success();
             });
 
@@ -334,14 +338,14 @@ public class FriendCommand extends Command {
 
         ArrayList<String> onlineFriends;
         ArrayList<String> offlineFriends;
-        synchronized (sender.getPlayerData().getFriendLock()) {
-            onlineFriends = new ArrayList<>(sender.getPlayerData().getOnlineFriends().values());
-            offlineFriends = new ArrayList<>(sender.getPlayerData().getOfflineFriends().values());
+        synchronized (sender.data.getFriendLock()) {
+            onlineFriends = new ArrayList<>(sender.data.getOnlineFriends().values());
+            offlineFriends = new ArrayList<>(sender.data.getOfflineFriends().values());
         }
 
         int pages = (onlineFriends.size() + offlineFriends.size() + 9) / 10;
         if (currentPage > pages) {
-            sender.sendMessage(ChatMsgs.errorPfx + "This friend list page doesn't exist!");
+            sender.sendMessage(ChatMsgs.ERROR_PFX + "This friend list page doesn't exist!");
             return true;
         }
 
@@ -393,7 +397,7 @@ public class FriendCommand extends Command {
     }
 
     private String getPlayerName(CustomPlayer player) {
-        return player.getPlayerData().name;
+        return player.data.name;
     }
 
 }

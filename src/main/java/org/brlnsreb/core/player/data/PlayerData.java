@@ -238,7 +238,7 @@ public class PlayerData {
         }
     }
 
-    public boolean isFriendWith(CustomPlayer player) { return isFriendWith(player.getPlayerData().name); }
+    public boolean isFriendWith(CustomPlayer player) { return isFriendWith(player.data.name); }
 
     public boolean hasSentRequestTo(String name) {
         return this.sentFriendRequests.containsKey(name.toLowerCase());

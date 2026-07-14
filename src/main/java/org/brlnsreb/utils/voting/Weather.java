@@ -16,7 +16,7 @@ public enum Weather {
     }
 
     public static Weather get(String weatherName) {
-        return switch (weatherName) {
+        return switch (weatherName.toLowerCase()) {
             case "clear" -> CLEAR;
             case "rain" -> RAIN;
             case "storm" -> STORM;

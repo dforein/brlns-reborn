@@ -27,7 +27,7 @@ public class SpectatorItemManager extends ItemManager {
             player, 
             6, 
             Item.CLOCK,
-            YamlUtil.getStr("match.game.spectator.items....name", config)
+            YamlUtil.getStr("match.game.spectator.items.actions.name", config)
         );
     }
 

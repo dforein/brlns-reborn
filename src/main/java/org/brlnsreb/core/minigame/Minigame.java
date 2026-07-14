@@ -29,7 +29,7 @@ public abstract class Minigame {
     public Minigame(MinigameType minigameType) {
         this.mgt = minigameType;
 
-        plugin = BrlnsReb.getInstance();
+        plugin = BrlnsReb.instance;
 
         this.config = ConfigManager.getConfig(this.mgt.nameTag + "/config.yml");
         this.messages = ConfigManager.getConfig(this.mgt.nameTag + "/messages.yml");
@@ -44,6 +44,12 @@ public abstract class Minigame {
 
     public void onConfigReload() {
         lobby.onConfigReload();
+
+        for (Match match : pendingMatches) {
+            match.forceStop();
+        }
+
+        createNewPendingMatch();
     }
 
 
@@ -56,12 +62,15 @@ public abstract class Minigame {
     }
 
     public boolean onMatchJoin(CustomPlayer player) {
-        if (!player.getPlayerData().isLogged()) {
+        if (!player.data.isLogged()) {
             AuthSystem.openMenu(player);
             return false;
         }
 
-        return pendingMatches.element().onJoin(player);
+        Match mainPendingMatch = getMainPendingMatch();
+        if (mainPendingMatch == null) return false;
+
+        return mainPendingMatch.onJoin(player);
     }
 
 
@@ -136,7 +145,7 @@ public abstract class Minigame {
 
     public MinigameLobby getLobby() { return lobby; }
     public HashSet<? extends Match> getMatches() { return matches; }
-    public Match getMainPendingMatch() { return pendingMatches.element(); }
+    public Match getMainPendingMatch() { return pendingMatches.isEmpty() ? null : pendingMatches.element(); }
     public Config getConfig() { return config; }
     public Config getMessages() { return messages; }
 

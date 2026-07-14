@@ -1,6 +1,5 @@
 package org.brlnsreb.core.minigame;
 
-import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.player.CustomPlayer;
@@ -10,7 +9,6 @@ import org.brlnsreb.generallobby.items.MainLobbyItemManager;
 import org.brlnsreb.generallobby.ui.MainLobbyBossBar;
 import org.brlnsreb.utils.YamlUtil;
 
-import org.powernukkitx.Server;
 import org.powernukkitx.utils.Config;
 
 public abstract class MinigameLobby extends Lobby {
@@ -26,7 +24,7 @@ public abstract class MinigameLobby extends Lobby {
         //leave npc
         spawnNpc(
             configPath() + "npc.",
-            (CustomPlayer player) -> { GeneralLobby.instance.onJoin(player); }
+            player -> GeneralLobby.instance.onJoin(player)
         );
 
         this.bossBar = new MainLobbyBossBar(config.getString("name"));
@@ -61,14 +59,8 @@ public abstract class MinigameLobby extends Lobby {
 
         NPCEntity npc = spawnNpc(
             configPath,
-            (CustomPlayer player) -> { minigame.onMatchJoin(player); },
+            player -> minigame.onMatchJoin(player),
             false
-        );
-
-        Server.getInstance().getScheduler().scheduleRepeatingTask(BrlnsReb.getInstance(), 
-            () -> {
-                updateJoinNpcSubtitle();
-            }, 100
         );
 
         return npc;
@@ -92,7 +84,6 @@ public abstract class MinigameLobby extends Lobby {
             configPath() + "npc.", 
             false
         );
-        updateJoinNpcSubtitle();
     }
 
     public Config getConfig() { return minigame.getConfig(); }

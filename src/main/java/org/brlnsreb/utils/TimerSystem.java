@@ -10,10 +10,6 @@ public class TimerSystem {
     private int secondsRemaining;
     private Task task;
     private Runnable onTick;
-    
-    public TimerSystem(int duration) {
-        this.secondsRemaining = duration;
-    }
 
     public void start(int seconds, Runnable onTick, Runnable onComplete) {
         this.secondsRemaining = seconds;
@@ -44,7 +40,7 @@ public class TimerSystem {
         };
 
         if (onTick != null) onTick.run();   //first run (0 seconds)
-        Server.getInstance().getScheduler().scheduleDelayedRepeatingTask(BrlnsReb.getInstance(), task, 20, 20);
+        Server.getInstance().getScheduler().scheduleDelayedRepeatingTask(BrlnsReb.instance, task, 20, 20);
     }
     
     public void stop() {

@@ -2,11 +2,11 @@ package org.brlnsreb.listeners.general;
 
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer;
-import org.brlnsreb.core.player.PlayerStateType;
-
+import org.brlnsreb.utils.ChatMsgs;
 import org.powernukkitx.event.EventHandler;
 import org.powernukkitx.event.Listener;
 import org.powernukkitx.event.player.PlayerChatEvent;
+import org.powernukkitx.event.player.PlayerCommandPreprocessEvent;
 import org.powernukkitx.Player;
 import org.powernukkitx.level.Level;
 import org.powernukkitx.plugin.annotation.EventListener;
@@ -18,15 +18,22 @@ public class ChatListener implements Listener {
     public void onChat(PlayerChatEvent event) {
         CustomPlayer player = (CustomPlayer) event.getPlayer();
 
-        if (player.state == PlayerStateType.PLAYING) {
-            if (!player.getMatch().getGame().onChat(player, event)) {
-                event.setCancelled();
-                return;
-            }
-            event.setFormat(player.ingameChatNameTag + "§7: %s");
-        } else {
-            int floorLevel = player.getPlayerData().getFloorLevel();
-            event.setFormat((floorLevel < 1000 ? " " : "") + player.getNameTag() + "§7: %s");
+        switch (player.state) {
+            case PLAYING:
+                if (!player.getMatch().getGame().onChat(player, event)) {
+                    event.setCancelled();
+                    return;
+                }
+                event.setFormat(player.ingameChatNameTag + "§7: %s");
+                break;
+            
+            case SPECTATOR:
+                event.setFormat(ChatMsgs.SPEC_PFX + player.data.name + ": %s");
+
+            default:
+                int floorLevel = player.data.getFloorLevel();
+                event.setFormat((floorLevel < 1000 ? " " : "") + player.getNameTag() + "§7: %s");
+                break;
         }
 
         filterPlayerBySenderLevel(event);
@@ -41,6 +48,21 @@ public class ChatListener implements Listener {
             (recipient instanceof Player) &&
             !((Player) recipient).getLevel().equals(senderLevel)
         );
+    }
+
+    @EventHandler
+    public void onCommandPreprocess(PlayerCommandPreprocessEvent event) {
+        CustomPlayer player = (CustomPlayer) event.getPlayer();
+
+        switch (player.state) {
+            case PLAYING, SPECTATOR:
+                if (!player.getMatch().getGame().onCommandPreprocess(player, event)) {
+                    event.setCancelled();
+                    return;
+                }
+            
+            default: break;
+        }
     }
 
 }

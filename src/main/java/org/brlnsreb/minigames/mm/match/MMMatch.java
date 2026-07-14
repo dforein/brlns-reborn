@@ -6,6 +6,7 @@ import org.brlnsreb.core.minigame.match.game.Game;
 import org.brlnsreb.core.minigame.match.waitinglobby.WaitingLobby;
 import org.brlnsreb.minigames.mm.match.game.MMGame;
 import org.brlnsreb.minigames.mm.match.waitinglobby.MMWaitingLobby;
+import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.voting.TimeOfDay;
 import org.brlnsreb.utils.voting.Weather;
 
@@ -20,6 +21,10 @@ public class MMMatch extends MatchExpand {
     }
 
     protected Game createGame(String map, TimeOfDay time, Weather weather) {
+        weather = Weather.get(YamlUtil.getStr(
+            "map-settings.maps." + map + ".weather", 
+            config
+        ));
         return new MMGame(this, map, time, weather);
     }
 

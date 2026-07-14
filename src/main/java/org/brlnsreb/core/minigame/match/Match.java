@@ -23,6 +23,7 @@ public abstract class Match {
     protected final int id;
     protected final GameState state;
     protected final Set<CustomPlayer> players;
+    protected final Set<CustomPlayer> spectators;
     protected final int number;
     protected final Minigame minigame;
 
@@ -41,12 +42,13 @@ public abstract class Match {
         this.id = ThreadLocalRandom.current().nextInt(10000000, 99999999);
         this.state = new GameState();
         this.players = new HashSet<>();
+        this.spectators = new HashSet<>();
         this.number = matchNumber;
         this.minigame = minigame;
 
         this.config = getConfig();
         this.messages = getMessages();
-        this.msgUtil = new Messages(this.messages, this.players);
+        this.msgUtil = new Messages(this.messages, this.players, this.spectators);
 
         this.waitingLobby = createWaitingLobby();
     }
@@ -70,10 +72,10 @@ public abstract class Match {
         }
     }
 
-    public void onJoinAsSpectator(CustomPlayer player) {
+    protected void onJoinAsSpectator(CustomPlayer player) {
         if (game != null) {
             game.onJoinAsSpectator(player);
-            players.add(player);
+            spectators.add(player);
 
             player.currentMinigame = minigame;
             player.setMatch(this);
@@ -90,6 +92,7 @@ public abstract class Match {
             case PREGAME_COUNTDOWN, IN_GAME, ENDING:
                 game.onLeave(player);
                 players.remove(player);
+                spectators.remove(player);
                 break;
         }
         
@@ -112,8 +115,12 @@ public abstract class Match {
     }
 
     public void onGameStart() {
-        waitingLobby.close();
+        minigame.onReplacePendingMatch(this);
+
         game.onPregameStart();
+
+        waitingLobby.close();
+        waitingLobby = null;
     }
 
     public void forceStop() {
@@ -139,13 +146,18 @@ public abstract class Match {
                 }
                 break;
         }
+
+        minigame.onMatchEnding(this);
     }
 
     public void onEnding() {
         for (CustomPlayer p : players) {
             game.prepareAndSaveData(p);
+            p.updatePresetNameTags();
             minigame.onLobbyJoin(p);
         }
+
+        minigame.onMatchEnding(this);
     }
 
 
@@ -168,6 +180,7 @@ public abstract class Match {
     public GameState getState() { return state; }
     public GameStateType getCurrentState() { return state.current; }
     public Set<CustomPlayer> getPlayers() { return players; }
+    public Set<CustomPlayer> getSpectators() { return spectators; }
     public int getNumber() { return number; }
     public Game getGame() { return game; }
     public Minigame getMinigame() { return minigame; }

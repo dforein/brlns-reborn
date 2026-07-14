@@ -92,7 +92,7 @@ public class AccountsManager {
         );
 
         scheduler.scheduleTask(() -> {
-            PlayerData data = player.getPlayerData();
+            PlayerData data = player.data;
 
             data.name = name;
             data.setCoins(0);
@@ -108,7 +108,7 @@ public class AccountsManager {
 
     private static void setAccountData(CustomPlayer player, String name, DBResults dataResults) {
         scheduler.scheduleTask(() -> {
-            PlayerData data = player.getPlayerData();
+            PlayerData data = player.data;
 
             data.name = name;
             data.setCoins(dataResults.getInt("coins"));
@@ -133,7 +133,7 @@ public class AccountsManager {
     }
 
     public static Outcome playerLogoutSync(CustomPlayer player) {
-        PlayerData data = player.getPlayerData();
+        PlayerData data = player.data;
 
         Outcome outcome = savePlayerDataSync(data);
         if (outcome != Outcome.OK) return outcome;
@@ -156,7 +156,7 @@ public class AccountsManager {
         }
 
         return CompletableFuture.supplyAsync(() -> {
-            Outcome outcome = savePlayerDataSync(player.getPlayerData());
+            Outcome outcome = savePlayerDataSync(player.data);
             player.resetAsync();
             return outcome;
         });
@@ -180,7 +180,7 @@ public class AccountsManager {
         }
 
         return CompletableFuture.supplyAsync(() -> {
-            Outcome outcome = saveExpCoinsSync(player.getPlayerData());
+            Outcome outcome = saveExpCoinsSync(player.data);
             player.resetAsync();
             return outcome;
         });

@@ -24,7 +24,7 @@ public class FriendsManager {
     //friends init
 
     public static void loadFriendDataSync(CustomPlayer player, String accountName) throws SQLException {
-        PlayerData data = player.getPlayerData();
+        PlayerData data = player.data;
 
         //friends
         populateDataMapFromDB(
@@ -265,7 +265,7 @@ public class FriendsManager {
         }
 
         return CompletableFuture.supplyAsync(() -> {
-            Outcome outcome = saveFriendsSettingsSync(player.getPlayerData());
+            Outcome outcome = saveFriendsSettingsSync(player.data);
             player.resetAsync();
             return outcome;
         });

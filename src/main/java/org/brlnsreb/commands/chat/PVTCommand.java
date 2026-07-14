@@ -1,6 +1,7 @@
 package org.brlnsreb.commands.chat;
 
 import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.core.player.data.PlayerData;
 import org.brlnsreb.utils.ChatMsgs;
@@ -32,14 +33,21 @@ public class PVTCommand extends Command {
                 .then(RouteNode.argument("message", new RawTextNode())
                     .exec(ctx -> {
                         CustomPlayer sender = (CustomPlayer) ctx.getSender();
+
+                        if (sender.state == PlayerStateType.PLAYING) {
+                            if (!sender.getMatch().getGame().onChat(sender, null)) {
+                                return CommandResult.fail();
+                            }
+                        }
+
                         CustomPlayer receiver = PlayerUtils.getPlayer((String) ctx.getArg("player"));
 
                         if (receiver == null) {
-                            return CommandResult.fail(ChatMsgs.errorPfx + "No player found with such name");     //TEXT
+                            return CommandResult.fail(ChatMsgs.ERROR_PFX + "No player found with such name");     //TEXT
                         }
 
                         PlayerData data;
-                        data = receiver.getPlayerData();
+                        data = receiver.data;
                         sender.sendMessage(
                             "§l§aPVT§r §3%s §7> §3%s§7: §b%s".formatted(       //TEXT
                                 "you",
@@ -48,7 +56,7 @@ public class PVTCommand extends Command {
                             )
                         );
 
-                        data = sender.getPlayerData();
+                        data = sender.data;
                         receiver.sendMessage(
                             "§l§aPVT§r §3%s §7> §3%s§7: §b%s".formatted(        //TEXT
                                  data.isLogged() ? data.name : sender.getDisplayName(),
@@ -57,7 +65,7 @@ public class PVTCommand extends Command {
                             )
                         );
 
-                        receiver.getPlayerData().setLastPvtPlayer(sender);
+                        receiver.data.setLastPvtPlayer(sender);
 
                         return CommandResult.success();
                     })));

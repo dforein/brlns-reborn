@@ -74,7 +74,7 @@ public class CustomPlayer extends Player {
     public String waitingLobbyNameTag;
     public String ingameChatNameTag;
 
-    private PlayerData data;
+    public PlayerData data;
 
     private Scoreboard scoreboard = null;
     private Long bossBarId = null;
@@ -96,7 +96,7 @@ public class CustomPlayer extends Player {
     }
 
     private void updateDisplayNameDelayed() {
-        Server.getInstance().getScheduler().scheduleDelayedTask(BrlnsReb.getInstance(), () -> {
+        Server.getInstance().getScheduler().scheduleDelayedTask(BrlnsReb.instance, () -> {
             if (!this.isOnline()) return;
             if (!updateDisplayName()) updateDisplayNameDelayed();
         }, 10);
@@ -151,9 +151,6 @@ public class CustomPlayer extends Player {
 
     //data logic
 
-    public void setPlayerData(PlayerData data) { this.data = data; }
-    public PlayerData getPlayerData() { return this.data; }
-
     public void updatePresetNameTags() {
         this.lobbyNameTag = "§8" + (data.getFloorLevel() < 0 ? "?" : data.getFloorLevel()) +
                                   " §7" + (data.isLogged() ? data.name : this.getName());
@@ -169,7 +166,7 @@ public class CustomPlayer extends Player {
             case LOBBY -> this.setNameTag(this.lobbyNameTag);
             case WAITING_LOBBY -> this.setNameTag(this.waitingLobbyNameTag);
             case END_LOBBY -> this.setNameTag("§l§fGHOST§r " + data.name);
-            default -> BrlnsReb.getInstance().getLogger().alert("CustomPlayer::resetNameTag, unrecognized state: " + state.toString());
+            default -> BrlnsReb.instance.getLogger().alert("CustomPlayer::resetNameTag, unrecognized state: " + state.toString());
         } 
     }
 
@@ -256,7 +253,7 @@ public class CustomPlayer extends Player {
             case ONLY_PLAYERS:
                 if (source instanceof EntityDamageByEntityEvent) {
                     Entity entity = ((EntityDamageByEntityEvent) source).getDamager();
-                    if (entity instanceof Player && ((CustomPlayer) entity).canAttackPlayers) {
+                    if (entity instanceof Player) {
                         return checkAndAttack(source);
                     }
                 }
@@ -294,6 +291,16 @@ public class CustomPlayer extends Player {
     }
 
     private boolean checkAndAttack(EntityDamageEvent source) {
+        //canAttackPlayer check
+        if (source instanceof EntityDamageByEntityEvent) {
+            Entity entity = ((EntityDamageByEntityEvent) source).getDamager();
+            if (entity instanceof Player
+                    && !((CustomPlayer) entity).canAttackPlayers) {
+                return false;
+            }
+        }
+
+        //health check
         if (source.getDamage() < getHealthCurrent()) {
             //OK!
             return super.attack(source);
@@ -301,7 +308,7 @@ public class CustomPlayer extends Player {
 
         //not ok, player death
         this.setHealthCurrent(this.getHealthMax());
-        super.attack(source);               //to show the damage animation
+        super.attack(source);               //to show the damage animation  //TODO: need to test whether i have to wait one tick to show the anim
         this.setHealthCurrent(this.getHealthMax());
 
         Match match = getMatch();

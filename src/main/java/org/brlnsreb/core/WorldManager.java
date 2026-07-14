@@ -66,7 +66,7 @@ public class WorldManager {
         Level loadedLevel = server.getLevelByName(folderName);
         loadedLevel.setAutoSave(false);
 
-        setGameRules(loadedLevel, isLobby, config, configPath);
+        setGameRules(loadedLevel, isLobby, config);
 
         return loadedLevel;
     }
@@ -83,16 +83,14 @@ public class WorldManager {
     }
 
     public static void setGameRules(Level level) {
-        setGameRules(level, true, null, null);
+        setGameRules(level, true, null);
     }
 
-    public static void setGameRules(Level level, Config config, String configPath) {
-        setGameRules(level, false, config, configPath);
+    public static void setGameRules(Level level, Config config) {
+        setGameRules(level, false, config);
     }
 
-    private static void setGameRules(Level level, boolean isLobby, Config config, String configPath) {
-        configPath = YamlUtil.checkConfigPath(configPath);
-
+    private static void setGameRules(Level level, boolean isLobby, Config config) {
         GameRules gameRules = level.getGameRules();
 
         //particular
@@ -109,7 +107,7 @@ public class WorldManager {
 
         for (GameRule rule : particulars) {
             gameRules.setGameRule(rule, 
-                isLobby? false : config.getBoolean(configPath + "gamerules." + rule.getName())
+                isLobby? false : config.getBoolean("settings.gamerules." + rule.getName())
             );
         }
 

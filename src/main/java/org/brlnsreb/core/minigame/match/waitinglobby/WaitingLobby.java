@@ -41,8 +41,8 @@ public abstract class WaitingLobby extends Lobby {
 
     protected final Messages msgUtil;
     protected final WaitingLobbyBossBar bossBar;
-    protected final WaitingLobbyItemManager items;
     protected final WaitingLobbyScoreboard scoreboard;
+    protected final WaitingLobbyItemManager items;
 
     protected TimerSystem timer;
     protected VotingSystem<String> mapVoting;
@@ -79,6 +79,14 @@ public abstract class WaitingLobby extends Lobby {
 
         this.mapVoting = new VotingSystem<>();
         requireVotingMenu();
+    }
+
+    public void forceStart() {
+        msgUtil.broadcastPrefix("§aGame start was forced by an op!");
+
+        finalizeVoting();
+        stopCountdown();
+        onGameStart();
     }
 
 
@@ -132,7 +140,9 @@ public abstract class WaitingLobby extends Lobby {
         }
     }
 
+    //OVERRIDE if you need more voting options
     public void onLeave(CustomPlayer player) {
+        mapVoting.removePlayerVote(player);
         checkPlayerNumber(players.size() - 1);
     }
 
@@ -164,8 +174,8 @@ public abstract class WaitingLobby extends Lobby {
         items.giveItemsCountdown(players);
         
         if (timer != null) timer.stop();
-        timer = new TimerSystem(secondsCountdown);
-        timer.start(secondsCountdown, null, () -> {
+        timer = new TimerSystem();
+        timer.start(secondsCountdown, () -> {
             int remaining = timer.getSecondsRemaining();
 
             if (remaining == secondsShortenedCountdown) {
@@ -173,7 +183,7 @@ public abstract class WaitingLobby extends Lobby {
             }
 
             bossBar.updateWaitingLobbyBossBar(remaining);
-        });
+        }, null);
     }
 
     protected void shortenCountdown(boolean sendMessage) {
@@ -184,8 +194,8 @@ public abstract class WaitingLobby extends Lobby {
         items.giveItemsCountdownShortened(players);
 
         if (timer != null) timer.stop();
-        timer = new TimerSystem(secondsShortenedCountdown);
-        timer.start(secondsCountdown, match::onGameStart, () -> {
+        timer = new TimerSystem();
+        timer.start(secondsShortenedCountdown, () -> {
             int remaining = timer.getSecondsRemaining();
 
             bossBar.updateWaitingLobbyBossBar(remaining);
@@ -194,7 +204,7 @@ public abstract class WaitingLobby extends Lobby {
             for (Player p : players) {
                 p.getLevel().addSound(p, Sound.RANDOM_CLICK, 1.0f, pitch, p);
             }
-        });
+        }, this::onGameStart);
 
         match.preloadGame(selectedMap, selectedTime, selectedWeather);
 
@@ -206,11 +216,24 @@ public abstract class WaitingLobby extends Lobby {
     protected void stopCountdown() {
         if (timer != null) timer.stop();
         timer = null;
+        countdownShortened = false;
+
         bossBar.cancelCountdown();
         match.unloadGame();
 
         PlayerUtils.clearInventory(players);
         items.giveItemsWaitingPlayers(players);
+    }
+
+
+    //game start
+
+    protected void onGameStart() {
+        for (CustomPlayer p : players) {
+            PlayerUtils.resetUiAndInventories(p);
+        }
+
+        match.onGameStart();
     }
 
 
@@ -244,7 +267,7 @@ public abstract class WaitingLobby extends Lobby {
             if (!availableMaps.isEmpty()) {
                 selectedMap = availableMaps.get(new Random().nextInt(availableMaps.size()));
             } else {
-                BrlnsReb.getInstance().getLogger().error("CRITIC ERROR: No map enabled in config!");
+                BrlnsReb.instance.getLogger().error("CRITIC ERROR: No map enabled in config!");
                 msgUtil.broadcastPrefix("§cError: no map available! Match cancelled.");
                 match.forceStop();
                 return;

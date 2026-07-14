@@ -67,7 +67,7 @@ public class GeneralLobby extends Lobby {
     }
 
     protected void onJoinMessages(CustomPlayer player) {
-        friendAlertsNotify(player, null, ChatMsgs.brokenlens);
+        friendAlertsNotify(player, null, ChatMsgs.BROKENLENS);
     }
 
     protected void onJoinBossBar(CustomPlayer player) {
@@ -80,7 +80,7 @@ public class GeneralLobby extends Lobby {
 
 
     public static void friendAlertsNotify(CustomPlayer player, Minigame minigame, String notifyMsgMinigame) {
-        PlayerData data = player.getPlayerData();
+        PlayerData data = player.data;
         if (!data.isLogged()) return;
 
         boolean alerts = data.getFriendAlerts();
@@ -105,10 +105,10 @@ public class GeneralLobby extends Lobby {
             if (alerts) {
                 friendsCount++;
                 if (friend.currentMinigame == null) {
-                    hubFriends.add(friend.getPlayerData().name);
+                    hubFriends.add(friend.data.name);
                 } else {
                     minigameGroups.computeIfAbsent(friend.currentMinigame, k -> new ArrayList<>())
-                        .add(friend.getPlayerData().name);
+                        .add(friend.data.name);
                 }
             }
         }
@@ -121,10 +121,10 @@ public class GeneralLobby extends Lobby {
 
         if (notifyMsgMinigame == null) {
             String template = YamlUtil.getStr("lobby.friend-server-join", ConfigManager.getGlobalMessages());
-            return ChatMsgs.infoPfx + template.formatted(playerName);
+            return ChatMsgs.INFO_PFX + template.formatted(playerName);
         } else {
             String template = YamlUtil.getStr("lobby.friend-minigame-join", ConfigManager.getGlobalMessages());
-            return ChatMsgs.infoPfx + template.formatted(playerName, notifyMsgMinigame);
+            return ChatMsgs.INFO_PFX + template.formatted(playerName, notifyMsgMinigame);
         }
     }
 
@@ -145,7 +145,7 @@ public class GeneralLobby extends Lobby {
                         .append(String.join("§7, §3", entry.getValue()));
         }
 
-        return ChatMsgs.infoPfx + "§d" + alertsCount + " §afriend(s) online:" + alertsBuilder.toString();
+        return ChatMsgs.INFO_PFX + "§d" + alertsCount + " §afriend(s) online:" + alertsBuilder.toString();
     }
 
 
@@ -162,7 +162,7 @@ public class GeneralLobby extends Lobby {
 
             npcNameTagMap.put(npc, gameNameTag);
 
-            Server.getInstance().getScheduler().scheduleRepeatingTask(BrlnsReb.getInstance(), 
+            Server.getInstance().getScheduler().scheduleRepeatingTask(BrlnsReb.instance, 
                 () -> {
                     updateNpcSubtitle(npc);
                 }, 100

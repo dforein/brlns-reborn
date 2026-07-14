@@ -25,7 +25,7 @@ import org.brlnsreb.minigames.mm.entities.ThrownSwordEntity;
 
 public class BrlnsReb extends PluginBase {
     
-    private static BrlnsReb instance;
+    public static BrlnsReb instance;
     private static Server server;
 
     private MinigameManager minigameManager;
@@ -127,7 +127,6 @@ public class BrlnsReb extends PluginBase {
         server.getDefaultLevel().save();
     }
 
-    public static BrlnsReb getInstance() { return instance; }
     public static boolean getGlobalChat() { return globalChat; }
     public static void setGlobalChat(boolean value) { globalChat = value; }
     public static boolean getSave() { return saveAtShutdown; }

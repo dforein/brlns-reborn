@@ -1,19 +1,51 @@
 settings:
-  physics-enabled: false
+  check-players-at-game-start: true
   min-players: 2
   max-players: 20
   min-players-start: 20
   countdown-seconds: 45
   shortened-countdown-seconds: 10
   pregame-countdown-seconds: 10
-  game-duration: 420
-  end-time: 10
+  physics-enabled: false
+  gamerules:
 
 lobby:
   npc:
 
 game:
-  
+  duration: 420
+  ending-duration: 10
+  ui-update-interval: 10
+  items:
+    sword:
+      name: '&o&l&cMurderstick'
+      throw-cooldown: 10
+      throw-speed: 30
+    blaze-rod:
+      name: '&o&l&6Lights Out'
+      blindness-duration: 20
+    hoe:
+      name: §o§l§9Sheriff Hoe
+      shoot-cooldown: 0.2
+      friendly-fire-death: true
+      raycast-max-distance: 100
+      raycast-step: 0.2
+    yellow-dye:
+      name: '&o&l&eCraft The Gun &r&7( Hold / Right Click )'
+  gold:
+    spawn-interval-min: 2
+    spawn-interval-max: 3
+  exp:
+    per-gold: 10
+    per-kill: 15
+    sheriff-won: 600
+    sheriff-kill: 100
+  time-start-tracking: 60
+  death:
+    animation-duration: 0.4167
+    head-yaw-offset: -35
+    head-pitch-offset: -40
+    blindness-duration: 2
 
 waiting-lobby:
   world: waitinglobby
@@ -63,40 +95,6 @@ waiting-lobby:
         &9Sheriff/Detective&r: Golden Hoe/Sheriff's Gun (1-2 shot Kill)
         &aCivilians/Innocent&r: N/A (NOTE: CIVILIANS AND SHERIFFS WORK TOGETHER)
 
-murderer:
-  sword-throw-cooldown: 10
-  sword-throw-speed: 30
-  blindness-duration: 20
-  time-start-tracking: 60
-  sword-name: '&o&l&cMurderstick'
-  blaze-rod-name: '&o&l&6Lights Out'
-sheriff:
-  shoot-cooldown: 0.2
-  friendly-fire-death: true
-  raycast-max-distance: 100
-  raycast-step: 0.2
-  hoe-name: §o§l§9Sheriff Hoe
-innocents:
-  gold-for-gun: 5
-  dye-name: '&o&l&eCraft The Gun &r&7( Hold / Right Click )'
-spectator:
-  item-name: '&o&l&7Teleport to Player'
-death:
-  animation-duration: 0.4167
-  head-yaw-offset: -35
-  head-pitch-offset: -40
-  blindness-duration: 2
-gold:
-  spawn-interval-min: 2
-  spawn-interval-max: 3
-exp:
-  per-gold: 10
-  per-kill: 15
-  sheriff-won: 600
-  sheriff-kill: 100
-scoreboard:
-  update-interval: 10
-
 map-settings:
   default-map: thegrandhotel
   enabled-maps:
@@ -107,13 +105,13 @@ map-settings:
   - fnaf6
   - abandonedschool
   maps:
-    world:
+    test:
       name: Test
       world: world
       min: 0 80 0
       max: 100 80 100
       night-vision: false
-      weather: Clear
+      weather: clear
       builders:
       - ItzDS35
       builders-team: '@BrokenLens Community'
@@ -127,7 +125,7 @@ map-settings:
       min: -63 0 -95
       max: 81 45 58
       night-vision: true
-      weather: Clear
+      weather: clear
       builders:
       - Lesz
       builders-team: '@BrokenLens BuildTeam'
@@ -150,7 +148,7 @@ map-settings:
       min: -10 -1 -71
       max: 124 15 143
       night-vision: true
-      weather: Clear
+      weather: clear
       builders:
       - Yoursenpaiisme
       - Amphinous
@@ -177,7 +175,7 @@ map-settings:
       min: 2428 31 2407
       max: 2464 62 2468
       night-vision: false
-      weather: Clear
+      weather: clear
       builders:
       - TrenzKGM
       - KhrizKGM
@@ -207,7 +205,7 @@ map-settings:
       min: 2435 33 2368
       max: 2513 68 2430
       night-vision: true
-      weather: Clear
+      weather: clear
       builders:
       - TrenzKGM
       builders-team: '@BrokenLens BuildTeam'
@@ -238,7 +236,7 @@ map-settings:
       min: 2384 22 2392
       max: 2435 40 2459
       night-vision: true
-      weather: Clear
+      weather: clear
       builders:
       - TrenzKGM
       - KhrizKGM
@@ -284,7 +282,7 @@ map-settings:
       min: -22 5 -23
       max: 57 27 27
       night-vision: false
-      weather: Rain
+      weather: rain
       builders:
       - TrenzKGM
       - KhrizKGM

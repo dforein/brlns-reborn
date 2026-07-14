@@ -1,6 +1,7 @@
 package org.brlnsreb.core.minigame.match;
 
 import org.brlnsreb.core.minigame.Minigame;
+import org.brlnsreb.core.minigame.match.game.GameExpand;
 import org.brlnsreb.core.player.CustomPlayer;
 
 public abstract class MatchExpand extends Match {
@@ -17,5 +18,8 @@ public abstract class MatchExpand extends Match {
         game.prepareAndSaveData(player);
         endLobby.onJoin(player);
     }
+
+    @Override
+    public GameExpand getGame() { return (GameExpand) game; }
 
 }

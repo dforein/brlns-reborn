@@ -25,7 +25,7 @@ public class PlayerUtils {
     //change world
 
     public static void changeWorld(CustomPlayer p, Position pos, boolean lobby) {
-        BrlnsReb plugin = BrlnsReb.getInstance();
+        BrlnsReb plugin = BrlnsReb.instance;
 
         try {
             int viewDistance = p.getViewDistance();
@@ -208,7 +208,7 @@ public class PlayerUtils {
 
     //misc
 
-    private static void giveEffect(Player player, EffectType type, int duration, int amplifier, boolean isVisible) {
+    public static void giveEffect(Player player, EffectType type, int duration, int amplifier, boolean isVisible) {
         Effect effect = Effect.get(type);
         effect.setDuration(duration);
         effect.setAmplifier(amplifier);

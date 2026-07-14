@@ -32,6 +32,12 @@ public class MMWaitingLobby extends WaitingLobby {
     }
 
     @Override
+    public void onLeave(CustomPlayer player) {
+        timeVoting.removePlayerVote(player);
+        super.onLeave(player);
+    }
+
+    @Override
     protected void prepareVoting() {
         super.prepareVoting();
         

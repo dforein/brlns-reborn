@@ -27,7 +27,7 @@ public class MainLobbyBossBar extends BossBarAbstract {
     private int messagesIndex = 0;                  //i will periodically change messages in messages.yml order
 
     public MainLobbyBossBar(String name) {
-        plugin = BrlnsReb.getInstance();
+        plugin = BrlnsReb.instance;
         onConfigReload(name);
     }
 

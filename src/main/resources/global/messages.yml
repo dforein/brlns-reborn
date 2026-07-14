@@ -17,6 +17,8 @@ match:
     - 'e'
     - 'a'
     - '9'
+  game:
+    map-credits: '&eMap created by &d%s'
   force-stop: '&cMatch is stopping!'
   end-lobby:
     title: '&cYOU ARE DEAD'

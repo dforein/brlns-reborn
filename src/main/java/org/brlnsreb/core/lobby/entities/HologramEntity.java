@@ -63,4 +63,9 @@ public class HologramEntity extends EntityArmorStand {
         return false;
     }
 
+    @Override
+    protected boolean shouldStopMotionWhenImmobile() {
+        return true;
+    }
+
 }

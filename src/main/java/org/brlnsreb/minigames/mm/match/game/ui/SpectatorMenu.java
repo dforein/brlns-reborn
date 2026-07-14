@@ -1,4 +1,4 @@
-package org.brlnsreb.minigames.mm.ui;
+package org.brlnsreb.minigames.mm.match.game.ui;
 
 import org.powernukkitx.Player;
 import org.powernukkitx.Server;
@@ -19,6 +19,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SpectatorMenu extends MenuAbstract {
+
+    //TODO: rewrite
     
     private final MurderMysteryGame game;
     private final Map<UUID, List<Player>> pendingMenus;
@@ -30,7 +32,7 @@ public class SpectatorMenu extends MenuAbstract {
         this.handlers = new ConcurrentHashMap<>();
     }
     
-    public void openTeleportMenu(Player spectator) {
+    public void openMenu(Player spectator) {
         checkCooldown(spectator);
 
         SimpleForm menu = new SimpleForm("Spectate player");

@@ -12,8 +12,10 @@ import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
+import org.brlnsreb.generallobby.GeneralLobby;
+import org.brlnsreb.utils.ChatMsgs;
 import org.brlnsreb.utils.YamlUtil;
-
+import org.powernukkitx.Player;
 import org.powernukkitx.entity.Entity;
 import org.powernukkitx.level.Level;
 import org.powernukkitx.level.Position;
@@ -114,6 +116,14 @@ public abstract class Lobby {
     }
 
     public void close() {
+        Map<Long, Player> players = level.getPlayers();
+        if (!players.isEmpty()) {
+            for (Player p : players.values()) {
+                p.sendMessage(ChatMsgs.ERROR_PFX + "Something wrong happened, joining main hub...");
+                GeneralLobby.instance.onJoin((CustomPlayer) p);
+            }
+        }
+
         WorldManager.unloadLevel(this.level);
     }
 

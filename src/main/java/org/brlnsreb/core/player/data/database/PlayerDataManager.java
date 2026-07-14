@@ -29,7 +29,7 @@ public class PlayerDataManager {
         //put empty PlayerData shell in the player
         PlayerData data = new PlayerData();
         dataMap.put(playerId, data);
-        player.setPlayerData(data);
+        player.data = data;
 
         return CompletableFuture.supplyAsync(() -> {
             try {
@@ -76,7 +76,7 @@ public class PlayerDataManager {
 
         return CompletableFuture.supplyAsync(() -> {
             try {
-                if (player.getPlayerData().isLogged()) return Outcome.PLAYER_ALREADY_LOGGED_IN;
+                if (player.data.isLogged()) return Outcome.PLAYER_ALREADY_LOGGED_IN;
 
                 //creating new account and updating player's data
                 Outcome outcome = AccountsManager.createNewAccount(player, name, password);
@@ -106,7 +106,7 @@ public class PlayerDataManager {
         
         return CompletableFuture.supplyAsync(() -> {
             try {
-                if (player.getPlayerData().isLogged()) return Outcome.PLAYER_ALREADY_LOGGED_IN;
+                if (player.data.isLogged()) return Outcome.PLAYER_ALREADY_LOGGED_IN;
 
                 //check whether another player is already logged into the account
                 if (nameIdMap.putIfAbsent(name.toLowerCase(), player.getUniqueId()) != null) return Outcome.PLAYER_ALREADY_LOGGED_IN;
@@ -155,7 +155,7 @@ public class PlayerDataManager {
         
         return CompletableFuture.supplyAsync(() -> {
             try {
-                if (!player.getPlayerData().isLogged()) return Outcome.PLAYER_ALREADY_LOGGED_OUT;
+                if (!player.data.isLogged()) return Outcome.PLAYER_ALREADY_LOGGED_OUT;
 
                 //delete the player-account association
                 DatabaseManager.executeUpdate(
@@ -165,7 +165,7 @@ public class PlayerDataManager {
 
                 //execute player logout
                 AccountsManager.playerLogoutSync(player);
-                nameIdMap.remove(player.getPlayerData().name.toLowerCase());
+                nameIdMap.remove(player.data.name.toLowerCase());
 
                 
                 return Outcome.OK;

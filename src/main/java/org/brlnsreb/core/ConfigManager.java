@@ -22,7 +22,7 @@ public class ConfigManager {
         Config config = configMap.get(filePath);
         if (config != null) return config;
 
-        config = new Config(BrlnsReb.getInstance().getDataFolder() + filePath, Config.YAML);
+        config = new Config(BrlnsReb.instance.getDataFolder() + filePath, Config.YAML);
         configMap.put(filePath, config);
         return config;
     }
