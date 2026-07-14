@@ -32,7 +32,6 @@ public class PVTCommand extends Command {
                 .then(RouteNode.argument("message", new RawTextNode())
                     .exec(ctx -> {
                         CustomPlayer sender = (CustomPlayer) ctx.getSender();
-
                         CustomPlayer receiver = PlayerUtils.getPlayer((String) ctx.getArg("player"));
 
                         if (receiver == null) {

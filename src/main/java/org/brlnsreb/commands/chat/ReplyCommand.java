@@ -28,7 +28,6 @@ public class ReplyCommand extends Command {
             .then(RouteNode.argument("message", new RawTextNode())
                 .exec(ctx -> {
                     CustomPlayer sender = (CustomPlayer) ctx.getSender();
-                    
                     CustomPlayer receiver = sender.data.getLastPvtPlayer();
 
                     if (receiver == null) {

@@ -1,6 +1,7 @@
 package org.brlnsreb.utils.voting;
 
 import org.powernukkitx.Player;
+import org.powernukkitx.form.response.CustomResponse;
 import org.powernukkitx.form.window.CustomForm;
 import org.powernukkitx.utils.Config;
 import org.powernukkitx.utils.TextFormat;
@@ -81,15 +82,16 @@ public class VotingMapTimeMenu extends MenuAbstract {
             timeDefaultIndex
         );
         
-        menu.send(player);
+        int formId = sendForm(player, menu);
+        menu.onSubmit((p, response) -> handleVoteResponse(player, response, formId));
     }
     
-    public void handleVoteResponse(Player player, CustomForm window) {
-        if (window.response() == null) return;
+    public void handleVoteResponse(Player player, CustomResponse response, int formId) {
+        removeForm(formId);
 
         String[] placeholder = new String[1];
         
-        int mapIndex = window.response().getDropdownResponse(0).elementId();
+        int mapIndex = response.getDropdownResponse(0).elementId();
         if (mapIndex > 0) {         //if it's zero, the choice was "None"
             String selectedMap = mapVoting.getAvailableOptions().get(mapIndex - 1);
             mapVoting.vote(player, selectedMap);
@@ -100,7 +102,7 @@ public class VotingMapTimeMenu extends MenuAbstract {
             mapVoting.removePlayerVote(player);     //in case he voted before
         }
         
-        int timeIndex = window.response().getDropdownResponse(1).elementId();
+        int timeIndex = response.getDropdownResponse(1).elementId();
         if (timeIndex > 0) {
             TimeOfDay selectedTime = timeVoting.getAvailableOptions().get(timeIndex - 1);
             timeVoting.vote(player, selectedTime);

@@ -1,5 +1,6 @@
 package org.brlnsreb.utils.abstraction;
 
+import java.util.BitSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
@@ -13,8 +14,8 @@ public abstract class MenuAbstract {
 
     private static final Map<Integer, Form<?>> id2FormMap = new ConcurrentHashMap<>();
     private static final Map<Integer, UUID> id2PlayerUUIDMap = new ConcurrentHashMap<>();
+    private static final BitSet idSet = new BitSet();
     protected static final Map<UUID, Long> openingCooldown = new ConcurrentHashMap<>();
-    protected static int id = 0;
 
     protected static boolean checkCooldown(Player player) {
         long now = System.currentTimeMillis();
@@ -29,16 +30,20 @@ public abstract class MenuAbstract {
         return false;
     }
 
-    protected static void sendForm(Player player, Form<?> form, String type) {
-        id2FormMap.put(++id, form);
+    protected static int sendForm(Player player, Form<?> form) {
+        int id = idSet.nextClearBit(0);
+        idSet.set(id);
+
+        id2FormMap.put(id, form);
         id2PlayerUUIDMap.put(id, player.getUniqueId());
 
-        form.putMeta("type", "games");
         form.send(player, id);
+        return id;
     }
 
     public static void removeForm(int id) {
         id2FormMap.remove(id);
+        idSet.clear(id);
     }
 
     public static void checkDeadForms() {
