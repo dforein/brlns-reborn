@@ -1,60 +1,59 @@
-package org.brlnsreb.minigames.mm.systems;
+package org.brlnsreb.minigames.mm.match.game.systems;
 
+import org.powernukkitx.Server;
 import org.powernukkitx.entity.Entity;
 import org.powernukkitx.entity.item.EntityItem;
 import org.powernukkitx.item.Item;
-import org.powernukkitx.level.Level;
 import org.powernukkitx.level.Position;
 import org.powernukkitx.math.Vector3;
 import org.powernukkitx.nbt.tag.CompoundTag;
 import org.powernukkitx.scheduler.Task;
+import org.powernukkitx.utils.Config;
 import org.powernukkitx.utils.ItemHelper;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.minigame.match.game.Arena;
-import org.brlnsreb.minigames.mm.config.MMConfig;
+import org.brlnsreb.core.minigame.match.game.arena.Arena;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GoldSystem {
     
-    private final BrlnsReb plugin;
-    private final MMConfig config;
+    private final Config config;
+    private final Arena arena;
+
     private Task spawnTask;
     private List<Vector3> validSpawns;
     
-    public GoldSystem(BrlnsReb plugin, MMConfig config) {
-        this.plugin = plugin;
+    public GoldSystem(Config config, Arena arena) {
         this.config = config;
+        this.arena = arena;
     }
     
-    public void startSpawning(Arena arena) {
-        cleanupGold(arena.getLevel());
-
-        int minInterval = config.getGoldSpawnIntervalMin();
-        int maxInterval = config.getGoldSpawnIntervalMax();
+    public void startSpawning() {
+        int minInterval = config.getInt("game.gold.spawn-interval-min");
+        int maxInterval = config.getInt("game.gold.spawn-interval-max");
         
-        scheduleNext(arena, minInterval, maxInterval);
+        scheduleNext(minInterval, maxInterval);
     }
     
-    private void scheduleNext(Arena arena, int min, int max) {
+    private void scheduleNext(int min, int max) {
         int delay = (min + ThreadLocalRandom.current().nextInt(max - min + 1)) * 20;
         
         spawnTask = new Task() {
             @Override
             public void onRun(int currentTick) {
-                spawnGold(arena);
-                scheduleNext(arena, min, max);
+                spawnGold();
+                scheduleNext(min, max);
             }
         };
         
-        plugin.getServer().getScheduler().scheduleDelayedTask(plugin, spawnTask, delay);
+        Server.getInstance().getScheduler().scheduleDelayedTask(BrlnsReb.instance, spawnTask, delay);
     }
 
-    private void spawnGold(Arena arena) {
+    private void spawnGold() {
         if (validSpawns == null || validSpawns.isEmpty()) {
-            plugin.getLogger().warning("No valid spawns available!");
+            BrlnsReb.instance.getLogger().warning("MM: No valid spawns available!");
             return;
         }
         
@@ -63,8 +62,8 @@ public class GoldSystem {
             randomSpawn.x, 
             randomSpawn.y, 
             randomSpawn.z, 
-            arena.getLevel())
-            .add(0.5, 0.5, 0.5);
+            arena.getLevel()
+        ).add(0.5, 0.5, 0.5);
         
         spawnGoldAt(spawnPos);
     }
@@ -91,7 +90,6 @@ public class GoldSystem {
         );
 
         if (entity != null) {
-            entity.addTag("mm_gold");
             entity.spawnToAll();
         }
     }
@@ -102,19 +100,12 @@ public class GoldSystem {
         }
     }
 
-    public void cleanupGold(Level level) {
-        for (Entity entity : level.getEntities()) {
-            if (entity instanceof EntityItem && entity.hasTag("mm_gold")) {
-                entity.close();
-            }
-        }
-    }
-
-    public void loadSpawns(GoldSpawnMapper mapper, String mapId) {
-        this.validSpawns = mapper.getSpawns(mapId);
+    public void loadSpawns() {
+        GoldSpawnMapper mapper = new GoldSpawnMapper();
+        this.validSpawns = mapper.getSpawns(arena.getMapId());
         
         if (validSpawns.isEmpty()) {
-            plugin.getLogger().warning("No gold spawns found for map: " + mapId);
+            BrlnsReb.instance.getLogger().warning("MM: No gold spawns found for map: " + arena.getMapId());
         }
     }
 }

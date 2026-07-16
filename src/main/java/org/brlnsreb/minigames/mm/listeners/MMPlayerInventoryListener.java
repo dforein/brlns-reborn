@@ -1,9 +1,8 @@
 package org.brlnsreb.minigames.mm.listeners;
 
 import org.brlnsreb.minigames.mm.MurderMysteryGame;
+import org.brlnsreb.minigames.mm.match.game.gamedata.MMRole;
 import org.brlnsreb.minigames.mm.roles.GamePlayer;
-import org.brlnsreb.minigames.mm.roles.MMRole;
-
 import org.powernukkitx.event.EventHandler;
 import org.powernukkitx.event.Listener;
 import org.powernukkitx.event.player.PlayerDropItemEvent;

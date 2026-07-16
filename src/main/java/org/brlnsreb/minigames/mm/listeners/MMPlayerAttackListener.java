@@ -13,8 +13,8 @@ import org.powernukkitx.utils.TextFormat;
 import org.brlnsreb.core.minigame.match.GameStateType;
 import org.brlnsreb.minigames.mm.MurderMysteryGame;
 import org.brlnsreb.minigames.mm.config.MMConfig;
+import org.brlnsreb.minigames.mm.match.game.gamedata.MMRole;
 import org.brlnsreb.minigames.mm.roles.GamePlayer;
-import org.brlnsreb.minigames.mm.roles.MMRole;
 
 public class MMPlayerAttackListener implements Listener {
     

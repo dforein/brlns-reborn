@@ -34,20 +34,20 @@ public class VotingMapTimeMenu extends MenuAbstract {
         CustomForm menu = new CustomForm("Game Poll");
         
         //map dropdown
-        List<String> availableMaps = mapVoting.getAvailableOptions();
+        List<String> availableMapIds = mapVoting.getAvailableOptions();
         List<String> mapOptions = new ArrayList<>();
 
         mapOptions.add("None");                       //"None" option
-        for (String map : availableMaps) {              //all randomly selected maps options
-            int votes = mapVoting.getVoteCount(map);
-            String mapDisplayName = YamlUtil.getStr("map-settings.maps." + map + ".name", config);
+        for (String mapId : availableMapIds) {              //all randomly selected maps options
+            int votes = mapVoting.getVoteCount(mapId);
+            String mapDisplayName = YamlUtil.getStr("map-settings.maps." + mapId + ".name", config);
             mapOptions.add(mapDisplayName + " (" + votes + ")");
         }
         
         String pastMapVote = mapVoting.getPlayerVote(player);
         int mapDefaultIndex;
         if (pastMapVote != null) {
-            mapDefaultIndex = availableMaps.indexOf(pastMapVote) + 1;
+            mapDefaultIndex = availableMapIds.indexOf(pastMapVote) + 1;
         } else {
             mapDefaultIndex = 0;
         }
@@ -93,10 +93,10 @@ public class VotingMapTimeMenu extends MenuAbstract {
         
         int mapIndex = response.getDropdownResponse(0).elementId();
         if (mapIndex > 0) {         //if it's zero, the choice was "None"
-            String selectedMap = mapVoting.getAvailableOptions().get(mapIndex - 1);
-            mapVoting.vote(player, selectedMap);
+            String selectedMapId = mapVoting.getAvailableOptions().get(mapIndex - 1);
+            mapVoting.vote(player, selectedMapId);
             
-            placeholder[0] = YamlUtil.getStr("map-settings.maps." + selectedMap + ".name", config);
+            placeholder[0] = YamlUtil.getStr("map-settings.maps." + selectedMapId + ".name", config);
             msgUtil.sendPresetMessagePrefix("map-vote", player, placeholder);
         } else {
             mapVoting.removePlayerVote(player);     //in case he voted before

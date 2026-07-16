@@ -1,9 +1,7 @@
-package org.brlnsreb.minigames.mm.match.game;
+package org.brlnsreb.minigames.mm.match.game.gamedata;
 
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.data.PlayerGameData;
-import org.brlnsreb.core.player.data.StatType;
-import org.brlnsreb.minigames.mm.roles.MMRole;
 
 public class MMPlayerGameData extends PlayerGameData {
 
@@ -15,9 +13,6 @@ public class MMPlayerGameData extends PlayerGameData {
 
     //murderer
     public boolean flashUsed = false;
-    public boolean firstKill = false;
-
-    public Boolean isWinner = null;
 
     public MMPlayerGameData(CustomPlayer player) {
         super(player);
@@ -25,11 +20,6 @@ public class MMPlayerGameData extends PlayerGameData {
 
     public boolean canBecomeSheriff() {
         return role == MMRole.INNOCENT && gold >= GOLD_SHERIFF;
-    }
-
-    public void addStatOnEnding() {
-        if (isWinner) incrementStat(StatType.WINS);
-        else incrementStat(StatType.LOSSES);
     }
     
 }

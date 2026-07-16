@@ -7,28 +7,42 @@ import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.core.minigame.match.GameStateType;
 import org.brlnsreb.core.minigame.match.MatchExpand;
 import org.brlnsreb.core.minigame.match.game.GameExpand;
+import org.brlnsreb.core.minigame.match.game.arena.Arena;
+import org.brlnsreb.core.minigame.match.game.arena.RandomSpawnsArena;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.core.player.CustomPlayer.DamageMode;
 import org.brlnsreb.core.player.CustomPlayer.InteractMode;
+import org.brlnsreb.core.player.data.StatType;
 import org.brlnsreb.core.player.data.database.AccountsManager;
-import org.brlnsreb.minigames.mm.entities.DeadBodyEntity;
+import org.brlnsreb.minigames.mm.match.game.entities.DeadBodyEntity;
+import org.brlnsreb.minigames.mm.match.game.entities.ThrownSwordEntity;
+import org.brlnsreb.minigames.mm.match.game.gamedata.MMPlayerGameData;
+import org.brlnsreb.minigames.mm.match.game.gamedata.MMRole;
 import org.brlnsreb.minigames.mm.match.game.items.MMItemManager;
+import org.brlnsreb.minigames.mm.match.game.systems.DeathSystem;
+import org.brlnsreb.minigames.mm.match.game.systems.GoldSystem;
+import org.brlnsreb.minigames.mm.match.game.systems.ProjectileSystem;
+import org.brlnsreb.minigames.mm.match.game.systems.RaycastSystem;
 import org.brlnsreb.minigames.mm.match.game.ui.MMBossBar;
 import org.brlnsreb.minigames.mm.match.game.ui.MMScoreboard;
-import org.brlnsreb.minigames.mm.roles.MMRole;
+import org.brlnsreb.minigames.mm.match.game.ui.MMSpectatorMenu;
 import org.brlnsreb.utils.TimerSystem;
 import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.voting.TimeOfDay;
 import org.brlnsreb.utils.voting.Weather;
+import org.cloudburstmc.protocol.bedrock.data.actor.EntityDamageCause;
 import org.powernukkitx.Player;
 import org.powernukkitx.entity.Entity;
 import org.powernukkitx.entity.effect.EffectType;
+import org.powernukkitx.event.entity.ProjectileHitEvent;
+import org.powernukkitx.event.inventory.InventoryPickupItemEvent;
 import org.powernukkitx.event.player.PlayerChatEvent;
 import org.powernukkitx.event.player.PlayerCommandPreprocessEvent;
 import org.powernukkitx.item.Item;
 import org.powernukkitx.level.Position;
 import org.powernukkitx.scheduler.Task;
+import org.powernukkitx.utils.TextFormat;
 
 public class MMGame extends GameExpand {
 
@@ -37,11 +51,19 @@ public class MMGame extends GameExpand {
     private final MMBossBar bossBar;
     private final MMScoreboard scoreboard;
     private final MMItemManager items;
+    private final MMSpectatorMenu spectatorMenu;
 
     private TimerSystem timer;
     private Task updateUiTask;
+    private final GoldSystem gold;
+    private final DeathSystem death;
+    private final ProjectileSystem projectile;
+    private final RaycastSystem raycast;
 
-    private boolean isSheriffAlive = true;
+    private CustomPlayer murderer;
+    private boolean firstKill;
+
+    private CustomPlayer sheriff;
 
     private final Set<Entity> deadBodies = new HashSet<>();
 
@@ -60,7 +82,24 @@ public class MMGame extends GameExpand {
 
         this.bossBar = new MMBossBar(players, config.getInt("game.time-start-tracking"));
         this.scoreboard = new MMScoreboard();
-        this.items = new MMItemManager(config);
+        this.items = new MMItemManager(this);
+        this.spectatorMenu = new MMSpectatorMenu(this);
+
+        this.gold = new GoldSystem(config, arena);
+        this.death = new DeathSystem(this, scheduler);
+        this.projectile = new ProjectileSystem(this);
+        this.raycast = new RaycastSystem(this);
+
+        firstKill = true;
+    }
+
+    protected Arena prepareArena(String mapId, TimeOfDay time, Weather weather) {
+        return new RandomSpawnsArena(
+            config,
+            mapId,
+            "map-settings.maps." + mapId,
+            time, weather
+        );
     }
 
 
@@ -87,7 +126,7 @@ public class MMGame extends GameExpand {
     }
 
     protected void setPregameNameTag(CustomPlayer player) {
-        player.ingameChatNameTag = player.lobbyNameTag;
+        player.ingameChatNameTag = player.grayNameTag;
     }
 
     public void onJoinPrepareSpectator(CustomPlayer player) {
@@ -108,15 +147,27 @@ public class MMGame extends GameExpand {
 
 
     public void onLeave(CustomPlayer player) {
-        prepareAndSaveData(player);
-        gameDataMap.remove(player);
+        if (player.isGameSpectator()) return;
 
+        prepareAndSaveData(player);
+
+        roleCheckOnLeave(player, player.getPosition());
         checkWinConditions();
     }
 
     public void prepareAndSaveData(CustomPlayer player) {
-        if (state.current == GameStateType.ENDING) gameDataMap.get(player).addStatOnEnding();
         AccountsManager.savePlayerData(player);
+    }
+
+    private void roleCheckOnLeave(CustomPlayer player, Position lastPos) {
+        if (gameDataMap.get(player).role == MMRole.MURDERER) {
+            murderer = null;
+        } else if (gameDataMap.get(player).role == MMRole.SHERIFF) {
+            sheriff = null;
+            death.dropSheriffHoe(lastPos);
+        }
+
+        gameDataMap.remove(player);
     }
 
 
@@ -144,7 +195,7 @@ public class MMGame extends GameExpand {
         }
 
         //load gold spawns
-        //TODO: load gold spawn
+        gold.loadSpawns();
     }
 
     protected void updatePregameScoreboards(String formattedTime) {
@@ -193,10 +244,10 @@ public class MMGame extends GameExpand {
                 updateGameBossBar();
             }
         };
-        scheduler.scheduleRepeatingTask(BrlnsReb.instance, updateUiTask, config.getInt("game.ui-update-interval"));
+        scheduler.scheduleRepeatingTask(BrlnsReb.instance, updateUiTask, config.getInt("game.ui-update-ticks"));
 
         //spawn gold
-        //TODO: spawn gold
+        gold.startSpawning();
 
         //player check at game start
         if (config.getBoolean("settings.check-players-at-game-start")) {
@@ -213,6 +264,10 @@ public class MMGame extends GameExpand {
             role == MMRole.MURDERER || role == MMRole.SHERIFF,
             false
         );
+
+        //save key player
+        if (role == MMRole.MURDERER) murderer = player;
+        if (role == MMRole.SHERIFF) sheriff = player;
 
         //title message
         String titlePath = switch (role) {
@@ -236,15 +291,18 @@ public class MMGame extends GameExpand {
     //ui update
 
     public void updateGameScoreboards() {
-        int innocents = players.size() - 2;     //total - murderer - sheriff
+        int innocents = players.size();
+        if (isMurdererAlive()) innocents--;
+        if (isSheriffAlive()) innocents--;
+
         String formattedTime = timer.getFormattedTime();
 
         for (CustomPlayer p : players) {
-            scoreboard.updateIngame(p, innocents, isSheriffAlive, formattedTime, gameDataMap.get(p).role);
+            scoreboard.updateIngame(p, innocents, isSheriffAlive(), formattedTime, gameDataMap.get(p).role);
         }
 
         for (CustomPlayer s : spectators) {
-            scoreboard.updateSpectator(s, innocents, isSheriffAlive, formattedTime, spectators.size());
+            scoreboard.updateSpectator(s, innocents, isSheriffAlive(), formattedTime, spectators.size());
         }
     }
 
@@ -259,8 +317,44 @@ public class MMGame extends GameExpand {
     
     //death
 
-    public void kill(CustomPlayer player) {
-        //TODO
+    public void onDeath(EntityDamageCause cause, CustomPlayer victim, CustomPlayer killer) {
+        onDeath(victim, killer);
+    }
+
+    public void onDeath(CustomPlayer victim, CustomPlayer killer) {
+        Position deathPos = victim.getPosition();
+
+        getMatch().onEndLobbyJoin(victim);
+
+        gameDataMap.get(victim).incrementStat(StatType.DEATHS);
+        gameDataMap.get(victim).incrementStat(StatType.LOSSES);
+        prepareAndSaveData(victim);
+
+        if (killer == murderer) {
+            if (isFirstKill()) {
+                msgUtil.sendPresetMessagePrefix("murderer-warning", murderer);
+            }
+            gameDataMap.get(murderer).incrementStat(StatType.KILLS);
+            
+        } else if (killer == sheriff) {
+            if (victim == murderer) {
+                gameDataMap.get(sheriff).incrementStat(StatType.KILLS);
+            } else {
+                onDeath(null, sheriff, null);
+            }
+        }
+
+        death.onDeath(victim, deathPos);
+        roleCheckOnLeave(victim, deathPos);
+        checkWinConditions();
+    }
+
+    private boolean isFirstKill() {
+        if (firstKill) {
+            firstKill = false;
+            return true;
+        }
+        return false;
     }
 
 
@@ -271,24 +365,49 @@ public class MMGame extends GameExpand {
         if (gameData.flashUsed) return;
 
         gameData.flashUsed = true;
-        items.useFlash(player);
-
-        //TODO: use flash
+        items.useFlash(player, scheduler);
     }
 
 
     //check win conditions
 
     public boolean checkWinConditions() {
+        if (state.current != GameStateType.IN_GAME) return false;
 
+        if (!isMurdererAlive()) {
+            onGameEnding();
+            return true;
+
+        } else if (players.size() <= 1 && isMurdererAlive()) {
+            onGameEnding();
+            return true;
+
+        } else if (players.size() <= 2 && isMurdererAlive() && isSheriffAlive()) {
+            onGameEnding();
+            return true;
+        }
+
+        return false;
     }
+
+    public boolean isMurdererAlive() { return murderer != null; }
+    public boolean isSheriffAlive() { return sheriff != null; }
 
 
     //ending
 
     public void endGame() {
         stopGame();
-        //TODO
+        for (CustomPlayer p : players) {
+            if (isMurdererAlive() && isSheriffAlive()) {
+                if (p == murderer) gameDataMap.get(p).incrementStat(StatType.WINS);
+                if (p == sheriff) gameDataMap.get(p).incrementStat(StatType.LOSSES);
+            } else {
+                gameDataMap.get(p).incrementStat(StatType.WINS);
+            }
+        }
+
+        scheduler.scheduleDelayedTask(BrlnsReb.instance, match::onEnding, config.getInt("game.ending-duration") * 20);
     }
 
     public void forceStop() {
@@ -299,18 +418,46 @@ public class MMGame extends GameExpand {
 
     private void stopGame() {
         if (updateUiTask != null) updateUiTask.cancel();
-        //gold stop
+        gold.stop();
     }
 
 
     //listener access
 
     public void onItemUse(CustomPlayer player, Item item) {
+        switch (item.getId()) {
+            //sheriff
+            case Item.GOLDEN_HOE -> {
+                CustomPlayer victim = raycast.shoot(player);
+                if (victim != null) onDeath(victim, player);
+            }
+            //murderer
+            case Item.IRON_SWORD -> projectile.throwSword(player);
+            case Item.BLAZE_ROD -> useFlash(player);
+            //innocent
+            case Item.YELLOW_DYE -> newSheriff(player);
+            //spectator
+            case Item.NETHER_STAR -> spectatorMenu.openSpectateMenu(player);
+            case Item.COMPASS -> spectatorMenu.openActionsMenu(player);
+        }
+    }
+
+    public void onProjectileHit(CustomPlayer player, ProjectileHitEvent event) {
+        //TODO
+        if (state.current != GameStateType.IN_GAME) return;
+        if (!(event.getEntity() instanceof ThrownSwordEntity)) return;
+
+        
+
+        
+    }
+
+    public void onItemPickup(CustomPlayer player, InventoryPickupItemEvent event) {
         //TODO
     }
 
     public boolean onChat(CustomPlayer player, PlayerChatEvent event) {
-        if (players.contains(player)) return chatRoleCheck(player);
+        if (players.contains(player)) return roleCheckOnChat(player);
 
         if (spectators.contains(player)) {
             event.getRecipients().removeIf(recipient -> players.contains(recipient));
@@ -325,7 +472,7 @@ public class MMGame extends GameExpand {
         for (String command : blockedChatCommands) {
             if (!message.equals(command)) continue;
 
-            if (players.contains(player)) return chatRoleCheck(player);
+            if (players.contains(player)) return roleCheckOnChat(player);
             if (spectators.contains(player)) {
                 msgUtil.sendPresetMessagePrefix("no-chat", player, new String[] { "spectators" });
                 return false;
@@ -335,7 +482,7 @@ public class MMGame extends GameExpand {
         return true;
     }
 
-    private boolean chatRoleCheck(CustomPlayer player) {
+    private boolean roleCheckOnChat(CustomPlayer player) {
         switch (gameDataMap.get(player).role) {
             case MURDERER:
                 msgUtil.sendPresetMessagePrefix("no-chat", player, new String[] { "the murderer" });
@@ -349,5 +496,9 @@ public class MMGame extends GameExpand {
             default: return true;
         }
     }
+
+
+    public MMPlayerGameData getGameData(CustomPlayer player) { return gameDataMap.get(player); }
+    public RandomSpawnsArena getArena() { return (RandomSpawnsArena) arena; }
 
 }

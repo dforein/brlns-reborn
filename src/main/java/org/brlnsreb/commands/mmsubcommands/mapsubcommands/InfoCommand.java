@@ -5,8 +5,7 @@ import java.util.LinkedList;
 
 import org.brlnsreb.commands.subcommands.SimpleSubCommand;
 import org.brlnsreb.minigames.mm.MurderMysteryGame;
-import org.brlnsreb.minigames.mm.systems.GoldSpawnMapper;
-
+import org.brlnsreb.minigames.mm.match.game.systems.GoldSpawnMapper;
 import org.powernukkitx.command.CommandSender;
 import org.powernukkitx.command.data.CommandParameter;
 import org.powernukkitx.utils.TextFormat;

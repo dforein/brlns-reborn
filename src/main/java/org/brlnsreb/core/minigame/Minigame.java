@@ -141,7 +141,7 @@ public abstract class Minigame {
 
     public int getMinPlayers() { return config.getInt("settings.min-players"); }
     public int getMaxPlayers() { return config.getInt("settings.max-players"); }
-    public List<String> getAvailableMaps() { return config.getStringList("map-settings.enabled-maps"); }
+    public List<String> getAvailableMapIds() { return config.getStringList("map-settings.enabled-maps"); }
 
     public MinigameLobby getLobby() { return lobby; }
     public HashSet<? extends Match> getMatches() { return matches; }

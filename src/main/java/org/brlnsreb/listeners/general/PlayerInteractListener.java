@@ -41,27 +41,27 @@ public class PlayerInteractListener implements Listener {
             
             case LIMITED, ONLY_PLAYER_BLOCKS:
                 Block block = event.getBlock();
-                if (block != null) {
-                    if (block instanceof BlockDoor
-                        || block instanceof BlockFenceGate
-                        || block instanceof BlockTrapdoor
-                        || block instanceof BlockButton
-                        || block instanceof BlockLever
-                    ) return;
+                if (block == null) return;
 
-                    if (player.state != PlayerStateType.LOBBY
-                        && (block instanceof BlockCake || block instanceof BlockCandleCake)
-                    ) return;
+                if (block instanceof BlockDoor
+                    || block instanceof BlockFenceGate
+                    || block instanceof BlockTrapdoor
+                    || block instanceof BlockButton
+                    || block instanceof BlockLever
+                ) return;
 
-                    if (event.getAction() == Action.PHYSICAL) {
-                        if (block instanceof BlockFarmland 
-                            || block instanceof BlockPressurePlateBase) {
-                            event.setCancelled();
-                        }
-                    } else {
+                if (player.state != PlayerStateType.LOBBY
+                    && (block instanceof BlockCake || block instanceof BlockCandleCake)
+                ) return;
+
+                if (event.getAction() == Action.PHYSICAL) {
+                    if (block instanceof BlockFarmland || block instanceof BlockPressurePlateBase) {
                         event.setCancelled();
                     }
+                } else {
+                    event.setCancelled();
                 }
+
                 return;
 
             case NOTHING:
@@ -75,7 +75,7 @@ public class PlayerInteractListener implements Listener {
         if (!(action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)) return;
 
         if (player.state == PlayerStateType.LOBBY) {
-            MainLobbyItemManager.getInstance().onItemUse(player, item);
+            MainLobbyItemManager.instance.onItemUse(player, item);
         } else {
             if (player.getMatch() != null) {
                 player.getMatch().onItemUse(player, item);

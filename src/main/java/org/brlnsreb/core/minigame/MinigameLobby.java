@@ -46,7 +46,7 @@ public abstract class MinigameLobby extends Lobby {
     }
 
     protected void onJoinItems(CustomPlayer player) {
-        MainLobbyItemManager.getInstance().giveMinigameLobbyItems(player);
+        MainLobbyItemManager.instance.giveMinigameLobbyItems(player);
     }
 
 

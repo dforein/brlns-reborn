@@ -1,4 +1,4 @@
-package org.brlnsreb.minigames.mm.entities;
+package org.brlnsreb.minigames.mm.match.game.entities;
 
 import org.cloudburstmc.protocol.bedrock.data.actor.ActorFlags;
 import org.jetbrains.annotations.NotNull;

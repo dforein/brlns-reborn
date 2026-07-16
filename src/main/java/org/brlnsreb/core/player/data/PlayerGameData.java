@@ -34,6 +34,7 @@ public abstract class PlayerGameData {
 
     public void incrementStat(StatType statType) {
         playerData.incrementStat(minigameId, statType);
+        playerData.incrementGlobalStat(statType);
     }
 
     public int getExpEarned() { return expEarned; }

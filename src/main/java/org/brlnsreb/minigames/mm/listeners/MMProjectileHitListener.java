@@ -11,9 +11,9 @@ import org.powernukkitx.utils.TextFormat;
 import org.brlnsreb.core.minigame.match.GameStateType;
 import org.brlnsreb.minigames.mm.MurderMysteryGame;
 import org.brlnsreb.minigames.mm.config.MMConfig;
-import org.brlnsreb.minigames.mm.entities.ThrownSwordEntity;
+import org.brlnsreb.minigames.mm.match.game.entities.ThrownSwordEntity;
+import org.brlnsreb.minigames.mm.match.game.gamedata.MMRole;
 import org.brlnsreb.minigames.mm.roles.GamePlayer;
-import org.brlnsreb.minigames.mm.roles.MMRole;
 
 public class MMProjectileHitListener implements Listener {
     
@@ -23,7 +23,6 @@ public class MMProjectileHitListener implements Listener {
         this.game = game;
     }
     
-    @EventHandler(priority = EventPriority.HIGH)
     public void onProjectileHit(ProjectileHitEvent event) {
         if (!(event.getEntity() instanceof ThrownSwordEntity)) return;
 

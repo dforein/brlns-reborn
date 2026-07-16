@@ -1,35 +1,28 @@
-package org.brlnsreb.core.minigame.match.game;
+package org.brlnsreb.core.minigame.match.game.arena;
 
 import org.powernukkitx.level.Level;
 import org.powernukkitx.level.Position;
 import org.powernukkitx.math.Vector3;
 import org.powernukkitx.utils.Config;
 
-import java.util.List;
-
 import org.brlnsreb.core.WorldManager;
 import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.voting.TimeOfDay;
 import org.brlnsreb.utils.voting.Weather;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
-public class Arena {
+public abstract class Arena {
     
-    private final String configPath;
-    private final String name;
-    private final Level level;
-    private final Vector3 min;
-    private final Vector3 max;
-
-    private final List<Position> spawns;
-    private int spawnIndex = 0;
+    protected final String mapId;
+    protected final String configPath;
+    protected final String name;
+    protected final Level level;
+    protected final Vector3 min;
+    protected final Vector3 max;
     
-    public Arena(Config config, String mapsConfigPath, String settingsConfigPath, TimeOfDay time, Weather weather) {
+    public Arena(Config config, String mapId, String mapsConfigPath, TimeOfDay time, Weather weather) {
         mapsConfigPath = YamlUtil.checkConfigPath(mapsConfigPath);
-        settingsConfigPath = YamlUtil.checkConfigPath(settingsConfigPath);
 
+        this.mapId = mapId;
         this.configPath = mapsConfigPath;
         this.name = YamlUtil.getStr(configPath + "name", config);
 
@@ -45,16 +38,9 @@ public class Arena {
         this.min = YamlUtil.parseVector3(YamlUtil.getStr(configPath + "min", config));
         this.max = YamlUtil.parseVector3(YamlUtil.getStr(configPath + "max", config));
 
-        this.spawns = new ArrayList<>();
-        for (String rawCoords : config.getStringList(configPath + "spawns")) {
-            this.spawns.add(Position.fromObject(
-                YamlUtil.parseVector3Centered(rawCoords), 
-                level
-            ));
-        }
-        Collections.shuffle(spawns);
+        loadSpawns(config);
 
-        if (config.getBoolean(settingsConfigPath + "physics-enabled")) {
+        if (config.getBoolean("settings.physics-enabled")) {
             WorldManager.enablePhysicsIn(level);
         }
     }
@@ -63,11 +49,8 @@ public class Arena {
         WorldManager.unloadLevel(level);
     }
     
-    public Position getRandomSpawn() {
-        if (spawns.isEmpty()) return null;
-        if (spawnIndex >= spawns.size()) spawnIndex = 0;
-        return spawns.get(spawnIndex++);
-    }
+    protected abstract void loadSpawns(Config config);
+    public abstract Position getRandomSpawn();
     
     public boolean isInArena(Vector3 pos) {
         return pos.x >= min.x && pos.x <= max.x &&
@@ -75,11 +58,11 @@ public class Arena {
                pos.z >= min.z && pos.z <= max.z;
     }
 
+    public String getMapId() { return mapId; }
     public String getConfigPath() { return configPath; }
     public String getName() { return name; }
     public Level getLevel() { return level; }
     public Vector3 getMin() { return min; }
     public Vector3 getMax() { return max; }
-    public List<Position> getSpawns() { return spawns; }
 
 }

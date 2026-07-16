@@ -1,7 +1,7 @@
 package org.brlnsreb.minigames.mm.match.game.ui;
 
 import org.brlnsreb.core.player.CustomPlayer;
-import org.brlnsreb.minigames.mm.roles.MMRole;
+import org.brlnsreb.minigames.mm.match.game.gamedata.MMRole;
 import org.brlnsreb.utils.abstraction.ScoreboardAbstract;
 
 public class MMScoreboard extends ScoreboardAbstract {

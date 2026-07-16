@@ -16,6 +16,7 @@ import org.brlnsreb.core.minigame.match.waitinglobby.ui.WaitingLobbyScoreboard;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
+import org.brlnsreb.utils.ChatMsgs;
 import org.brlnsreb.utils.Messages;
 import org.brlnsreb.utils.TimerSystem;
 import org.brlnsreb.utils.voting.TimeOfDay;
@@ -49,7 +50,7 @@ public abstract class WaitingLobby extends Lobby {
     protected VotingSystem<TimeOfDay> timeVoting = null;
     protected VotingSystem<Weather> weatherVoting = null;
 
-    protected String selectedMap;
+    protected String selectedMapId;
     protected TimeOfDay selectedTime = null;
     protected Weather selectedWeather = null;
 
@@ -122,7 +123,8 @@ public abstract class WaitingLobby extends Lobby {
             players, 
             "action-bar.on-join", 
             new Object[] {player.getName(), players.size(), maxPlayers},
-            ConfigManager.getConfig("global/messages")
+            ConfigManager.getConfig("global/messages"),
+            99999
         );
     }
 
@@ -142,6 +144,14 @@ public abstract class WaitingLobby extends Lobby {
 
     //OVERRIDE if you need more voting options
     public void onLeave(CustomPlayer player) {
+        Messages.sendActionBar(
+            players, 
+            "action-bar.on-leave", 
+            new Object[] {player.getName(), players.size(), maxPlayers},
+            ConfigManager.getConfig("global/messages"),
+            99999
+        );
+
         mapVoting.removePlayerVote(player);
         checkPlayerNumber(players.size() - 1);
     }
@@ -206,7 +216,7 @@ public abstract class WaitingLobby extends Lobby {
             }
         }, this::onGameStart);
 
-        match.preloadGame(selectedMap, selectedTime, selectedWeather);
+        match.preloadGame(selectedMapId, selectedTime, selectedWeather);
 
         if (sendMessage) {
             msgUtil.broadcastPresetPrefix("waiting-lobby.countdown-shortened");
@@ -229,6 +239,8 @@ public abstract class WaitingLobby extends Lobby {
     //game start
 
     protected void onGameStart() {
+        Messages.resetActionBar(players);
+
         for (CustomPlayer p : players) {
             PlayerUtils.resetUiAndInventories(p);
         }
@@ -244,31 +256,31 @@ public abstract class WaitingLobby extends Lobby {
     //OVERRIDE if you need more voting options
     protected void prepareVoting() {
         if (mapVoting.getAvailableOptions().isEmpty()) {
-            List<String> availableMaps = minigame.getAvailableMaps();
+            List<String> availableMapIds = minigame.getAvailableMapIds();
         
-            while (availableMaps.size() > 3) {
-                availableMaps.remove(
-                    ThreadLocalRandom.current().nextInt(availableMaps.size())
+            while (availableMapIds.size() > 3) {
+                availableMapIds.remove(
+                    ThreadLocalRandom.current().nextInt(availableMapIds.size())
                 );
             }
 
-            mapVoting.setAvailableOptions(availableMaps);
+            mapVoting.setAvailableOptions(availableMapIds);
         }
     }
 
     //OVERRIDE if you need more voting options
     protected void finalizeVoting() {
-        if (selectedMap != null) return;
+        if (selectedMapId != null) return;
 
-        selectedMap = mapVoting.getMostVoted();
+        selectedMapId = mapVoting.getMostVoted();
 
-        if (selectedMap == null) {
-            List<String> availableMaps = mapVoting.getAvailableOptions();
-            if (!availableMaps.isEmpty()) {
-                selectedMap = availableMaps.get(new Random().nextInt(availableMaps.size()));
+        if (selectedMapId == null) {
+            List<String> availableMapIds = mapVoting.getAvailableOptions();
+            if (!availableMapIds.isEmpty()) {
+                selectedMapId = availableMapIds.get(new Random().nextInt(availableMapIds.size()));
             } else {
-                BrlnsReb.instance.getLogger().error("CRITIC ERROR: No map enabled in config!");
-                msgUtil.broadcastPrefix("§cError: no map available! Match cancelled.");
+                BrlnsReb.instance.getLogger().error("CRITIC ERROR: No maps enabled in config!");
+                msgUtil.broadcastPrefix(ChatMsgs.ERROR_PFX + "No maps available! Match cancelled.");
                 match.forceStop();
                 return;
             }

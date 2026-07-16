@@ -15,7 +15,8 @@ lobby:
 game:
   duration: 420
   ending-duration: 10
-  ui-update-interval: 10
+  ui-update-ticks: 10
+  time-start-tracking: 60
   items:
     sword:
       name: '&o&l&cMurderstick'
@@ -40,12 +41,9 @@ game:
     per-kill: 15
     sheriff-won: 600
     sheriff-kill: 100
-  time-start-tracking: 60
-  death:
-    animation-duration: 0.4167
+  dead-body:
     head-yaw-offset: -35
     head-pitch-offset: -40
-    blindness-duration: 2
 
 waiting-lobby:
   world: waitinglobby

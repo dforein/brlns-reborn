@@ -12,7 +12,7 @@ import org.powernukkitx.utils.Config;
 
 public class MainLobbyItemManager extends ItemManager {
 
-    private static MainLobbyItemManager instance;
+    public static MainLobbyItemManager instance;
     
     public MainLobbyItemManager(Config config) {
         super(ConfigManager.getGlobalConfig());
@@ -57,7 +57,5 @@ public class MainLobbyItemManager extends ItemManager {
     private void giveJoinGame(Player player) {
         giveItem(player, 7, Item.SLIME_BALL, getStr("items.join-game.name"));
     }
-
-    public static MainLobbyItemManager getInstance() { return instance; }
 
 }

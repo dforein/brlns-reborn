@@ -2,6 +2,7 @@ package org.brlnsreb.minigames.mm.roles;
 
 import java.util.UUID;
 
+import org.brlnsreb.minigames.mm.match.game.gamedata.MMRole;
 import org.powernukkitx.Player;
 import org.powernukkitx.Server;
 

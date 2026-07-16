@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.brlnsreb.utils.Cooldown;
 import org.powernukkitx.Player;
 import org.powernukkitx.Server;
 import org.powernukkitx.form.window.Form;
@@ -15,19 +16,10 @@ public abstract class MenuAbstract {
     private static final Map<Integer, Form<?>> id2FormMap = new ConcurrentHashMap<>();
     private static final Map<Integer, UUID> id2PlayerUUIDMap = new ConcurrentHashMap<>();
     private static final BitSet idSet = new BitSet();
-    protected static final Map<UUID, Long> openingCooldown = new ConcurrentHashMap<>();
+    protected static final Cooldown openingCooldown = Cooldown.seconds(0.5);
 
     protected static boolean checkCooldown(Player player) {
-        long now = System.currentTimeMillis();
-        UUID uuid = player.getUniqueId();
-
-        if (openingCooldown.containsKey(uuid)
-            && now - openingCooldown.get(uuid) < 500) {
-            return true;
-        }
-
-        openingCooldown.put(uuid, now);
-        return false;
+        return openingCooldown.check(player.getUniqueId());
     }
 
     protected static int sendForm(Player player, Form<?> form) {

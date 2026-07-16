@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.brlnsreb.commands.subcommands.SimpleSubCommand;
-import org.brlnsreb.core.minigame.match.game.Arena;
+import org.brlnsreb.core.minigame.match.game.arena.RandomSpawnsArena;
 import org.brlnsreb.BrlnsReb;
 
 import org.powernukkitx.Player;
@@ -41,7 +41,7 @@ public class ScanForBarriersCommand extends SimpleSubCommand {
 
         String mapId = args[2];
         
-        Arena arena = loadArenaFromConfig(mapId, player);
+        RandomSpawnsArena arena = loadArenaFromConfig(mapId, player);
         if (arena == null) {
             player.sendMessage(TextFormat.RED + "Map not found in config: " + mapId);
             return true;
@@ -65,7 +65,7 @@ public class ScanForBarriersCommand extends SimpleSubCommand {
 		return parameters;
 	}
 
-    private Arena loadArenaFromConfig(String mapId, Player player) {
+    private RandomSpawnsArena loadArenaFromConfig(String mapId, Player player) {
 
         int X = 0;
         int Y = 1;
@@ -121,7 +121,7 @@ public class ScanForBarriersCommand extends SimpleSubCommand {
             
             player.sendMessage(TextFormat.GRAY + "Loaded arena '" + arenaName + "' from world '" + worldName + "'");
             
-            return new Arena(arenaName, level, min, max, spawns);
+            return new RandomSpawnsArena(arenaName, level, min, max, spawns);
             
         } catch (Exception e) {
             player.sendMessage(TextFormat.RED + "Error loading arena: " + e.getMessage());

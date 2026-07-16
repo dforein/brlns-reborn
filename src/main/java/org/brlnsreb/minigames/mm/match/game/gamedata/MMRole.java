@@ -1,4 +1,4 @@
-package org.brlnsreb.minigames.mm.roles;
+package org.brlnsreb.minigames.mm.match.game.gamedata;
 
 public enum MMRole {
     MURDERER,

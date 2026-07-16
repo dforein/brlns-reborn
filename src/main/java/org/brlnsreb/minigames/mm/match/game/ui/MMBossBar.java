@@ -3,7 +3,7 @@ package org.brlnsreb.minigames.mm.match.game.ui;
 import java.util.Set;
 
 import org.brlnsreb.core.player.CustomPlayer;
-import org.brlnsreb.minigames.mm.match.game.MMPlayerGameData;
+import org.brlnsreb.minigames.mm.match.game.gamedata.MMPlayerGameData;
 import org.brlnsreb.utils.abstraction.BossBarAbstract;
 
 public class MMBossBar extends BossBarAbstract {

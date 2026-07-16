@@ -95,17 +95,14 @@ public abstract class Match {
                 spectators.remove(player);
                 break;
         }
-        
-        if (!player.isOnline()) return;
-        minigame.onLobbyJoin(player);
     }
 
 
     //game logic
 
-    public void preloadGame(String map, TimeOfDay time, Weather weather) {
+    public void preloadGame(String mapId, TimeOfDay time, Weather weather) {
         //used when the waiting lobby countdown is finishing
-        game = createGame(map, time, weather);
+        game = createGame(mapId, time, weather);
     }
 
     public void unloadGame() {

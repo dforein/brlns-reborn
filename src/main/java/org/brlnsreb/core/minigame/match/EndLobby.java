@@ -41,7 +41,8 @@ public class EndLobby extends Lobby {
     protected void onJoinMessages(CustomPlayer player) {
         player.sendTitle(
             YamlUtil.getStr(requireConfigPath() + "title", config), 
-            YamlUtil.getStr(requireConfigPath() + "subtitle", config)
+            YamlUtil.getStr(requireConfigPath() + "subtitle", config),
+            10, 60, 10
         );
     }
 

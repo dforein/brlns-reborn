@@ -13,9 +13,8 @@ public abstract class MatchExpand extends Match {
         this.endLobby = new EndLobby(this);
     }
 
-    public void onDeath(CustomPlayer player) {
+    public void onEndLobbyJoin(CustomPlayer player) {
         players.remove(player);
-        game.prepareAndSaveData(player);
         endLobby.onJoin(player);
     }
 

@@ -4,18 +4,16 @@ import org.brlnsreb.core.minigame.match.MatchExpand;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.voting.TimeOfDay;
 import org.brlnsreb.utils.voting.Weather;
+import org.cloudburstmc.protocol.bedrock.data.actor.EntityDamageCause;
 
 public abstract class GameExpand extends Game {
 
-    public GameExpand(MatchExpand match, String map, TimeOfDay time, Weather weather) {
-        super(match, map, time, weather);
+    public GameExpand(MatchExpand match, String mapId, TimeOfDay time, Weather weather) {
+        super(match, mapId, time, weather);
     }
 
-    public void onDeath(CustomPlayer player) {
-        kill(player);
-        ((MatchExpand) match).onDeath(player);
-    }
+    public abstract void onDeath(EntityDamageCause cause, CustomPlayer victim, CustomPlayer killer);
 
-    protected abstract void kill(CustomPlayer player);
+    public MatchExpand getMatch() { return (MatchExpand) match; }
     
 }

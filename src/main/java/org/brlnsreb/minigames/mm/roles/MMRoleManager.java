@@ -7,6 +7,7 @@ import java.util.*;
 
 import org.brlnsreb.minigames.mm.MurderMysteryGame;
 import org.brlnsreb.minigames.mm.config.MMConfig;
+import org.brlnsreb.minigames.mm.match.game.gamedata.MMRole;
 import org.brlnsreb.minigames.mm.systems.ItemManager;
 
 public class MMRoleManager {

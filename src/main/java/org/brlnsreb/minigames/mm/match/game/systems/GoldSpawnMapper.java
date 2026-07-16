@@ -1,4 +1,4 @@
-package org.brlnsreb.minigames.mm.systems;
+package org.brlnsreb.minigames.mm.match.game.systems;
 
 import org.powernukkitx.Player;
 import org.powernukkitx.block.Block;
@@ -8,7 +8,7 @@ import org.powernukkitx.level.Position;
 import org.powernukkitx.math.Vector3;
 import org.powernukkitx.utils.TextFormat;
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.minigame.match.game.Arena;
+import org.brlnsreb.core.minigame.match.game.arena.RandomSpawnsArena;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -49,8 +49,8 @@ public class GoldSpawnMapper {
         )
     );
     
-    public GoldSpawnMapper(BrlnsReb plugin) {
-        this.plugin = plugin;
+    public GoldSpawnMapper() {
+        this.plugin = BrlnsReb.instance;
         this.mapCache = new HashMap<>();
         this.barrierCache = new HashMap<>();
         this.mapsFolder = new File(plugin.getDataFolder(), "maps");
@@ -65,11 +65,11 @@ public class GoldSpawnMapper {
         }
     }
     
-    public void scanArena(Arena arena, String mapId, Player admin) {
+    public void scanArena(RandomSpawnsArena arena, String mapId, Player admin) {
         scanArena(arena, mapId, admin, false);
     }
 
-    public void scanArena(Arena arena, String mapId, Player admin, boolean useBarrierWhitelist) {
+    public void scanArena(RandomSpawnsArena arena, String mapId, Player admin, boolean useBarrierWhitelist) {
         admin.sendMessage(TextFormat.YELLOW + "Starting scan for map: " + mapId);
         if (useBarrierWhitelist) {
             admin.sendMessage(TextFormat.GRAY + "Using barrier whitelist mode");
@@ -131,7 +131,7 @@ public class GoldSpawnMapper {
         admin.sendMessage(TextFormat.GRAY + "Saved to: maps/" + mapId + ".json");
     }
     
-    public void scanForBarriers(Arena arena, String mapId, Player admin) {
+    public void scanForBarriers(RandomSpawnsArena arena, String mapId, Player admin) {
         admin.sendMessage(TextFormat.YELLOW + "Starting barrier scan for map: " + mapId);
         admin.sendMessage(TextFormat.GRAY + "This may take a while...");
         
@@ -179,7 +179,7 @@ public class GoldSpawnMapper {
         admin.sendMessage(TextFormat.GRAY + "Saved to: barriers/" + mapId + ".json");
     }
     
-    public void countBarriers(Arena arena, Player admin) {
+    public void countBarriers(RandomSpawnsArena arena, Player admin) {
         admin.sendMessage(TextFormat.YELLOW + "Counting barriers in arena...");
         
         Level level = arena.getLevel();

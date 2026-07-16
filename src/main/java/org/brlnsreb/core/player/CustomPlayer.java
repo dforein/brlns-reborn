@@ -70,9 +70,9 @@ public class CustomPlayer extends Player {
     public Minigame currentMinigame = null;
     private WeakReference<Match> currentMatch = new WeakReference<>(null);
     
-    public String lobbyNameTag;
-    public String waitingLobbyNameTag;
-    public String ingameChatNameTag;
+    public String grayNameTag;              //used especially in lobby
+    public String greenNameTag;             //used especially in waiting lobby/ingame
+    public String ingameChatNameTag;        //name tag to display in chat when texting during game
 
     public PlayerData data;
 
@@ -152,10 +152,10 @@ public class CustomPlayer extends Player {
     //data logic
 
     public void updatePresetNameTags() {
-        this.lobbyNameTag = "§8" + (data.getFloorLevel() < 0 ? "?" : data.getFloorLevel()) +
+        this.grayNameTag = "§8" + (data.getFloorLevel() < 0 ? "?" : data.getFloorLevel()) +
                                   " §7" + (data.isLogged() ? data.name : this.getName());
         
-        this.waitingLobbyNameTag = "§8" + (data.getFloorLevel() < 0 ? "?" : data.getFloorLevel()) +
+        this.greenNameTag = "§8" + (data.getFloorLevel() < 0 ? "?" : data.getFloorLevel()) +
                                          " §a" + (data.isLogged() ? data.name : this.getName());
 
         this.setPresetNameTag();
@@ -163,8 +163,8 @@ public class CustomPlayer extends Player {
 
     public void setPresetNameTag() {
         switch (this.state) {
-            case LOBBY -> this.setNameTag(this.lobbyNameTag);
-            case WAITING_LOBBY -> this.setNameTag(this.waitingLobbyNameTag);
+            case LOBBY -> this.setNameTag(this.grayNameTag);
+            case WAITING_LOBBY -> this.setNameTag(this.greenNameTag);
             case END_LOBBY -> this.setNameTag("§l§fGHOST§r " + data.name);
             default -> BrlnsReb.instance.getLogger().alert("CustomPlayer::resetNameTag, unrecognized state: " + state.toString());
         } 
@@ -292,11 +292,12 @@ public class CustomPlayer extends Player {
 
     private boolean checkAndAttack(EntityDamageEvent source) {
         //canAttackPlayer check
+        CustomPlayer damager = null;
         if (source instanceof EntityDamageByEntityEvent) {
             Entity entity = ((EntityDamageByEntityEvent) source).getDamager();
-            if (entity instanceof Player
-                    && !((CustomPlayer) entity).canAttackPlayers) {
-                return false;
+            if (entity instanceof Player) {
+                damager = (CustomPlayer) entity;
+                if (!damager.canAttackPlayers) return false;
             }
         }
 
@@ -313,7 +314,7 @@ public class CustomPlayer extends Player {
 
         Match match = getMatch();
         if (match != null && match instanceof MatchExpand) {
-            ((GameExpand) match.getGame()).onDeath(this);
+            ((GameExpand) match.getGame()).onDeath(this, damager);
         }
 
         return true;

@@ -3,6 +3,7 @@ package org.brlnsreb.core.minigame.match.game;
 import java.util.Set;
 
 import org.brlnsreb.core.ConfigManager;
+import org.brlnsreb.core.minigame.match.game.arena.Arena;
 import org.brlnsreb.core.minigame.match.game.items.SpectatorItemManager;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.match.GameState;
@@ -19,6 +20,7 @@ import org.brlnsreb.utils.voting.Weather;
 
 import org.powernukkitx.Player;
 import org.powernukkitx.Server;
+import org.powernukkitx.event.entity.ProjectileHitEvent;
 import org.powernukkitx.event.player.PlayerChatEvent;
 import org.powernukkitx.event.player.PlayerCommandPreprocessEvent;
 import org.powernukkitx.item.Item;
@@ -44,7 +46,7 @@ public abstract class Game {
 
     protected final ServerScheduler scheduler;
 
-    public Game(Match match, String map, TimeOfDay time, Weather weather) {
+    public Game(Match match, String mapId, TimeOfDay time, Weather weather) {
         this.config = match.getConfig();
 
         this.match = match;
@@ -52,7 +54,7 @@ public abstract class Game {
         this.state = match.getState();
         this.players = match.getPlayers();
         this.spectators = match.getSpectators();
-        this.arena = prepareArena(map, time, weather);
+        this.arena = prepareArena(mapId, time, weather);
 
         this.msgUtil = match.getMsgUtil();
         this.spectatorItems = new SpectatorItemManager();
@@ -60,15 +62,7 @@ public abstract class Game {
         this.scheduler = Server.getInstance().getScheduler();
     }
 
-    private Arena prepareArena(String map, TimeOfDay time, Weather weather) {
-        return new Arena(
-            config,
-            "map-settings.maps." + map,
-            "settings.",
-            time, weather
-        );
-    }
-
+    protected abstract Arena prepareArena(String mapId, TimeOfDay time, Weather weather);
     
     //join-leave logic
 
@@ -196,7 +190,17 @@ public abstract class Game {
     //events from listeners
 
     public abstract void onItemUse(CustomPlayer player, Item item);
+    public abstract void onProjectileHit(CustomPlayer player, ProjectileHitEvent event);
     public abstract boolean onChat(CustomPlayer player, PlayerChatEvent event);
     public abstract boolean onCommandPreprocess(CustomPlayer player, PlayerCommandPreprocessEvent event);
+
+
+
+    public Set<CustomPlayer> getPlayers() { return players; }
+    public Set<CustomPlayer> getSpectators() { return spectators; }
+    public Config getConfig() { return config; }
+    public Messages getMsgUtil() { return msgUtil; }
+    public GameState getState() { return state; }
+    public GameStateType getCurrentState() { return state.current; }
 
 }
