@@ -16,11 +16,13 @@ public enum TimeOfDay {
         this.timeValue = timeValue;
     }
 
-    public static void setTime(Level level, TimeOfDay time) {
+    public static TimeOfDay setTime(Level level, TimeOfDay time) {
         if (time != null) {
             level.setTime(time.timeValue);
+            return time;
         } else {
             level.setTime(DAY.timeValue);
+            return DAY;
         }
     }
 }

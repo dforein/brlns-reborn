@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.brlnsreb.core.ConfigManager;
+import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.minigame.MinigameType;
@@ -17,6 +17,7 @@ import org.brlnsreb.core.minigame.match.game.Game;
 import org.brlnsreb.core.minigame.match.waitinglobby.WaitingLobby;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.Messages;
+import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.voting.TimeOfDay;
 import org.brlnsreb.utils.voting.Weather;
 
@@ -50,7 +51,7 @@ public abstract class Match {
 
         this.config = getConfig();
         this.messages = getMessages();
-        this.msgUtil = new Messages(this.messages, this.players, this.spectators);
+        this.msgUtil = new Messages(this.messages, minigame.mgt.prefix, this.players, this.spectators);
 
         this.waitingLobby = createWaitingLobby();
     }
@@ -106,6 +107,15 @@ public abstract class Match {
     public void preloadGame(String mapId, TimeOfDay time, Weather weather) {
         //used when the waiting lobby countdown is finishing
         game = createGame(mapId, time, weather);
+
+        msgUtil.broadcastPresetPrefix(
+            YamlUtil.getStr("waiting-lobby.going-to-play", Configs.getGlobalMessages()), 
+            new String[] {
+                YamlUtil.getStr("map-settings.maps." + mapId + ".name", config),
+                game.getArena().getTime().displayName,
+                game.getArena().getWeather().displayName
+            }
+        );
     }
 
     public void unloadGame() {
@@ -126,7 +136,7 @@ public abstract class Match {
     public void forceStop() {
         msgUtil.broadcast(msgUtil.getStrPrefix(
             "force-stop", 
-            ConfigManager.getGlobalMessages()
+            Configs.getGlobalMessages()
         ));
 
         switch (state.current) {

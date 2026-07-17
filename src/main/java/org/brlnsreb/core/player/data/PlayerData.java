@@ -1,6 +1,7 @@
 package org.brlnsreb.core.player.data;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.brlnsreb.core.minigame.Minigame;
@@ -257,6 +258,9 @@ public class PlayerData {
     public void setFriendRequestsFlag(boolean value) { synchronized (friendLock) { this.friendRequests = value; } }
 
     public Map<String, String> getOfflineFriends() { synchronized (friendLock) { return this.offlineFriends; } }
+    public List<Entry<String, String>> getOfflineFriendsEntriesCopy() {
+        synchronized (friendLock) { return new ArrayList<>(this.offlineFriends.entrySet()); }
+    }
     public Map<String, String> getOnlineFriends() { synchronized (friendLock) { return this.onlineFriends; } }
     public List<String> getOnlineFriendsKeysCopy() {
         synchronized (friendLock) { return new ArrayList<>(this.onlineFriends.keySet()); }

@@ -17,15 +17,15 @@ public class Messages {
 
     private final Server server;
     
-    public Messages(Config messages, Collection<? extends Player> players) {
-        this(messages, players, null);
+    public Messages(Config messages, String prefix, Collection<? extends Player> players) {
+        this(messages, prefix, players, null);
     }
 
-    public Messages(Config messages, Collection<? extends Player> players, Collection<? extends Player> spectators) {
+    public Messages(Config messages, String prefix, Collection<? extends Player> players, Collection<? extends Player> spectators) {
         this.messages = messages;
+        this.prefix = prefix;
         this.players = players;
         this.spectators = spectators;
-        this.prefix = TextFormat.colorize(messages.getString("prefix") + " &r");
 
         server = Server.getInstance();
     }

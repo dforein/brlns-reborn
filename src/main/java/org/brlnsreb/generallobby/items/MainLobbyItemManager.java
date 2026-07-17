@@ -1,6 +1,6 @@
 package org.brlnsreb.generallobby.items;
 
-import org.brlnsreb.core.ConfigManager;
+import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.generallobby.ui.GamesMenu;
@@ -15,7 +15,7 @@ public class MainLobbyItemManager extends ItemManager {
     public static MainLobbyItemManager instance;
     
     public MainLobbyItemManager(Config config) {
-        super(ConfigManager.getGlobalConfig());
+        super(Configs.getGlobalConfig());
         instance = this;
     }
 

@@ -20,7 +20,7 @@ public class RaycastSystem {
     private static double maxDistance;
     private static double maxDistanceSq;
     private static double step;
-    private static double cooldownTicks;
+    private final double cooldownTicks;
     private final Cooldown cooldown;
     
     public RaycastSystem(MMGame game, ServerScheduler scheduler) {
@@ -29,14 +29,14 @@ public class RaycastSystem {
 
         maxDistance = game.getConfig().getInt("game.items.hoe.raycast-max-distance");
         maxDistanceSq = Math.pow(maxDistance + 2, 2);
-        step = game.getConfig().getInt("game.items.hoe.raycast-step");
-        cooldownTicks = game.getConfig().getDouble("game.items.hoe.cooldown") * 20;
+        step = game.getConfig().getDouble("game.items.hoe.raycast-step");
 
-        cooldown = Cooldown.ticks(cooldownTicks);
+        this.cooldownTicks = game.getConfig().getDouble("game.items.hoe.shoot-cooldown") * 20;
+        this.cooldown = Cooldown.ticks(cooldownTicks);
     }
     
     public CustomPlayer shoot(CustomPlayer shooter) {
-        if (!cooldown.check(shooter)) return null;
+        if (!cooldown.check(shooter.getUniqueId())) return null;
 
         Level level = game.getArena().getLevel();
 
@@ -47,8 +47,8 @@ public class RaycastSystem {
         Iterator<CustomPlayer> iterator = potentialTargets.iterator();
         while (iterator.hasNext()) {
             CustomPlayer p = iterator.next();
-            if (!p.isOnline() || p.equals(shooter) || p.distanceSquared(start) <= maxDistanceSq) {
-                potentialTargets.remove(p);
+            if (!p.isOnline() || p.equals(shooter) || p.distanceSquared(start) > maxDistanceSq) {
+                iterator.remove();
             }
         }
 

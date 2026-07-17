@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.ConfigManager;
+import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.minigame.match.GameStateType;
 import org.brlnsreb.core.minigame.match.Match;
@@ -19,6 +19,7 @@ import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.utils.ChatMsgs;
 import org.brlnsreb.utils.Messages;
 import org.brlnsreb.utils.TimerSystem;
+import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.voting.TimeOfDay;
 import org.brlnsreb.utils.voting.VotingSystem;
 import org.brlnsreb.utils.voting.Weather;
@@ -64,7 +65,7 @@ public abstract class WaitingLobby extends Lobby {
         this.maxPlayers = minigame.getMaxPlayers();
         this.minPlayersShortenedCountdown = config.getInt("settings.min-players-shortened-countdown");
 
-        Config globalConfig = ConfigManager.getGlobalConfig();
+        Config globalConfig = Configs.getGlobalConfig();
         this.secondsCountdown = globalConfig.getInt(configPath() + "countdown-seconds");
         this.secondsShortenedCountdown = globalConfig.getInt(configPath() + "shortened-countdown-seconds");
 
@@ -124,7 +125,7 @@ public abstract class WaitingLobby extends Lobby {
             players, 
             "match.waiting-lobby.action-bar.on-join", 
             new Object[] {player.getName(), players.size(), maxPlayers},
-            ConfigManager.getGlobalMessages(),
+            Configs.getGlobalMessages(),
             999999
         );
     }
@@ -149,7 +150,7 @@ public abstract class WaitingLobby extends Lobby {
             players, 
             "action-bar.on-leave", 
             new Object[] {player.getName(), players.size(), maxPlayers},
-            ConfigManager.getGlobalMessages(),
+            Configs.getGlobalMessages(),
             999999
         );
 
@@ -217,11 +218,11 @@ public abstract class WaitingLobby extends Lobby {
             }
         }, this::onGameStart);
 
-        match.preloadGame(selectedMapId, selectedTime, selectedWeather);
-
         if (sendMessage) {
-            msgUtil.broadcastPresetPrefix("waiting-lobby.countdown-shortened");
+            msgUtil.broadcastPrefix(YamlUtil.getStr("waiting-lobby.timer-shortened", Configs.getGlobalMessages()));
         }
+
+        match.preloadGame(selectedMapId, selectedTime, selectedWeather);
     }
 
     protected void stopCountdown() {

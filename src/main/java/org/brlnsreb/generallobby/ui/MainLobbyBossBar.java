@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.ConfigManager;
+import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.abstraction.BossBarAbstract;
 
@@ -31,7 +31,7 @@ public class MainLobbyBossBar extends BossBarAbstract {
 
     public void onConfigReload(String name) {
         this.name = name;
-        this.messages = ConfigManager.getConfig("global/messages.yml");
+        this.messages = Configs.getConfig("global/messages.yml");
 
         String mainMessage1 = messages.getString(PATH + "message1");
         String mainMessage2 = messages.getString(PATH + "message2");

@@ -1,6 +1,6 @@
 package org.brlnsreb.generallobby.ui;
 
-import org.brlnsreb.core.ConfigManager;
+import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.player.CustomPlayer;
@@ -17,7 +17,7 @@ public class GamesMenu extends MenuAbstract {
     public static void openMenu(Player player) {
         checkCooldown(player);
 
-        Config config = ConfigManager.getGlobalConfig();
+        Config config = Configs.getGlobalConfig();
 
         SimpleForm menu = new SimpleForm(YamlUtil.getStr("items.games.name", config));
 

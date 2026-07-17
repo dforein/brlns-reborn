@@ -9,8 +9,11 @@ import org.powernukkitx.level.Position;
 
 public abstract class GameExpand extends Game {
 
+    protected final MatchExpand match;
+
     public GameExpand(MatchExpand match, String mapId, TimeOfDay time, Weather weather) {
         super(match, mapId, time, weather);
+        this.match = match;
     }
 
     public abstract boolean onDeath(DamageCause cause, CustomPlayer victim, CustomPlayer killer);   //return true = tp to end lobby

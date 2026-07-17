@@ -117,11 +117,11 @@ public class BrlnsReb extends PluginBase {
         Config config = generalLobby.getConfig();
 
         server.setDefaultLevel(
-            server.getLevelByName(config.getString("lobby.world"))
+            server.getLevelByName(config.getString("world"))
         );
 
         server.getDefaultLevel().setSpawnLocation(
-            YamlUtil.parseVector3Centered(config.getString("lobby.spawn-pos"))
+            YamlUtil.parseVector3Centered(config.getString("spawn-pos"))
         );
 
         server.getDefaultLevel().save();

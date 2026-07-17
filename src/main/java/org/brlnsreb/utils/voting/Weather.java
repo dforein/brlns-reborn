@@ -24,13 +24,15 @@ public enum Weather {
         };
     }
 
-    public static void setWeather(Level level, Weather weather) {
+    public static Weather setWeather(Level level, Weather weather) {
         if (weather != null) {
             level.setRaining(weather != CLEAR);
             level.setThundering(weather == STORM);
+            return weather;
         } else {
             level.setRaining(false);
             level.setThundering(false);
+            return CLEAR;
         }
     }
 

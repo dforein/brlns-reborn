@@ -22,7 +22,7 @@ public class YamlUtil {
 
     public static String getStr(String path, Config config) {
         String str = cache.get(config.hashCode() + path);
-        if (str == null) return null;
+        if (str != null) return str;
 
         str = TextFormat.colorize(config.getString(path));
         if (str != null) cache.put(config.hashCode() + path, str);

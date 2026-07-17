@@ -3,7 +3,7 @@ package org.brlnsreb.core.minigame.match.waitinglobby.items;
 import java.util.Collection;
 import java.util.List;
 
-import org.brlnsreb.core.ConfigManager;
+import org.brlnsreb.core.Configs;
 import org.brlnsreb.utils.ItemManager;
 import org.brlnsreb.utils.YamlUtil;
 
@@ -43,7 +43,7 @@ public abstract class WaitingLobbyItemManager extends ItemManager {
     }
     
     public static void giveGamePoll(Player player) {
-        Config globalConfig = ConfigManager.getGlobalConfig();
+        Config globalConfig = Configs.getGlobalConfig();
         giveItem(
             player, 
             7, 

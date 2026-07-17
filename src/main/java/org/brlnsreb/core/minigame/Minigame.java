@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Queue;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.ConfigManager;
+import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.auth.AuthSystem;
 import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.player.CustomPlayer;
@@ -31,8 +31,8 @@ public abstract class Minigame {
 
         plugin = BrlnsReb.instance;
 
-        this.config = ConfigManager.getConfig(this.mgt.nameTag + "/config.yml");
-        this.messages = ConfigManager.getConfig(this.mgt.nameTag + "/messages.yml");
+        this.config = Configs.getConfig(this.mgt.nameTag + "/config.yml");
+        this.messages = Configs.getConfig(this.mgt.nameTag + "/messages.yml");
 
         this.lobby = createLobby();
         this.matches = new HashSet<>();

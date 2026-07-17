@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.ConfigManager;
+import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.minigame.match.game.arena.Arena;
 import org.brlnsreb.core.minigame.match.game.items.SpectatorItemManager;
 import org.brlnsreb.core.minigame.Minigame;
@@ -168,7 +168,7 @@ public abstract class Game {
             String buildersTeam = YamlUtil.getStr(arena.getConfigPath() + "build-team", config);
             if (buildersTeam != null && buildersTeam.length() > 0) buildersStr = buildersStr + " &7/ &d" + buildersTeam;
 
-            String creditsMsg = YamlUtil.getStr("match.game.map-credits", ConfigManager.getGlobalMessages()).formatted(buildersStr);
+            String creditsMsg = YamlUtil.getStr("match.game.map-credits", Configs.getGlobalMessages()).formatted(buildersStr);
             msgUtil.broadcastPrefix(creditsMsg);
         }
 
@@ -184,7 +184,7 @@ public abstract class Game {
     protected void onPregameCountdown() {
         state.current = GameStateType.PREGAME_COUNTDOWN;
 
-        Config globalConfig = ConfigManager.getGlobalConfig();
+        Config globalConfig = Configs.getGlobalConfig();
         int secondsCountdown = globalConfig.getInt("match.game.pregame-countdown-seconds");
 
         timer = new TimerSystem();
@@ -260,6 +260,7 @@ public abstract class Game {
     protected abstract PlayerGameData getGameData(CustomPlayer player);
     public Set<CustomPlayer> getPlayers() { return players; }
     public Set<CustomPlayer> getSpectators() { return spectators; }
+    public Arena getArena() { return arena; }
     public Config getConfig() { return config; }
     public Messages getMsgUtil() { return msgUtil; }
     public GameState getState() { return state; }

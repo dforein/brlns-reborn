@@ -1,5 +1,6 @@
 package org.brlnsreb.listeners.general;
 
+import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.data.database.AccountsManager;
 import org.brlnsreb.core.player.data.database.FriendsManager;
@@ -31,7 +32,8 @@ public class PlayerQuitListener implements Listener {
 
         AccountsManager.savePlayerData(player);
         FriendsManager.removeOnlineFriend(player.data);
-        player.getMatch().onLeave(player);
+        Match match  = player.getMatch();
+        if (match != null) match.onLeave(player);
         player.save();
     }
     

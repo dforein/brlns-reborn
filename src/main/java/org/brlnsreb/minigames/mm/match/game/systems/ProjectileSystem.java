@@ -2,6 +2,7 @@ package org.brlnsreb.minigames.mm.match.game.systems;
 
 import org.brlnsreb.minigames.mm.match.game.MMGame;
 import org.brlnsreb.minigames.mm.match.game.entities.ThrownSwordEntity;
+import org.brlnsreb.utils.Cooldown;
 import org.powernukkitx.Player;
 import org.powernukkitx.entity.Entity;
 import org.powernukkitx.level.Level;
@@ -12,13 +13,18 @@ public class ProjectileSystem {
     
     private final MMGame game;
     private static double swordThrowSpeed;
+    private final Cooldown cooldown;
     
     public ProjectileSystem(MMGame game) {
         this.game = game;
         swordThrowSpeed = game.getConfig().getDouble("game.items.sword.throw-speed");
+
+        this.cooldown = Cooldown.seconds(game.getConfig().getInt("game.items.sword.throw-cooldown"));
     }
     
-    public void throwSword(Player murderer) {
+    public boolean throwSword(Player murderer) {
+        if (!cooldown.check(murderer.getUniqueId())) return false;
+
         Level level = game.getArena().getLevel();
         Vector3 eyePosition = new Vector3(
             murderer.x,
@@ -38,5 +44,7 @@ public class ProjectileSystem {
         thrownSword.spawnToAll();
 
         level.addSound(murderer, Sound.RANDOM_BOW, 0.8f, 0.5f);
+
+        return true;
     }
 }

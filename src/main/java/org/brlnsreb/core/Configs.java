@@ -6,7 +6,7 @@ import org.brlnsreb.BrlnsReb;
 
 import org.powernukkitx.utils.Config;
 
-public class ConfigManager {
+public class Configs {
     
     private static final HashMap<String, Config> configMap = new HashMap<>();
 

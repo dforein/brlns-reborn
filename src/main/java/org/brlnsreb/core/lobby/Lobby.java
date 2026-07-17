@@ -37,13 +37,13 @@ public abstract class Lobby {
         this.minigame = minigame;
         this.match = match;
 
+        this.config = getConfig();
+        this.messages = getMessages();
+
         String levelPath = configPath().equals("") ?
             "world" : configPath() + ".world";
         this.level = WorldManager.loadLobbyLevel(config.getString(levelPath));
-        this.spawnPos = YamlUtil.parsePosition(config.getString(configPath() + "spawn"), this.level);
-
-        this.config = getConfig();
-        this.messages = getMessages();
+        this.spawnPos = YamlUtil.parsePosition(config.getString(configPath() + "spawn-pos"), this.level);
     }
 
     public Lobby(Minigame minigame) {

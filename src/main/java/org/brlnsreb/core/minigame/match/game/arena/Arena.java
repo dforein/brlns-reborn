@@ -16,6 +16,8 @@ public abstract class Arena {
     protected final String configPath;
     protected final String name;
     protected final Level level;
+    protected final TimeOfDay time;
+    protected final Weather weather;
     protected final Vector3 min;
     protected final Vector3 max;
     
@@ -32,8 +34,8 @@ public abstract class Arena {
             configPath
         );
 
-        TimeOfDay.setTime(level, time);
-        Weather.setWeather(level, weather);
+        this.time = TimeOfDay.setTime(level, time);
+        this.weather = Weather.setWeather(level, weather);
 
         this.min = YamlUtil.parseVector3(YamlUtil.getStr(configPath + "min", config));
         this.max = YamlUtil.parseVector3(YamlUtil.getStr(configPath + "max", config));
@@ -62,6 +64,8 @@ public abstract class Arena {
     public String getConfigPath() { return configPath; }
     public String getName() { return name; }
     public Level getLevel() { return level; }
+    public TimeOfDay getTime() { return time; }
+    public Weather getWeather() { return weather; }
     public Vector3 getMin() { return min; }
     public Vector3 getMax() { return max; }
 

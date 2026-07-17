@@ -2,7 +2,7 @@ package org.brlnsreb.core.minigame.match.waitinglobby.ui;
 
 import java.util.Set;
 
-import org.brlnsreb.core.ConfigManager;
+import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.minigame.match.waitinglobby.WaitingLobby;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.YamlUtil;
@@ -25,7 +25,7 @@ public class WaitingLobbyBossBar extends BossBarAbstract {
     private final int secondsCountdown;
 
     public WaitingLobbyBossBar(WaitingLobby waitingLobby, int secondsCountdown) {
-        this.config = ConfigManager.getGlobalConfig();
+        this.config = Configs.getGlobalConfig();
 
         this.players = waitingLobby.getPlayers();
 

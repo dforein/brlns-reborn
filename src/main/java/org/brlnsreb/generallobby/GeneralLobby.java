@@ -7,11 +7,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.ConfigManager;
+import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.MinigameManager;
+import org.brlnsreb.core.minigame.MinigameType;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
@@ -33,7 +34,7 @@ public class GeneralLobby extends Lobby {
     private final MainLobbyBossBar bossBar;
     private static MainLobbyItemManager items;
 
-    private final HashMap<NPCEntity, String> npcNameTagMap = new HashMap<>();
+    private final HashMap<MinigameType, NPCEntity> mgtNpcMap = new HashMap<>();
 
     public GeneralLobby() {
         super();
@@ -96,7 +97,7 @@ public class GeneralLobby extends Lobby {
         if (notify && !serverJoin) {
             notifyMessage = ChatMsgs.INFO_PFX + YamlUtil.getStr(
                 "lobby.friend-minigame-join", 
-                ConfigManager.getGlobalMessages()
+                Configs.getGlobalMessages()
             ).formatted(data.name, minigameName);
         }
 
@@ -154,31 +155,33 @@ public class GeneralLobby extends Lobby {
 
 
     private void spawnAllNpcs() {
-        for (String gameNameTag : config.getStringList("npc.list")) {
-            String configPath = "lobby.npc." + gameNameTag;
-            Minigame minigame = MinigameManager.getMinigame(gameNameTag);
+        for (String mgNameTag : config.getStringList("npc.list")) {
+            String configPath = configPath() + "npc." + mgNameTag;
+            Minigame npcMinigame = MinigameManager.getMinigame(mgNameTag);
+            if (npcMinigame == null) {
+                BrlnsReb.instance.getLogger().error("§cNo such minigame nametag (from config): " + mgNameTag);
+                continue;
+            }
 
             NPCEntity npc = spawnNpc(
                 configPath,
-                (CustomPlayer player) -> { minigame.onLobbyJoin(player); },
+                player -> npcMinigame.onLobbyJoin(player),
                 false
             );
 
-            npcNameTagMap.put(npc, gameNameTag);
+            mgtNpcMap.put(MinigameType.fromNameTag(mgNameTag), npc);
 
             Server.getInstance().getScheduler().scheduleRepeatingTask(BrlnsReb.instance, 
-                () -> {
-                    updateNpcSubtitle(npc);
-                }, 100
+                () -> updateNpcSubtitle(npc, npcMinigame), 100
             );
         }
     }
 
-    private void updateNpcSubtitle(NPCEntity npc) {
-        String subtitle = YamlUtil.getStr(configPath() + "npc.text2", config).formatted(
-            minigame.mgt.nameTag,
-            minigame.getMainPendingMatch().getNumber(),
-            minigame.getMainPendingMatch().getPlayers().size()
+    private void updateNpcSubtitle(NPCEntity npc, Minigame npcMinigame) {
+        String subtitle = YamlUtil.getStr(configPath() + "npc." + npcMinigame.mgt.nameTag + ".text2", config).formatted(
+            npcMinigame.mgt.nameTag,
+            npcMinigame.getMainPendingMatch().getNumber(),
+            npcMinigame.getMainPendingMatch().getPlayers().size()
         );
         
         npc.updateSubtitle(subtitle);
@@ -187,13 +190,14 @@ public class GeneralLobby extends Lobby {
     public void onConfigReload() {
         super.onConfigReload();
 
-        for (Map.Entry<NPCEntity, String> npcEntry : npcNameTagMap.entrySet()) {
+        for (Map.Entry<MinigameType, NPCEntity> npcEntry : mgtNpcMap.entrySet()) {
             reloadNpcConfigData(
-                npcEntry.getKey(), 
-                configPath() + "npc." + npcEntry.getValue(),
+                npcEntry.getValue(), 
+                configPath() + "npc." + npcEntry.getKey().nameTag,
                 false
             );
-            updateNpcSubtitle(npcEntry.getKey());
+
+            updateNpcSubtitle(npcEntry.getValue(), MinigameManager.getMinigame(npcEntry.getKey()));
         }
 
         bossBar.onConfigReload(messages.getString("name"));
@@ -201,10 +205,10 @@ public class GeneralLobby extends Lobby {
 
     public static GeneralLobby getInstance() { return instance; }
     public Config getConfig() { 
-        return ConfigManager.getConfig("general-lobby/config.yml");
+        return Configs.getConfig("general-lobby/config.yml");
     }
     public Config getMessages() {
-        return ConfigManager.getConfig("general-lobby/messages.yml");
+        return Configs.getConfig("general-lobby/messages.yml");
     }
     public String requireConfigPath() { return ""; }
     

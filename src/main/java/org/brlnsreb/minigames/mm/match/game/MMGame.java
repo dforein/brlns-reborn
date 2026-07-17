@@ -66,7 +66,7 @@ public class MMGame extends GameExpand {
 
     private CustomPlayer murderer;
     private boolean firstKill;
-    private float damageMultiplier;
+    private static float damageMultiplier;
 
     private CustomPlayer sheriff;
     private static boolean friendlyFireDeath;
@@ -193,6 +193,10 @@ public class MMGame extends GameExpand {
     }
 
     protected void startGame() {
+        //message
+        msgUtil.broadcastPresetPrefix(players, "game-start");
+        msgUtil.broadcastPresetPrefix(players, "game-start2");
+
         //role assignment, items
         List<CustomPlayer> shuffledPlayers = new ArrayList<>(players);
         Collections.shuffle(shuffledPlayers);
@@ -246,10 +250,6 @@ public class MMGame extends GameExpand {
             false
         );
 
-        //save key player
-        if (role == MMRole.MURDERER) murderer = player;
-        if (role == MMRole.SHERIFF) sheriff = player;
-
         //title message
         String titlePath = switch (role) {
             case MURDERER -> "title.murderer";
@@ -266,16 +266,27 @@ public class MMGame extends GameExpand {
             YamlUtil.getStr(subtitlePath, config),
             10, 60, 10
         );
+
+        //save key player and send advice
+        switch (role) {
+            case MURDERER -> {
+                murderer = player;
+                msgUtil.sendPresetMessagePrefix(player, "murderer-advice");
+            }
+
+            case SHERIFF -> {
+                sheriff = player;
+                msgUtil.sendPresetMessagePrefix(player, "murderer-advice");
+            }
+        
+            default -> {}
+        }
     }
 
     
     //death
 
     public boolean onDeath(DamageCause cause, CustomPlayer victim, CustomPlayer killer) {
-        return onDeath(victim, killer);
-    }
-
-    public boolean onDeath(CustomPlayer victim, CustomPlayer killer) {
         gameDataMap.get(victim).incrementStat(StatType.DEATHS);
         gameDataMap.get(victim).incrementStat(StatType.LOSSES);
         return true;
@@ -385,7 +396,7 @@ public class MMGame extends GameExpand {
     private void sheriffKillsInnocent() {
         if (friendlyFireDeath) {
             msgUtil.broadcastPresetPrefix("sheriff-friendly-fire-death");
-            onDeath(sheriff, null);
+            getMatch().onDeath(sheriff, null);
         } else {
             msgUtil.broadcastPresetPrefix("sheriff-friendly-fire");
         }
@@ -427,6 +438,12 @@ public class MMGame extends GameExpand {
 
         gameData.flashUsed = true;
         items.useFlash(player, scheduler);
+    }
+
+    private void throwSword(CustomPlayer player) {
+        if (!projectile.throwSword(player)) {
+            msgUtil.sendPresetMessagePrefix(player, "sword-cooldown");
+        }
     }
 
     private boolean newSheriff(CustomPlayer player) {
@@ -519,11 +536,11 @@ public class MMGame extends GameExpand {
             //sheriff
             case Item.GOLDEN_HOE -> {
                 CustomPlayer victim = raycast.shoot(player);
-                if (victim != null) onDeath(victim, player);
+                if (victim != null) getMatch().onDeath(victim, player);
             }
 
             //murderer
-            case Item.IRON_SWORD -> projectile.throwSword(player);
+            case Item.IRON_SWORD -> throwSword(player);
             case Item.BLAZE_ROD -> useFlash(player);
 
             //innocent
@@ -571,7 +588,7 @@ public class MMGame extends GameExpand {
         if (!(event.getEntity() instanceof ThrownSwordEntity)) return;
         if (player == murderer) return;
 
-        onDeath(player, (CustomPlayer) ((ThrownSwordEntity) event.getEntity()).shootingEntity);
+        getMatch().onDeath(player, (CustomPlayer) ((ThrownSwordEntity) event.getEntity()).shootingEntity);
     }
 
 
@@ -595,7 +612,7 @@ public class MMGame extends GameExpand {
 
             if (players.contains(player)) return roleCheckOnChat(player);
             if (spectators.contains(player)) {
-                msgUtil.sendPresetMessagePrefix(player, "no-chat", new String[] { "spectators" });
+                msgUtil.sendPresetMessagePrefix(player, "no-chat-spectators", new String[] { "spectators" });
                 return false;
             }
         }

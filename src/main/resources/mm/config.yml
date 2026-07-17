@@ -52,8 +52,6 @@ game:
 
 waiting-lobby:
   world: waitinglobby
-  npc:
-    leave:
   spawn:
   items:
     rules-book:

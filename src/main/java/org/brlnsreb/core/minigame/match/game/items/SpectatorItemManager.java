@@ -1,6 +1,6 @@
 package org.brlnsreb.core.minigame.match.game.items;
 
-import org.brlnsreb.core.ConfigManager;
+import org.brlnsreb.core.Configs;
 import org.brlnsreb.utils.ItemManager;
 import org.brlnsreb.utils.YamlUtil;
 
@@ -10,7 +10,7 @@ import org.powernukkitx.item.Item;
 public class SpectatorItemManager extends ItemManager {
     
     public SpectatorItemManager() {
-        super(ConfigManager.getGlobalConfig());
+        super(Configs.getGlobalConfig());
     }
 
     public void giveTeleporter(Player player) {

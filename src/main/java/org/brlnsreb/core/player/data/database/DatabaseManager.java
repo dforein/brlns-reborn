@@ -1,7 +1,7 @@
 package org.brlnsreb.core.player.data.database;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.ConfigManager;
+import org.brlnsreb.core.Configs;
 import org.brlnsreb.utils.database.DBResults;
 import org.brlnsreb.utils.database.SQLConsumer;
 
@@ -35,7 +35,7 @@ public class DatabaseManager {
             green_gems INT DEFAULT 0,
             red_gems INT DEFAULT 0,
             yellow_gems INT DEFAULT 0,
-            blue_gems INT DEFAULT 0,
+            blue_gems INT DEFAULT 0
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     """;
 
@@ -97,7 +97,7 @@ public class DatabaseManager {
 
 
     private boolean initConnectionPool() {
-        Config config = ConfigManager.getConfig("global/database.yml");
+        Config config = Configs.getConfig("global/database.yml");
 
         if (!config.getBoolean("enabled", false)) {
             plugin.getLogger().warning(TextFormat.GOLD + "Database disabled by settings.");

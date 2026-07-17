@@ -7,7 +7,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.function.Consumer;
 
-import org.brlnsreb.core.ConfigManager;
+import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.core.player.data.PlayerData;
@@ -80,11 +80,11 @@ public class FriendsManager {
         if (data.getFriendNotify()) {
             friendJoined = ChatMsgs.INFO_PFX + YamlUtil.getStr(
                 "lobby.friend-server-join", 
-                ConfigManager.getGlobalMessages()
+                Configs.getGlobalMessages()
             ).formatted(accountName);
         }
 
-        for (Entry<String, String> name : data.getOfflineFriends().entrySet()) {
+        for (Entry<String, String> name : data.getOfflineFriendsEntriesCopy()) {
             PlayerData friendData = PlayerDataManager.getPlayerData(name.getKey());
             if (friendData == null) continue;
             data.addOnlineFriend(name.getKey(), name.getValue());
@@ -101,7 +101,7 @@ public class FriendsManager {
         if (data.getFriendNotify()) {
             friendLeft = ChatMsgs.INFO_PFX + YamlUtil.getStr(
                 "lobby.friend-server-left", 
-                ConfigManager.getGlobalMessages()
+                Configs.getGlobalMessages()
             ).formatted(data.name);
         }
 

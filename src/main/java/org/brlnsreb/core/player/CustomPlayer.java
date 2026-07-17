@@ -251,7 +251,7 @@ public class CustomPlayer extends Player {
     public boolean attack(EntityDamageEvent source) {
         if (source.getCause() == DamageCause.VOID) {
             source.setDamage(10000.0f);
-            checkAndAttack(source);
+            return checkAndAttack(source);
         }
 
         switch (this.damageMode) {

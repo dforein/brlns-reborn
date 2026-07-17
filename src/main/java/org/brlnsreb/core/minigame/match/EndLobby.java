@@ -1,6 +1,6 @@
 package org.brlnsreb.core.minigame.match;
 
-import org.brlnsreb.core.ConfigManager;
+import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
@@ -14,20 +14,20 @@ public class EndLobby extends Lobby {
 
         //play again NPC
         spawnNpc(
-            "match" + configPath() + "npc.play-again.",
-            (CustomPlayer) -> { minigame.onMatchJoin(CustomPlayer); }
+            configPath() + "npc.play-again.",
+            player -> minigame.onMatchJoin(player)
         );
 
         //spectate NPC
         spawnNpc(
-            "match" + configPath() + "npc.spectate.",
-            (CustomPlayer) -> { match.onJoinAsSpectator(CustomPlayer); }
+            configPath() + "npc.spectate.",
+            player -> match.onJoinAsSpectator(player)
         );
 
         //return to lobby NPC
         spawnNpc(
-            "match" + configPath() + "npc.return-to-lobby.",
-            (CustomPlayer) -> { minigame.onLobbyJoin(CustomPlayer); }
+            configPath() + "npc.return-to-lobby.",
+            player -> minigame.onLobbyJoin(player)
         );
     }
 
@@ -51,7 +51,7 @@ public class EndLobby extends Lobby {
 
     
     
-    public Config getConfig() { return ConfigManager.getGlobalConfig(); }
+    public Config getConfig() { return Configs.getGlobalConfig(); }
     public Config getMessages() { return null; }
     public String requireConfigPath() { return "match.end-lobby."; }
 }
