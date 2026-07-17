@@ -3,7 +3,6 @@ package org.brlnsreb.minigames.mm.match.game;
 import java.util.*;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.core.minigame.match.GameStateType;
 import org.brlnsreb.core.minigame.match.MatchExpand;
 import org.brlnsreb.core.minigame.match.game.GameExpand;
@@ -14,7 +13,6 @@ import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.core.player.CustomPlayer.DamageMode;
 import org.brlnsreb.core.player.CustomPlayer.InteractMode;
 import org.brlnsreb.core.player.data.StatType;
-import org.brlnsreb.core.player.data.database.AccountsManager;
 import org.brlnsreb.minigames.mm.match.game.entities.DeadBodyEntity;
 import org.brlnsreb.minigames.mm.match.game.entities.ThrownSwordEntity;
 import org.brlnsreb.minigames.mm.match.game.gamedata.MMPlayerGameData;
@@ -162,14 +160,8 @@ public class MMGame extends GameExpand {
     public void onLeave(CustomPlayer player) {
         if (player.isGameSpectator()) return;
 
-        prepareAndSaveData(player);
-
         roleCheckOnLeave(player, player.getPosition());
         checkWinConditions();
-    }
-
-    public void prepareAndSaveData(CustomPlayer player) {
-        AccountsManager.savePlayerData(player);
     }
 
 
@@ -180,20 +172,6 @@ public class MMGame extends GameExpand {
     protected void prepareGame() {
         for (CustomPlayer p : players) {
             bossBar.updateExp(p, gameDataMap.get(p));
-        }
-
-        //TODO: prepareGame message with bars
-
-        //builders message
-        List<String> builders = config.getStringList(arena.getConfigPath() + "builders");
-        if (!builders.isEmpty()) {
-            String buildersStr = String.join("&7, &d", builders);
-            
-            String buildersTeam = YamlUtil.getStr(arena.getConfigPath() + "build-team", config);
-            if (buildersTeam != null && buildersTeam.length() > 0) buildersStr = buildersStr + " &7/ &d" + buildersTeam;
-
-            String creditsMsg = YamlUtil.getStr("match.game.map-credits", ConfigManager.getGlobalMessages()).formatted(buildersStr);
-            msgUtil.broadcastPrefix(creditsMsg);
         }
 
         //load gold spawns
@@ -300,8 +278,6 @@ public class MMGame extends GameExpand {
     public boolean onDeath(CustomPlayer victim, CustomPlayer killer) {
         gameDataMap.get(victim).incrementStat(StatType.DEATHS);
         gameDataMap.get(victim).incrementStat(StatType.LOSSES);
-        prepareAndSaveData(victim);
-
         return true;
     }
 
@@ -519,8 +495,6 @@ public class MMGame extends GameExpand {
 
         msgUtil.broadcastPresetPrefix(isMurdererAlive() ? "murderer-won" : "innocents-won");
         msgUtil.broadcastPresetPrefix(players, "congratulations");
-
-        //TODO: big reward message
         
         msgUtil.sendTitle(isMurdererAlive() ? "title.murderer-won" : "title.innocents-won", null);
     }

@@ -92,6 +92,7 @@ public abstract class Match {
                 break;
         
             case PREGAME_COUNTDOWN, IN_GAME, ENDING:
+                game.prepareAndSaveData(player, false);
                 game.onLeave(player);
                 players.remove(player);
                 spectators.remove(player);
@@ -151,7 +152,6 @@ public abstract class Match {
 
     public void onEnding() {
         for (CustomPlayer p : players) {
-            game.prepareAndSaveData(p);
             p.updatePresetNameTags();
             minigame.onLobbyJoin(p);
         }

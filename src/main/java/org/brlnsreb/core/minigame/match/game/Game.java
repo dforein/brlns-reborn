@@ -1,5 +1,6 @@
 package org.brlnsreb.core.minigame.match.game;
 
+import java.util.List;
 import java.util.Set;
 
 import org.brlnsreb.BrlnsReb;
@@ -13,9 +14,13 @@ import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
+import org.brlnsreb.core.player.data.PlayerGameData;
+import org.brlnsreb.core.player.data.database.AccountsManager;
 import org.brlnsreb.utils.ChatMsgs;
 import org.brlnsreb.utils.Messages;
 import org.brlnsreb.utils.TimerSystem;
+import org.brlnsreb.utils.YamlUtil;
+import org.brlnsreb.utils.ChatMsgs.Alignment;
 import org.brlnsreb.utils.voting.TimeOfDay;
 import org.brlnsreb.utils.voting.Weather;
 
@@ -110,7 +115,31 @@ public abstract class Game {
     protected abstract void onJoinPrepareSpectator(CustomPlayer player);
 
     public abstract void onLeave(CustomPlayer player);
-    public abstract void prepareAndSaveData(CustomPlayer player);
+
+    public void prepareAndSaveData(CustomPlayer player) { prepareAndSaveData(player, true); }
+    public void prepareAndSaveData(CustomPlayer player, boolean message) {
+        AccountsManager.savePlayerData(player);
+
+        int oldLevel = player.data.getFloorLevel();
+        player.data.updateLevel();
+        player.updateExp();
+
+        if (!message) return;
+
+        PlayerGameData gameData = getGameData(player);
+        player.sendMessage(ChatMsgs.buildString(Alignment.CENTER, 
+            "§l§3Reward Summary",
+            "§6You earned §l§2" + gameData.getCoinsEarned() + "§r §6coins",
+            "§2You earned §l§6" + gameData.getExpEarned() + "§r §2of experience",
+            "§6You got §l§d" + 0 + " §c" + 0 + " §e" + 0 + " §9" + 0 + "§r §6gems",     //TODO: gems
+            "§2Support us at:",
+            "§6store.brlns.reb"
+        ));
+        
+        if (oldLevel < player.data.getFloorLevel()) {
+            player.sendMessage(ChatMsgs.INFO_PFX + "Congratulations! you are now on level §e" + player.data.getFloorLevel());    //TEXT
+        }
+    }
 
 
     //<GAME LIFECYCLE>
@@ -120,6 +149,27 @@ public abstract class Game {
     public void onPregameStart() {
         for (CustomPlayer p : players) {
             onJoin(p);
+        }
+
+        //starting message
+        msgUtil.broadcast(ChatMsgs.buildString(Alignment.CENTER, 
+            ChatMsgs.BROKENLENS_GAMES,
+            "",
+            "§7- " + minigame.mgt.displayName + " §7-",
+            "",
+            "§7 Starting in 10 seconds..."
+        ));
+
+        //builders message
+        List<String> builders = config.getStringList(arena.getConfigPath() + "builders");
+        if (!builders.isEmpty()) {
+            String buildersStr = String.join("&7, &d", builders);
+            
+            String buildersTeam = YamlUtil.getStr(arena.getConfigPath() + "build-team", config);
+            if (buildersTeam != null && buildersTeam.length() > 0) buildersStr = buildersStr + " &7/ &d" + buildersTeam;
+
+            String creditsMsg = YamlUtil.getStr("match.game.map-credits", ConfigManager.getGlobalMessages()).formatted(buildersStr);
+            msgUtil.broadcastPrefix(creditsMsg);
         }
 
         prepareGame();
@@ -207,6 +257,7 @@ public abstract class Game {
 
 
 
+    protected abstract PlayerGameData getGameData(CustomPlayer player);
     public Set<CustomPlayer> getPlayers() { return players; }
     public Set<CustomPlayer> getSpectators() { return spectators; }
     public Config getConfig() { return config; }

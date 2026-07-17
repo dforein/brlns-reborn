@@ -3,6 +3,7 @@ package org.brlnsreb.utils;
 public class ChatMsgs {
 
     public static final String BROKENLENS = "&l&eBroken&4Lens§r";
+    public static final String BROKENLENS_GAMES = "&l&eBroken&4Lens §9Games";
     public static final String BROKENLENS_PFX = "&l&eBroken&4Lens§r §d";
 
     public static final String SUCCESS_PFX = "§l§aSUCCESS§r §a";
@@ -22,6 +23,7 @@ public class ChatMsgs {
     public static String buildString(Alignment alignment, String... lines) {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append(BAR);
+        strBuilder.append("§2-§r\n");
 
         int i, spaces;
         for (String line : lines) {
@@ -35,9 +37,10 @@ public class ChatMsgs {
             }
 
             strBuilder.append(line);
-            strBuilder.append('\n');
+            strBuilder.append("§r\n");
         }
 
+        strBuilder.append("§2-§r\n");
         strBuilder.append(BAR);
         return strBuilder.toString();
     }

@@ -24,8 +24,8 @@ public abstract class MatchExpand extends Match {
         Position deathPos = victim.getPosition();
 
         if (getGame().onDeath(cause, victim, killer)) {
-            players.remove(victim);
             onEndLobbyJoin(victim);
+            game.prepareAndSaveData(killer, true);
 
             getGame().afterDeath(cause, deathPos, victim, killer);
             
