@@ -16,6 +16,7 @@ game:
   duration: 420
   ending-duration: 10
   ui-update-ticks: 10
+  murderer-damage-multiplier: 2.5
   time-start-tracking: 60
   items:
     sword:
@@ -39,8 +40,12 @@ game:
   exp:
     per-gold: 10
     per-kill: 15
-    sheriff-won: 600
-    sheriff-kill: 100
+    murderer-kills-sheriff: 100
+    sheriff-kills-murderer: 600
+  coins:
+    per-kill: 25
+    murderer-kills-sheriff: 300
+    sheriff-kills-murderer: 800
   dead-body:
     head-yaw-offset: -35
     head-pitch-offset: -40

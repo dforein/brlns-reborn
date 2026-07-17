@@ -1,4 +1,4 @@
-package org.brlnsreb.listeners.general;
+package org.brlnsreb.listeners.games;
 
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;

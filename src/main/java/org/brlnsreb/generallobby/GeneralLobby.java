@@ -58,7 +58,7 @@ public class GeneralLobby extends Lobby {
     } 
 
     protected void onServerJoinMessages(CustomPlayer player) {
-        friendAlertsNotify(player, null, null);
+        friendAlertsNotify(player, null, null, false);
     }
 
 
@@ -78,20 +78,31 @@ public class GeneralLobby extends Lobby {
         items.giveGeneralLobbyItems(player);
     }
 
+    public static void friendAlertsNotify(CustomPlayer player, Minigame minigame, String minigameName) {
+        friendAlertsNotify(player, minigame, minigameName, false);
+    }
 
-    public static void friendAlertsNotify(CustomPlayer player, Minigame minigame, String notifyMsgMinigame) {
+    public static void friendAlertsNotify(CustomPlayer player, Minigame minigame, String minigameName, boolean serverJoin) {
         PlayerData data = player.data;
         if (!data.isLogged()) return;
 
+        //get the boolean value of alerts (get alerts of friends) and notify (notify friends) 
         boolean alerts = data.getFriendAlerts();
-        boolean notify = data.getFriendNotify() && !player.currentMinigame.equals(minigame);
+        boolean notify = data.getFriendNotify() && player.currentMinigame != minigame;
         if (!alerts && !notify) return;
         
+        //build the message to send to friends, if notify is enabled
+        String notifyMessage = null;
+        if (notify && !serverJoin) {
+            notifyMessage = ChatMsgs.INFO_PFX + YamlUtil.getStr(
+                "lobby.friend-minigame-join", 
+                ConfigManager.getGlobalMessages()
+            ).formatted(data.name, minigameName);
+        }
 
-        String notifyMessage = buildNotifyMessage(notify, notifyMsgMinigame, notifyMsgMinigame);
 
         List<String> friends = data.getOnlineFriendsKeysCopy();
-
+        
         List<String> hubFriends = new ArrayList<>();
         Map<Minigame, List<String>> minigameGroups = new LinkedHashMap<>();
         int friendsCount = 0;
@@ -100,8 +111,10 @@ public class GeneralLobby extends Lobby {
             CustomPlayer friend = data.getFriend(friendName);
             if (friend == null) continue;
 
+            //send the notify message to all friends
             if (notify) friend.sendMessage(notifyMessage);
 
+            // + categorize all the friends based on what minigame they are in (else they get put in hubFriends)
             if (alerts) {
                 friendsCount++;
                 if (friend.currentMinigame == null) {
@@ -113,18 +126,9 @@ public class GeneralLobby extends Lobby {
             }
         }
 
-        if (alerts && friendsCount > 0) player.sendMessage(buildAlertsMessage(hubFriends, minigameGroups, friendsCount));
-    }
-
-    private static String buildNotifyMessage(boolean notify, String playerName, String notifyMsgMinigame) {
-        if (!notify) return null;
-
-        if (notifyMsgMinigame == null) {
-            String template = YamlUtil.getStr("lobby.friend-server-join", ConfigManager.getGlobalMessages());
-            return ChatMsgs.INFO_PFX + template.formatted(playerName);
-        } else {
-            String template = YamlUtil.getStr("lobby.friend-minigame-join", ConfigManager.getGlobalMessages());
-            return ChatMsgs.INFO_PFX + template.formatted(playerName, notifyMsgMinigame);
+        //send the alerts message to the player, building the message based on what minigame the friends are in
+        if (alerts && friendsCount > 0) {
+            player.sendMessage(buildAlertsMessage(hubFriends, minigameGroups, friendsCount));
         }
     }
 

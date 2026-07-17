@@ -63,6 +63,7 @@ public abstract class Lobby {
 
         onJoinMessages(player);
 
+        player.setLobby(this);
         player.currentMinigame = minigame;
         PlayerUtils.setLobbyState(player, onJoinState());
 
@@ -78,6 +79,10 @@ public abstract class Lobby {
     protected abstract void onJoinMessages(CustomPlayer player);    //chat, titles, etc.
     protected abstract void onJoinBossBar(CustomPlayer player);
     protected abstract void onJoinItems(CustomPlayer player);
+    
+    public void teleportToSpawn(CustomPlayer player) {
+        PlayerUtils.lobbyTeleport(player, spawnPos);
+    }
 
     protected void createHologram(Position pos, String text) {
         HologramEntity holo = new HologramEntity(pos.getChunk(), Entity.getDefaultNBT(pos));

@@ -1,5 +1,7 @@
 package org.brlnsreb.core.minigame.match;
 
+import org.powernukkitx.event.player.PlayerDropItemEvent;
+import org.powernukkitx.event.player.PlayerItemHeldEvent;
 import org.powernukkitx.item.Item;
 import org.powernukkitx.utils.Config;
 
@@ -158,17 +160,28 @@ public abstract class Match {
     }
 
 
-    //events from listeners
+    //listener access
 
     public void onItemUse(CustomPlayer player, Item item) {
         switch (state.current) {
-            case WAITING_LOBBY, LOBBY_COUNTDOWN:
-                waitingLobby.onItemUse(player, item);
-                break;
-        
-            case PREGAME_COUNTDOWN, IN_GAME, ENDING:
-                game.onItemUse(player, item);
-                break;
+            case WAITING_LOBBY, LOBBY_COUNTDOWN -> waitingLobby.onItemUse(player, item);
+            case PREGAME_COUNTDOWN, IN_GAME, ENDING -> game.onItemUse(player, item);
+        }
+    }
+
+    public boolean onItemHeld(CustomPlayer player, PlayerItemHeldEvent event) {
+        switch (state.current) {
+            case WAITING_LOBBY, LOBBY_COUNTDOWN: return waitingLobby.onItemHeld(player, event);
+            case PREGAME_COUNTDOWN, IN_GAME, ENDING: return game.onItemHeld(player, event);
+            default: return false;
+        }
+    }
+
+    public boolean onItemDrop(CustomPlayer player, PlayerDropItemEvent event) {
+        switch (state.current) {
+            case WAITING_LOBBY, LOBBY_COUNTDOWN: return false;
+            case PREGAME_COUNTDOWN, IN_GAME, ENDING: return game.onItemDrop(player, event);
+            default: return false;
         }
     }
 

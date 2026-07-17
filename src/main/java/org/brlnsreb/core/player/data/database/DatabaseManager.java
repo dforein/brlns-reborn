@@ -31,7 +31,11 @@ public class DatabaseManager {
             exp INT DEFAULT 0,
             coins INT DEFAULT 0,
             friend_alerts BOOLEAN DEFAULT TRUE,
-            friend_notify BOOLEAN DEFAULT TRUE
+            friend_notify BOOLEAN DEFAULT TRUE,
+            green_gems INT DEFAULT 0,
+            red_gems INT DEFAULT 0,
+            yellow_gems INT DEFAULT 0,
+            blue_gems INT DEFAULT 0,
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     """;
 

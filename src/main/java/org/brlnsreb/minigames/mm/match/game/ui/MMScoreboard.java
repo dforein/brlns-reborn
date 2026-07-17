@@ -1,10 +1,33 @@
 package org.brlnsreb.minigames.mm.match.game.ui;
 
 import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.minigames.mm.match.game.MMGame;
 import org.brlnsreb.minigames.mm.match.game.gamedata.MMRole;
 import org.brlnsreb.utils.abstraction.ScoreboardAbstract;
 
 public class MMScoreboard extends ScoreboardAbstract {
+
+    private final MMGame game;
+
+    public MMScoreboard(MMGame game) {
+        this.game = game;
+    }
+
+    public void updateGameScoreboards() {
+        int innocents = game.getPlayers().size();
+        if (game.isMurdererAlive()) innocents--;
+        if (game.isSheriffAlive()) innocents--;
+
+        String formattedTime = game.getTimer().getFormattedTime();
+
+        for (CustomPlayer p : game.getPlayers()) {
+            updateIngame(p, innocents, game.isSheriffAlive(), formattedTime, game.getGameData(p).role);
+        }
+
+        for (CustomPlayer s : game.getSpectators()) {
+            updateSpectator(s, innocents, game.isSheriffAlive(), formattedTime, game.getSpectators().size());
+        }
+    }
 
     public void updateIngame(CustomPlayer player, int innocents, boolean isSheriffAlive, String formattedTime, MMRole role) {
         String[] lines = {

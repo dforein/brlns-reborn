@@ -3,6 +3,7 @@ package org.brlnsreb.minigames.mm.match.game.systems;
 import org.powernukkitx.level.Level;
 import org.powernukkitx.level.particle.DustParticle;
 import org.powernukkitx.math.Vector3;
+import org.powernukkitx.scheduler.ServerScheduler;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.minigames.mm.match.game.MMGame;
 import org.brlnsreb.utils.Cooldown;
@@ -14,18 +15,24 @@ import java.util.List;
 public class RaycastSystem {
     
     private final MMGame game;
-    private final Cooldown cooldown;
+    private final ServerScheduler scheduler;
+
     private static double maxDistance;
     private static double maxDistanceSq;
     private static double step;
+    private static double cooldownTicks;
+    private final Cooldown cooldown;
     
-    public RaycastSystem(MMGame game) {
+    public RaycastSystem(MMGame game, ServerScheduler scheduler) {
         this.game = game;
+        this.scheduler = scheduler;
+
         maxDistance = game.getConfig().getInt("game.items.hoe.raycast-max-distance");
         maxDistanceSq = Math.pow(maxDistance + 2, 2);
         step = game.getConfig().getInt("game.items.hoe.raycast-step");
+        cooldownTicks = game.getConfig().getDouble("game.items.hoe.cooldown") * 20;
 
-        cooldown = Cooldown.seconds(game.getConfig().getDouble("game.items.hoe.cooldown"));
+        cooldown = Cooldown.ticks(cooldownTicks);
     }
     
     public CustomPlayer shoot(CustomPlayer shooter) {
@@ -60,7 +67,25 @@ public class RaycastSystem {
                 }
             }
         }
+
+        startXpBarRecharge(shooter);
         
         return null;
     }
+
+    private void startXpBarRecharge(CustomPlayer shooter) {
+        for (int i = 0; i <= cooldownTicks; i++) {
+            final int tick = i;
+            
+            scheduler.scheduleDelayedTask(() -> {
+                int progress = (int) (tick / cooldownTicks * 100.0);
+                shooter.setExperience(progress, shooter.data.getFloorLevel());
+            }, i);
+        }
+    }
+
+    public void resetXpBarRecharge(CustomPlayer shooter) {
+        shooter.setExperience(100, shooter.data.getFloorLevel());
+    }
+
 }

@@ -14,6 +14,8 @@ public class Messages {
     private final Collection<? extends Player> players;
     private final Collection<? extends Player> spectators;
     private final String prefix;
+
+    private final Server server;
     
     public Messages(Config messages, Collection<? extends Player> players) {
         this(messages, players, null);
@@ -24,6 +26,8 @@ public class Messages {
         this.players = players;
         this.spectators = spectators;
         this.prefix = TextFormat.colorize(messages.getString("prefix") + " &r");
+
+        server = Server.getInstance();
     }
 
     public static String getStrPrefix(String path, Config messages, String colorizedPrefix) {
@@ -71,8 +75,8 @@ public class Messages {
         if (spectators != null) sendTitle(pathTitle, pathSubTitle, spectators);
     }
 
-    private void sendTitle(String pathTitle, String pathSubTitle, Collection<? extends Player> playerColl) {
-        for (Player p : playerColl) {
+    public void sendTitle(String pathTitle, String pathSubTitle, Collection<? extends Player> playerCollection) {
+        for (Player p : playerCollection) {
             p.sendTitle(getString(pathTitle), getString(pathSubTitle), 10, 60, 10);
         }
     }
@@ -81,50 +85,50 @@ public class Messages {
     //broadcast to players a preset message
 
     public void broadcastPreset(String path) {
-        broadcastPreset(path, players);
-        if (spectators != null) broadcastPreset(path, spectators);
+        broadcastPreset(players, path);
+        if (spectators != null) broadcastPreset(spectators, path);
     }
 
-    private void broadcastPreset(String path, Collection<? extends Player> playerColl) {
-        Server.getInstance().broadcastMessage(
+    public void broadcastPreset(Collection<? extends Player> playerCollection, String path) {
+        server.broadcastMessage(
             getString(path), 
-            playerColl
+            playerCollection
         );
     }
 
     public void broadcastPreset(String path, Object[] placeholders) {
-        broadcastPreset(path, placeholders, players);
-        if (spectators != null) broadcastPreset(path, placeholders, spectators);
+        broadcastPreset(players, path, placeholders);
+        if (spectators != null) broadcastPreset(spectators, path, placeholders);
     }
 
-    private void broadcastPreset(String path, Object[] placeholders, Collection<? extends Player> playerColl) {
-        Server.getInstance().broadcastMessage(
+    public void broadcastPreset(Collection<? extends Player> playerCollection, String path, Object[] placeholders) {
+        server.broadcastMessage(
             getString(path).formatted(placeholders), 
-            playerColl
+            playerCollection
         );
     }
 
     public void broadcastPresetPrefix(String path) {
-        broadcastPresetPrefix(path, players);
-        if (spectators != null) broadcastPresetPrefix(path, spectators);
+        broadcastPresetPrefix(players, path);
+        if (spectators != null) broadcastPresetPrefix(spectators, path);
     }
 
-    private void broadcastPresetPrefix(String path, Collection<? extends Player> playerColl) {
-        Server.getInstance().broadcastMessage(
+    public void broadcastPresetPrefix(Collection<? extends Player> playerCollection, String path) {
+        server.broadcastMessage(
             getStringPrefix(path), 
-            playerColl
+            playerCollection
         );
     }
 
     public void broadcastPresetPrefix(String path, Object[] placeholders) {
-        broadcastPresetPrefix(path, placeholders, players);
-        if (spectators != null) broadcastPresetPrefix(path, placeholders, spectators);
+        broadcastPresetPrefix(players, path, placeholders);
+        if (spectators != null) broadcastPresetPrefix(spectators, path, placeholders);
     }
 
-    private void broadcastPresetPrefix(String path, Object[] placeholders, Collection<? extends Player> playerColl) {
-        Server.getInstance().broadcastMessage(
+    public void broadcastPresetPrefix(Collection<? extends Player> playerCollection, String path, Object[] placeholders) {
+        server.broadcastMessage(
             getStringPrefix(path).formatted(placeholders), 
-            playerColl
+            playerCollection
         );
     }
 
@@ -132,71 +136,71 @@ public class Messages {
     //broadcast to players a custom message
 
     public void broadcast(String message) {
-        broadcast(message, players);
-        if (spectators != null) broadcast(message, spectators);
+        broadcast(players, message);
+        if (spectators != null) broadcast(spectators, message);
     }
 
-    private void broadcast(String message, Collection<? extends Player> playerColl) {
-        Server.getInstance().broadcastMessage(
+    public void broadcast(Collection<? extends Player> playerCollection, String message) {
+        server.broadcastMessage(
             TextFormat.colorize(message), 
-            players
+            playerCollection
         );
     }
 
     public void broadcast(String message, Object[] placeholders) {
-        broadcast(message, placeholders, players);
-        if (spectators != null) broadcast(message, placeholders, spectators);
+        broadcast(players, message, placeholders);
+        if (spectators != null) broadcast(spectators, message, placeholders);
     }
 
-    private void broadcast(String message, Object[] placeholders, Collection<? extends Player> playerColl) {
-        Server.getInstance().broadcastMessage(
+    public void broadcast(Collection<? extends Player> playerCollection, String message, Object[] placeholders) {
+        server.broadcastMessage(
             TextFormat.colorize(message.formatted(placeholders)), 
-            playerColl
+            playerCollection
         );
     }
 
     public void broadcastPrefix(String message) {
-        broadcastPrefix(message, players);
-        if (spectators != null) broadcastPrefix(message, spectators);
+        broadcastPrefix(players, message);
+        if (spectators != null) broadcastPrefix(spectators, message);
     }
 
-    private void broadcastPrefix(String message, Collection<? extends Player> playerColl) {
-        Server.getInstance().broadcastMessage(
+    public void broadcastPrefix(Collection<? extends Player> playerCollection, String message) {
+        server.broadcastMessage(
             prefix + TextFormat.colorize(message), 
-            playerColl
+            playerCollection
         );
     }
 
     public void broadcastPrefix(String message, Object[] placeholders) {
-        broadcastPrefix(message, placeholders, players);
-        if (spectators != null) broadcastPrefix(message, placeholders, spectators);
+        broadcastPrefix(players, message, placeholders);
+        if (spectators != null) broadcastPrefix(spectators, message, placeholders);
     }
 
-    private void broadcastPrefix(String message, Object[] placeholders, Collection<? extends Player> playerColl) {
-        Server.getInstance().broadcastMessage(
+    public void broadcastPrefix(Collection<? extends Player> playerCollection, String message, Object[] placeholders) {
+        server.broadcastMessage(
             prefix + TextFormat.colorize(message.formatted(placeholders)), 
-            playerColl
+            playerCollection
         );
     }
 
 
     //send individually a preset message
 
-    public void sendPresetMessage(String path, Player player) {
+    public void sendPresetMessage(Player player, String path) {
         player.sendMessage(getString(path));
     }
 
-    public void sendPresetMessage(String path, Player player, Object[] placeholders) {
+    public void sendPresetMessage(Player player, String path, Object[] placeholders) {
         player.sendMessage(
             messages.getString(path).formatted(placeholders)
         );
     }
 
-    public void sendPresetMessagePrefix(String path, Player player) {
+    public void sendPresetMessagePrefix(Player player, String path) {
         player.sendMessage(getStringPrefix(path));
     }
 
-    public void sendPresetMessagePrefix(String path, Player player, Object[] placeholders) {
+    public void sendPresetMessagePrefix(Player player, String path, Object[] placeholders) {
         player.sendMessage(
             getStringPrefix(path).formatted(placeholders)
         );
@@ -205,21 +209,21 @@ public class Messages {
 
     //send individually a custom message
 
-    public void sendMessage(String message, Player player) {
+    public void sendMessage(Player player, String message) {
         player.sendMessage(TextFormat.colorize(message));
     }
 
-    public void sendMessage(String message, Player player, Object[] placeholders) {
+    public void sendMessage(Player player, String message, Object[] placeholders) {
         player.sendMessage(
             TextFormat.colorize(message.formatted(placeholders))
         );
     }
 
-    public void sendMessagePrefix(String message, Player player) {
+    public void sendMessagePrefix(Player player, String message) {
         player.sendMessage(prefix + TextFormat.colorize(message));
     }
 
-    public void sendMessagePrefix(String message, Player player, Object[] placeholders) {
+    public void sendMessagePrefix(Player player, String message, Object[] placeholders) {
         player.sendMessage(
             prefix + TextFormat.colorize(message.formatted(placeholders))
         );

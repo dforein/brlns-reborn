@@ -5,7 +5,7 @@ import org.powernukkitx.form.response.CustomResponse;
 import org.powernukkitx.form.window.CustomForm;
 import org.powernukkitx.utils.Config;
 import org.powernukkitx.utils.TextFormat;
-
+import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.core.minigame.match.waitinglobby.WaitingLobby;
 import org.brlnsreb.utils.Messages;
 import org.brlnsreb.utils.YamlUtil;
@@ -89,6 +89,7 @@ public class VotingMapTimeMenu extends MenuAbstract {
     public void handleVoteResponse(Player player, CustomResponse response, int formId) {
         removeForm(formId);
 
+        String message;
         String[] placeholder = new String[1];
         
         int mapIndex = response.getDropdownResponse(0).elementId();
@@ -96,8 +97,10 @@ public class VotingMapTimeMenu extends MenuAbstract {
             String selectedMapId = mapVoting.getAvailableOptions().get(mapIndex - 1);
             mapVoting.vote(player, selectedMapId);
             
+            message = YamlUtil.getStr("map-vote", ConfigManager.getGlobalMessages());
             placeholder[0] = YamlUtil.getStr("map-settings.maps." + selectedMapId + ".name", config);
-            msgUtil.sendPresetMessagePrefix("map-vote", player, placeholder);
+            
+            msgUtil.sendMessagePrefix(player, message, placeholder);
         } else {
             mapVoting.removePlayerVote(player);     //in case he voted before
         }
@@ -107,8 +110,10 @@ public class VotingMapTimeMenu extends MenuAbstract {
             TimeOfDay selectedTime = timeVoting.getAvailableOptions().get(timeIndex - 1);
             timeVoting.vote(player, selectedTime);
             
+            message = YamlUtil.getStr("time-vote", ConfigManager.getGlobalMessages());
             placeholder[0] = selectedTime.displayName;
-            msgUtil.sendPresetMessagePrefix("time-vote", player, placeholder);
+
+            msgUtil.sendMessagePrefix(player, message, placeholder);
         } else {
             timeVoting.removePlayerVote(player);
         }

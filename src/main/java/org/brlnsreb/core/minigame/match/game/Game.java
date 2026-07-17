@@ -2,6 +2,7 @@ package org.brlnsreb.core.minigame.match.game;
 
 import java.util.Set;
 
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.core.minigame.match.game.arena.Arena;
 import org.brlnsreb.core.minigame.match.game.items.SpectatorItemManager;
@@ -20,9 +21,13 @@ import org.brlnsreb.utils.voting.Weather;
 
 import org.powernukkitx.Player;
 import org.powernukkitx.Server;
+import org.powernukkitx.entity.item.EntityItem;
+import org.powernukkitx.event.entity.EntityDamageEvent;
 import org.powernukkitx.event.entity.ProjectileHitEvent;
 import org.powernukkitx.event.player.PlayerChatEvent;
 import org.powernukkitx.event.player.PlayerCommandPreprocessEvent;
+import org.powernukkitx.event.player.PlayerDropItemEvent;
+import org.powernukkitx.event.player.PlayerItemHeldEvent;
 import org.powernukkitx.item.Item;
 import org.powernukkitx.level.Position;
 import org.powernukkitx.scheduler.ServerScheduler;
@@ -170,6 +175,8 @@ public abstract class Game {
         }
         
         endGame();
+
+        scheduler.scheduleDelayedTask(BrlnsReb.instance, match::onEnding, config.getInt("game.ending-duration") * 20);
     }
 
     protected abstract void endGame();
@@ -190,6 +197,10 @@ public abstract class Game {
     //events from listeners
 
     public abstract void onItemUse(CustomPlayer player, Item item);
+    public abstract boolean onItemPickup(CustomPlayer player, EntityItem itemEntity);
+    public abstract boolean onItemHeld(CustomPlayer player, PlayerItemHeldEvent event);
+    public abstract boolean onItemDrop(CustomPlayer player, PlayerDropItemEvent event);
+    public abstract void onPlayerDamage(CustomPlayer player, EntityDamageEvent event);
     public abstract void onProjectileHit(CustomPlayer player, ProjectileHitEvent event);
     public abstract boolean onChat(CustomPlayer player, PlayerChatEvent event);
     public abstract boolean onCommandPreprocess(CustomPlayer player, PlayerCommandPreprocessEvent event);
@@ -202,5 +213,6 @@ public abstract class Game {
     public Messages getMsgUtil() { return msgUtil; }
     public GameState getState() { return state; }
     public GameStateType getCurrentState() { return state.current; }
+    public TimerSystem getTimer() { return timer; }
 
 }

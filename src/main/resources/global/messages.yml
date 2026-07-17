@@ -2,21 +2,28 @@
 # &2▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
 
 lobby:
-  friend-server-join: "&3%s &ais now online"
-  friend-minigame-join: "&3%s &ais now playing %s"
+  bossbar:
+      message1: '&l&eBroken&4Lens &%sReborn'  #replace variable color
+      message2: '&l&ePlaying %s'  #replace name
+      other-messages:
+      colors:
+      - 'e'
+      - 'a'
+      - '9'
+  friend-server-join: '&3%s &ais now online'
+  friend-minigame-join: '&3%s &ais now playing %s'
+  friend-server-left: '&3%s &ais no longer online'
 
 match:
-  action-bar:
-    on-join: '&3%s &7joined (&a%d&7/&a%d&7)'
-    on-leave: '&3%s &7left (&a%d&7/&a%d&7)'
-  lobby-bossbar:
-    message1: '&l&eBroken&4Lens &%sReborn'  #replace variable color
-    message2: '&l&ePlaying %s'  #replace name
-    other-messages:
-    colors:
-    - 'e'
-    - 'a'
-    - '9'
+  waiting-lobby:
+    action-bar:
+      on-join: '&3%s &7joined (&a%d&7/&a%d&7)'
+      on-leave: '&3%s &7left (&a%d&7/&a%d&7)'
+    voting:
+      map-vote: '&aYou voted on the map: &e%s'
+      time-vote: '&aYou voted on the time of day: &e%s'
+      weather-vote: '&aYou voted on the weather: &e%s'
+    
   game:
     map-credits: '&eMap created by &d%s'
   force-stop: '&cMatch is stopping!'

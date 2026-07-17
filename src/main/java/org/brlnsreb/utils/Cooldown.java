@@ -16,8 +16,8 @@ public class Cooldown {
         return new Cooldown((int) (seconds * 1000));
     }
 
-    public static Cooldown ticks(int ticks) {
-        return new Cooldown(ticks * 50);
+    public static Cooldown ticks(double ticks) {
+        return new Cooldown((int) (ticks * 50));
     }
 
     public static Cooldown milliseconds(int milliseconds) {

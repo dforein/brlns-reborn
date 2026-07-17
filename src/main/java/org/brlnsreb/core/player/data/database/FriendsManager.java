@@ -7,8 +7,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.function.Consumer;
 
+import org.brlnsreb.core.ConfigManager;
 import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.core.player.data.PlayerData;
+import org.brlnsreb.utils.ChatMsgs;
+import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.database.DBResults;
 import org.powernukkitx.Server;
 import org.powernukkitx.scheduler.ServerScheduler;
@@ -72,20 +76,42 @@ public class FriendsManager {
 
     private static void addOnlineFriend(PlayerData data, String accountName) {
         //player login
+        String friendJoined = null;
+        if (data.getFriendNotify()) {
+            friendJoined = ChatMsgs.INFO_PFX + YamlUtil.getStr(
+                "lobby.friend-server-join", 
+                ConfigManager.getGlobalMessages()
+            ).formatted(accountName);
+        }
+
         for (Entry<String, String> name : data.getOfflineFriends().entrySet()) {
             PlayerData friendData = PlayerDataManager.getPlayerData(name.getKey());
             if (friendData == null) continue;
             data.addOnlineFriend(name.getKey(), name.getValue());
             friendData.addOnlineFriend(accountName);
+
+            CustomPlayer friend = PlayerUtils.getPlayer(name.getValue());
+            if (friendJoined != null) friend.sendMessage(friendJoined);
         }
     }
 
     public static void removeOnlineFriend(PlayerData data) {
         //player logout
+        String friendLeft = null;
+        if (data.getFriendNotify()) {
+            friendLeft = ChatMsgs.INFO_PFX + YamlUtil.getStr(
+                "lobby.friend-server-left", 
+                ConfigManager.getGlobalMessages()
+            ).formatted(data.name);
+        }
+
         for (Entry<String, String> name : data.getOnlineFriends().entrySet()) {
             PlayerData friendData = PlayerDataManager.getPlayerData(name.getKey());
             if (friendData == null) continue;
             friendData.removeOnlineFriend(data.name);
+
+            CustomPlayer friend = PlayerUtils.getPlayer(name.getValue());
+            if (friendLeft != null) friend.sendMessage(friendLeft);
         }
     }
 

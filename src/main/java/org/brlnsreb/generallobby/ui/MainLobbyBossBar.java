@@ -17,9 +17,8 @@ import org.powernukkitx.utils.Config;
 public class MainLobbyBossBar extends BossBarAbstract {
 
     private final int BOSSBAR_UPDATE_PERIOD = 7 * 20;   //in ticks
-    private final String PATH = "lobby-bossbar.";
+    private final String PATH = "lobby.bossbar.";
 
-    private final BrlnsReb plugin;
     private String name;                            //mainMessage1 name (of the game, or server in case of general lobby)
     private Config messages;
     private ArrayList<String> colors;               //mainMessage2 colors
@@ -27,7 +26,6 @@ public class MainLobbyBossBar extends BossBarAbstract {
     private int messagesIndex = 0;                  //i will periodically change messages in messages.yml order
 
     public MainLobbyBossBar(String name) {
-        plugin = BrlnsReb.instance;
         onConfigReload(name);
     }
 
@@ -57,7 +55,7 @@ public class MainLobbyBossBar extends BossBarAbstract {
     }
 
     public void startBossBarUpdates(Level level) {
-        Server.getInstance().getScheduler().scheduleRepeatingTask(plugin,
+        Server.getInstance().getScheduler().scheduleRepeatingTask(BrlnsReb.instance,
             () -> {
                 for (Player player : level.getPlayers().values()) {
                     this.updateLobbyBossBar((CustomPlayer) player);
@@ -86,7 +84,7 @@ public class MainLobbyBossBar extends BossBarAbstract {
                 int[] colorIndex = {0};
 
                 TaskHandler[] taskRef = new TaskHandler[1];
-                taskRef[0] = Server.getInstance().getScheduler().scheduleRepeatingTask(plugin,
+                taskRef[0] = Server.getInstance().getScheduler().scheduleRepeatingTask(BrlnsReb.instance,
                     () -> {
                         int index = colorIndex[0];
                         if (index >= colors.size()) {

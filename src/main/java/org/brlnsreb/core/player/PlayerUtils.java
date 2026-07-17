@@ -34,11 +34,8 @@ public class PlayerUtils {
             p.setViewDistance(2);
             p.despawnFromAll();
 
-            p.teleport(lobby ? pos.add(0.0, 1.0, 0.0) : pos);
-
-            if (lobby) {
-                p.setMotion(new Vector3(0.0, 0.42, 0.0));
-            }
+            if (lobby) lobbyTeleport(p, pos);
+            else p.teleport(pos);
 
             plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
                 p.spawnToAll(); 
@@ -54,6 +51,11 @@ public class PlayerUtils {
 
 
     //lobby-specific
+
+    public static void lobbyTeleport(CustomPlayer p, Position pos) {
+        p.teleport(pos.add(0.0, 1.0, 0.0));
+        p.setMotion(new Vector3(0.0, 0.42, 0.0));
+    }
 
     public static void setLobbyState(CustomPlayer p, PlayerStateType newState) {
         if (!p.isOnline()) return;

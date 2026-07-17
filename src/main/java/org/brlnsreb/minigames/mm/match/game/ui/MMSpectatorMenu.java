@@ -3,7 +3,6 @@ package org.brlnsreb.minigames.mm.match.game.ui;
 import org.powernukkitx.Server;
 import org.powernukkitx.form.window.SimpleForm;
 import org.powernukkitx.scheduler.TaskHandler;
-import org.powernukkitx.utils.TextFormat;
 
 import org.brlnsreb.core.minigame.match.GameStateType;
 import org.brlnsreb.core.player.CustomPlayer;
@@ -11,6 +10,7 @@ import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.generallobby.GeneralLobby;
 import org.brlnsreb.minigames.mm.match.game.MMGame;
 import org.brlnsreb.minigames.mm.match.game.gamedata.MMPlayerGameData;
+import org.brlnsreb.utils.ChatMsgs;
 import org.brlnsreb.utils.abstraction.MenuAbstract;
 
 import java.util.ArrayList;
@@ -63,7 +63,7 @@ public class MMSpectatorMenu extends MenuAbstract {
         }
         
         if (playersEmpty) {
-            spectator.sendMessage(TextFormat.RED + "No players alive to teleport to!");
+            spectator.sendMessage(ChatMsgs.ERROR_PFX + "No players alive to teleport to!");
             return;
         }
         
@@ -96,15 +96,15 @@ public class MMSpectatorMenu extends MenuAbstract {
         ));
         
         if (target == null) {
-            game.getMsgUtil().sendPresetMessagePrefix("player-not-available", spectator);
+            game.getMsgUtil().sendPresetMessagePrefix(spectator, "player-not-available");
             return;
         }
 
         spectator.teleport(target.getLocation());
 
         game.getMsgUtil().sendPresetMessagePrefix(
+            spectator,
             "teleported-to", 
-            spectator, 
             new String[] { target.data.name }
         );
 

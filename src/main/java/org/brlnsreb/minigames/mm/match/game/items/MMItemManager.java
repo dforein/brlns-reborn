@@ -6,9 +6,11 @@ import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.minigames.mm.match.game.MMGame;
 import org.brlnsreb.minigames.mm.match.game.gamedata.MMPlayerGameData;
+import org.brlnsreb.minigames.mm.match.game.gamedata.MMRole;
 import org.brlnsreb.utils.ItemManager;
 import org.powernukkitx.Player;
 import org.powernukkitx.entity.effect.EffectType;
+import org.powernukkitx.inventory.Inventory;
 import org.powernukkitx.item.Item;
 import org.powernukkitx.item.enchantment.Enchantment;
 import org.powernukkitx.scheduler.ServerScheduler;
@@ -24,7 +26,9 @@ public class MMItemManager extends ItemManager {
         this.game = game;
     }
 
-    public void giveItemsAtStart(Player player, MMPlayerGameData gameData) {
+    public void giveItemsByRole(Player player, MMPlayerGameData gameData) {
+        PlayerUtils.clearInventory(player);
+
         switch (gameData.role) {
             case MURDERER -> giveMurdererItems(player);
             case SHERIFF -> giveSheriffItems(player);
@@ -33,8 +37,6 @@ public class MMItemManager extends ItemManager {
     }
 
     private void giveMurdererItems(Player player) {
-        PlayerUtils.clearInventory(player);
-
         player.getInventory().setHeldItemIndex(1);
         
         giveItem(
@@ -54,8 +56,6 @@ public class MMItemManager extends ItemManager {
     }
     
     private void giveSheriffItems(Player player) {
-        PlayerUtils.clearInventory(player);
-        
         player.getInventory().setHeldItemIndex(0);
 
         giveItem(
@@ -67,15 +67,24 @@ public class MMItemManager extends ItemManager {
         );
     }
 
-    public void giveYellowDye(Player player) {
+    public void giveYellowDye() {
         Item dye = buildItem(Item.YELLOW_DYE, getStr(PATH + "yellow-dye.name"));
         
-        if (player.getInventory().contains(dye)
-            || player.getInventory().contains(Item.get(Item.GOLDEN_HOE))) {
-            return;
-        }
+        for (CustomPlayer p : game.getPlayers()) {
+            if (game.getGameData(p).role != MMRole.INNOCENT) continue;
 
-        player.getInventory().setItem(2, dye);
+            Inventory inventory = p.getInventory();
+            if (inventory.contains(dye) || inventory.contains(Item.get(Item.GOLDEN_HOE))) continue;
+
+            inventory.setItem(2, dye);
+        }
+    }
+
+    public void removeYellowDye() {
+        for (CustomPlayer p : game.getPlayers()) {
+            if (game.getGameData(p).role != MMRole.INNOCENT) continue;
+            PlayerUtils.clearItem(p, Item.YELLOW_DYE);
+        }
     }
 
     public void useFlash(CustomPlayer murderer, ServerScheduler scheduler) {
@@ -94,12 +103,12 @@ public class MMItemManager extends ItemManager {
             giveBlindness(s, blindnessDuration, placeholder);
         }
 
-        game.getMsgUtil().sendPresetMessagePrefix("lights-out-murderer", murderer, placeholder);
+        game.getMsgUtil().sendPresetMessagePrefix(murderer, "lights-out-murderer", placeholder);
 
         if (game.getCurrentState() == GameStateType.ENDING) return;
         
         scheduler.scheduleDelayedTask(BrlnsReb.instance,
-            () -> game.getMsgUtil().sendPresetMessagePrefix("lights-out-over", murderer),
+            () -> game.getMsgUtil().sendPresetMessagePrefix(murderer, "lights-out-over"),
             blindnessDuration
         );
     }
@@ -113,7 +122,7 @@ public class MMItemManager extends ItemManager {
             false
         );
 
-        game.getMsgUtil().sendPresetMessagePrefix("lights-out-others", player, placeholder);
+        game.getMsgUtil().sendPresetMessagePrefix(player, "lights-out-others", placeholder);
     }
 
 }

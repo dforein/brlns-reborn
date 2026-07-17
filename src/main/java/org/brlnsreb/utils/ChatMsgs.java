@@ -11,8 +11,8 @@ public class ChatMsgs {
 
     public static final String SPEC_PFX = "§l§fSPEC§r §7";
 
-    public static final String BAR = "§3§o》§r§2▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬§3§o《";
-
+    public static final String BAR = "§3§o》§r§2▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬§3《";
+    private static final int BAR_CHARACTERS = 40;
 
     public enum Alignment { 
         RIGHT, 
@@ -23,10 +23,23 @@ public class ChatMsgs {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append(BAR);
 
+        int i, spaces;
         for (String line : lines) {
-            strBuilder.append("§2—§r");
-            line.length()
+            strBuilder.append("§2-§r");
+
+            if (alignment == Alignment.CENTER) {
+                spaces = (int) (BAR_CHARACTERS - line.length() * 1.1 - 1) / 2;
+                for (i = 0; i < spaces; i++) strBuilder.append("§l §r");
+            } else if (alignment == Alignment.RIGHT) {
+                strBuilder.append("§l §r");
+            }
+
+            strBuilder.append(line);
+            strBuilder.append('\n');
         }
+
+        strBuilder.append(BAR);
+        return strBuilder.toString();
     }
 
 }

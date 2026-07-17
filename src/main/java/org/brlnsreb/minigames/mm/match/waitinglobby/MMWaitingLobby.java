@@ -10,7 +10,7 @@ import org.brlnsreb.minigames.mm.match.waitinglobby.items.MMWaitingLobbyItemMana
 import org.brlnsreb.utils.voting.TimeOfDay;
 import org.brlnsreb.utils.voting.VotingMapTimeMenu;
 import org.brlnsreb.utils.voting.VotingSystem;
-
+import org.powernukkitx.event.player.PlayerItemHeldEvent;
 import org.powernukkitx.item.Item;
 
 public class MMWaitingLobby extends WaitingLobby {
@@ -60,6 +60,10 @@ public class MMWaitingLobby extends WaitingLobby {
         switch (item.getId()) {
             case Item.NETHER_STAR -> votingMenu.openMenu(player);
         }
+    }
+
+    public boolean onItemHeld(CustomPlayer player, PlayerItemHeldEvent event) {
+        return true;
     }
 
 }

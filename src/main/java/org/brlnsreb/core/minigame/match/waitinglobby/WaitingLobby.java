@@ -24,6 +24,7 @@ import org.brlnsreb.utils.voting.VotingSystem;
 import org.brlnsreb.utils.voting.Weather;
 
 import org.powernukkitx.Player;
+import org.powernukkitx.event.player.PlayerItemHeldEvent;
 import org.powernukkitx.item.Item;
 import org.powernukkitx.level.Sound;
 import org.powernukkitx.utils.Config;
@@ -121,10 +122,10 @@ public abstract class WaitingLobby extends Lobby {
     protected void onJoinMessages(CustomPlayer player) {
         Messages.sendActionBar(
             players, 
-            "action-bar.on-join", 
+            "match.waiting-lobby.action-bar.on-join", 
             new Object[] {player.getName(), players.size(), maxPlayers},
-            ConfigManager.getConfig("global/messages"),
-            99999
+            ConfigManager.getGlobalMessages(),
+            999999
         );
     }
 
@@ -148,8 +149,8 @@ public abstract class WaitingLobby extends Lobby {
             players, 
             "action-bar.on-leave", 
             new Object[] {player.getName(), players.size(), maxPlayers},
-            ConfigManager.getConfig("global/messages"),
-            99999
+            ConfigManager.getGlobalMessages(),
+            999999
         );
 
         mapVoting.removePlayerVote(player);
@@ -291,6 +292,7 @@ public abstract class WaitingLobby extends Lobby {
     //listeners access
 
     public abstract void onItemUse(CustomPlayer player, Item item);
+    public abstract boolean onItemHeld(CustomPlayer player, PlayerItemHeldEvent event);
 
 
 

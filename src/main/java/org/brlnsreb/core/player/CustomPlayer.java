@@ -15,6 +15,7 @@ import org.cloudburstmc.protocol.bedrock.data.skin.PersonaPieceTintData;
 import org.cloudburstmc.protocol.common.util.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.brlnsreb.BrlnsReb;
+import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.match.game.GameExpand;
 import org.brlnsreb.core.player.data.PlayerData;
@@ -67,6 +68,7 @@ public class CustomPlayer extends Player {
     private static HashMap<Integer, HashSet<Vector3>> playerBlocks = new HashMap<>();   //Integer = levelId
 
     public PlayerStateType state = PlayerStateType.LOBBY;
+    private WeakReference<Lobby> currentLobby = new WeakReference<>(null);
     public Minigame currentMinigame = null;
     private WeakReference<Match> currentMatch = new WeakReference<>(null);
     
@@ -144,6 +146,9 @@ public class CustomPlayer extends Player {
 
     public boolean isTeleporting() { return this.state == PlayerStateType.TELEPORTING; }
     public void setTeleporting() { this.state = PlayerStateType.TELEPORTING; }
+
+    public void setLobby(Lobby lobby) { this.currentLobby = new WeakReference<>(lobby); }
+    public Lobby getLobby() { return this.currentLobby.get(); }
 
     public void setMatch(Match match) { this.currentMatch = new WeakReference<>(match); }
     public Match getMatch() { return this.currentMatch.get(); }
@@ -244,6 +249,11 @@ public class CustomPlayer extends Player {
 
     @Override
     public boolean attack(EntityDamageEvent source) {
+        if (source.getCause() == DamageCause.VOID) {
+            source.setDamage(10000.0f);
+            checkAndAttack(source);
+        }
+
         switch (this.damageMode) {
             case INVULNERABLE:
                 if (this.attackEvent) Server.getInstance().getPluginManager().callEvent(source);
@@ -307,14 +317,25 @@ public class CustomPlayer extends Player {
             return super.attack(source);
         }
 
-        //not ok, player death
-        this.setHealthCurrent(this.getHealthMax());
-        super.attack(source);               //to show the damage animation  //TODO: need to test whether i have to wait one tick to show the anim
-        this.setHealthCurrent(this.getHealthMax());
+        switch (state) {
+            case PLAYING -> {
+                //not ok, player death
+                this.setHealthCurrent(this.getHealthMax());
+                super.attack(source);               //to show the damage animation  //TODO: need to test whether i have to wait one tick to show the anim
+                this.setHealthCurrent(this.getHealthMax());
 
-        Match match = getMatch();
-        if (match != null && match instanceof MatchExpand) {
-            ((GameExpand) match.getGame()).onDeath(this, damager);
+                Match match = getMatch();
+                if (match instanceof MatchExpand) {
+                    ((GameExpand) match.getGame()).onDeath(source.getCause(), this, damager);
+                }
+            }
+
+            case LOBBY, WAITING_LOBBY, END_LOBBY -> {
+                //go back to lobby spawn (in case of void)
+                this.currentLobby.get().teleportToSpawn(this);
+            }
+
+            default -> {}
         }
 
         return true;
