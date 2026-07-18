@@ -39,8 +39,20 @@ match:
           name: '&l&o&eTeleporter'
         actions:
           name: '&l&o&eActions'
-  end-lobby:
+  death-lobby:
     npc:
       play-again:
+        pos: 0 0 0
+        text1: '&l&aPlay Again'
+        default-yaw: 0
+        skin-file: global/skins/death-lobby-lobby-play-again.png
       spectate:
+        pos: 0 0 0
+        text1: '&l&9Spectate'
+        default-yaw: 0
+        skin-file: global/skins/death-lobby-spectate.png
       return-to-lobby:
+        pos: 0 0 0
+        text1: '&l&cReturn To Lobby'
+        default-yaw: 0
+        skin-file: global/skins/death-lobby-return-to-lobby.png

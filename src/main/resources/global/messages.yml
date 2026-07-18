@@ -29,7 +29,7 @@ match:
   game:
     map-credits: '&eMap created by &d%s'
   force-stop: '&cMatch is stopping!'
-  end-lobby:
+  death-lobby:
     title: '&cYOU ARE DEAD'
     subtitle: '&6Oh no... too bad'
 

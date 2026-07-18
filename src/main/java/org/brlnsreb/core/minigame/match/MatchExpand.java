@@ -8,16 +8,16 @@ import org.powernukkitx.level.Position;
 
 public abstract class MatchExpand extends Match {
 
-    protected EndLobby endLobby;
+    protected DeathLobby deathLobby;
     
     public MatchExpand(Minigame minigame, int matchNumber) {
         super(minigame, matchNumber);
-        this.endLobby = new EndLobby(this);
+        this.deathLobby = new DeathLobby(this);
     }
 
-    public void onEndLobbyJoin(CustomPlayer player) {
+    public void onDeathLobbyJoin(CustomPlayer player) {
         players.remove(player);
-        endLobby.onJoin(player);
+        deathLobby.onJoin(player);
     }
 
     public boolean onDeath(CustomPlayer victim, CustomPlayer killer) { return onDeath(null, victim, killer); }
@@ -25,7 +25,7 @@ public abstract class MatchExpand extends Match {
         Position deathPos = victim.getPosition();
 
         if (getGame().onDeath(cause, victim, killer)) {
-            onEndLobbyJoin(victim);
+            onDeathLobbyJoin(victim);
             game.prepareAndSaveData(victim, true);
 
             getGame().afterDeath(cause, deathPos, victim, killer);

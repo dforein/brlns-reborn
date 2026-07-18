@@ -7,9 +7,9 @@ import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.utils.YamlUtil;
 import org.powernukkitx.utils.Config;
 
-public class EndLobby extends Lobby {
+public class DeathLobby extends Lobby {
 
-    public EndLobby(MatchExpand match) {
+    public DeathLobby(MatchExpand match) {
         super(match);
 
         //play again NPC
@@ -53,5 +53,5 @@ public class EndLobby extends Lobby {
     
     public Config getConfig() { return Configs.getGlobalConfig(); }
     public Config getMessages() { return null; }
-    public String requireConfigPath() { return "match.end-lobby."; }
+    public String requireConfigPath() { return "match.death-lobby."; }
 }
