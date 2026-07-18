@@ -308,7 +308,7 @@ public class CustomPlayer extends Player {
         }
 
         //health check
-        if (source.getDamage() < getHealthCurrent()) {
+        if (source.getFinalDamage() < getHealthCurrent()) {
             //OK!
             return super.attack(source);
         }
