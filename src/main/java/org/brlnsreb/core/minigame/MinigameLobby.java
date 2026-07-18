@@ -7,9 +7,9 @@ import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
-import org.brlnsreb.generallobby.GeneralLobby;
-import org.brlnsreb.generallobby.items.MainLobbyItemManager;
-import org.brlnsreb.generallobby.ui.MainLobbyBossBar;
+import org.brlnsreb.mainhub.MainHub;
+import org.brlnsreb.mainhub.items.MainLobbyItemManager;
+import org.brlnsreb.mainhub.ui.MainLobbyBossBar;
 import org.brlnsreb.utils.YamlUtil;
 import org.powernukkitx.Server;
 import org.powernukkitx.utils.Config;
@@ -32,7 +32,7 @@ public abstract class MinigameLobby extends Lobby {
 
         this.backToHubNpc = spawnNpc(
             configPath() + "npc.",
-            player -> GeneralLobby.instance.onJoin(player),
+            player -> MainHub.instance.onJoin(player),
             false
         );
         Server.getInstance().getScheduler().scheduleRepeatingTask(BrlnsReb.instance, 
@@ -51,7 +51,7 @@ public abstract class MinigameLobby extends Lobby {
     
     protected void onJoinMessages(CustomPlayer player) {
         player.sendTitle(minigame.mgt.displayName, "§eplay.brlns.reb");
-        GeneralLobby.friendAlertsNotify(player, minigame, minigame.mgt.displayName);
+        MainHub.friendAlertsNotify(player, minigame, minigame.mgt.displayName);
     }
 
     protected void onJoinBossBar(CustomPlayer player) {
@@ -83,7 +83,7 @@ public abstract class MinigameLobby extends Lobby {
  
     private void updateBackToHubNpcSubtitle() {
         String subtitle = YamlUtil.getStr(configPath() + "back-to-hub-npc.text2", config)
-            .formatted(GeneralLobby.onlinePlayers);
+            .formatted(MainHub.onlinePlayers);
 
         backToHubNpc.updateSubtitle(subtitle);
     }

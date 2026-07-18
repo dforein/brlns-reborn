@@ -1,4 +1,4 @@
-package org.brlnsreb.generallobby.ui;
+package org.brlnsreb.mainhub.ui;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -19,7 +19,7 @@ public class MainLobbyBossBar extends BossBarAbstract {
     private final int BOSSBAR_UPDATE_PERIOD = 7 * 20;   //in ticks
     private final String PATH = "lobby.bossbar.";
 
-    private String name;                            //mainMessage1 name (of the game, or server in case of general lobby)
+    private String name;                            //mainMessage1 name (of the game, or server in case of main hub)
     private Config messages;
     private ArrayList<String> colors;               //mainMessage2 colors
     private ArrayList<String> messagesArray;

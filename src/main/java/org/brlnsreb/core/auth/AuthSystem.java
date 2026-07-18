@@ -22,7 +22,7 @@ public class AuthSystem extends MenuAbstract {
 
     public static void init() {
         scheduler = Server.getInstance().getScheduler();
-        config = Configs.getConfig("general-lobby/config.yml");
+        config = Configs.getConfig("main-hub/config.yml");
     }
 
     public static void openMenu(Player player) {

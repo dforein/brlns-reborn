@@ -1,9 +1,9 @@
-package org.brlnsreb.generallobby.items;
+package org.brlnsreb.mainhub.items;
 
 import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerUtils;
-import org.brlnsreb.generallobby.ui.GamesMenu;
+import org.brlnsreb.mainhub.ui.GamesMenu;
 import org.brlnsreb.utils.ItemManager;
 
 import org.powernukkitx.Player;
@@ -28,7 +28,7 @@ public class MainLobbyItemManager extends ItemManager {
         }
     }
 
-    public void giveGeneralLobbyItems(Player player) {
+    public void giveMainHubItems(Player player) {
         PlayerUtils.clearInventory(player);
 
         giveGames(player);
@@ -37,7 +37,7 @@ public class MainLobbyItemManager extends ItemManager {
     }
 
     public void giveMinigameLobbyItems(Player player) {
-        giveGeneralLobbyItems(player);
+        giveMainHubItems(player);
         giveJoinGame(player);
     }
 

@@ -12,7 +12,7 @@ import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
-import org.brlnsreb.generallobby.GeneralLobby;
+import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.utils.ChatMsgs;
 import org.brlnsreb.utils.YamlUtil;
 import org.powernukkitx.Player;
@@ -124,7 +124,7 @@ public abstract class Lobby {
         if (!players.isEmpty()) {
             for (Player p : players.values()) {
                 p.sendMessage(ChatMsgs.ERROR_PFX + "Something wrong happened, joining main hub...");
-                GeneralLobby.instance.onJoin((CustomPlayer) p);
+                MainHub.instance.onJoin((CustomPlayer) p);
             }
         }
 

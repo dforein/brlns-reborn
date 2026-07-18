@@ -2,7 +2,7 @@ package org.brlnsreb.commands;
 
 import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.minigame.MinigameManager;
-import org.brlnsreb.generallobby.GeneralLobby;
+import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.utils.YamlUtil;
 import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandSender;
@@ -25,7 +25,7 @@ public class ReloadConfigCommand extends Command {
         YamlUtil.resetCache();
 
         MinigameManager.onConfigReload();
-        GeneralLobby.instance.onConfigReload();
+        MainHub.instance.onConfigReload();
 
         sender.sendMessage(TextFormat.GREEN + "Config file reloaded!");
         return true;

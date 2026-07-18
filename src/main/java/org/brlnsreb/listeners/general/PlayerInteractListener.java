@@ -24,7 +24,7 @@ import org.powernukkitx.plugin.annotation.EventListener;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.CustomPlayer.InteractMode;
-import org.brlnsreb.generallobby.items.MainLobbyItemManager;
+import org.brlnsreb.mainhub.items.MainLobbyItemManager;
 
 @EventListener
 public class PlayerInteractListener implements Listener {

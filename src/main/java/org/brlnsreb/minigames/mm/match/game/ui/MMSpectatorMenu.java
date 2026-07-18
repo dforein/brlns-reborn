@@ -7,7 +7,7 @@ import org.powernukkitx.scheduler.TaskHandler;
 import org.brlnsreb.core.minigame.match.GameStateType;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerUtils;
-import org.brlnsreb.generallobby.GeneralLobby;
+import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.minigames.mm.match.game.MMGame;
 import org.brlnsreb.minigames.mm.match.game.gamedata.MMPlayerGameData;
 import org.brlnsreb.utils.ChatMsgs;
@@ -137,7 +137,7 @@ public class MMSpectatorMenu extends MenuAbstract {
         switch (buttonId) {
             case 0 -> spectator.minigameCurrent.onLobbyJoin(spectator);     //return to lobby
             case 1 -> spectator.minigameCurrent.onMatchJoin(spectator);     //play again
-            case 2 -> GeneralLobby.instance.onJoin(spectator);              //play another game
+            case 2 -> MainHub.instance.onJoin(spectator);              //play another game
         }
     }
 }

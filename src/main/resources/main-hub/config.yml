@@ -1,4 +1,4 @@
-world: generallobby
+world: mainhub
 spawn-pos: 
 npc:
   list:
@@ -8,4 +8,4 @@ npc:
     text1: '&l&aMurder&2Mystery'
     text2: '&d%d &eplaying'
     default-yaw: 0
-    skin-file: general-lobby/skins/mm.png
+    skin-file: main-hub/skins/mm.png

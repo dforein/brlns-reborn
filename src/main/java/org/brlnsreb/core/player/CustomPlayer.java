@@ -21,10 +21,9 @@ import org.brlnsreb.core.minigame.match.game.GameExpand;
 import org.brlnsreb.core.player.data.PlayerData;
 import org.brlnsreb.core.player.data.database.Outcome;
 import org.brlnsreb.core.player.data.database.PlayerDataManager;
+import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.minigame.match.MatchExpand;
-import org.brlnsreb.generallobby.GeneralLobby;
-
 import org.powernukkitx.Player;
 import org.powernukkitx.Server;
 import org.powernukkitx.block.Block;
@@ -91,7 +90,7 @@ public class CustomPlayer extends Player {
             if (outcome == Outcome.DB_ERROR) return;
 
             this.updatePresetNameTags();
-            GeneralLobby.instance.onServerJoin(this);
+            MainHub.instance.onServerJoin(this);
 
             if (!updateDisplayName()) updateDisplayNameDelayed();
         });
@@ -115,7 +114,7 @@ public class CustomPlayer extends Player {
 
     @Override
     public void doFirstSpawn() {
-        PlayerUtils.updateOnlinePlayer(this, true);     //remove the name for players who aren't in the same level (general lobby)
+        PlayerUtils.updateOnlinePlayer(this, true);     //remove the name for players who aren't in the same level (main hub)
         super.doFirstSpawn();
     }
 

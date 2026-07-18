@@ -1,10 +1,10 @@
-package org.brlnsreb.generallobby.ui;
+package org.brlnsreb.mainhub.ui;
 
 import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.player.CustomPlayer;
-import org.brlnsreb.generallobby.GeneralLobby;
+import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.abstraction.MenuAbstract;
 
@@ -37,7 +37,7 @@ public class GamesMenu extends MenuAbstract {
         removeForm(formId);
 
         if (buttonId == 0) {
-            GeneralLobby.instance.onJoin(player);
+            MainHub.instance.onJoin(player);
         } else {
             MinigameManager.getMinigames().get(buttonId - 1).onLobbyJoin(player);
         }

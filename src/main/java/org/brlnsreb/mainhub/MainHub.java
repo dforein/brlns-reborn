@@ -1,4 +1,4 @@
-package org.brlnsreb.generallobby;
+package org.brlnsreb.mainhub;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,18 +18,18 @@ import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.core.player.data.PlayerData;
-import org.brlnsreb.generallobby.items.MainLobbyItemManager;
-import org.brlnsreb.generallobby.ui.MainLobbyBossBar;
+import org.brlnsreb.mainhub.items.MainLobbyItemManager;
+import org.brlnsreb.mainhub.ui.MainLobbyBossBar;
 import org.brlnsreb.utils.ChatMsgs;
 import org.brlnsreb.utils.YamlUtil;
 
 import org.powernukkitx.Server;
 import org.powernukkitx.utils.Config;
 
-public class GeneralLobby extends Lobby {
+public class MainHub extends Lobby {
 
     public static final String displayNameTag = "§l§dHUB§r";
-    public static GeneralLobby instance;
+    public static MainHub instance;
 
     public static int onlinePlayers = 0;
 
@@ -38,7 +38,7 @@ public class GeneralLobby extends Lobby {
 
     private final HashMap<MinigameType, NPCEntity> mgtNpcMap = new HashMap<>();
 
-    public GeneralLobby() {
+    public MainHub() {
         super();
         instance = this;
 
@@ -80,7 +80,7 @@ public class GeneralLobby extends Lobby {
     }
 
     protected void onJoinItems(CustomPlayer player) {
-        items.giveGeneralLobbyItems(player);
+        items.giveMainHubItems(player);
     }
 
     public static void friendAlertsNotify(CustomPlayer player, Minigame minigame, String minigameName) {
@@ -142,7 +142,7 @@ public class GeneralLobby extends Lobby {
 
         if (!hubFriends.isEmpty()) {
             alertsBuilder.append(" ")
-                        .append(GeneralLobby.displayNameTag)
+                        .append(MainHub.displayNameTag)
                         .append("§7: §3")
                         .append(String.join("§7, §3", hubFriends));
         }
@@ -210,10 +210,10 @@ public class GeneralLobby extends Lobby {
     }
 
     public Config getConfig() { 
-        return Configs.getConfig("general-lobby/config.yml");
+        return Configs.getConfig("main-hub/config.yml");
     }
     public Config getMessages() {
-        return Configs.getConfig("general-lobby/messages.yml");
+        return Configs.getConfig("main-hub/messages.yml");
     }
     public String requireConfigPath() { return ""; }
     

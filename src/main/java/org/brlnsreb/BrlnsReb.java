@@ -20,7 +20,7 @@ import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.minigame.MinigameType;
 import org.brlnsreb.core.player.data.database.PlayerDataManager;
-import org.brlnsreb.generallobby.GeneralLobby;
+import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.minigames.mm.match.game.entities.DeadBodyEntity;
 import org.brlnsreb.minigames.mm.match.game.entities.ThrownSwordEntity;
 
@@ -31,14 +31,14 @@ public class BrlnsReb extends PluginBase {
     private static Server server;
 
     private MinigameManager minigameManager;
-    private GeneralLobby generalLobby;
+    private MainHub mainHub;
 
     private final String[] RESOURCES = {
             "global/config.yml",
             "global/database.yml",
             "global/messages.yml",
-            "general-lobby/config.yml",
-            "general-lobby/messages.yml"
+            "main-hub/config.yml",
+            "main-hub/messages.yml"
         };
 
     private static boolean globalChat = false;
@@ -87,7 +87,7 @@ public class BrlnsReb extends PluginBase {
         AuthSystem.init();
         PlayerDataManager.init();
 
-        prepareGeneralLobby();
+        prepareMainHub();
         minigameManager = new MinigameManager();
 
         
@@ -127,9 +127,9 @@ public class BrlnsReb extends PluginBase {
         }
     }
 
-    private void prepareGeneralLobby() {
-        this.generalLobby = new GeneralLobby();
-        Config config = generalLobby.getConfig();
+    private void prepareMainHub() {
+        this.mainHub = new MainHub();
+        Config config = mainHub.getConfig();
 
         server.setDefaultLevel(
             server.getLevelByName(config.getString("world"))
@@ -159,6 +159,5 @@ public class BrlnsReb extends PluginBase {
     public static int getDebugVar() { return debugVar; }
     public static void setDebugVar(int value) { debugVar = value; }
 
-    public GeneralLobby getGeneralLobby() { return generalLobby; }
     public MinigameManager getMinigameManager() { return minigameManager; }
 }

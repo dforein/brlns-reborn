@@ -8,7 +8,7 @@ import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.core.player.data.PlayerData;
 import org.brlnsreb.core.player.data.database.FriendsManager;
-import org.brlnsreb.generallobby.GeneralLobby;
+import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.utils.ChatMsgs;
 import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandContext;
@@ -226,7 +226,7 @@ public class FriendCommand extends Command {
                 switch (friend.state) {
                     case LOBBY:
                         if (friend.minigameCurrent == null) {
-                            GeneralLobby.instance.onJoin(sender);
+                            MainHub.instance.onJoin(sender);
                         } else {
                             friend.minigameCurrent.onLobbyJoin(sender);
                         }
@@ -239,7 +239,7 @@ public class FriendCommand extends Command {
                         friend.sendMessage(ChatMsgs.INFO_PFX + "§d" + getPlayerName(sender) + "§a is now spectating.");
                         break;
                     default:
-                        GeneralLobby.instance.onJoin(sender);
+                        MainHub.instance.onJoin(sender);
                         return CommandResult.fail(ChatMsgs.ERROR_PFX + "Report this error to developers: spectate_join_switch.error");
                 }
 
@@ -379,7 +379,7 @@ public class FriendCommand extends Command {
             } else {
                 message += "§aOnline §7(§d" 
                     + (friend.minigameCurrent == null 
-                        ? GeneralLobby.displayNameTag
+                        ? MainHub.displayNameTag
                         : friend.minigameCurrent.mgt.displayNameTag)
                     + "§7)";
             }
