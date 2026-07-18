@@ -106,7 +106,7 @@ public class WorldManager {
 
         for (GameRule rule : particulars) {
             gameRules.setGameRule(rule, 
-                isLobby? false : config.getBoolean("settings.gamerules." + rule.getName())
+                isLobby? false : config.getBoolean("settings.gamerules." + rule.getName(), false)   //default: false
             );
         }
 

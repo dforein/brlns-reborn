@@ -69,6 +69,8 @@ public class BrlnsReb extends PluginBase {
         underMaintenance = Configs.getGlobalConfig().getBoolean("server-under-maintenance");
         server = getServer();
 
+        server.setDifficulty(2);
+
         if (underMaintenance) {
             server.getSettings().baseSettings().allowList(true);
             server.getSettings().save();

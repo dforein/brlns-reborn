@@ -5,12 +5,6 @@ settings:
   physics-enabled: false
   gamerules:
     pvp: true
-    doFireTick: false
-    doTileDrops: false
-    doEntityDrops: false
-    doMobLoot: false
-    tntExplodes: false
-    mobGriefing: false
 
 game:
   duration: 420
