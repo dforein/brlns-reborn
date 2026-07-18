@@ -40,8 +40,7 @@ public abstract class Lobby {
         this.config = getConfig();
         this.messages = getMessages();
 
-        String levelPath = configPath().equals("") ?
-            "world" : configPath() + ".world";
+        String levelPath = configPath() + "world";
         this.level = WorldManager.loadLobbyLevel(config.getString(levelPath));
         this.spawnPos = YamlUtil.parsePosition(config.getString(configPath() + "spawn-pos"), this.level);
     }
@@ -137,15 +136,20 @@ public abstract class Lobby {
     }
 
     protected void reloadNpcConfigData(NPCEntity npc, String configPath, boolean subtitle) {
+        reloadNpcConfigData(npc, configPath, this.config, subtitle);
+    }
+
+    protected void reloadNpcConfigData(NPCEntity npc, String configPath, Config customConfig, boolean subtitle) {
         if (npc == null) return;
 
         configPath = YamlUtil.checkConfigPath(configPath);
         
-        npc.setDefaultPose(config.getDouble(configPath + "default-yaw"));
-        npc.updateTitle(config.getString(configPath + "text1"));
+        npc.setDefaultPose(customConfig.getDouble(configPath + "default-yaw"));
+        npc.updateTitle(customConfig.getString(configPath + "text1"));
         if (subtitle) {
-            npc.updateSubtitle(config.getString(configPath + "text2"));
+            npc.updateSubtitle(customConfig.getString(configPath + "text2"));
         }
+        npc.setSkin(customConfig.getString(configPath + "skin-file"));
     }
 
     public Level getLevel() { return this.level; }

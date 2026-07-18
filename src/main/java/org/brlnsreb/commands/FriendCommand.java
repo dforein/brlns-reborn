@@ -262,8 +262,8 @@ public class FriendCommand extends Command {
                     return loginFail;
                 }
             })
-
-            .then(RouteNode.argument("pageNumber", new IntNode())       //TODO: use new feature: optional(boolean)
+            
+            .then(RouteNode.argument("pageNumber", new IntNode()).optional(true)
                 .exec(ctx -> {
                     if (listExec(ctx, ctx.getArg("pageNumber"))) {
                         return CommandResult.success();

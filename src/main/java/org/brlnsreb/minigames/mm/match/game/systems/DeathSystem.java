@@ -59,8 +59,8 @@ public class DeathSystem {
         this.game = game;
         this.scheduler = scheduler;
 
-        deadBodyPitch = game.getConfig().getDouble("game.death.head-pitch-offset");
-        deadBodyHeadYaw = game.getConfig().getDouble("game.death.head-yaw-offset");
+        deadBodyPitch = game.getConfig().getDouble("game.dead-body.head-pitch-offset");
+        deadBodyHeadYaw = game.getConfig().getDouble("game.dead-body.head-yaw-offset");
     }
     
     public void onDeath(CustomPlayer victim, Position deathPos) {

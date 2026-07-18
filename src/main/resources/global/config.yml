@@ -1,3 +1,5 @@
+server-under-maintenance: false
+
 lobby:
   items:
     games: 
@@ -13,9 +15,6 @@ lobby:
 
 match:
   waiting-lobby:
-    npc:
-      leave:
-
     bossbar:
       max-countdown: 45
       shortened-countdown: 10

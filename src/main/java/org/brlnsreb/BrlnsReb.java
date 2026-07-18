@@ -13,6 +13,7 @@ import org.brlnsreb.utils.YamlUtil;
 
 import java.util.ArrayList;
 
+import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.WorldManager;
 import org.brlnsreb.core.auth.AuthSystem;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
@@ -26,6 +27,7 @@ import org.brlnsreb.minigames.mm.match.game.entities.ThrownSwordEntity;
 public class BrlnsReb extends PluginBase {
     
     public static BrlnsReb instance;
+    private static boolean underMaintenance;
     private static Server server;
 
     private MinigameManager minigameManager;
@@ -64,6 +66,7 @@ public class BrlnsReb extends PluginBase {
     
     @Override
     public void onEnable() {
+        underMaintenance = Configs.getGlobalConfig().getBoolean("server-under-maintenance");
         server = getServer();
 
         saveAllResources();
@@ -126,6 +129,8 @@ public class BrlnsReb extends PluginBase {
 
         server.getDefaultLevel().save();
     }
+
+    public static boolean isUnderMaintenance() { return underMaintenance; }
 
     public static boolean getGlobalChat() { return globalChat; }
     public static void setGlobalChat(boolean value) { globalChat = value; }

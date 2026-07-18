@@ -72,7 +72,7 @@ public abstract class WaitingLobby extends Lobby {
         spawnNpc(
             "match." + configPath() + "npc.", 
             globalConfig,
-            (CustomPlayer player) -> { match.onLeave(player); }
+            player -> match.onLeave(player)
         );
 
         this.msgUtil = match.getMsgUtil();

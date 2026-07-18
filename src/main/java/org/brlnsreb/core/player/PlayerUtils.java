@@ -64,16 +64,16 @@ public class PlayerUtils {
 
         PlayerStateType oldState = p.state; 
         p.state = newState;
-        p.setPresetNameTag();
 
         switch (oldState) {
             case LOBBY, WAITING_LOBBY, END_LOBBY:
-                return;                 //already coming from a lobby, no need to execute the following code
-        
+                p.setPresetNameTag();
+                return;                     //already coming from a lobby, no need to execute the following code
             default:
                 break;
         }
         
+        p.updatePresetNameTags();
         resetVars(p);
         resetPlayer(p, Player.ADVENTURE, 18);
 

@@ -36,7 +36,6 @@ public class HubCommand extends org.powernukkitx.command.Command {
                 player.currentMinigame.onLobbyJoin(player);
                 break;
         }
-       //TODO: hub/lobby command (done?)
         
         return true;
     }

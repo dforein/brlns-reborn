@@ -2,15 +2,16 @@ settings:
   check-players-at-game-start: true
   min-players: 2
   max-players: 20
-  min-players-start: 20
-  countdown-seconds: 45
-  shortened-countdown-seconds: 10
-  pregame-countdown-seconds: 10
   physics-enabled: false
   gamerules:
-
-lobby:
-  npc:
+    naturalRegeneration: false
+    pvp: true
+    doFireTick: false
+    doTileDrops: false
+    doEntityDrops: false
+    doMobLoot: false
+    tntExplodes: false
+    mobGriefing: false
 
 game:
   duration: 420
@@ -50,9 +51,32 @@ game:
     head-yaw-offset: -35
     head-pitch-offset: -40
 
+lobby:
+  world: mm_lobby
+  spawn:
+  npc:
+    join:
+      pos: 0 0 0
+      text1: '&l&cQuickPlay'
+      text2: '&dJoin: &a%s%d &e%d&7/&e%d'
+      default-yaw: 0
+      skin-file: global/skins/minigame-lobby-join.png
+    back-to-hub:
+      pos: 0 0 0
+      text1: '&l&6Back To Hub'
+      text2: '&d%d &eplaying'
+      default-yaw: 0
+      skin-file: global/skins/minigame-lobby-back-to-hub.png
+
 waiting-lobby:
   world: waitinglobby
   spawn:
+  npc:
+    leave:
+      pos: 0 0 0
+      text1: '&l&eReturn To Lobby'
+      default-yaw: 0
+      skin-file: global/skins/waiting-lobby-return-to-lobby.png
   items:
     rules-book:
       name: '&o&l&fRules &r&7- Hold / Right Click'

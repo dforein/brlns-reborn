@@ -4,7 +4,7 @@ import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.generallobby.GeneralLobby;
 import org.brlnsreb.utils.YamlUtil;
-
+import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandSender;
 import org.powernukkitx.plugin.annotation.CommandDefinition;
 import org.powernukkitx.utils.TextFormat;
@@ -15,7 +15,7 @@ import org.powernukkitx.utils.TextFormat;
     description = "Reload all configs"
 )
 
-public class ReloadConfigCommand extends org.powernukkitx.command.Command {
+public class ReloadConfigCommand extends Command {
     
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {

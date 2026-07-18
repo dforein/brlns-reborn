@@ -16,7 +16,7 @@ public class ChatMsgs {
     private static final int BAR_CHARACTERS = 40;
 
     public enum Alignment { 
-        RIGHT, 
+        LEFT, 
         CENTER 
     };
 
@@ -32,7 +32,7 @@ public class ChatMsgs {
             if (alignment == Alignment.CENTER) {
                 spaces = (int) (BAR_CHARACTERS - line.length() * 1.1 - 1) / 2;
                 for (i = 0; i < spaces; i++) strBuilder.append("§l §r");
-            } else if (alignment == Alignment.RIGHT) {
+            } else if (alignment == Alignment.LEFT) {
                 strBuilder.append("§l §r");
             }
 

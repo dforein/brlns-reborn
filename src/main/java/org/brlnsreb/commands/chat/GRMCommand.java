@@ -51,7 +51,7 @@ public class GRMCommand extends Command {
                     }
 
                     sender.sendMessage(
-                        "§l§aGRM §dGLOBAL§r §a%d §eyou§7: §7%s".formatted(      //TODO: text §7 or §e?  //TEXT
+                        "§l§aGRM §dGLOBAL§r §a%d §eyou§7: §7%s".formatted(      //TEXT
                             receivers.size(),
                             ctx.getArg("message")
                         )

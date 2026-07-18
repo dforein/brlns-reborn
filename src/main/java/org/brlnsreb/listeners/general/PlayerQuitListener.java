@@ -4,7 +4,7 @@ import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.data.database.AccountsManager;
 import org.brlnsreb.core.player.data.database.FriendsManager;
-
+import org.brlnsreb.generallobby.GeneralLobby;
 import org.powernukkitx.Player;
 import org.powernukkitx.event.EventHandler;
 import org.powernukkitx.event.EventPriority;
@@ -28,6 +28,7 @@ public class PlayerQuitListener implements Listener {
 
 
     private void handlePlayerLeave(Player p) {
+        GeneralLobby.onlinePlayers--;
         CustomPlayer player = (CustomPlayer) p;
 
         AccountsManager.savePlayerData(player);

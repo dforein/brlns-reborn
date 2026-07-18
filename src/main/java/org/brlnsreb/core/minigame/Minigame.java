@@ -70,7 +70,10 @@ public abstract class Minigame {
         Match mainPendingMatch = getMainPendingMatch();
         if (mainPendingMatch == null) return false;
 
-        return mainPendingMatch.onJoin(player);
+        boolean result = mainPendingMatch.onJoin(player);
+        if (result) lobby.onMatchJoin();
+
+        return result;
     }
 
 

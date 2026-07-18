@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.Configs;
@@ -28,8 +29,9 @@ import org.powernukkitx.utils.Config;
 public class GeneralLobby extends Lobby {
 
     public static final String displayNameTag = "§l§dHUB§r";
-    
     public static GeneralLobby instance;
+
+    public static int onlinePlayers = 0;
 
     private final MainLobbyBossBar bossBar;
     private static MainLobbyItemManager items;
@@ -48,6 +50,8 @@ public class GeneralLobby extends Lobby {
     }
 
     public void onServerJoin(CustomPlayer player) {
+        onlinePlayers++;
+
         PlayerUtils.changeWorld(player, spawnPos, true);
 
         onServerJoinMessages(player);
@@ -155,6 +159,7 @@ public class GeneralLobby extends Lobby {
 
 
     private void spawnAllNpcs() {
+        //TODO: random minigame
         for (String mgNameTag : config.getStringList("npc.list")) {
             String configPath = configPath() + "npc." + mgNameTag;
             Minigame npcMinigame = MinigameManager.getMinigame(mgNameTag);
@@ -172,7 +177,8 @@ public class GeneralLobby extends Lobby {
             mgtNpcMap.put(MinigameType.fromNameTag(mgNameTag), npc);
 
             Server.getInstance().getScheduler().scheduleRepeatingTask(BrlnsReb.instance, 
-                () -> updateNpcSubtitle(npc, npcMinigame), 100
+                () -> updateNpcSubtitle(npc, npcMinigame), 
+                ThreadLocalRandom.current().nextInt(90, 100)
             );
         }
     }
@@ -203,7 +209,6 @@ public class GeneralLobby extends Lobby {
         bossBar.onConfigReload(messages.getString("name"));
     }
 
-    public static GeneralLobby getInstance() { return instance; }
     public Config getConfig() { 
         return Configs.getConfig("general-lobby/config.yml");
     }

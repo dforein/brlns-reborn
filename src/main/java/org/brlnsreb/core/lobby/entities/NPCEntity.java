@@ -1,9 +1,15 @@
 package org.brlnsreb.core.lobby.entities;
 
+import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import java.util.function.Consumer;
+
+import javax.imageio.ImageIO;
 
 import org.brlnsreb.core.player.CustomPlayer;
 import org.cloudburstmc.protocol.bedrock.data.actor.ActorFlags;
+import org.cloudburstmc.protocol.bedrock.data.skin.ImageData;
+import org.cloudburstmc.protocol.bedrock.data.skin.SerializedSkin;
 import org.jetbrains.annotations.NotNull;
 
 import org.powernukkitx.Player;
@@ -51,7 +57,7 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
 
     public void updateSubtitle(String line) {
         if (text2 == null) {
-            text2 = createHologram(verticalOffset1);
+            text2 = createHologram(verticalOffset2);
         }
 
         text2.setText(line);
@@ -165,14 +171,31 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
         return true;
     }
 
-    public void setSkin(String skinFileName) {
-        this.setSkin(loadSkin(skinFileName));
+    public void setSkin(String skinFilePath) {
+        this.setSkin(loadSkin(skinFilePath));
     }
 
-    public Skin loadSkin(String skinFileName) {
+    public Skin loadSkin(String skinFilePath) {
         try {
-            //TODO: load npc skin
-            return null;
+            InputStream inputStream = getClass().getResourceAsStream(skinFilePath);
+            if (inputStream == null) throw new RuntimeException("Skin not found: " + skinFilePath);
+
+            BufferedImage image = ImageIO.read(inputStream);
+            ImageData skinData = ImageData.from(image);
+
+            SerializedSkin serialized = SerializedSkin.builder()
+                .skinId(skinFilePath)
+                .skinData(skinData)
+                .geometryName("geometry.humanoid.custom")
+                .capeData(ImageData.EMPTY)
+                .premium(false)
+                .persona(false)
+                .capeOnClassic(false)
+                .primaryUser(true)
+                .build();
+
+            return new Skin(serialized, true);
+
         } catch (Exception e) {
             e.printStackTrace();
             return null;

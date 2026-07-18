@@ -76,9 +76,7 @@ public class AuthSystem extends MenuAbstract {
                 YamlUtil.getStr(path + "config", config).formatted(name)
             );
             
-            scheduler.scheduleTask(() -> {
-                responseWindow.addButton("Close").send(player);
-            });
+            scheduler.scheduleTask(() -> responseWindow.addButton("Close").send(player));
         });
     }
 
@@ -105,9 +103,7 @@ public class AuthSystem extends MenuAbstract {
                 YamlUtil.getStr(path + "config", config).formatted(name)
             );
             
-            scheduler.scheduleTask(() -> {
-                responseWindow.addButton("Close").send(player);
-            });
+            scheduler.scheduleTask(() -> responseWindow.addButton("Close").send(player));
         });
     }
 

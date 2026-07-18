@@ -1,13 +1,14 @@
 package org.brlnsreb.commands;
 
+import org.brlnsreb.utils.ChatMsgs;
+import org.brlnsreb.utils.ChatMsgs.Alignment;
 import org.powernukkitx.Player;
-import org.powernukkitx.command.CommandSender;
-import org.powernukkitx.command.data.CommandParameter;
-import org.powernukkitx.command.tree.node.PlayersNode;
+import org.powernukkitx.command.Command;
+import org.powernukkitx.command.CommandResult;
+import org.powernukkitx.command.SenderType;
+import org.powernukkitx.command.route.RouteTree;
 import org.powernukkitx.plugin.annotation.CommandDefinition;
 import org.powernukkitx.utils.TextFormat;
-
-import org.cloudburstmc.protocol.bedrock.data.command.CommandParamType;
 
 //TODO: rewrite ping command
 
@@ -17,56 +18,39 @@ import org.cloudburstmc.protocol.bedrock.data.command.CommandParamType;
     usage = "/ping or /ping <player>"
 )
 
-public class PingCommand extends org.powernukkitx.command.Command {
+public class PingCommand extends Command {
     
     public PingCommand() {
-        this.getCommandParameters().clear();
-
-        this.addCommandParameters("default", new CommandParameter[0]);
-        this.addCommandParameters("target", new CommandParameter[] {
-            CommandParameter.newType("target", CommandParamType.SELECTION, new PlayersNode())
-        });
+        this.enableCommandTree();
     }
     
     @Override
-    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(TextFormat.RED + "Only players can use this command!");
-            return true;
-        }
-        
-        Player player = (Player) sender;
-        
-        if (args.length > 0) {
-            Player target = player.getServer().getPlayer(args[0]);
-            
-            if (target == null) {
-                player.sendMessage(TextFormat.RED + "Player not found!");
-                return true;
-            }
-            
-            long ping = target.getPing();
-            player.sendMessage(TextFormat.GREEN + target.getName() + "'s ping: " + 
-                TextFormat.YELLOW + ping + "ms " + getPingColor(ping));
-            return true;
-        }
-        
-        long ping = player.getPing();
-        player.sendMessage(TextFormat.GREEN + "Your ping: " + 
-            TextFormat.YELLOW + ping + "ms " + getPingColor(ping));
-        
-        return true;
+    public void buildCommandTree(RouteTree tree) {
+        tree.getRoot().senderType(SenderType.PLAYER)
+            .exec(ctx -> {
+                Player player = (Player) ctx.getSender();
+                long ping = player.getPing(); 
+                
+                player.sendMessage(ChatMsgs.buildString(Alignment.LEFT, 
+                    "§e--- §l§dConnection status§r §e---",
+                    "§ePing/latency: " + getPingColor(ping) + ping + "ms"
+                    //TODO ping
+                ));
+
+                return CommandResult.success();
+            });
     }
     
     private TextFormat getPingColor(long ping) {
-        if (ping < 50) {
+        if (ping < 80) {
             return TextFormat.GREEN;
-        } else if (ping < 100) {
+        } else if (ping < 180) {
             return TextFormat.YELLOW;
-        } else if (ping < 200) {
+        } else if (ping < 300) {
             return TextFormat.GOLD;
         } else {
             return TextFormat.RED;
         }
     }
+
 }

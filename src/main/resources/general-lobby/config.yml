@@ -5,7 +5,7 @@ npc:
   - mm
   mm:
     pos: 0 0 0
-    text1: '&atest1'
-    text2: test2 %d
+    text1: '&l&aMurder&2Mystery'
+    text2: '&d%d &eplaying'
     default-yaw: 0
-    skin-file: skins/test.png
+    skin-file: general-lobby/skins/mm.png

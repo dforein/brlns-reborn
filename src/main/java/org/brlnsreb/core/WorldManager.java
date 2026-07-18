@@ -76,7 +76,7 @@ public class WorldManager {
     }
 
     public static void unloadLevel(Level level) {
-        server.getScheduler().scheduleDelayedTask(() -> { server.unloadLevel(level, true); }, 20);
+        server.getScheduler().scheduleDelayedTask(() -> server.unloadLevel(level, true), 20);
 
         CustomPlayer.removeLevel(level.getId());
         enabledPhysicsLevels.remove(level.getId());
