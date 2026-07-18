@@ -69,6 +69,16 @@ public class BrlnsReb extends PluginBase {
         underMaintenance = Configs.getGlobalConfig().getBoolean("server-under-maintenance");
         server = getServer();
 
+        if (underMaintenance) {
+            server.getSettings().baseSettings().allowList(true);
+            server.getSettings().save();
+            server.reloadWhitelist();
+        } else {
+            server.getSettings().baseSettings().allowList(false);
+            server.getSettings().save();
+            server.reloadWhitelist();
+        }
+
         saveAllResources();
 
         WorldManager.init();
