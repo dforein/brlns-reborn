@@ -26,15 +26,15 @@ public class SoundUtil {
         player.sendPacket(pk);
     }
 
-    public static void sendSoundTo(Collection<Player> players, String soundName) {
+    public static void sendSoundTo(Collection<? extends Player> players, String soundName) {
         sendSoundTo(players, soundName, DEFAULT_VOLUME, DEFAULT_PITCH);
     }
 
-    public static void sendSoundTo(Collection<Player> players, String soundName, float volume) {
+    public static void sendSoundTo(Collection<? extends Player> players, String soundName, float volume) {
         sendSoundTo(players, soundName, volume, DEFAULT_PITCH);
     }
 
-    public static void sendSoundTo(Collection<Player> players, String soundName, float volume, float pitch) {
+    public static void sendSoundTo(Collection<? extends Player> players, String soundName, float volume, float pitch) {
         PlaySoundPacket pk = buildPlaySoundPacket(Vector3.ZERO, soundName, volume, pitch);
         for (Player p : players) {
             pk.setPosition(Vector3f.from(p.x, p.y, p.z));

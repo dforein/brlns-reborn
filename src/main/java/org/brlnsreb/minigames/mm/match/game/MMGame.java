@@ -26,6 +26,7 @@ import org.brlnsreb.minigames.mm.match.game.systems.RaycastSystem;
 import org.brlnsreb.minigames.mm.match.game.ui.MMBossBar;
 import org.brlnsreb.minigames.mm.match.game.ui.MMScoreboard;
 import org.brlnsreb.minigames.mm.match.game.ui.MMSpectatorMenu;
+import org.brlnsreb.utils.SoundUtil;
 import org.brlnsreb.utils.TimerSystem;
 import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.voting.TimeOfDay;
@@ -46,6 +47,7 @@ import org.powernukkitx.item.Item;
 import org.powernukkitx.item.ItemGoldIngot;
 import org.powernukkitx.item.ItemGoldenHoe;
 import org.powernukkitx.level.Position;
+import org.powernukkitx.level.Sound;
 import org.powernukkitx.scheduler.Task;
 
 public class MMGame extends GameExpand {
@@ -507,6 +509,7 @@ public class MMGame extends GameExpand {
 
     public void endGame() {
         stopGame();
+        
         for (CustomPlayer p : players) {
             if (isMurdererAlive() && isSheriffAlive()) {
                 if (p == murderer) gameDataMap.get(p).incrementStat(StatType.WINS);
@@ -522,6 +525,11 @@ public class MMGame extends GameExpand {
         msgUtil.broadcastPresetPrefix(players, "congratulations");
         
         msgUtil.sendTitle(isMurdererAlive() ? "title.murderer-won" : "title.innocents-won", null);
+
+        SoundUtil.sendSoundTo(players, Sound.RANDOM_CLICK.getSound());
+        SoundUtil.sendSoundTo(players, "entity.generic.extinguish_fire");
+        SoundUtil.sendSoundTo(spectators, Sound.RANDOM_CLICK.getSound());
+        SoundUtil.sendSoundTo(spectators, "entity.generic.extinguish_fire");
     }
 
     public void forceStop() {

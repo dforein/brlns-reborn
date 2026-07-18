@@ -1,6 +1,7 @@
 package org.brlnsreb.minigames.mm.match.game.systems;
 
 import org.powernukkitx.level.Level;
+import org.powernukkitx.level.Sound;
 import org.powernukkitx.level.particle.DustParticle;
 import org.powernukkitx.math.Vector3;
 import org.powernukkitx.scheduler.ServerScheduler;
@@ -39,6 +40,8 @@ public class RaycastSystem {
         if (!cooldown.check(shooter.getUniqueId())) return null;
 
         Level level = game.getArena().getLevel();
+
+        level.addSound(shooter, Sound.RANDOM_FIZZ, 0.8f, 0.9f);
 
         Vector3 start = shooter.getPosition().add(0, shooter.getEyeHeight(), 0);
         Vector3 direction = shooter.getDirectionVector();

@@ -18,13 +18,13 @@ import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.utils.ChatMsgs;
 import org.brlnsreb.utils.Messages;
+import org.brlnsreb.utils.SoundUtil;
 import org.brlnsreb.utils.TimerSystem;
 import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.voting.TimeOfDay;
 import org.brlnsreb.utils.voting.VotingSystem;
 import org.brlnsreb.utils.voting.Weather;
 
-import org.powernukkitx.Player;
 import org.powernukkitx.event.player.PlayerItemHeldEvent;
 import org.powernukkitx.item.Item;
 import org.powernukkitx.level.Sound;
@@ -214,9 +214,7 @@ public abstract class WaitingLobby extends Lobby {
             bossBar.updateWaitingLobbyBossBar(remaining);
             
             float pitch = ThreadLocalRandom.current().nextFloat(0.9f, 1.01f);
-            for (Player p : players) {
-                p.getLevel().addSound(p, Sound.RANDOM_CLICK, 1.0f, pitch, p);
-            }
+            SoundUtil.sendSoundTo(players, Sound.RANDOM_CLICK.getSound(), 1.0f, pitch);
         }, this::onGameStart);
 
         if (sendMessage) {
