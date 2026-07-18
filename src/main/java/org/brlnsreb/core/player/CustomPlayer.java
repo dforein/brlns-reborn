@@ -68,9 +68,9 @@ public class CustomPlayer extends Player {
     private static HashMap<Integer, HashSet<Vector3>> playerBlocks = new HashMap<>();   //Integer = levelId
 
     public PlayerStateType state = PlayerStateType.LOBBY;
-    private WeakReference<Lobby> currentLobby = new WeakReference<>(null);
-    public Minigame currentMinigame = null;
-    private WeakReference<Match> currentMatch = new WeakReference<>(null);
+    private WeakReference<Lobby> lobbyCurrent = new WeakReference<>(null);
+    public Minigame minigameCurrent = null;
+    public Match matchCurrent = null;
     
     public String grayNameTag;              //used especially in lobby
     public String greenNameTag;             //used especially in waiting lobby/ingame
@@ -147,12 +147,8 @@ public class CustomPlayer extends Player {
     public boolean isTeleporting() { return this.state == PlayerStateType.TELEPORTING; }
     public void setTeleporting() { this.state = PlayerStateType.TELEPORTING; }
 
-    public void setLobby(Lobby lobby) { this.currentLobby = new WeakReference<>(lobby); }
-    public Lobby getLobby() { return this.currentLobby.get(); }
-
-    public void setMatch(Match match) { this.currentMatch = new WeakReference<>(match); }
-    public Match getMatch() { return this.currentMatch.get(); }
-
+    public void setLobby(Lobby lobby) { this.lobbyCurrent = new WeakReference<>(lobby); }
+    public Lobby getLobby() { return this.lobbyCurrent.get(); }
 
     //data logic
 
@@ -324,15 +320,14 @@ public class CustomPlayer extends Player {
                 super.attack(source);               //to show the damage animation  //TODO: need to test whether i have to wait one tick to show the anim
                 this.setHealthCurrent(this.getHealthMax());
 
-                Match match = getMatch();
-                if (match instanceof MatchExpand) {
-                    ((GameExpand) match.getGame()).onDeath(source.getCause(), this, damager);
+                if (matchCurrent instanceof MatchExpand) {
+                    ((GameExpand) matchCurrent.getGame()).onDeath(source.getCause(), this, damager);
                 }
             }
 
             case LOBBY, WAITING_LOBBY, END_LOBBY -> {
                 //go back to lobby spawn (in case of void)
-                this.currentLobby.get().teleportToSpawn(this);
+                this.lobbyCurrent.get().teleportToSpawn(this);
             }
 
             default -> {}

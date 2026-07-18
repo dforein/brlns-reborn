@@ -34,7 +34,7 @@ public class FRMCommand extends Command {
                     CustomPlayer sender = (CustomPlayer) ctx.getSender();
 
                     PlayerData senderData = sender.data;
-                    Minigame minigame = sender.currentMinigame;
+                    Minigame minigame = sender.minigameCurrent;
                     List<String> friends = senderData.getOnlineFriendsKeysCopy();
 
                     int receiversCount = 0;

@@ -33,7 +33,7 @@ public class PlayerQuitListener implements Listener {
 
         AccountsManager.savePlayerData(player);
         FriendsManager.removeOnlineFriend(player.data);
-        Match match  = player.getMatch();
+        Match match  = player.matchCurrent;
         if (match != null) match.onLeave(player);
         player.save();
     }

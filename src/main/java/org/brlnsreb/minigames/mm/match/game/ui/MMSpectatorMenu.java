@@ -132,11 +132,11 @@ public class MMSpectatorMenu extends MenuAbstract {
     private void handleActionsResponse(CustomPlayer spectator, int buttonId, int formId) {
         removeForm(formId);
 
-        spectator.getMatch().onLeave(spectator);
+        spectator.matchCurrent.onLeave(spectator);
 
         switch (buttonId) {
-            case 0 -> spectator.currentMinigame.onLobbyJoin(spectator);     //return to lobby
-            case 1 -> spectator.currentMinigame.onMatchJoin(spectator);     //play again
+            case 0 -> spectator.minigameCurrent.onLobbyJoin(spectator);     //return to lobby
+            case 1 -> spectator.minigameCurrent.onMatchJoin(spectator);     //play again
             case 2 -> GeneralLobby.instance.onJoin(spectator);              //play another game
         }
     }

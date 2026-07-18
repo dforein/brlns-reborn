@@ -31,9 +31,9 @@ public class HubCommand extends org.powernukkitx.command.Command {
                 break;
 
             default:
-                Match match = player.getMatch();
+                Match match = player.matchCurrent;
                 if (match != null) match.onLeave(player);
-                player.currentMinigame.onLobbyJoin(player);
+                player.minigameCurrent.onLobbyJoin(player);
                 break;
         }
         

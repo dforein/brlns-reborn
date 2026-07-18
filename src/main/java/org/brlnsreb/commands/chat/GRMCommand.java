@@ -34,7 +34,7 @@ public class GRMCommand extends Command {
                     CustomPlayer sender = (CustomPlayer) ctx.getSender();
 
                     PlayerData senderData = sender.data;
-                    Minigame minigame = sender.currentMinigame;
+                    Minigame minigame = sender.minigameCurrent;
                     List<String> receivers = sender.data.getOnlineFriendsKeysCopy();
 
                     for (String name : receivers) {

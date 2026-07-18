@@ -129,7 +129,7 @@ public class PlayerData {
     public void setStat(int minigameId, int statType, int value) {
         int[] minigameStats = getMinigameStats(minigameId);
         synchronized (minigameStats) {
-            minigameStats[statType - 1] = value;
+            minigameStats[statType] = value;
         }
     }
 
@@ -140,7 +140,7 @@ public class PlayerData {
     public void incrementStat(int minigameId, StatType stat) {
         int[] minigameStats = getMinigameStats(minigameId);
         synchronized (minigameStats) {
-            minigameStats[stat.id - 1]++;
+            minigameStats[stat.id]++;
         }
     }
 
@@ -160,7 +160,7 @@ public class PlayerData {
         int[] minigameStats = this.stats.get(minigameId);
         if (minigameStats == null) return -1;
         synchronized (minigameStats) {
-            return minigameStats[stat.id - 1];
+            return minigameStats[stat.id];
         }
     }
 
@@ -278,7 +278,6 @@ public class PlayerData {
     public CustomPlayer getLastPvtPlayer() {
         if (lastPvtPlayerId == null) return null;
         CustomPlayer player = PlayerUtils.getPlayer(lastPvtPlayerId);
-        this.lastPvtPlayerId = null;
         return player;
     }
 

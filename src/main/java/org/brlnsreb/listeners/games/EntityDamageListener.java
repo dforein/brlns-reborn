@@ -18,7 +18,7 @@ public class EntityDamageListener implements Listener {
             CustomPlayer player = (CustomPlayer) entity;
             
             if (player.state == PlayerStateType.PLAYING) {
-                player.getMatch().getGame().onPlayerDamage(player, event);
+                player.matchCurrent.getGame().onPlayerDamage(player, event);
             }
         }
     }

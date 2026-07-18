@@ -186,14 +186,6 @@ public class AccountsManager {
         });
     }
 
-    
-
-    public static CompletableFuture<Outcome> saveStats(PlayerData data) {
-        return CompletableFuture.supplyAsync(() -> {
-            return saveStatsSync(data);
-        });
-    }
-
     public static Outcome saveExpCoinsSync(PlayerData data) {
         try {
             if (!data.isLogged()) return Outcome.PLAYER_ALREADY_LOGGED_OUT;
@@ -213,6 +205,12 @@ public class AccountsManager {
             e.printStackTrace();
             return Outcome.DB_ERROR;
         }
+    }
+
+    public static CompletableFuture<Outcome> saveStats(PlayerData data) {
+        return CompletableFuture.supplyAsync(() -> {
+            return saveStatsSync(data);
+        });
     }
 
     public static Outcome saveStatsSync(PlayerData data) {

@@ -1,11 +1,11 @@
 package org.brlnsreb.core.player.data;
 
 public enum StatType {
-    MATCHES_PLAYED(1),
-    WINS(2),
-    LOSSES(3),
-    KILLS(4),
-    DEATHS(5);
+    MATCHES_PLAYED(0),
+    WINS(1),
+    LOSSES(2),
+    KILLS(3),
+    DEATHS(4);
 
     public final int id;
     public static final int size = StatType.values().length;

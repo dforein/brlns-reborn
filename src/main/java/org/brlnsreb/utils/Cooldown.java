@@ -29,10 +29,10 @@ public class Cooldown {
 
         if (cooldowns.containsKey(obj)
             && now - cooldowns.get(obj) < milliseconds) {
-            return true;
+            return false;
         }
 
         cooldowns.put(obj, now);
-        return false;
+        return true;
     }
 }

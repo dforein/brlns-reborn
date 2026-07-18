@@ -80,8 +80,8 @@ public abstract class Match {
             game.onJoinAsSpectator(player);
             spectators.add(player);
 
-            player.currentMinigame = minigame;
-            player.setMatch(this);
+            player.minigameCurrent = minigame;
+            player.matchCurrent = this;
         }
     }
 

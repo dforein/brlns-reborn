@@ -93,7 +93,7 @@ public class GeneralLobby extends Lobby {
 
         //get the boolean value of alerts (get alerts of friends) and notify (notify friends) 
         boolean alerts = data.getFriendAlerts();
-        boolean notify = data.getFriendNotify() && player.currentMinigame != minigame;
+        boolean notify = data.getFriendNotify() && player.minigameCurrent != minigame;
         if (!alerts && !notify) return;
         
         //build the message to send to friends, if notify is enabled
@@ -122,10 +122,10 @@ public class GeneralLobby extends Lobby {
             // + categorize all the friends based on what minigame they are in (else they get put in hubFriends)
             if (alerts) {
                 friendsCount++;
-                if (friend.currentMinigame == null) {
+                if (friend.minigameCurrent == null) {
                     hubFriends.add(friend.data.name);
                 } else {
-                    minigameGroups.computeIfAbsent(friend.currentMinigame, k -> new ArrayList<>())
+                    minigameGroups.computeIfAbsent(friend.minigameCurrent, k -> new ArrayList<>())
                         .add(friend.data.name);
                 }
             }

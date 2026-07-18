@@ -18,7 +18,7 @@ public class PlayerInventoryListener implements Listener {
 
         switch (player.state) {
             case WAITING_LOBBY, PLAYING -> {
-                if (!player.getMatch().onItemDrop(player, event)) event.setCancelled();
+                if (!player.matchCurrent.onItemDrop(player, event)) event.setCancelled();
             }
             default -> event.setCancelled();
         }
@@ -32,7 +32,7 @@ public class PlayerInventoryListener implements Listener {
             CustomPlayer player = (CustomPlayer) entity;
             switch (player.state) {
                 case PLAYING -> { 
-                    if (!player.getMatch().getGame().onItemPickup(player, event.getItem())) event.setCancelled();
+                    if (!player.matchCurrent.getGame().onItemPickup(player, event.getItem())) event.setCancelled();
                 }
                 default -> event.setCancelled();
             }
@@ -47,7 +47,7 @@ public class PlayerInventoryListener implements Listener {
 
         switch (player.state) {
             case WAITING_LOBBY, PLAYING -> {
-                if (!player.getMatch().onItemHeld(player, event)) event.setCancelled();
+                if (!player.matchCurrent.onItemHeld(player, event)) event.setCancelled();
             }
             default -> {}
         }

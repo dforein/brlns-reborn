@@ -19,7 +19,7 @@ public class ProjectileHitListener implements Listener {
         CustomPlayer playerHit = (CustomPlayer) entityHit;
         if (playerHit.state != PlayerStateType.PLAYING) return;
 
-        playerHit.getMatch().getGame().onProjectileHit(playerHit, event);
+        playerHit.matchCurrent.getGame().onProjectileHit(playerHit, event);
     }
 
 }

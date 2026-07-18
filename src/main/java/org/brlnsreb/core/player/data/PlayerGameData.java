@@ -15,7 +15,7 @@ public abstract class PlayerGameData {
     public PlayerGameData(CustomPlayer player) {
         this.uuid = player.getUniqueId();
         this.playerData = player.data;
-        this.minigameId = player.currentMinigame.mgt.id;
+        this.minigameId = player.minigameCurrent.mgt.id;
     }
 
     public void addExp(int deltaExp) {

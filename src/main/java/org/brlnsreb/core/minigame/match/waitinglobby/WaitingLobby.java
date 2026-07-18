@@ -82,6 +82,7 @@ public abstract class WaitingLobby extends Lobby {
 
         this.mapVoting = new VotingSystem<>();
         requireVotingMenu();
+        prepareVoting();
     }
 
     public void forceStart() {
@@ -165,7 +166,7 @@ public abstract class WaitingLobby extends Lobby {
         if (playerNumber >= maxPlayers) {
             minigame.onReplacePendingMatch(match);
             
-        } else if (playerNumber > minPlayersShortenedCountdown) {
+        } else if (playerNumber > minPlayersShortenedCountdown && !countdownShortened) {
             shortenCountdown(true);
             
         } else if (playerNumber > minPlayers && !countdownShortened) {    //if the countdown is already shortened, it will stay shortened

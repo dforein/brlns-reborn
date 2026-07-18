@@ -20,7 +20,7 @@ public class ChatListener implements Listener {
 
         switch (player.state) {
             case PLAYING:
-                if (!player.getMatch().getGame().onChat(player, event)) {
+                if (!player.matchCurrent.getGame().onChat(player, event)) {
                     event.setCancelled();
                     return;
                 }
@@ -56,7 +56,7 @@ public class ChatListener implements Listener {
 
         switch (player.state) {
             case PLAYING, SPECTATOR:
-                if (!player.getMatch().getGame().onCommandPreprocess(player, event)) {
+                if (!player.matchCurrent.getGame().onCommandPreprocess(player, event)) {
                     event.setCancelled();
                     return;
                 }

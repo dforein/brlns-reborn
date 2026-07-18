@@ -77,8 +77,8 @@ public class PlayerInteractListener implements Listener {
         if (player.state == PlayerStateType.LOBBY) {
             MainLobbyItemManager.instance.onItemUse(player, item);
         } else {
-            if (player.getMatch() != null) {
-                player.getMatch().onItemUse(player, item);
+            if (player.matchCurrent != null) {
+                player.matchCurrent.onItemUse(player, item);
             }
         }
     }

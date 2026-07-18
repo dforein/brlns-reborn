@@ -59,6 +59,7 @@ public class MMGame extends GameExpand {
 
     private TimerSystem timer;
     private Task updateUiTask;
+    private Task checkPosTask;
     private final GoldSystem gold;
     private final DeathSystem death;
     private final ProjectileSystem projectile;
@@ -229,6 +230,17 @@ public class MMGame extends GameExpand {
         };
         scheduler.scheduleRepeatingTask(BrlnsReb.instance, updateUiTask, config.getInt("game.ui-update-ticks"));
 
+        //check player position (the player must be inside the map!)
+        checkPosTask = new Task() {
+            @Override
+            public void onRun(int currentTick) {
+                for (CustomPlayer p : players) {
+                    if (!arena.isInArena(p)) match.onDeath(p, null);
+                }
+            }
+        };
+        scheduler.scheduleRepeatingTask(BrlnsReb.instance, checkPosTask, 10);
+
         //spawn gold
         gold.startSpawning();
 
@@ -276,7 +288,7 @@ public class MMGame extends GameExpand {
 
             case SHERIFF -> {
                 sheriff = player;
-                msgUtil.sendPresetMessagePrefix(player, "murderer-advice");
+                msgUtil.sendPresetMessagePrefix(player, "sheriff-advice");
             }
         
             default -> {}
@@ -316,7 +328,7 @@ public class MMGame extends GameExpand {
 
         death.onDeath(victim, deathPos);
         roleCheckOnLeave(victim, deathPos);
-        checkWinConditions(players.size() - 1);
+        checkWinConditions();
     }
 
     private boolean isFirstKill() {
@@ -472,21 +484,17 @@ public class MMGame extends GameExpand {
     //check win conditions
 
     public boolean checkWinConditions() {
-        return checkWinConditions(players.size());
-    }
-
-    public boolean checkWinConditions(int playerNumber) {
         if (state.current != GameStateType.IN_GAME) return false;
 
         if (!isMurdererAlive()) {
             onGameEnding();
             return true;
 
-        } else if (playerNumber <= 1 && isMurdererAlive()) {
+        } else if (players.size() <= 1 && isMurdererAlive()) {
             onGameEnding();
             return true;
 
-        } else if (playerNumber <= 2 && isMurdererAlive() && isSheriffAlive()) {
+        } else if (players.size() <= 2 && isMurdererAlive() && isSheriffAlive()) {
             onGameEnding();
             return true;
         }

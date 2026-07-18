@@ -221,21 +221,21 @@ public class FriendCommand extends Command {
                     return CommandResult.fail(ChatMsgs.ERROR_PFX + "You cannot join " + ctx.getArg("name") + " right now, retry in a few seconds.");
                 }
 
-                Match match = sender.getMatch();
+                Match match = sender.matchCurrent;
                 if (match != null) match.onLeave(sender);
                 switch (friend.state) {
                     case LOBBY:
-                        if (friend.currentMinigame == null) {
+                        if (friend.minigameCurrent == null) {
                             GeneralLobby.instance.onJoin(sender);
                         } else {
-                            friend.currentMinigame.onLobbyJoin(sender);
+                            friend.minigameCurrent.onLobbyJoin(sender);
                         }
                         break;
                     case WAITING_LOBBY, END_LOBBY:
-                        friend.getMatch().onJoin(sender);
+                        friend.matchCurrent.onJoin(sender);
                         break;
                     case PLAYING, SPECTATOR:
-                        friend.getMatch().onJoin(sender);
+                        friend.matchCurrent.onJoin(sender);
                         friend.sendMessage(ChatMsgs.INFO_PFX + "§d" + getPlayerName(sender) + "§a is now spectating.");
                         break;
                     default:
@@ -344,7 +344,7 @@ public class FriendCommand extends Command {
         }
 
         int pages = (onlineFriends.size() + offlineFriends.size() + 9) / 10;
-        if (currentPage > pages) {
+        if (currentPage < 1 || currentPage > pages) {
             sender.sendMessage(ChatMsgs.ERROR_PFX + "This friend list page doesn't exist!");
             return true;
         }
@@ -378,9 +378,9 @@ public class FriendCommand extends Command {
                 message += "§cOffline";
             } else {
                 message += "§aOnline §7(§d" 
-                    + (friend.currentMinigame == null 
+                    + (friend.minigameCurrent == null 
                         ? GeneralLobby.displayNameTag
-                        : friend.currentMinigame.mgt.displayNameTag)
+                        : friend.minigameCurrent.mgt.displayNameTag)
                     + "§7)";
             }
             
