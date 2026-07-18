@@ -108,7 +108,11 @@ public class MMItemManager extends ItemManager {
         if (game.getCurrentState() == GameStateType.ENDING) return;
         
         scheduler.scheduleDelayedTask(BrlnsReb.instance,
-            () -> game.getMsgUtil().sendPresetMessagePrefix(murderer, "lights-out-over"),
+            () -> {
+                if (game.getCurrentState() == GameStateType.IN_GAME) {
+                    game.getMsgUtil().sendPresetMessagePrefix(murderer, "lights-out-over");
+                }
+            },
             blindnessDuration
         );
     }
