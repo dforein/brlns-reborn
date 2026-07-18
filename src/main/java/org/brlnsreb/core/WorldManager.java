@@ -95,7 +95,6 @@ public class WorldManager {
 
         //particular
         GameRule[] particulars = {
-            GameRule.NATURAL_REGENERATION,
             GameRule.PVP,
             GameRule.DO_FIRE_TICK,
             GameRule.DO_TILE_DROPS,
@@ -121,6 +120,7 @@ public class WorldManager {
         };
 
         GameRule[] disabled = {
+            GameRule.NATURAL_REGENERATION,
             GameRule.DO_DAYLIGHT_CYCLE,
             GameRule.DO_INSOMNIA,
             GameRule.DO_MOB_SPAWNING,

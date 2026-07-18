@@ -4,7 +4,6 @@ settings:
   max-players: 20
   physics-enabled: false
   gamerules:
-    naturalRegeneration: false
     pvp: true
     doFireTick: false
     doTileDrops: false
