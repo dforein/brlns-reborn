@@ -85,6 +85,7 @@ public abstract class Game {
         }
 
         PlayerUtils.changeWorld(player, spawnPos, false);
+        player.removeAllEffects();
 
         player.state = PlayerStateType.PLAYING;
         prepareGameData(player);

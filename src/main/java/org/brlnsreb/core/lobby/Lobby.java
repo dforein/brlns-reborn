@@ -42,7 +42,7 @@ public abstract class Lobby {
 
         String levelPath = configPath() + "world";
         this.level = WorldManager.loadLobbyLevel(config.getString(levelPath));
-        this.spawnPos = YamlUtil.parsePosition(config.getString(configPath() + "spawn-pos"), this.level);
+        this.spawnPos = YamlUtil.parsePositionCentered(config.getString(configPath() + "spawn-pos"), this.level);
     }
 
     public Lobby(Minigame minigame) {
@@ -103,7 +103,7 @@ public abstract class Lobby {
 
     protected NPCEntity spawnNpc(String configPath, Config customConfig, Consumer<CustomPlayer> task, boolean subtitle) {
         configPath = YamlUtil.checkConfigPath(configPath);
-        Position pos = YamlUtil.parsePosition(customConfig.getString(configPath + "pos"), this.level);
+        Position pos = YamlUtil.parsePositionCentered(customConfig.getString(configPath + "pos"), this.level);
         
         NPCEntity npc = new NPCEntity(pos.getChunk(), Entity.getDefaultNBT(pos));
 
@@ -132,7 +132,7 @@ public abstract class Lobby {
     }
 
     public void onConfigReload() {
-        this.spawnPos = YamlUtil.parsePosition(config.getString("lobby.spawn"), this.level);
+        this.spawnPos = YamlUtil.parsePositionCentered(config.getString("lobby.spawn"), this.level);
     }
 
     protected void reloadNpcConfigData(NPCEntity npc, String configPath, boolean subtitle) {

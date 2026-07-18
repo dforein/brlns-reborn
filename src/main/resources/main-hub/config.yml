@@ -1,10 +1,10 @@
 world: mainhub
-spawn-pos: 
+spawn-pos: 2431 39 2431
 npc:
   list:
   - mm
   mm:
-    pos: 0 0 0
+    pos: 2387 38 2431
     text1: '&l&aMurder&2Mystery'
     text2: '&d%d &eplaying'
     default-yaw: 0
