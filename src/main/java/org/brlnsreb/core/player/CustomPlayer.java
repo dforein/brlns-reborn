@@ -338,6 +338,7 @@ public class CustomPlayer extends Player {
 
     //save logic
 
+    @SuppressWarnings("deprecation")
     @Override
     public void saveNBT() {
         Position spawn = Server.getInstance().getDefaultLevel().getSpawnLocation();

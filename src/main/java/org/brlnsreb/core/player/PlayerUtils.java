@@ -7,7 +7,9 @@ import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer.DamageMode;
 import org.brlnsreb.core.player.CustomPlayer.InteractMode;
 import org.brlnsreb.core.player.data.database.PlayerDataManager;
-import org.cloudburstmc.protocol.bedrock.data.PlayerListPacketType;
+import org.cloudburstmc.protocol.bedrock.data.BuildPlatform;
+import org.cloudburstmc.protocol.bedrock.data.payload.list.PlayerListAddEntry;
+import org.cloudburstmc.protocol.bedrock.data.payload.list.PlayerListRemoveEntry;
 import org.cloudburstmc.protocol.bedrock.packet.PlayerListPacket;
 
 import org.powernukkitx.Player;
@@ -15,6 +17,7 @@ import org.powernukkitx.Server;
 import org.powernukkitx.entity.effect.Effect;
 import org.powernukkitx.entity.effect.EffectType;
 import org.powernukkitx.item.Item;
+import org.powernukkitx.level.Level;
 import org.powernukkitx.level.Position;
 import org.powernukkitx.math.Vector3;
 import org.powernukkitx.scoreboard.data.DisplaySlot;
@@ -28,6 +31,7 @@ public class PlayerUtils {
         BrlnsReb plugin = BrlnsReb.instance;
 
         try {
+            Level oldLevel = p.getLevel();
             int viewDistance = p.getViewDistance();
 
             p.setTeleporting();
@@ -42,6 +46,7 @@ public class PlayerUtils {
                 p.setViewDistance(viewDistance);
             }, 20);
 
+            updatePlayerList(oldLevel, p);
             updateOnlinePlayer(p, true);    //remove the name for players who aren't in the same level
 
         } catch (Exception e) {
@@ -180,31 +185,93 @@ public class PlayerUtils {
 
     //player list packets
 
+    public static void updatePlayerList(Player viewer, Level newLevel) {
+        updatePlayerList(viewer, viewer.getLevel(), newLevel);
+    }
+
+    public static void updatePlayerList(Level oldLevel, Player viewer) {
+        updatePlayerList(viewer, oldLevel, viewer.getLevel());
+    }
+
+    private static void updatePlayerList(Player player, Level oldLevel, Level newLevel) {
+        for (Player p : oldLevel.getPlayers().values()) {
+            if (p == player) continue;
+            removeViewerToOnlinePlayer(p, player);
+        }
+
+        for (Player p : newLevel.getPlayers().values()) {
+            if (p == player) continue;
+            addViewerToOnlinePlayer(p, player);
+        }
+    }
+
     public static void updateOnlinePlayer(Player player, boolean removeAllServer) {
-        removeOnlinePlayer(player, removeAllServer);
-        addOnlinePlayer(player, false);
+        removeViewerToOnlinePlayer(player, removeAllServer);
+        addViewersToOnlinePlayer(false, player);
     }
 
-    public static void addOnlinePlayer(Player player, boolean allServer) {
-        sendPlayerListPacket(player, PlayerListPacketType.ADD, allServer);
+    public static void addViewerToOnlinePlayer(Player viewer, Player player) {
+        viewer.sendPacket(addOnlinePlayerPacket(player));
     }
 
-    public static void removeOnlinePlayer(Player player, boolean allServer) {
-        sendPlayerListPacket(player, PlayerListPacketType.REMOVE, allServer);
+    public static void addViewersToOnlinePlayer(boolean allServer, Player player) {
+        sendPlayerListPacket(
+            addOnlinePlayerPacket(player), player, 
+            allServer ? null : player.getLevel()
+        );
     }
 
-    private static void sendPlayerListPacket(Player player, PlayerListPacketType action, boolean allServer) {
-        final PlayerListPacket pk = new PlayerListPacket();
-        pk.setAction(action);
-        pk.getEntries().add(new PlayerListPacket.Entry(player.getUniqueId()));
+    public static void removeViewerToOnlinePlayer(Player player, Player target) {
+        target.sendPacket(removeOnlinePlayerPacket(player));
+    }
 
+    public static void removeViewerToOnlinePlayer(Player player, boolean allServer) {
+        sendPlayerListPacket(
+            removeOnlinePlayerPacket(player), player, 
+            allServer ? null : player.getLevel()
+        );
+    }
+
+    private static void sendPlayerListPacket(PlayerListPacket pk, Player player, Level level) {
         Collection<Player> players;
-        if (allServer) players = Server.getInstance().getOnlinePlayers().values();
-        else players = player.getLevel().getPlayers().values();
+        if (level != null) players = level.getPlayers().values();
+        else players = Server.getInstance().getOnlinePlayers().values();
         
         for (Player p : players) {
+            if (p == player) continue;
             p.sendPacket(pk);
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    public static PlayerListPacket addOnlinePlayerPacket(Player player) {
+        final PlayerListPacket pk = new PlayerListPacket();
+
+        final PlayerListAddEntry entry = new PlayerListAddEntry();
+        entry.setUuid(player.getUniqueId());
+        entry.setActorUniqueID(player.getId());
+        entry.setPlayerName(player.getName());
+        entry.setXblXUID(player.getXUID());
+        entry.setPlatformOnlineID("");
+        entry.setBuildPlatform(BuildPlatform.UNKNOWN);
+        entry.setSkin(player.getSkin().getSkin());
+        entry.setTrustedSkin(player.getSkin().isTrusted());
+        entry.setPlayerColor(player.getLocatorBarColor().getRGB());
+
+        pk.getEntries().add(entry);
+        
+        return pk;
+    }
+
+    public static PlayerListPacket removeOnlinePlayerPacket(Player player) {
+        final PlayerListPacket pk = new PlayerListPacket();
+
+        final PlayerListRemoveEntry entry = new PlayerListRemoveEntry();
+        entry.setUuid(player.getUniqueId());
+
+        pk.getEntries().add(entry);
+
+        return pk;
     }
 
 

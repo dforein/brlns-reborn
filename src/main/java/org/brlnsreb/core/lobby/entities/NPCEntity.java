@@ -9,7 +9,6 @@ import javax.imageio.ImageIO;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.cloudburstmc.protocol.bedrock.data.actor.ActorFlags;
 import org.cloudburstmc.protocol.bedrock.data.skin.ImageData;
-import org.cloudburstmc.protocol.bedrock.data.skin.SerializedSkin;
 import org.jetbrains.annotations.NotNull;
 
 import org.powernukkitx.Player;
@@ -175,6 +174,7 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
         this.setSkin(loadSkin(skinFilePath));
     }
 
+    @SuppressWarnings("deprecation")
     public Skin loadSkin(String skinFilePath) {
         try {
             InputStream inputStream = getClass().getResourceAsStream(skinFilePath);
@@ -183,7 +183,7 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
             BufferedImage image = ImageIO.read(inputStream);
             ImageData skinData = ImageData.from(image);
 
-            SerializedSkin serialized = SerializedSkin.builder()
+            org.cloudburstmc.protocol.bedrock.data.skin.Skin serialized = org.cloudburstmc.protocol.bedrock.data.skin.Skin.builder()
                 .skinId(skinFilePath)
                 .skinData(skinData)
                 .geometryName("geometry.humanoid.custom")
