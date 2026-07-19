@@ -115,6 +115,7 @@ public class CustomPlayer extends Player {
     @Override
     public void doFirstSpawn() {
         PlayerUtils.updateOnlinePlayer(this, true);     //remove the name for players who aren't in the same level (main hub)
+        PlayerUtils.cleanPlayerList(this);                              //remove names of players in different levels for this player
         super.doFirstSpawn();
     }
 

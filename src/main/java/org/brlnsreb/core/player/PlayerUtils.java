@@ -193,15 +193,24 @@ public class PlayerUtils {
         updatePlayerList(viewer, oldLevel, viewer.getLevel());
     }
 
-    private static void updatePlayerList(Player player, Level oldLevel, Level newLevel) {
+    private static void updatePlayerList(Player viewer, Level oldLevel, Level newLevel) {
         for (Player p : oldLevel.getPlayers().values()) {
-            if (p == player) continue;
-            removeViewerToOnlinePlayer(p, player);
+            if (p == viewer) continue;
+            removeViewerToOnlinePlayer(p, viewer);
         }
 
         for (Player p : newLevel.getPlayers().values()) {
-            if (p == player) continue;
-            addViewerToOnlinePlayer(p, player);
+            if (p == viewer) continue;
+            addViewerToOnlinePlayer(p, viewer);
+        }
+    }
+
+    public static void cleanPlayerList(Player viewer) {
+        Collection<Player> sameLevelPlayers = viewer.getLevel().getPlayers().values();
+
+        for (Player p : Server.getInstance().getOnlinePlayers().values()) {
+            if (p == viewer || sameLevelPlayers.contains(p)) continue;
+            removeViewerToOnlinePlayer(p, viewer);
         }
     }
 
