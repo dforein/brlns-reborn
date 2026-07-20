@@ -1,4 +1,4 @@
-package org.brlnsreb.core.minigame.match.game.arena;
+package org.brlnsreb.core.maps;
 
 import org.powernukkitx.level.Level;
 import org.powernukkitx.level.Position;
@@ -10,7 +10,7 @@ import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.voting.TimeOfDay;
 import org.brlnsreb.utils.voting.Weather;
 
-public abstract class Arena {
+public abstract class MapLevel {
     
     protected final String mapId;
     protected final String configPath;
@@ -21,12 +21,12 @@ public abstract class Arena {
     protected final Vector3 min;
     protected final Vector3 max;
     
-    public Arena(Config config, String mapId, String mapsConfigPath, TimeOfDay time, Weather weather) {
-        mapsConfigPath = YamlUtil.checkConfigPath(mapsConfigPath);
+    public MapLevel(Config config, String configPath, String mapId, TimeOfDay time, Weather weather) {
+        configPath = YamlUtil.checkConfigPath(configPath);
 
         this.mapId = mapId;
-        this.configPath = mapsConfigPath;
-        this.name = YamlUtil.getStr(configPath + "name", config);
+        this.configPath = configPath;
+        this.name = YamlUtil.getStr(configPath, config);
 
         this.level = WorldManager.loadLevel(
             YamlUtil.getStr(configPath + "world", config), 
@@ -54,7 +54,7 @@ public abstract class Arena {
     protected abstract void loadSpawns(Config config);
     public abstract Position getRandomSpawn();
     
-    public boolean isInArena(Vector3 pos) {
+    public boolean isInMap(Vector3 pos) {
         return pos.x >= min.x && pos.x <= max.x &&
                pos.y >= min.y && pos.y <= max.y &&
                pos.z >= min.z && pos.z <= max.z;

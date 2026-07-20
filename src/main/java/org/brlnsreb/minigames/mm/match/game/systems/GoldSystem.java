@@ -12,7 +12,7 @@ import org.powernukkitx.utils.Config;
 import org.powernukkitx.utils.ItemHelper;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.minigame.match.game.arena.Arena;
+import org.brlnsreb.core.maps.MapLevel;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -20,14 +20,14 @@ import java.util.concurrent.ThreadLocalRandom;
 public class GoldSystem {
     
     private final Config config;
-    private final Arena arena;
+    private final MapLevel map;
 
     private Task spawnTask;
     private List<Vector3> validSpawns;
     
-    public GoldSystem(Config config, Arena arena) {
+    public GoldSystem(Config config, MapLevel map) {
         this.config = config;
-        this.arena = arena;
+        this.map = map;
     }
     
     public void startSpawning() {
@@ -62,7 +62,7 @@ public class GoldSystem {
             randomSpawn.x, 
             randomSpawn.y, 
             randomSpawn.z, 
-            arena.getLevel()
+            map.getLevel()
         ).add(0.5, 0.5, 0.5);
         
         spawnGoldAt(spawnPos);
@@ -102,10 +102,10 @@ public class GoldSystem {
 
     public void loadSpawns() {
         GoldSpawnMapper mapper = new GoldSpawnMapper();
-        this.validSpawns = mapper.getSpawns(arena.getMapId());
+        this.validSpawns = mapper.getSpawns(map.getMapId());
         
         if (validSpawns.isEmpty()) {
-            BrlnsReb.instance.getLogger().warning("MM: No gold spawns found for map: " + arena.getMapId());
+            BrlnsReb.instance.getLogger().warning("MM: No gold spawns found for map: " + map.getMapId());
         }
     }
 }

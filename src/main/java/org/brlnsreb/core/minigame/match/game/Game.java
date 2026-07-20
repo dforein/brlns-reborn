@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.Configs;
-import org.brlnsreb.core.minigame.match.game.arena.Arena;
+import org.brlnsreb.core.maps.MapLevel;
 import org.brlnsreb.core.minigame.match.game.items.SpectatorItemManager;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.match.GameState;
@@ -46,7 +46,7 @@ public abstract class Game {
     protected final GameState state;
     protected final Set<CustomPlayer> players;
     protected final Set<CustomPlayer> spectators;
-    protected final Arena arena;
+    protected final MapLevel map;
 
     protected final Config config;
     protected final Messages msgUtil;
@@ -64,7 +64,7 @@ public abstract class Game {
         this.state = match.getState();
         this.players = match.getPlayers();
         this.spectators = match.getSpectators();
-        this.arena = prepareArena(mapId, time, weather);
+        this.map = prepareMap(mapId, time, weather);
 
         this.msgUtil = match.getMsgUtil();
         this.spectatorItems = new SpectatorItemManager();
@@ -72,7 +72,7 @@ public abstract class Game {
         this.scheduler = Server.getInstance().getScheduler();
     }
 
-    protected abstract Arena prepareArena(String mapId, TimeOfDay time, Weather weather);
+    protected abstract MapLevel prepareMap(String mapId, TimeOfDay time, Weather weather);
     
     //join-leave logic
 
@@ -162,11 +162,11 @@ public abstract class Game {
         ));
 
         //builders message
-        List<String> builders = config.getStringList(arena.getConfigPath() + "builders");
+        List<String> builders = config.getStringList(map.getConfigPath() + "builders");
         if (!builders.isEmpty()) {
             String buildersStr = String.join("&7, &d", builders);
             
-            String buildersTeam = YamlUtil.getStr(arena.getConfigPath() + "build-team", config);
+            String buildersTeam = YamlUtil.getStr(map.getConfigPath() + "build-team", config);
             if (buildersTeam != null && buildersTeam.length() > 0) buildersStr = buildersStr + " &7/ &d" + buildersTeam;
 
             String creditsMsg = YamlUtil.getStr("match.game.map-credits", Configs.getGlobalMessages()).formatted(buildersStr);
@@ -237,7 +237,7 @@ public abstract class Game {
     //others
 
     public void close() {
-        arena.close();
+        map.close();
     }
 
     public abstract void forceStop();
@@ -261,7 +261,7 @@ public abstract class Game {
     protected abstract PlayerGameData getGameData(CustomPlayer player);
     public Set<CustomPlayer> getPlayers() { return players; }
     public Set<CustomPlayer> getSpectators() { return spectators; }
-    public Arena getArena() { return arena; }
+    public MapLevel getMap() { return map; }
     public Config getConfig() { return config; }
     public Messages getMsgUtil() { return msgUtil; }
     public GameState getState() { return state; }

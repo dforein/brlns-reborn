@@ -8,7 +8,7 @@ import org.powernukkitx.level.Position;
 import org.powernukkitx.math.Vector3;
 import org.powernukkitx.utils.TextFormat;
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.minigame.match.game.arena.RandomSpawnsArena;
+import org.brlnsreb.core.maps.RandomSpawnsMap;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -65,11 +65,11 @@ public class GoldSpawnMapper {
         }
     }
     
-    public void scanArena(RandomSpawnsArena arena, String mapId, Player admin) {
-        scanArena(arena, mapId, admin, false);
+    public void scanMap(RandomSpawnsMap map, String mapId, Player admin) {
+        scanMap(map, mapId, admin, false);
     }
 
-    public void scanArena(RandomSpawnsArena arena, String mapId, Player admin, boolean useBarrierWhitelist) {
+    public void scanMap(RandomSpawnsMap map, String mapId, Player admin, boolean useBarrierWhitelist) {
         admin.sendMessage(TextFormat.YELLOW + "Starting scan for map: " + mapId);
         if (useBarrierWhitelist) {
             admin.sendMessage(TextFormat.GRAY + "Using barrier whitelist mode");
@@ -90,9 +90,9 @@ public class GoldSpawnMapper {
         
         List<Vector3> validSpawns = new ArrayList<>();
         
-        Level level = arena.getLevel();
-        Vector3 min = arena.getMin();
-        Vector3 max = arena.getMax();
+        Level level = map.getLevel();
+        Vector3 min = map.getMin();
+        Vector3 max = map.getMax();
         
         int totalBlocks = (int)((max.x - min.x) * (max.y - min.y) * (max.z - min.z));
         int checked = 0;
@@ -131,15 +131,15 @@ public class GoldSpawnMapper {
         admin.sendMessage(TextFormat.GRAY + "Saved to: maps/" + mapId + ".json");
     }
     
-    public void scanForBarriers(RandomSpawnsArena arena, String mapId, Player admin) {
+    public void scanForBarriers(RandomSpawnsMap map, String mapId, Player admin) {
         admin.sendMessage(TextFormat.YELLOW + "Starting barrier scan for map: " + mapId);
         admin.sendMessage(TextFormat.GRAY + "This may take a while...");
         
         List<Vector3> barriers = new ArrayList<>();
         
-        Level level = arena.getLevel();
-        Vector3 min = arena.getMin();
-        Vector3 max = arena.getMax();
+        Level level = map.getLevel();
+        Vector3 min = map.getMin();
+        Vector3 max = map.getMax();
         
         int totalBlocks = (int)((max.x - min.x) * (max.y - min.y) * (max.z - min.z));
         int checked = 0;
@@ -179,12 +179,12 @@ public class GoldSpawnMapper {
         admin.sendMessage(TextFormat.GRAY + "Saved to: barriers/" + mapId + ".json");
     }
     
-    public void countBarriers(RandomSpawnsArena arena, Player admin) {
-        admin.sendMessage(TextFormat.YELLOW + "Counting barriers in arena...");
+    public void countBarriers(RandomSpawnsMap map, Player admin) {
+        admin.sendMessage(TextFormat.YELLOW + "Counting barriers in map...");
         
-        Level level = arena.getLevel();
-        Vector3 min = arena.getMin();
-        Vector3 max = arena.getMax();
+        Level level = map.getLevel();
+        Vector3 min = map.getMin();
+        Vector3 max = map.getMax();
         
         int barrierCount = 0;
         

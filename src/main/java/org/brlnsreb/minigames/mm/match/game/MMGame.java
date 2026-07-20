@@ -3,11 +3,11 @@ package org.brlnsreb.minigames.mm.match.game;
 import java.util.*;
 
 import org.brlnsreb.BrlnsReb;
+import org.brlnsreb.core.maps.MapLevel;
+import org.brlnsreb.core.maps.RandomSpawnsMap;
 import org.brlnsreb.core.minigame.match.GameStateType;
 import org.brlnsreb.core.minigame.match.MatchExpand;
 import org.brlnsreb.core.minigame.match.game.GameExpand;
-import org.brlnsreb.core.minigame.match.game.arena.Arena;
-import org.brlnsreb.core.minigame.match.game.arena.RandomSpawnsArena;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.core.player.CustomPlayer.DamageMode;
@@ -86,15 +86,15 @@ public class MMGame extends GameExpand {
         "me"
     };
 
-    public MMGame(MatchExpand match, String map, TimeOfDay time, Weather weather) {
-        super(match, map, time, weather);
+    public MMGame(MatchExpand match, String mapId, TimeOfDay time, Weather weather) {
+        super(match, mapId, time, weather);
 
         this.bossBar = new MMBossBar(this);
         this.scoreboard = new MMScoreboard(this);
         this.items = new MMItemManager(this);
         this.spectatorMenu = new MMSpectatorMenu(this);
 
-        this.gold = new GoldSystem(config, arena);
+        this.gold = new GoldSystem(config, map);
         this.death = new DeathSystem(this, scheduler);
         this.projectile = new ProjectileSystem(this);
         this.raycast = new RaycastSystem(this, scheduler);
@@ -107,12 +107,10 @@ public class MMGame extends GameExpand {
         MMPlayerGameData.setCoinsPrizes(config);
     }
 
-    protected Arena prepareArena(String mapId, TimeOfDay time, Weather weather) {
-        return new RandomSpawnsArena(
-            config,
-            mapId,
-            "map-settings.maps." + mapId,
-            time, weather
+    protected MapLevel prepareMap(String mapId, TimeOfDay time, Weather weather) {
+        return new RandomSpawnsMap(
+            config, "map-settings.maps." + mapId,
+            mapId, time, weather
         );
     }
 
@@ -120,7 +118,7 @@ public class MMGame extends GameExpand {
     //join-leave logic
 
     protected Position onJoinPosition(CustomPlayer player) {
-        return arena.getRandomSpawn();
+        return map.getRandomSpawn();
     }
 
     protected void prepareGameData(CustomPlayer player) {
@@ -130,7 +128,7 @@ public class MMGame extends GameExpand {
     protected void onJoinPreparePlayer(CustomPlayer player) {
         player.interactMode = InteractMode.LIMITED;
 
-        if (config.getBoolean(arena.getConfigPath() + "night-vision")) {
+        if (config.getBoolean(map.getConfigPath() + "night-vision")) {
             for (CustomPlayer p : players) {
                 PlayerUtils.giveEffect(p, EffectType.NIGHT_VISION, 99999999, 2, false);
             }
@@ -238,7 +236,7 @@ public class MMGame extends GameExpand {
             public void onRun(int currentTick) {
                 List<CustomPlayer> outOfBounds = null;
                 for (CustomPlayer p : players) {
-                    if (!arena.isInArena(p)) {
+                    if (!map.isInMap(p)) {
                         if (outOfBounds == null) outOfBounds = new ArrayList<>();
                         outOfBounds.add(p);
                     }
@@ -663,6 +661,6 @@ public class MMGame extends GameExpand {
     public boolean isMurdererAlive() { return murderer != null; }
     public boolean isSheriffAlive() { return sheriff != null; }
     public MMPlayerGameData getGameData(CustomPlayer player) { return gameDataMap.get(player); }
-    public RandomSpawnsArena getArena() { return (RandomSpawnsArena) arena; }
+    public RandomSpawnsMap getMap() { return (RandomSpawnsMap) map; }
 
 }

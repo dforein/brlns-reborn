@@ -160,7 +160,7 @@ public class DeathSystem {
     }
 
     public void cleanupSheriffHoe() {
-        for (Entity entity : game.getArena().getLevel().getEntities()) {
+        for (Entity entity : game.getMap().getLevel().getEntities()) {
             if (entity instanceof EntityItem) {
                 entity.close();
             }

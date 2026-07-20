@@ -16,6 +16,16 @@ public enum TimeOfDay {
         this.timeValue = timeValue;
     }
 
+    public static TimeOfDay get(String timeName) {
+        return switch (timeName.toLowerCase()) {
+            case "day" -> DAY;
+            case "sunset" -> SUNSET;
+            case "night" -> NIGHT;
+            case "midnight" -> MIDNIGHT;
+            default -> null;
+        };
+    }
+
     public static TimeOfDay setTime(Level level, TimeOfDay time) {
         if (time != null) {
             level.setTime(time.timeValue);

@@ -1,4 +1,4 @@
-package org.brlnsreb.core.minigame.match.game.arena;
+package org.brlnsreb.core.maps;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,12 +10,12 @@ import org.brlnsreb.utils.voting.Weather;
 import org.powernukkitx.level.Position;
 import org.powernukkitx.utils.Config;
 
-public class RandomSpawnsArena extends Arena {
+public class RandomSpawnsMap extends MapLevel {
 
     private final List<Position> spawns = new ArrayList<>();
     private int spawnIndex = 0;
     
-    public RandomSpawnsArena(Config config, String mapId, String mapsConfigPath, TimeOfDay time, Weather weather) {
+    public RandomSpawnsMap(Config config, String mapId, String mapsConfigPath, TimeOfDay time, Weather weather) {
         super(config, mapId, mapsConfigPath, time, weather);
     }
 
