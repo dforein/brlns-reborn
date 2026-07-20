@@ -88,15 +88,15 @@ public abstract class Match {
     public void onLeave(CustomPlayer player) {
         switch (state.current) {
             case WAITING_LOBBY, LOBBY_COUNTDOWN:
-                waitingLobby.onLeave(player);
                 players.remove(player);
+                waitingLobby.onLeave(player);
                 break;
         
             case PREGAME_COUNTDOWN, IN_GAME, ENDING:
-                game.prepareAndSaveData(player, false);
-                game.onLeave(player);
                 players.remove(player);
                 spectators.remove(player);
+                game.prepareAndSaveData(player, false);
+                game.onLeave(player);
                 break;
         }
     }

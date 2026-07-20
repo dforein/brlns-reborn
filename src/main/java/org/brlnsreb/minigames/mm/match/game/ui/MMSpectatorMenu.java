@@ -35,7 +35,7 @@ public class MMSpectatorMenu extends MenuAbstract {
     }
     
     public void openSpectateMenu(CustomPlayer spectator) {
-        checkCooldown(spectator);
+        if (!checkCooldown(spectator)) return;
 
         SimpleForm menu = new SimpleForm("Spectate player");
 

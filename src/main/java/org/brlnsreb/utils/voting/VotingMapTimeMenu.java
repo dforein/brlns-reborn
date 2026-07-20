@@ -29,7 +29,7 @@ public class VotingMapTimeMenu extends MenuAbstract {
     }
     
     public void openMenu(Player player) {
-        checkCooldown(player);
+        if (!checkCooldown(player)) return;
         
         CustomForm menu = new CustomForm("Game Poll");
         

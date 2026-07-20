@@ -15,7 +15,7 @@ import org.powernukkitx.utils.Config;
 public class GamesMenu extends MenuAbstract {
 
     public static void openMenu(Player player) {
-        checkCooldown(player);
+        if (!checkCooldown(player)) return;
 
         Config config = Configs.getGlobalConfig();
 

@@ -19,7 +19,10 @@ public class MMWaitingLobby extends WaitingLobby {
     
     public MMWaitingLobby(Match match) {
         super(match);
+    }
 
+    protected void initVotingSystems() {
+        this.mapVoting = new VotingSystem<>();
         this.timeVoting = new VotingSystem<>();
     }
 

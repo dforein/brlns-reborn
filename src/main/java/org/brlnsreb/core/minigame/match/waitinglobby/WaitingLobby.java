@@ -80,7 +80,7 @@ public abstract class WaitingLobby extends Lobby {
         this.scoreboard = new WaitingLobbyScoreboard(match);
         this.items = requireItemManager();
 
-        this.mapVoting = new VotingSystem<>();
+        initVotingSystems();
         requireVotingMenu();
         prepareVoting();
     }
@@ -252,6 +252,7 @@ public abstract class WaitingLobby extends Lobby {
 
     //voting logic
 
+    protected abstract void initVotingSystems();
     protected abstract void requireVotingMenu();
 
     //OVERRIDE if you need more voting options

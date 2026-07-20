@@ -26,7 +26,7 @@ public class AuthSystem extends MenuAbstract {
     }
 
     public static void openMenu(Player player) {
-        checkCooldown(player);
+        if (!checkCooldown(player)) return;
 
         String path = "auth.menu.";
 

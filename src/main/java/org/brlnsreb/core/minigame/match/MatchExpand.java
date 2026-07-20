@@ -15,17 +15,13 @@ public abstract class MatchExpand extends Match {
         this.deathLobby = new DeathLobby(this);
     }
 
-    public void onDeathLobbyJoin(CustomPlayer player) {
-        players.remove(player);
-        deathLobby.onJoin(player);
-    }
-
     public boolean onDeath(CustomPlayer victim, CustomPlayer killer) { return onDeath(null, victim, killer); }
     public boolean onDeath(DamageCause cause, CustomPlayer victim, CustomPlayer killer) {
         Position deathPos = victim.getPosition();
 
         if (getGame().onDeath(cause, victim, killer)) {
-            onDeathLobbyJoin(victim);
+            players.remove(victim);
+            deathLobby.onJoin(victim);
             game.prepareAndSaveData(victim, true);
 
             getGame().afterDeath(cause, deathPos, victim, killer);

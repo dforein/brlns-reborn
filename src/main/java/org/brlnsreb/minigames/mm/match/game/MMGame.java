@@ -236,8 +236,15 @@ public class MMGame extends GameExpand {
         checkPosTask = new Task() {
             @Override
             public void onRun(int currentTick) {
+                List<CustomPlayer> outOfBounds = null;
                 for (CustomPlayer p : players) {
-                    if (!arena.isInArena(p)) match.onDeath(p, null);
+                    if (!arena.isInArena(p)) {
+                        if (outOfBounds == null) outOfBounds = new ArrayList<>();
+                        outOfBounds.add(p);
+                    }
+                }
+                if (outOfBounds != null) {
+                    for (CustomPlayer p : outOfBounds) match.onDeath(p, null);
                 }
             }
         };
@@ -539,6 +546,7 @@ public class MMGame extends GameExpand {
 
     private void stopGame() {
         if (updateUiTask != null) updateUiTask.cancel();
+        if (checkPosTask != null) checkPosTask.cancel();
         gold.stop();
     }
 
