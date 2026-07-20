@@ -42,7 +42,7 @@ match:
           name: '&l&o&eActions'
 
   death-lobby:
-    world: death_lobby
+    world: _deathlobby
     spawn-pos: 71 10 -146
     npc:
       play-again:

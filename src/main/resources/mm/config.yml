@@ -45,7 +45,7 @@ game:
     head-pitch-offset: -40
 
 lobby:
-  world: mm_lobby
+  world: mm__lobby
   spawn: 5 27 13
   npc:
     join:
@@ -62,7 +62,7 @@ lobby:
       skin-file: global/skins/minigame-lobby-back-to-hub.png
 
 waiting-lobby:
-  world: waitinglobby
+  world: mm__waitinglobby
   spawn: 2431 32 2430
   npc:
     leave:
@@ -139,7 +139,7 @@ map-settings:
       - 80 80 80
     museum:
       name: Museum
-      world: museum
+      world: mm_map_museum
       min: -63 0 -95
       max: 81 45 58
       night-vision: true
@@ -162,7 +162,7 @@ map-settings:
       - 71 6 -44
     village:
       name: Minetown
-      world: village
+      world: mm_map_village
       min: -10 -1 -71
       max: 124 15 143
       night-vision: true
@@ -189,7 +189,7 @@ map-settings:
       - 22 4 -5
     school_n:
       name: School N
-      world: school_n
+      world: mm_map_school_n
       min: 2428 31 2407
       max: 2464 62 2468
       night-vision: false
@@ -219,7 +219,7 @@ map-settings:
       - 2447 32 2411
     thegrandhotel:
       name: The Grand Hotel
-      world: thegrandhotel
+      world: mm_map_thegrandhotel
       min: 2435 33 2368
       max: 2513 68 2430
       night-vision: true
@@ -250,7 +250,7 @@ map-settings:
       - 2444 32 2384
     fnaf6:
       name: FNAF 6
-      world: fnaf6
+      world: mm_map_fnaf6
       min: 2384 22 2392
       max: 2435 40 2459
       night-vision: true
@@ -296,7 +296,7 @@ map-settings:
       - 2416 29 2410
     abandonedschool:
       name: Abandoned School
-      world: abandonedschool
+      world: mm_map_abandonedschool
       min: -22 5 -23
       max: 57 27 27
       night-vision: false
