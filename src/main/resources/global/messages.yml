@@ -3,7 +3,7 @@
 
 lobby:
   bossbar:
-      message1: '&l&eBroken&4Lens &%sReborn'  #replace variable color
+      message1: '&l&eBroken&6Lens &%sReborn'  #replace variable color
       message2: '&l&ePlaying %s'  #replace name
       other-messages:
       colors:

@@ -1,0 +1,64 @@
+plugins {
+    id 'java'
+}
+
+group = 'org.brlnsreb'
+version = '2.0.0'
+
+base {
+    archivesName = 'brlnsreb'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+configurations.all {
+    resolutionStrategy {
+        cacheChangingModulesFor 0, 'seconds'
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url = 'https://repo.powernukkitx.org/releases'
+    }
+    maven {
+        url = 'https://jitpack.io'
+    }
+    maven {
+        url = 'https://repo.opencollab.dev/maven-snapshots/'
+        mavenContent {
+            snapshotsOnly()
+        }
+    }
+    maven {
+        url = 'https://repo.opencollab.dev/maven-releases/'
+    }
+}
+
+dependencies {
+    compileOnly 'org.powernukkitx:server:nightly-SNAPSHOT'
+    compileOnly 'org.powernukkitx.protocol:bedrock-connection:3.0.0.Beta7-Debug-SNAPSHOT'
+    compileOnly 'eu.okaeri:okaeri-configs-core:5.0.1'
+
+    annotationProcessor 'org.powernukkitx:server:nightly-SNAPSHOT'
+
+    implementation 'com.zaxxer:HikariCP:7.1.0'
+    implementation 'org.mindrot:jbcrypt:0.4'
+}
+
+processResources {
+    filesMatching('plugin.yml') {
+        expand([
+            'version': project.version
+        ])
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}

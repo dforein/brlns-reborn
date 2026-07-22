@@ -46,7 +46,7 @@ game:
 
 lobby:
   world: mm__lobby
-  spawn: 5 27 13
+  spawn-pos: 5 27 13
   npc:
     join:
       pos: 8 28 10
@@ -63,7 +63,7 @@ lobby:
 
 waiting-lobby:
   world: mm__waitinglobby
-  spawn: 2431 32 2430
+  spawn-pos: 2431 32 2430
   npc:
     leave:
       pos: 2433 32 2436

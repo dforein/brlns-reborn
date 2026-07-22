@@ -98,7 +98,9 @@ public class AccountsManager {
             data.setCoins(0);
             data.setExp(0);
 
+            if (!player.spawned) return;
             player.updatePresetNameTags();
+            player.updateExp();
             player.setDisplayName(name);
             PlayerUtils.updateOnlinePlayer(player, false);
         });
@@ -126,7 +128,9 @@ public class AccountsManager {
                 );
             }
 
+            if (!player.spawned) return;
             player.updatePresetNameTags();
+            player.updateExp();
             player.setDisplayName(name);
             PlayerUtils.updateOnlinePlayer(player, false);
         });

@@ -25,13 +25,13 @@ public abstract class MinigameLobby extends Lobby {
         super(minigame);
 
         this.joinNpc = spawnNpc(
-            configPath() + "npc.",
+            configPath() + "npc.join.",
             player -> minigame.onMatchJoin(player),
             false
         );
 
         this.backToHubNpc = spawnNpc(
-            configPath() + "npc.",
+            configPath() + "npc.back-to-hub",
             player -> MainHub.instance.onJoin(player),
             false
         );
@@ -93,7 +93,13 @@ public abstract class MinigameLobby extends Lobby {
 
         reloadNpcConfigData(
             joinNpc, 
-            configPath() + "npc.", 
+            configPath() + "npc.join.", 
+            false
+        );
+
+        reloadNpcConfigData(
+            backToHubNpc, 
+            configPath() + "npc.back-to-hub.", 
             false
         );
     }

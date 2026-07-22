@@ -1,7 +1,7 @@
 package org.brlnsreb.commands;
 
 import org.brlnsreb.BrlnsReb;
-
+import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandSender;
 import org.powernukkitx.plugin.annotation.CommandDefinition;
 import org.powernukkitx.utils.TextFormat;
@@ -12,7 +12,7 @@ import org.powernukkitx.utils.TextFormat;
     description = "Toggle global server chat or local level chat"
 )
 
-public class GlobalChatCommand extends org.powernukkitx.command.Command {
+public class GlobalChatCommand extends Command {
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {

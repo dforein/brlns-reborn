@@ -103,8 +103,8 @@ public abstract class Lobby {
 
     protected NPCEntity spawnNpc(String configPath, Config customConfig, Consumer<CustomPlayer> task, boolean subtitle) {
         configPath = YamlUtil.checkConfigPath(configPath);
-        Position pos = YamlUtil.parsePositionCentered(customConfig.getString(configPath + "pos"), this.level);
         
+        Position pos = YamlUtil.parsePositionCentered(customConfig.getString(configPath + "pos"), this.level);
         NPCEntity npc = new NPCEntity(pos.getChunk(), Entity.getDefaultNBT(pos));
 
         npc.updateTitle(customConfig.getString(configPath + "text1"));
@@ -153,6 +153,7 @@ public abstract class Lobby {
     }
 
     public Level getLevel() { return this.level; }
+    public Position getSpawnPos() { return this.spawnPos; }
     public abstract Config getConfig();
     public abstract Config getMessages();
     public abstract String requireConfigPath();

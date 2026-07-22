@@ -19,7 +19,6 @@ import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.match.game.GameExpand;
 import org.brlnsreb.core.player.data.PlayerData;
-import org.brlnsreb.core.player.data.database.Outcome;
 import org.brlnsreb.core.player.data.database.PlayerDataManager;
 import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.core.minigame.match.Match;
@@ -64,7 +63,7 @@ public class CustomPlayer extends Player {
     public boolean attackEvent = false;
 
     public InteractMode interactMode = InteractMode.LIMITED;
-    private static HashMap<Integer, HashSet<Vector3>> playerBlocks = new HashMap<>();   //Integer = levelId
+    private static final HashMap<Integer, HashSet<Vector3>> playerBlocks = new HashMap<>();   //Integer = levelId
 
     public PlayerStateType state = PlayerStateType.LOBBY;
     private WeakReference<Lobby> lobbyCurrent = new WeakReference<>(null);
@@ -75,7 +74,7 @@ public class CustomPlayer extends Player {
     public String greenNameTag;             //used especially in waiting lobby/ingame
     public String ingameChatNameTag;        //name tag to display in chat when texting during game
 
-    public PlayerData data;
+    public PlayerData data = null;
 
     private Scoreboard scoreboard = null;
     private Long bossBarId = null;
@@ -86,37 +85,21 @@ public class CustomPlayer extends Player {
     public CustomPlayer(@NotNull BedrockServerSession session, @NotNull PlayerInfo info) {
         super(session, info);
 
-        PlayerDataManager.onServerJoin(this).thenAccept(outcome -> {
-            if (outcome == Outcome.DB_ERROR) return;
-
-            this.updatePresetNameTags();
-            MainHub.instance.onServerJoin(this);
-
-            if (!updateDisplayName()) updateDisplayNameDelayed();
-        });
-    }
-
-    private void updateDisplayNameDelayed() {
-        Server.getInstance().getScheduler().scheduleDelayedTask(BrlnsReb.instance, () -> {
-            if (!this.isOnline()) return;
-            if (!updateDisplayName()) updateDisplayNameDelayed();
-        }, 10);
-    }
-
-    private boolean updateDisplayName() {
-        if (this.spawned) {
-            this.setDisplayName(this.data.name);
-            PlayerUtils.updateOnlinePlayer(this, false);
-            return true;
-        }
-        return false;
+        PlayerDataManager.onServerJoin(this);
     }
 
     @Override
     public void doFirstSpawn() {
-        PlayerUtils.updateOnlinePlayer(this, true);     //remove the name for players who aren't in the same level (main hub)
-        PlayerUtils.cleanPlayerList(this);                              //remove names of players in different levels for this player
         super.doFirstSpawn();
+        
+        PlayerUtils.updateOnlinePlayer(this, true);     //remove the name for players who aren't in the same level (main hub)
+        PlayerUtils.initPlayerList(this, MainHub.instance.getLevel());
+
+        if (data == null) data = new PlayerData();
+        this.updatePresetNameTags();
+        this.updateExp();
+        this.setDisplayName(this.data.name);
+        MainHub.instance.onServerJoin(this);
     }
 
 

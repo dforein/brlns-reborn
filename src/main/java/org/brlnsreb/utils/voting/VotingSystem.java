@@ -11,6 +11,7 @@ public class VotingSystem<T> {
     
     public VotingSystem() {
         this.votes = new HashMap<>();
+        this.availableOptions = null;
     }
     
     public void setAvailableOptions(List<T> options) {

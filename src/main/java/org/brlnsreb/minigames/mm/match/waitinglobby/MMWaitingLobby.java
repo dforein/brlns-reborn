@@ -44,7 +44,7 @@ public class MMWaitingLobby extends WaitingLobby {
     protected void prepareVoting() {
         super.prepareVoting();
         
-        if (timeVoting.getAvailableOptions().isEmpty()) {
+        if (timeVoting.getAvailableOptions() == null) {
             timeVoting.setAvailableOptions(List.of(TimeOfDay.values()));
         }
     }

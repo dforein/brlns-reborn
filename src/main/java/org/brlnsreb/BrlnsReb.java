@@ -4,12 +4,10 @@ import org.powernukkitx.Player;
 import org.powernukkitx.Server;
 import org.powernukkitx.level.Level;
 import org.powernukkitx.plugin.PluginBase;
+import org.powernukkitx.plugin.annotation.PluginMeta;
 import org.powernukkitx.registry.RegisterException;
 import org.powernukkitx.registry.Registries;
-import org.powernukkitx.utils.Config;
 import org.powernukkitx.utils.TextFormat;
-
-import org.brlnsreb.utils.YamlUtil;
 
 import java.util.ArrayList;
 
@@ -23,6 +21,14 @@ import org.brlnsreb.core.player.data.database.PlayerDataManager;
 import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.minigames.mm.match.game.entities.DeadBodyEntity;
 import org.brlnsreb.minigames.mm.match.game.entities.ThrownSwordEntity;
+
+@PluginMeta(
+    name = "brlnsreb",
+    version = "${version}",
+    api = {"3.0.0"},
+    authors = {"brlnsreb"},
+    description = "BrokenLens Reborn plugin"
+)
 
 public class BrlnsReb extends PluginBase {
     
@@ -66,6 +72,8 @@ public class BrlnsReb extends PluginBase {
     
     @Override
     public void onEnable() {
+        saveAllResources();
+        
         underMaintenance = Configs.getGlobalConfig().getBoolean("server-under-maintenance");
         server = getServer();
 
@@ -81,15 +89,12 @@ public class BrlnsReb extends PluginBase {
             server.reloadWhitelist();
         }
 
-        saveAllResources();
-
         WorldManager.init();
         AuthSystem.init();
         PlayerDataManager.init();
 
-        prepareMainHub();
         minigameManager = new MinigameManager();
-
+        prepareMainHub();
         
         this.getLogger().info(TextFormat.DARK_GREEN + "BrokenLens Reborn server enabled!");
     }
@@ -129,15 +134,9 @@ public class BrlnsReb extends PluginBase {
 
     private void prepareMainHub() {
         this.mainHub = new MainHub();
-        Config config = mainHub.getConfig();
 
-        server.setDefaultLevel(
-            server.getLevelByName(config.getString("world"))
-        );
-
-        server.getDefaultLevel().setSpawnLocation(
-            YamlUtil.parseVector3Centered(config.getString("spawn-pos"))
-        );
+        server.setDefaultLevel(mainHub.getLevel());
+        server.getDefaultLevel().setSpawnLocation(mainHub.getSpawnPos());
 
         server.getDefaultLevel().save();
     }

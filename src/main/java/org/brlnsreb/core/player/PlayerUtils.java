@@ -7,6 +7,7 @@ import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer.DamageMode;
 import org.brlnsreb.core.player.CustomPlayer.InteractMode;
 import org.brlnsreb.core.player.data.database.PlayerDataManager;
+import org.brlnsreb.mainhub.MainHub;
 import org.cloudburstmc.protocol.bedrock.data.BuildPlatform;
 import org.cloudburstmc.protocol.bedrock.data.payload.list.PlayerListAddEntry;
 import org.cloudburstmc.protocol.bedrock.data.payload.list.PlayerListRemoveEntry;
@@ -16,6 +17,7 @@ import org.powernukkitx.Player;
 import org.powernukkitx.Server;
 import org.powernukkitx.entity.effect.Effect;
 import org.powernukkitx.entity.effect.EffectType;
+import org.powernukkitx.event.player.PlayerTeleportEvent.TeleportCause;
 import org.powernukkitx.item.Item;
 import org.powernukkitx.level.Level;
 import org.powernukkitx.level.Position;
@@ -56,6 +58,11 @@ public class PlayerUtils {
 
 
     //lobby-specific
+
+    public static void playerSpawnTeleport(CustomPlayer p) {
+        p.teleport(MainHub.instance.getSpawnPos().add(0.0, 1.0, 0.0), TeleportCause.PLAYER_SPAWN);
+        p.setMotion(new Vector3(0.0, 0.42, 0.0));
+    }
 
     public static void lobbyTeleport(CustomPlayer p, Position pos) {
         p.teleport(pos.add(0.0, 1.0, 0.0));
@@ -184,6 +191,12 @@ public class PlayerUtils {
 
 
     //player list packets
+
+    public static void initPlayerList(Player viewer, Level level) {
+        for (Player p : level.getPlayers().values()) {
+            addViewerToOnlinePlayer(p, viewer);
+        }
+    }
 
     public static void updatePlayerList(Player viewer, Level newLevel) {
         updatePlayerList(viewer, viewer.getLevel(), newLevel);

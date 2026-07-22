@@ -70,8 +70,7 @@ public abstract class WaitingLobby extends Lobby {
         this.secondsShortenedCountdown = globalConfig.getInt(configPath() + "shortened-countdown-seconds");
 
         spawnNpc(
-            "match." + configPath() + "npc.", 
-            globalConfig,
+            configPath() + "npc.leave.",
             player -> match.onLeave(player)
         );
 
@@ -257,7 +256,7 @@ public abstract class WaitingLobby extends Lobby {
 
     //OVERRIDE if you need more voting options
     protected void prepareVoting() {
-        if (mapVoting.getAvailableOptions().isEmpty()) {
+        if (mapVoting.getAvailableOptions() == null) {
             List<String> availableMapIds = minigame.getAvailableMapIds();
         
             while (availableMapIds.size() > 3) {

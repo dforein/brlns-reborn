@@ -1,6 +1,5 @@
 package org.brlnsreb.listeners.general;
 
-import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.data.database.AccountsManager;
 import org.brlnsreb.core.player.data.database.FriendsManager;
@@ -16,14 +15,16 @@ import org.powernukkitx.plugin.annotation.EventListener;
 @EventListener
 public class PlayerQuitListener implements Listener {
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onQuit(PlayerQuitEvent event) {
         handlePlayerLeave(event.getPlayer());
+        event.setQuitMessage("");
     }
     
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onKick(PlayerKickEvent event) {
         handlePlayerLeave(event.getPlayer());
+        event.setQuitMessage("");
     }
 
 
@@ -33,8 +34,7 @@ public class PlayerQuitListener implements Listener {
 
         AccountsManager.savePlayerData(player);
         FriendsManager.removeOnlineFriend(player.data);
-        Match match  = player.matchCurrent;
-        if (match != null) match.onLeave(player);
+        if (player.matchCurrent != null) player.matchCurrent.onLeave(player);
         player.save();
     }
     

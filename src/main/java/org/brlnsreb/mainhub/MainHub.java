@@ -42,7 +42,7 @@ public class MainHub extends Lobby {
         super();
         instance = this;
 
-        this.bossBar = new MainLobbyBossBar(messages.getString("name"));
+        this.bossBar = new MainLobbyBossBar(ChatMsgs.BROKENLENS);
         items = new MainLobbyItemManager(config);
 
         this.bossBar.startBossBarUpdates(this.level);
@@ -52,7 +52,7 @@ public class MainHub extends Lobby {
     public void onServerJoin(CustomPlayer player) {
         onlinePlayers++;
 
-        PlayerUtils.changeWorld(player, spawnPos, true);
+        PlayerUtils.playerSpawnTeleport(player);
 
         onServerJoinMessages(player);
 
@@ -185,9 +185,7 @@ public class MainHub extends Lobby {
 
     private void updateNpcSubtitle(NPCEntity npc, Minigame npcMinigame) {
         String subtitle = YamlUtil.getStr(configPath() + "npc." + npcMinigame.mgt.nameTag + ".text2", config).formatted(
-            npcMinigame.mgt.nameTag,
-            npcMinigame.getMainPendingMatch().getNumber(),
-            npcMinigame.getMainPendingMatch().getPlayers().size()
+            npcMinigame.getPlayerCount()
         );
         
         npc.updateSubtitle(subtitle);
@@ -206,7 +204,7 @@ public class MainHub extends Lobby {
             updateNpcSubtitle(npcEntry.getValue(), MinigameManager.getMinigame(npcEntry.getKey()));
         }
 
-        bossBar.onConfigReload(messages.getString("name"));
+        bossBar.onConfigReload(ChatMsgs.BROKENLENS);
     }
 
     public Config getConfig() { 

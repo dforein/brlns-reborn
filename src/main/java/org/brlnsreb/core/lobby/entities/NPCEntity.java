@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 
 import javax.imageio.ImageIO;
 
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.cloudburstmc.protocol.bedrock.data.actor.ActorFlags;
 import org.cloudburstmc.protocol.bedrock.data.skin.ImageData;
@@ -177,24 +178,33 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
     @SuppressWarnings("deprecation")
     public Skin loadSkin(String skinFilePath) {
         try {
-            InputStream inputStream = getClass().getResourceAsStream(skinFilePath);
+            InputStream inputStream = BrlnsReb.instance.getClass().getModule().getResourceAsStream(skinFilePath);
             if (inputStream == null) throw new RuntimeException("Skin not found: " + skinFilePath);
 
             BufferedImage image = ImageIO.read(inputStream);
             ImageData skinData = ImageData.from(image);
 
-            org.cloudburstmc.protocol.bedrock.data.skin.Skin serialized = org.cloudburstmc.protocol.bedrock.data.skin.Skin.builder()
+            org.cloudburstmc.protocol.bedrock.data.skin.Skin skin = org.cloudburstmc.protocol.bedrock.data.skin.Skin.builder()
                 .skinId(skinFilePath)
                 .skinData(skinData)
+                .skinResourcePatch("{\"geometry\":{\"default\":\"geometry.humanoid.custom\"}}")
                 .geometryName("geometry.humanoid.custom")
                 .capeData(ImageData.EMPTY)
                 .premium(false)
                 .persona(false)
                 .capeOnClassic(false)
                 .primaryUser(true)
+                .playFabId("")
+                .capeId("")
+                .fullSkinId(skinFilePath + "_")
+                .armSize("wide")
+                .skinColor("#0")
+                .geometryData("")
+                .animationData("")
+                .geometryDataEngineVersion("")
                 .build();
-
-            return new Skin(serialized, true);
+            
+            return new Skin(skin, true);
 
         } catch (Exception e) {
             e.printStackTrace();

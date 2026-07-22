@@ -38,13 +38,14 @@ public class WorldManager {
     }
 
     private static Level loadLevel(String levelName, boolean isLobby, Config config, String configPath) {
-        configPath = YamlUtil.checkConfigPath(configPath);
-
         HashSet<String> availableLevels = getAllLevelNames();
         if (!availableLevels.contains(levelName)) return null;
 
         String folderName = levelName;
+        
         if (!isLobby) {
+            configPath = YamlUtil.checkConfigPath(configPath);
+
             //get lowest X number in "levelNameX" available for the level to load
             int count = 1;
             while (server.getLevelByName(folderName) != null) {

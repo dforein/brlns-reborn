@@ -2,9 +2,9 @@ package org.brlnsreb.utils;
 
 public class ChatMsgs {
 
-    public static final String BROKENLENS = "&l&eBroken&4Lens§r";
-    public static final String BROKENLENS_GAMES = "&l&eBroken&4Lens §9Games";
-    public static final String BROKENLENS_PFX = "&l&eBroken&4Lens§r §d";
+    public static final String BROKENLENS = "&l&eBroken&6Lens§r";
+    public static final String BROKENLENS_GAMES = "&l&eBroken&6Lens §9Games";
+    public static final String BROKENLENS_PFX = "&l&eBroken&6Lens§r §d";
 
     public static final String SUCCESS_PFX = "§l§aSUCCESS§r §a";
     public static final String ERROR_PFX = "§l§cERROR§r §c";

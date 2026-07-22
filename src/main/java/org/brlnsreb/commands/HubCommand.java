@@ -4,6 +4,7 @@ import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.player.CustomPlayer;
 
 import org.powernukkitx.Player;
+import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandSender;
 import org.powernukkitx.plugin.annotation.CommandDefinition;
 import org.powernukkitx.utils.TextFormat;
@@ -14,7 +15,7 @@ import org.powernukkitx.utils.TextFormat;
     description = "Go to lobby"
 )
 
-public class HubCommand extends org.powernukkitx.command.Command {
+public class HubCommand extends Command {
     
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
