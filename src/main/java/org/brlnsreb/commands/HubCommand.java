@@ -2,7 +2,7 @@ package org.brlnsreb.commands;
 
 import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.player.CustomPlayer;
-
+import org.brlnsreb.mainhub.MainHub;
 import org.powernukkitx.Player;
 import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandSender;
@@ -28,7 +28,7 @@ public class HubCommand extends Command {
         
         switch (player.state) {
             case LOBBY:
-                player.sendMessage("");
+                MainHub.instance.onJoin(player);
                 break;
 
             default:

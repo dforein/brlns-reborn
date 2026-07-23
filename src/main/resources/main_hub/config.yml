@@ -8,4 +8,4 @@ npc:
     text1: '&l&aMurder&2Mystery'
     text2: '&d%d &eplaying'
     default-yaw: 0
-    skin-file: main-hub/skins/mm.png
+    skin-file: main_hub/skins/mm.png

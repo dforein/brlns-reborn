@@ -93,7 +93,7 @@ public class CustomPlayer extends Player {
         super.doFirstSpawn();
         
         PlayerUtils.updateOnlinePlayer(this, true);     //remove the name for players who aren't in the same level (main hub)
-        PlayerUtils.initPlayerList(this, MainHub.instance.getLevel());
+        PlayerUtils.cleanPlayerList(this);
 
         if (data == null) data = new PlayerData();
         this.updatePresetNameTags();
@@ -136,11 +136,11 @@ public class CustomPlayer extends Player {
     //data logic
 
     public void updatePresetNameTags() {
-        this.grayNameTag = "§8" + (data.getFloorLevel() < 0 ? "?" : data.getFloorLevel()) +
+        this.grayNameTag = "§8" + (data.isLogged() ? data.getFloorLevel() : "?") +
                                   " §7" + (data.isLogged() ? data.name : this.getName());
         
-        this.greenNameTag = "§8" + (data.getFloorLevel() < 0 ? "?" : data.getFloorLevel()) +
-                                         " §a" + (data.isLogged() ? data.name : this.getName());
+        this.greenNameTag = "§8" + (data.isLogged() ? data.getFloorLevel() : "?") +
+                                   " §a" + (data.isLogged() ? data.name : this.getName());
 
         this.setPresetNameTag();
     }

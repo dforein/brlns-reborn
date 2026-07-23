@@ -51,7 +51,7 @@ public class FriendCommand extends Command {
 
     @Override
     public void buildCommandTree(RouteTree tree) {
-        CommandResult loginFail = CommandResult.fail(ChatMsgs.ERROR_PFX + "You aren't logged in!");  //TEXT
+        CommandResult loginFail = CommandResult.fail(ChatMsgs.ERROR_PFX + "You are not logged in!");  //TEXT
 
         //friend add <name>
         RouteNode addNode = RouteNode.literal("add")

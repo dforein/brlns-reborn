@@ -51,10 +51,11 @@ dependencies {
     implementation 'org.mindrot:jbcrypt:0.4'
 }
 
+def appVersion = project.version
 processResources {
     filesMatching('plugin.yml') {
         expand([
-            'version': project.version
+            'version': appVersion
         ])
     }
 }

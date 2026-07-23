@@ -208,10 +208,10 @@ public class MainHub extends Lobby {
     }
 
     public Config getConfig() { 
-        return Configs.getConfig("main-hub/config.yml");
+        return Configs.getConfig("main_hub/config.yml");
     }
     public Config getMessages() {
-        return Configs.getConfig("main-hub/messages.yml");
+        return Configs.getConfig("main_hub/messages.yml");
     }
     public String requireConfigPath() { return ""; }
     

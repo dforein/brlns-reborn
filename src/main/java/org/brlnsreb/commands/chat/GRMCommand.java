@@ -5,7 +5,7 @@ import java.util.List;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.data.PlayerData;
-
+import org.brlnsreb.utils.ChatMsgs;
 import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandResult;
 import org.powernukkitx.command.SenderType;
@@ -34,6 +34,10 @@ public class GRMCommand extends Command {
                     CustomPlayer sender = (CustomPlayer) ctx.getSender();
 
                     PlayerData senderData = sender.data;
+                    if (!senderData.isLogged()) {
+                        return CommandResult.fail(ChatMsgs.ERROR_PFX + "You are not logged in!");  //TEXT
+                    }
+                    
                     Minigame minigame = sender.minigameCurrent;
                     List<String> receivers = sender.data.getOnlineFriendsKeysCopy();
 

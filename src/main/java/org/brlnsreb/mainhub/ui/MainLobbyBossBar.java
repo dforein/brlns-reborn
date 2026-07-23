@@ -2,7 +2,6 @@ package org.brlnsreb.mainhub.ui;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.Configs;
@@ -23,8 +22,8 @@ public class MainLobbyBossBar extends BossBarAbstract {
 
     private String name;                            //mainMessage1 name (of the game, or server in case of main hub)
     private Config messages;
-    private ArrayList<String> colors;               //mainMessage2 colors
-    private ArrayList<String> messagesList;
+    private List<String> colors;                    //mainMessage2 colors
+    private List<String> messagesList;
     private int messagesIndex = 0;                  //i will periodically change messages in messages.yml order
 
     public MainLobbyBossBar(String name) {
@@ -38,26 +37,13 @@ public class MainLobbyBossBar extends BossBarAbstract {
         String mainMessage1 = messages.getString(PATH + "message1");
         String mainMessage2 = messages.getString(PATH + "message2");
 
-        List<?> message = this.messages.getList(PATH + "other-messages");
-        if (message != null) {
-            this.messagesList = new ArrayList<>(
-                message.stream()
-                .map(capture -> capture.toString())
-                .collect(Collectors.toList())
-            );
-        } else {
-            this.messagesList = new ArrayList<>();
-        }
+        this.messagesList = this.messages.getStringList(PATH + "other-messages");
+        if (this.messagesList == null) this.messagesList = new ArrayList<>();
 
         this.messagesList.addFirst(mainMessage2);
         this.messagesList.addFirst(mainMessage1);
 
-        this.colors = new ArrayList<>(              //for mainMessage2, because it changes color quickly
-            messages.getList(PATH + "colors")
-                .stream()
-                .map(capture -> capture.toString())
-                .collect(Collectors.toList())
-        );
+        this.colors = messages.getStringList(PATH + "colors");             //for mainMessage2, because it changes color quickly
     }
 
     public void startBossBarUpdates(Level level) {
@@ -83,7 +69,7 @@ public class MainLobbyBossBar extends BossBarAbstract {
     public void updateLobbyBossBar(CustomPlayer player) {
         switch (this.messagesIndex) {
             case 0:
-                updateBossBar(player, getMessage(0).formatted(name));
+                updateBossBar(player, getMessage(0, name));
                 break;
             
             case 1:
@@ -97,7 +83,7 @@ public class MainLobbyBossBar extends BossBarAbstract {
                             index -= colors.size();
                         }
 
-                        updateBossBar(player, getMessage(1).formatted(colors.get(index)));
+                        updateBossBar(player, getMessage(1, colors.get(index)));
                         colorIndex[0]++;
 
                         if (colorIndex[0] >= colors.size()) {
@@ -108,13 +94,17 @@ public class MainLobbyBossBar extends BossBarAbstract {
                 break;
         
             default:
-                updateBossBar(player, getMessage(messagesIndex));
+                updateBossBar(player, getMessage(messagesIndex, null));
                 break;
         }
     }
 
-    private String getMessage(int index) {
-        return TextFormat.colorize(messagesList.get(index));
+    private String getMessage(int index, String formatString) {
+        return TextFormat.colorize(
+            formatString == null 
+                ? messagesList.get(index) 
+                : messagesList.get(index).formatted(formatString)
+        );
     }
 
 }

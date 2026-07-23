@@ -1,7 +1,7 @@
 settings:
   check-players-at-game-start: true
   min-players: 2
-  max-players: 20
+  max-players: 24
   physics-enabled: false
   gamerules:
     pvp: true

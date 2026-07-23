@@ -43,8 +43,8 @@ public class BrlnsReb extends PluginBase {
             "global/config.yml",
             "global/database.yml",
             "global/messages.yml",
-            "main-hub/config.yml",
-            "main-hub/messages.yml"
+            "main_hub/config.yml",
+            "main_hub/messages.yml"
         };
 
     private static boolean globalChat = false;

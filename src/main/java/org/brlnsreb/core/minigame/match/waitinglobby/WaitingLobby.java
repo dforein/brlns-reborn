@@ -66,8 +66,8 @@ public abstract class WaitingLobby extends Lobby {
         this.minPlayersShortenedCountdown = config.getInt("settings.min-players-shortened-countdown");
 
         Config globalConfig = Configs.getGlobalConfig();
-        this.secondsCountdown = globalConfig.getInt(configPath() + "countdown-seconds");
-        this.secondsShortenedCountdown = globalConfig.getInt(configPath() + "shortened-countdown-seconds");
+        this.secondsCountdown = globalConfig.getInt("match.waiting-lobby.countdown-seconds");
+        this.secondsShortenedCountdown = globalConfig.getInt("match.waiting-lobby.shortened-countdown-seconds");
 
         spawnNpc(
             configPath() + "npc.leave.",
@@ -165,14 +165,14 @@ public abstract class WaitingLobby extends Lobby {
         if (playerNumber >= maxPlayers) {
             minigame.onReplacePendingMatch(match);
             
-        } else if (playerNumber > minPlayersShortenedCountdown && !countdownShortened) {
+        } else if (playerNumber >= minPlayersShortenedCountdown && !countdownShortened) {
             shortenCountdown(true);
             
-        } else if (playerNumber > minPlayers && !countdownShortened) {    //if the countdown is already shortened, it will stay shortened
+        } else if (playerNumber >= minPlayers && !countdownShortened) {    //if the countdown is already shortened, it will stay shortened
             match.getState().current = GameStateType.LOBBY_COUNTDOWN;
             startCountdown();
 
-        } else if (match.getCurrentState() == GameStateType.LOBBY_COUNTDOWN) {  //not enough players
+        } else if (playerNumber < minPlayers && match.getCurrentState() == GameStateType.LOBBY_COUNTDOWN) {  //not enough players
             match.getState().current = GameStateType.WAITING_LOBBY;
             stopCountdown();
             minigame.readdPendingMatch(match);
