@@ -4,12 +4,14 @@ import org.brlnsreb.BrlnsReb;
 import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandSender;
 import org.powernukkitx.plugin.annotation.CommandDefinition;
+import org.powernukkitx.plugin.annotation.CommandDefinition.CommandMode;
 import org.powernukkitx.utils.TextFormat;
 
 @CommandDefinition(
     name = "globalchat",
     permission = "admin",
-    description = "Toggle global server chat or local level chat"
+    description = "Toggle global server chat or local level chat",
+    commandMode = CommandMode.RAW
 )
 
 public class GlobalChatCommand extends Command {

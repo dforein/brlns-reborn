@@ -7,12 +7,14 @@ import org.brlnsreb.utils.YamlUtil;
 import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandSender;
 import org.powernukkitx.plugin.annotation.CommandDefinition;
+import org.powernukkitx.plugin.annotation.CommandDefinition.CommandMode;
 import org.powernukkitx.utils.TextFormat;
 
 @CommandDefinition(
     name = "reloadconfig", 
     permission = "admin",
-    description = "Reload all configs"
+    description = "Reload all configs",
+    commandMode = CommandMode.RAW
 )
 
 public class ReloadConfigCommand extends Command {

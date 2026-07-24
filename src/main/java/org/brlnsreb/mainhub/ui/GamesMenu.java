@@ -17,15 +17,15 @@ public class GamesMenu extends MenuAbstract {
     public static void openMenu(Player player) {
         if (!checkCooldown(player)) return;
 
-        Config config = Configs.getGlobalConfig();
+        Config globalConfig = Configs.getGlobalConfig();
 
-        SimpleForm menu = new SimpleForm(YamlUtil.getStr("items.games.name", config));
+        SimpleForm menu = new SimpleForm(YamlUtil.getStr("items.games.name", globalConfig));
 
-        menu.addButton(YamlUtil.getStr("items.games.hub-button-text", config));
+        menu.addButton(YamlUtil.getStr("items.games.hub-button-text", globalConfig));
 
         for (Minigame mg : MinigameManager.getMinigames()) {
             menu.addButton(
-                YamlUtil.getStr("name", mg.getMessages()) + " §r§7(" + mg.getPlayerCount() + ")"
+                mg.mgt.displayName + " §r§8(§r" + mg.getPlayerCount() + "§8)"
             );  //TODO: add images?
         }
 

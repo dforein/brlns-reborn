@@ -20,10 +20,6 @@ import org.powernukkitx.utils.TextFormat;
 
 public class PingCommand extends Command {
     
-    public PingCommand() {
-        this.enableCommandTree();
-    }
-    
     @Override
     public void buildCommandTree(RouteTree tree) {
         tree.getRoot().senderType(SenderType.PLAYER)

@@ -35,6 +35,7 @@ import org.powernukkitx.math.BlockFace;
 import org.powernukkitx.math.Vector3;
 import org.powernukkitx.nbt.tag.CompoundTag;
 import org.powernukkitx.nbt.tag.DoubleTag;
+import org.powernukkitx.nbt.tag.FloatTag;
 import org.powernukkitx.nbt.tag.ListTag;
 import org.powernukkitx.nbt.tag.StringTag;
 import org.powernukkitx.scoreboard.Scoreboard;
@@ -95,10 +96,10 @@ public class CustomPlayer extends Player {
         PlayerUtils.updateOnlinePlayer(this, true);     //remove the name for players who aren't in the same level (main hub)
         PlayerUtils.cleanPlayerList(this);
 
-        if (data == null) data = new PlayerData();
+        if (this.data == null) this.data = new PlayerData();
         this.updatePresetNameTags();
         this.updateExp();
-        this.setDisplayName(this.data.name);
+        if (this.data.isLogged()) this.setDisplayName(this.data.name);
         MainHub.instance.onServerJoin(this);
     }
 
@@ -137,10 +138,10 @@ public class CustomPlayer extends Player {
 
     public void updatePresetNameTags() {
         this.grayNameTag = "§8" + (data.isLogged() ? data.getFloorLevel() : "?") +
-                                  " §7" + (data.isLogged() ? data.name : this.getName());
+                                  " §7" + (data.isLogged() ? data.name : this.getDisplayName());
         
         this.greenNameTag = "§8" + (data.isLogged() ? data.getFloorLevel() : "?") +
-                                   " §a" + (data.isLogged() ? data.name : this.getName());
+                                   " §a" + (data.isLogged() ? data.name : this.getDisplayName());
 
         this.setPresetNameTag();
     }
@@ -339,7 +340,10 @@ public class CustomPlayer extends Player {
                 .add(new DoubleTag(0.0))
         );
 
-        this.nbt.remove("Rotation");
+        this.nbt.putList("Rotation", new ListTag<FloatTag>()        //TODO: mainhub pitch yaw
+            .add(new FloatTag(0f))
+            .add(new FloatTag(0f))
+        );
 
         this.nbt.remove("FallDistance");
         this.nbt.remove("Fire");

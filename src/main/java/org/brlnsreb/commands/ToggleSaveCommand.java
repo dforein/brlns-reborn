@@ -4,12 +4,14 @@ import org.brlnsreb.BrlnsReb;
 
 import org.powernukkitx.command.CommandSender;
 import org.powernukkitx.plugin.annotation.CommandDefinition;
+import org.powernukkitx.plugin.annotation.CommandDefinition.CommandMode;
 import org.powernukkitx.utils.TextFormat;
 
 @CommandDefinition(
     name = "togglesave", 
     permission = "admin",
-    description = "Toggle saving worlds at server shutdown"
+    description = "Toggle saving worlds at server shutdown",
+    commandMode = CommandMode.RAW
 )
 
 public class ToggleSaveCommand extends org.powernukkitx.command.Command {

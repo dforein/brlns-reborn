@@ -97,18 +97,18 @@ public abstract class Lobby {
         return spawnNpc(configPath, customConfig, task, false);
     }
 
-    protected NPCEntity spawnNpc(String configPath, Consumer<CustomPlayer> task, boolean subtitle) {
-        return spawnNpc(configPath, this.config, task, subtitle);
+    protected NPCEntity spawnNpc(String configPath, Consumer<CustomPlayer> task, boolean fixedSubtitle) {
+        return spawnNpc(configPath, this.config, task, fixedSubtitle);
     }
 
-    protected NPCEntity spawnNpc(String configPath, Config customConfig, Consumer<CustomPlayer> task, boolean subtitle) {
+    protected NPCEntity spawnNpc(String configPath, Config customConfig, Consumer<CustomPlayer> task, boolean fixedSubtitle) {
         configPath = YamlUtil.checkConfigPath(configPath);
         
         Position pos = YamlUtil.parsePositionCentered(customConfig.getString(configPath + "pos"), this.level);
         NPCEntity npc = new NPCEntity(pos.getChunk(), Entity.getDefaultNBT(pos));
 
         npc.updateTitle(customConfig.getString(configPath + "text1"));
-        if (subtitle) npc.updateSubtitle(customConfig.getString(configPath + "text2"));
+        if (fixedSubtitle) npc.updateSubtitle(customConfig.getString(configPath + "text2"));
 
         npc.setDefaultPose(customConfig.getDouble(configPath + "default-yaw"));
         npc.setTask(task);
@@ -132,23 +132,21 @@ public abstract class Lobby {
     }
 
     public void onConfigReload() {
-        this.spawnPos = YamlUtil.parsePositionCentered(config.getString("lobby.spawn"), this.level);
+        this.spawnPos = YamlUtil.parsePositionCentered(config.getString(configPath() + "spawn"), this.level);
     }
 
     protected void reloadNpcConfigData(NPCEntity npc, String configPath, boolean subtitle) {
         reloadNpcConfigData(npc, configPath, this.config, subtitle);
     }
 
-    protected void reloadNpcConfigData(NPCEntity npc, String configPath, Config customConfig, boolean subtitle) {
+    protected void reloadNpcConfigData(NPCEntity npc, String configPath, Config customConfig, boolean fixedSubtitle) {
         if (npc == null) return;
 
         configPath = YamlUtil.checkConfigPath(configPath);
         
         npc.setDefaultPose(customConfig.getDouble(configPath + "default-yaw"));
         npc.updateTitle(customConfig.getString(configPath + "text1"));
-        if (subtitle) {
-            npc.updateSubtitle(customConfig.getString(configPath + "text2"));
-        }
+        if (fixedSubtitle) npc.updateSubtitle(customConfig.getString(configPath + "text2"));
         npc.setSkin(customConfig.getString(configPath + "skin-file"));
     }
 

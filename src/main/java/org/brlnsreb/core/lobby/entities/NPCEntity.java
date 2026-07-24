@@ -178,7 +178,7 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
     @SuppressWarnings("deprecation")
     public Skin loadSkin(String skinFilePath) {
         try {
-            InputStream inputStream = BrlnsReb.instance.getClass().getModule().getResourceAsStream(skinFilePath);
+            InputStream inputStream = BrlnsReb.instance.getClass().getClassLoader().getResourceAsStream(skinFilePath);
             if (inputStream == null) throw new RuntimeException("Skin not found: " + skinFilePath);
 
             BufferedImage image = ImageIO.read(inputStream);

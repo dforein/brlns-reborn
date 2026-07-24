@@ -202,6 +202,7 @@ public abstract class Match {
     public Set<CustomPlayer> getPlayers() { return players; }
     public Set<CustomPlayer> getSpectators() { return spectators; }
     public int getNumber() { return number; }
+    public WaitingLobby getWaitingLobby() { return waitingLobby; }
     public Game getGame() { return game; }
     public Minigame getMinigame() { return minigame; }
     public Config getConfig() { return minigame.getConfig(); }

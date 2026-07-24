@@ -24,7 +24,7 @@ public class MainLobbyItemManager extends ItemManager {
             case Item.ORANGE_DYE -> GamesMenu.openMenu(player);
             //case Item.PURPLE_DYE -> ;
             //case Item.BLAZE_ROD -> ;
-            case Item.SLIME_BALL -> player.minigameCurrent.getMainPendingMatch().onJoin(player);
+            case Item.SLIME_BALL -> player.minigameCurrent.onMatchJoin(player);
         }
     }
 

@@ -67,12 +67,8 @@ public class MainLobbyBossBar extends BossBarAbstract {
     }
 
     public void updateLobbyBossBar(CustomPlayer player) {
-        switch (this.messagesIndex) {
+        switch (this.messagesIndex) {    
             case 0:
-                updateBossBar(player, getMessage(0, name));
-                break;
-            
-            case 1:
                 int[] colorIndex = {0};
 
                 TaskHandler[] taskRef = new TaskHandler[1];
@@ -83,7 +79,7 @@ public class MainLobbyBossBar extends BossBarAbstract {
                             index -= colors.size();
                         }
 
-                        updateBossBar(player, getMessage(1, colors.get(index)));
+                        updateBossBar(player, getMessage(0, colors.get(index)));
                         colorIndex[0]++;
 
                         if (colorIndex[0] >= colors.size()) {
@@ -91,6 +87,10 @@ public class MainLobbyBossBar extends BossBarAbstract {
                         }
                     }, 5
                 );
+                break;
+
+            case 1:
+                updateBossBar(player, getMessage(1, name));
                 break;
         
             default:

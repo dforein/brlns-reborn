@@ -8,6 +8,7 @@ import org.powernukkitx.event.Listener;
 import org.powernukkitx.event.player.PlayerChatEvent;
 import org.powernukkitx.event.player.PlayerCommandPreprocessEvent;
 import org.powernukkitx.Player;
+import org.powernukkitx.Server;
 import org.powernukkitx.level.Level;
 import org.powernukkitx.plugin.annotation.EventListener;
 
@@ -17,6 +18,7 @@ public class ChatListener implements Listener {
     @EventHandler
     public void onChat(PlayerChatEvent event) {
         CustomPlayer player = (CustomPlayer) event.getPlayer();
+        String formatted;
 
         switch (player.state) {
             case PLAYING:
@@ -24,19 +26,23 @@ public class ChatListener implements Listener {
                     event.setCancelled();
                     return;
                 }
-                event.setFormat(player.ingameChatNameTag + "§7: %s");
+                formatted = player.ingameChatNameTag + "§7: " + event.getMessage();
                 break;
-            
+
             case SPECTATOR:
-                event.setFormat(ChatMsgs.SPEC_PFX + player.data.name + ": %s");
+                formatted = ChatMsgs.SPEC_PFX + player.data.name + ": " + event.getMessage();
+                break;
 
             default:
                 int floorLevel = player.data.getFloorLevel();
-                event.setFormat((floorLevel < 1000 ? " " : "") + player.getNameTag() + "§7: %s");
+                formatted = (floorLevel < 1000 ? " " : "") + player.getNameTag() + "§7: " + event.getMessage();
                 break;
         }
 
         filterPlayerBySenderLevel(event);
+
+        event.setCancelled();
+        Server.getInstance().broadcastMessage(formatted, event.getRecipients());
     }
 
     private void filterPlayerBySenderLevel(PlayerChatEvent event) {

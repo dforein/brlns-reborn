@@ -93,7 +93,7 @@ public abstract class Minigame {
             pendingMatches.add(createMatch(getNewMatchNumber()));
         }
 
-        lobby.onReplaceMainPendingMatch(pendingMatches.element().getNumber());
+        lobby.onReplaceMainPendingMatch();
 
         return true;
     }

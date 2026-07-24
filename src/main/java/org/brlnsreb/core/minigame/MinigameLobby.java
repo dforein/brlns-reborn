@@ -5,6 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
+import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.mainhub.MainHub;
@@ -40,7 +41,7 @@ public abstract class MinigameLobby extends Lobby {
             ThreadLocalRandom.current().nextInt(190, 210)
         );
 
-        this.bossBar = new MainLobbyBossBar(config.getString("name"));
+        this.bossBar = new MainLobbyBossBar(minigame.mgt.displayName);
         this.bossBar.startBossBarUpdates(level);
     }
 
@@ -67,26 +68,31 @@ public abstract class MinigameLobby extends Lobby {
         updateJoinNpcSubtitle();
     }
 
-    public void onReplaceMainPendingMatch(int matchNumber) {
+    public void onReplaceMainPendingMatch() {
         updateJoinNpcSubtitle();
     }
 
+
     private void updateJoinNpcSubtitle() {
-        String subtitle = YamlUtil.getStr(configPath() + "join-npc.text2", config).formatted(
+        Match mainPendingMatch = minigame.getMainPendingMatch();
+
+        String subtitle = YamlUtil.getStr(configPath() + "npc.join.text2", config).formatted(
             minigame.mgt.nameTag,
-            minigame.getMainPendingMatch().getNumber(),
-            minigame.getMainPendingMatch().getPlayers().size()
+            mainPendingMatch.getNumber(),
+            mainPendingMatch.getPlayers().size(),
+            mainPendingMatch.getWaitingLobby().getMaxPlayers()
         );
         
         joinNpc.updateSubtitle(subtitle);
     }
  
     private void updateBackToHubNpcSubtitle() {
-        String subtitle = YamlUtil.getStr(configPath() + "back-to-hub-npc.text2", config)
+        String subtitle = YamlUtil.getStr(configPath() + "npc.back-to-hub.text2", config)
             .formatted(MainHub.onlinePlayers);
 
         backToHubNpc.updateSubtitle(subtitle);
     }
+
 
     public void onConfigReload() {
         super.onConfigReload();
@@ -103,6 +109,7 @@ public abstract class MinigameLobby extends Lobby {
             false
         );
     }
+
 
     public Config getConfig() { return minigame.getConfig(); }
     public Config getMessages() { return minigame.getMessages(); }

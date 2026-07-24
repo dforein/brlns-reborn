@@ -2,7 +2,7 @@
   "format_version": "1.10.0",
   "minecraft:client_entity": {
     "description": {
-      "identifier": "mm:dead_body",
+      "identifier": "brlnsreb:npc",
       "materials": {
         "default": "entity_alphatest",
         "skin": "entity_alphatest",
@@ -12,16 +12,10 @@
         "default": "textures/entity/steve"
       },
       "geometry": {
-        "default": "geometry.humanoid.dead_body"
+        "default": "geometry.humanoid.custom"
       },
       "scripts": {
         "scale": "0.9375"
-      },
-      "animations": {
-        "fall_forward": "animation.corpse.fall_forward",
-        "fall_backward": "animation.corpse.fall_backward",
-        "lying_forward": "animation.corpse.lying_forward",
-        "lying_backward": "animation.corpse.lying_backward"
       },
       "render_controllers": [
         "controller.render.dead_body"

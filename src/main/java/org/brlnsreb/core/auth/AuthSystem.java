@@ -22,7 +22,7 @@ public class AuthSystem extends MenuAbstract {
 
     public static void init() {
         scheduler = Server.getInstance().getScheduler();
-        config = Configs.getConfig("main_hub/config.yml");
+        config = Configs.getGlobalMessages();
     }
 
     public static void openMenu(Player player) {
@@ -63,7 +63,7 @@ public class AuthSystem extends MenuAbstract {
                 case INVALID_NAME -> "invalid-name.";
                 case NAME_ALREADY_IN_USE -> "name-already-in-use.";
                 case PLAYER_ALREADY_LOGGED_IN -> "player-already-logged-in.";
-                case DB_ERROR -> "db-error";
+                case DB_ERROR -> "db-error.";
                 default -> "error";
             };
 
@@ -90,7 +90,7 @@ public class AuthSystem extends MenuAbstract {
                 case PLAYER_ALREADY_LOGGED_IN -> "player-already-logged-in.";
                 case NAME_NOT_FOUND -> "name-not-found.";
                 case WRONG_PASSWORD -> "wrong-password.";
-                case DB_ERROR -> "db-error";
+                case DB_ERROR -> "db-error.";
                 default -> "error";
             };
 
@@ -98,6 +98,7 @@ public class AuthSystem extends MenuAbstract {
                 Server.getInstance().getLogger().error(path);
             }
 
+            path = YamlUtil.checkConfigPath(path);
             SimpleForm responseWindow = new SimpleForm(
                 YamlUtil.getStr(path + "title", config),
                 YamlUtil.getStr(path + "config", config).formatted(name)

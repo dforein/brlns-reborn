@@ -6,6 +6,23 @@ settings:
   gamerules:
     pvp: true
 
+lobby:
+  world: mm__lobby
+  spawn-pos: 5 27 13
+  npc:
+    join:
+      pos: 8 28 10
+      text1: '&l&cQuickPlay'
+      text2: '&dJoin: &a%s%d &e%d&7/&e%d'
+      default-yaw: 0
+      skin-file: global/skins/minigame-lobby-join.png
+    back-to-hub:
+      pos: -8 28 10
+      text1: '&l&6Back To Hub'
+      text2: '&d%d &eplaying'
+      default-yaw: 0
+      skin-file: global/skins/minigame-lobby-back-to-hub.png
+
 game:
   duration: 420
   ending-duration: 10
@@ -43,23 +60,6 @@ game:
   dead-body:
     head-yaw-offset: -35
     head-pitch-offset: -40
-
-lobby:
-  world: mm__lobby
-  spawn-pos: 5 27 13
-  npc:
-    join:
-      pos: 8 28 10
-      text1: '&l&cQuickPlay'
-      text2: '&dJoin: &a%s%d &e%d&7/&e%d'
-      default-yaw: 0
-      skin-file: global/skins/minigame-lobby-join.png
-    back-to-hub:
-      pos: -8 28 10
-      text1: '&l&6Back To Hub'
-      text2: '&d%d &eplaying'
-      default-yaw: 0
-      skin-file: global/skins/minigame-lobby-back-to-hub.png
 
 waiting-lobby:
   world: mm__waitinglobby

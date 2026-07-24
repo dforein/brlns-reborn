@@ -124,7 +124,7 @@ public abstract class WaitingLobby extends Lobby {
         Messages.sendActionBar(
             players, 
             "match.waiting-lobby.action-bar.on-join", 
-            new Object[] {player.getName(), players.size(), maxPlayers},
+            new Object[] {player.data.name, players.size(), maxPlayers},
             Configs.getGlobalMessages(),
             999999
         );
@@ -149,7 +149,7 @@ public abstract class WaitingLobby extends Lobby {
         Messages.sendActionBar(
             players, 
             "action-bar.on-leave", 
-            new Object[] {player.getName(), players.size(), maxPlayers},
+            new Object[] {player.data.name, players.size(), maxPlayers},
             Configs.getGlobalMessages(),
             999999
         );
@@ -302,6 +302,7 @@ public abstract class WaitingLobby extends Lobby {
     public Config getMessages() { return match.getMessages(); }
     public String requireConfigPath() { return "waiting-lobby."; }
     public Messages getMsgUtil() { return msgUtil; }
+    public int getMaxPlayers() { return maxPlayers; }
     public Set<CustomPlayer> getPlayers() { return players; }
     public VotingSystem<String> getMapVoting() { return mapVoting; }
     public VotingSystem<TimeOfDay> getTimeVoting() { return timeVoting; }
