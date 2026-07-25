@@ -101,7 +101,7 @@ public class AuthSystem extends MenuAbstract {
             path = YamlUtil.checkConfigPath(path);
             SimpleForm responseWindow = new SimpleForm(
                 YamlUtil.getStr(path + "title", config),
-                YamlUtil.getStr(path + "config", config).formatted(name)
+                YamlUtil.getStr(path + "content", config).formatted(name)
             );
             
             scheduler.scheduleTask(() -> responseWindow.addButton("Close").send(player));

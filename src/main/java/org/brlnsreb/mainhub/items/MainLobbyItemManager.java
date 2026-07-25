@@ -55,7 +55,7 @@ public class MainLobbyItemManager extends ItemManager {
     }
 
     private void giveJoinGame(Player player) {
-        giveItem(player, 7, Item.SLIME_BALL, getStr("items.join-game.name"));
+        giveItem(player, 7, Item.SLIME_BALL, getStr("lobby.items.join-game.name"));
     }
 
 }

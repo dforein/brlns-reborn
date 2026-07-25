@@ -132,11 +132,11 @@ public abstract class Lobby {
     }
 
     public void onConfigReload() {
-        this.spawnPos = YamlUtil.parsePositionCentered(config.getString(configPath() + "spawn"), this.level);
+        this.spawnPos = YamlUtil.parsePositionCentered(config.getString(configPath() + "spawn-pos"), this.level);
     }
 
-    protected void reloadNpcConfigData(NPCEntity npc, String configPath, boolean subtitle) {
-        reloadNpcConfigData(npc, configPath, this.config, subtitle);
+    protected void reloadNpcConfigData(NPCEntity npc, String configPath, boolean fixedSubtitle) {
+        reloadNpcConfigData(npc, configPath, this.config, fixedSubtitle);
     }
 
     protected void reloadNpcConfigData(NPCEntity npc, String configPath, Config customConfig, boolean fixedSubtitle) {

@@ -19,9 +19,9 @@ public class GamesMenu extends MenuAbstract {
 
         Config globalConfig = Configs.getGlobalConfig();
 
-        SimpleForm menu = new SimpleForm(YamlUtil.getStr("items.games.name", globalConfig));
+        SimpleForm menu = new SimpleForm(YamlUtil.getStr("lobby.items.games.name", globalConfig));
 
-        menu.addButton(YamlUtil.getStr("items.games.hub-button-text", globalConfig));
+        menu.addButton(YamlUtil.getStr("lobby.items.games.hub-button-text", globalConfig));
 
         for (Minigame mg : MinigameManager.getMinigames()) {
             menu.addButton(

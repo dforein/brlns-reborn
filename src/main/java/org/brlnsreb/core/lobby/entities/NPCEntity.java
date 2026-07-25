@@ -1,7 +1,9 @@
 package org.brlnsreb.core.lobby.entities;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
 import javax.imageio.ImageIO;
@@ -28,6 +30,7 @@ import org.powernukkitx.nbt.tag.CompoundTag;
 public class NPCEntity extends EntityHuman implements CustomEntity {
 
     public static final String IDENTIFIER = "brlnsreb:npc";
+    private static final String GEOMETRY_HUMANOID_JSON = loadHumanoidGeometryJson();
 
     private static final double LOOK_DISTANCE = 10;
     private static final double DISTANCE_SQ_THRES = LOOK_DISTANCE * LOOK_DISTANCE;
@@ -187,7 +190,7 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
             org.cloudburstmc.protocol.bedrock.data.skin.Skin skin = org.cloudburstmc.protocol.bedrock.data.skin.Skin.builder()
                 .skinId(skinFilePath)
                 .skinData(skinData)
-                .skinResourcePatch("{\"geometry\":{\"default\":\"geometry.humanoid.custom\"}}")
+                .skinResourcePatch(GEOMETRY_CUSTOM)
                 .geometryName("geometry.humanoid.custom")
                 .capeData(ImageData.EMPTY)
                 .premium(false)
@@ -199,7 +202,7 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
                 .fullSkinId(skinFilePath + "_")
                 .armSize("wide")
                 .skinColor("#0")
-                .geometryData("")
+                .geometryData(GEOMETRY_HUMANOID_JSON)
                 .animationData("")
                 .geometryDataEngineVersion("")
                 .build();
@@ -209,6 +212,16 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    private static String loadHumanoidGeometryJson() {
+        try (InputStream in = EntityHuman.class.getClassLoader()
+                .getResourceAsStream("gamedata/skin_geometry.json")) {
+            if (in == null) return "";
+            return new String(in.readAllBytes(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            return "";
         }
     }
 

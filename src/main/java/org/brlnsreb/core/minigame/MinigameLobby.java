@@ -32,7 +32,7 @@ public abstract class MinigameLobby extends Lobby {
         );
 
         this.backToHubNpc = spawnNpc(
-            configPath() + "npc.back-to-hub",
+            configPath() + "npc.back-to-hub.",
             player -> MainHub.instance.onJoin(player),
             false
         );
