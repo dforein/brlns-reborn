@@ -22,7 +22,6 @@ import org.powernukkitx.entity.custom.CustomEntityDefinition;
 import org.powernukkitx.entity.data.human.Skin;
 import org.powernukkitx.event.entity.EntityDamageByEntityEvent;
 import org.powernukkitx.event.entity.EntityDamageEvent;
-import org.powernukkitx.item.Item;
 import org.powernukkitx.level.Position;
 import org.powernukkitx.level.format.IChunk;
 import org.powernukkitx.nbt.tag.CompoundTag;
@@ -165,13 +164,8 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
         return false;
     }
 
-    @Override
-    public boolean onInteract(Player player, Item item) {
-        if (task == null) return true;
-
-        task.accept((CustomPlayer) player);
-        //Server.getInstance().getLogger().info("NPC: interact");
-        return true;
+    public void executeTask(CustomPlayer player) {
+        task.accept(player);
     }
 
     public void setSkin(String skinFilePath) {
@@ -227,6 +221,7 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
 
     public void setDefaultPose(double yaw) {
         this.defaultYaw = yaw;
+        this.yaw = yaw;
     }
 
     public void setDefaultPose(double yaw, double pitch) {

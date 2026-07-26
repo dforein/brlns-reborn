@@ -3,6 +3,7 @@ package org.brlnsreb.utils;
 import java.util.HashMap;
 
 import org.powernukkitx.level.Level;
+import org.powernukkitx.level.Location;
 import org.powernukkitx.level.Position;
 import org.powernukkitx.math.Vector3;
 import org.powernukkitx.utils.Config;
@@ -27,6 +28,26 @@ public class YamlUtil {
         str = TextFormat.colorize(config.getString(path));
         if (str != null) cache.put(config.hashCode() + path, str);
         return str;
+    }
+
+    public static Location parseLocation(String rawCoords, Level level, int yaw) {
+        return new Location(
+            parseCoordinate(rawCoords, X),
+            parseCoordinate(rawCoords, Y),
+            parseCoordinate(rawCoords, Z),
+            yaw, 0.0F, 0.0F,
+            level
+        );
+    }
+
+    public static Location parseLocationCentered(String rawCoords, Level level, int yaw) {
+        return new Location(
+            parseCoordinate(rawCoords, X) + 0.5,
+            parseCoordinate(rawCoords, Y),
+            parseCoordinate(rawCoords, Z) + 0.5,
+            yaw, 0.0F, 0.0F,
+            level
+        );
     }
 
     public static Position parsePosition(String rawCoords, Level level) {

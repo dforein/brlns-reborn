@@ -46,6 +46,7 @@ import org.powernukkitx.event.player.PlayerItemHeldEvent;
 import org.powernukkitx.item.Item;
 import org.powernukkitx.item.ItemGoldIngot;
 import org.powernukkitx.item.ItemGoldenHoe;
+import org.powernukkitx.level.Location;
 import org.powernukkitx.level.Position;
 import org.powernukkitx.level.Sound;
 import org.powernukkitx.scheduler.Task;
@@ -117,7 +118,7 @@ public class MMGame extends GameExpand {
 
     //join-leave logic
 
-    protected Position onJoinPosition(CustomPlayer player) {
+    protected Location onJoinLocation(CustomPlayer player) {
         return map.getRandomSpawn();
     }
 
@@ -311,7 +312,7 @@ public class MMGame extends GameExpand {
         return true;
     }
 
-    public void afterDeath(DamageCause cause, Position deathPos, CustomPlayer victim, CustomPlayer killer) {
+    public void afterDeath(DamageCause cause, Location deathLoc, CustomPlayer victim, CustomPlayer killer) {
         MMPlayerGameData gameData = gameDataMap.get(killer);
 
         if (killer == murderer) {
@@ -333,8 +334,8 @@ public class MMGame extends GameExpand {
             }
         }
 
-        death.onDeath(victim, deathPos);
-        roleCheckOnLeave(victim, deathPos);
+        death.onDeath(victim, deathLoc);
+        roleCheckOnLeave(victim, deathLoc);
         checkWinConditions();
     }
 

@@ -206,8 +206,7 @@ public class AccountsManager {
 
             return Outcome.OK;
         } catch (SQLException e) {
-            e.printStackTrace();
-            return Outcome.DB_ERROR;
+            return PlayerDataManager.onDBError(e);
         }
     }
 
@@ -258,8 +257,7 @@ public class AccountsManager {
 
             return Outcome.OK;
         } catch (SQLException e) {
-            e.printStackTrace();
-            return Outcome.DB_ERROR;
+            return PlayerDataManager.onDBError(e);
         }
     }
 

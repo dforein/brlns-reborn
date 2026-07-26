@@ -4,6 +4,7 @@ import org.powernukkitx.Player;
 import org.powernukkitx.Server;
 import org.powernukkitx.level.Level;
 import org.powernukkitx.plugin.PluginBase;
+import org.powernukkitx.plugin.PluginLogger;
 import org.powernukkitx.plugin.annotation.PluginMeta;
 import org.powernukkitx.registry.RegisterException;
 import org.powernukkitx.registry.Registries;
@@ -24,7 +25,7 @@ import org.brlnsreb.minigames.mm.match.game.entities.ThrownSwordEntity;
 
 @PluginMeta(
     name = "brlnsreb",
-    version = "${version}",
+    version = "2.0.0",
     api = {"3.0.0"},
     authors = {"brlnsreb"},
     description = "BrokenLens Reborn plugin"
@@ -33,6 +34,7 @@ import org.brlnsreb.minigames.mm.match.game.entities.ThrownSwordEntity;
 public class BrlnsReb extends PluginBase {
     
     public static BrlnsReb instance;
+    public static PluginLogger logger;
     private static boolean underMaintenance;
     private static Server server;
 
@@ -53,9 +55,9 @@ public class BrlnsReb extends PluginBase {
     
     @Override
     public void onLoad() {
-
         instance = this;
-        this.getLogger().info(TextFormat.WHITE + "BrokenLens Reborn server loading...");
+        logger = getLogger();
+        logger.info(TextFormat.WHITE + "BrokenLens Reborn server loading...");
 
         try {
             Registries.ENTITY.registerCustomEntity(this, DeadBodyEntity.class);
@@ -64,10 +66,9 @@ public class BrlnsReb extends PluginBase {
             Registries.ENTITY.rebuildTag();
             
         } catch (RegisterException e) {
-            getLogger().error("Error during entities registration: " + e.getMessage());
+            logger.error("Error during entities registration: " + e.getMessage());
             throw new RuntimeException(e);
         }
-        
     }
     
     @Override
@@ -107,7 +108,7 @@ public class BrlnsReb extends PluginBase {
             if (!p.isOnline()) continue;
             PlayerDataManager.savePlayerDataSync(p.getUniqueId());
             p.save();
-            p.kick("Server is shutting down");
+            p.kick("Server is shutting down: autokicking all players.");
         }
     }
     
@@ -136,7 +137,7 @@ public class BrlnsReb extends PluginBase {
         this.mainHub = new MainHub();
 
         server.setDefaultLevel(mainHub.getLevel());
-        server.getDefaultLevel().setSpawnLocation(mainHub.getSpawnPos());
+        server.getDefaultLevel().setSpawnLocation(mainHub.getSpawnLoc());
 
         server.getDefaultLevel().save();
     }

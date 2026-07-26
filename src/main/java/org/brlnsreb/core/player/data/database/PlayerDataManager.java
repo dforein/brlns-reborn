@@ -21,9 +21,6 @@ public class PlayerDataManager {
     }
 
     public static CompletableFuture<Outcome> onServerJoin(CustomPlayer player) {
-        if (!DatabaseManager.isEnabled()) return CompletableFuture.completedFuture(Outcome.DB_ERROR);
-        player.canRunAsync();
-
         UUID playerId = player.getUniqueId();
 
         //put empty PlayerData shell in the player
@@ -31,6 +28,9 @@ public class PlayerDataManager {
         dataMap.put(playerId, data);
         player.data = data;
 
+        if (!DatabaseManager.isEnabled()) return CompletableFuture.completedFuture(Outcome.DB_ERROR);
+        
+        player.canRunAsync();
         return CompletableFuture.supplyAsync(() -> {
             try {
                 //check whether the player's uuid is already linked to an account
@@ -197,6 +197,17 @@ public class PlayerDataManager {
 
     public static UUID getPlayerId(String name) {
         return nameIdMap.get(name.toLowerCase());
+    }
+
+
+    public static Outcome onDBError(SQLException e) {
+        if (DatabaseManager.isEnabled()) e.printStackTrace();
+        return Outcome.DB_ERROR;
+    }
+
+    public static Outcome onDBError(Throwable e) {
+        if (DatabaseManager.isEnabled()) e.printStackTrace();
+        return Outcome.DB_ERROR;
     }
 
 }

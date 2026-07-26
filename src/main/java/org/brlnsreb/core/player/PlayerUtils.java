@@ -17,10 +17,9 @@ import org.powernukkitx.Player;
 import org.powernukkitx.Server;
 import org.powernukkitx.entity.effect.Effect;
 import org.powernukkitx.entity.effect.EffectType;
-import org.powernukkitx.event.player.PlayerTeleportEvent.TeleportCause;
 import org.powernukkitx.item.Item;
 import org.powernukkitx.level.Level;
-import org.powernukkitx.level.Position;
+import org.powernukkitx.level.Location;
 import org.powernukkitx.math.Vector3;
 import org.powernukkitx.scoreboard.data.DisplaySlot;
 import org.powernukkitx.utils.DummyBossBar;
@@ -29,7 +28,7 @@ public class PlayerUtils {
 
     //change world
 
-    public static void changeWorld(CustomPlayer p, Position pos, boolean lobby) {
+    public static void changeWorld(CustomPlayer p, Location loc, boolean lobby) {
         BrlnsReb plugin = BrlnsReb.instance;
 
         try {
@@ -40,8 +39,8 @@ public class PlayerUtils {
             p.setViewDistance(2);
             p.despawnFromAll();
 
-            if (lobby) lobbyTeleport(p, pos);
-            else p.teleport(pos);
+            if (lobby) lobbyTeleport(p, loc);
+            else p.teleport(loc);
 
             plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
                 p.spawnToAll(); 
@@ -60,29 +59,29 @@ public class PlayerUtils {
     //lobby-specific
 
     public static void playerSpawnTeleport(CustomPlayer p) {
-        p.teleport(MainHub.instance.getSpawnPos().add(0.0, 1.0, 0.0), TeleportCause.PLAYER_SPAWN);
+        p.teleport(MainHub.instance.getSpawnLoc().add(0.0, 1.0, 0.0));
         p.setMotion(new Vector3(0.0, 0.42, 0.0));
     }
 
-    public static void lobbyTeleport(CustomPlayer p, Position pos) {
-        p.teleport(pos.add(0.0, 1.0, 0.0));
+    public static void lobbyTeleport(CustomPlayer p, Location loc) {
+        p.teleport(loc.add(0.0, 1.0, 0.0));
         p.setMotion(new Vector3(0.0, 0.42, 0.0));
     }
 
-    public static void setLobbyState(CustomPlayer p, PlayerStateType newState) {
+    public static void setLobbyState(CustomPlayer p, PlayerStateType oldState, PlayerStateType newState) {
         if (!p.isOnline()) return;
 
+        p.state = newState;
         resetUiAndInventories(p);
 
-        PlayerStateType oldState = p.state; 
-        p.state = newState;
-
-        switch (oldState) {
-            case LOBBY, WAITING_LOBBY, END_LOBBY:
-                p.setPresetNameTag();
-                return;                     //already coming from a lobby, no need to execute the following code
-            default:
-                break;
+        if (oldState != null) {
+            switch (oldState) {
+                case LOBBY, WAITING_LOBBY, END_LOBBY:
+                    p.setPresetNameTag();
+                    return;                     //already coming from a lobby, no need to execute the following code
+                
+                default: break;
+            }
         }
         
         p.updatePresetNameTags();
@@ -113,8 +112,9 @@ public class PlayerUtils {
         p.removeAllEffects();
 
         p.setHealthCurrent(p.getHealthMax());
-        p.getFoodData().setEnabled(false);
+        p.getFoodData().setEnabled(true);
         p.getFoodData().setFood(food);
+        p.getFoodData().setEnabled(false);
     }
 
 

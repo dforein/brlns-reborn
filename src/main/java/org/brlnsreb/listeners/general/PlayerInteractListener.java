@@ -21,6 +21,7 @@ import org.powernukkitx.event.player.PlayerBucketFillEvent;
 import org.powernukkitx.event.player.PlayerInteractEntityEvent;
 import org.powernukkitx.plugin.annotation.EventListener;
 
+import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.CustomPlayer.InteractMode;
@@ -28,6 +29,18 @@ import org.brlnsreb.mainhub.items.MainLobbyItemManager;
 
 @EventListener
 public class PlayerInteractListener implements Listener {
+
+    @EventHandler
+    public void onEntityInteract(PlayerInteractEntityEvent event) {
+        if (event.getEntity() instanceof NPCEntity) {
+            CustomPlayer player = (CustomPlayer) event.getPlayer();
+            if (player.state == PlayerStateType.LOBBY || player.state == PlayerStateType.WAITING_LOBBY) {
+                if (!event.getItem().getName().equals(Item.AIR.getName())) return;
+            }
+
+            ((NPCEntity) event.getEntity()).executeTask(player);
+        }
+    }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {

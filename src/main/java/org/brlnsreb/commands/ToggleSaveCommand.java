@@ -1,7 +1,7 @@
 package org.brlnsreb.commands;
 
 import org.brlnsreb.BrlnsReb;
-
+import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandSender;
 import org.powernukkitx.plugin.annotation.CommandDefinition;
 import org.powernukkitx.plugin.annotation.CommandDefinition.CommandMode;
@@ -14,7 +14,7 @@ import org.powernukkitx.utils.TextFormat;
     commandMode = CommandMode.RAW
 )
 
-public class ToggleSaveCommand extends org.powernukkitx.command.Command {
+public class ToggleSaveCommand extends Command {
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {

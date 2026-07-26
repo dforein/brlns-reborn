@@ -51,15 +51,6 @@ dependencies {
     implementation 'org.mindrot:jbcrypt:0.4'
 }
 
-def appVersion = project.version
-processResources {
-    filesMatching('plugin.yml') {
-        expand([
-            'version': appVersion
-        ])
-    }
-}
-
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }

@@ -18,6 +18,7 @@ import org.brlnsreb.utils.YamlUtil;
 import org.powernukkitx.Player;
 import org.powernukkitx.entity.Entity;
 import org.powernukkitx.level.Level;
+import org.powernukkitx.level.Location;
 import org.powernukkitx.level.Position;
 import org.powernukkitx.utils.Config;
 
@@ -27,7 +28,7 @@ public abstract class Lobby {
     protected final Match match;
 
     protected final Level level;
-    protected Position spawnPos;
+    protected Location spawnLoc;
 
     protected Config config;
     protected Config messages;
@@ -41,8 +42,12 @@ public abstract class Lobby {
         this.messages = getMessages();
 
         String levelPath = configPath() + "world";
-        this.level = WorldManager.loadLobbyLevel(config.getString(levelPath));
-        this.spawnPos = YamlUtil.parsePositionCentered(config.getString(configPath() + "spawn-pos"), this.level);
+        this.level = WorldManager.loadLobbyLevel(config.getString(levelPath), match != null);
+        this.spawnLoc = YamlUtil.parseLocationCentered(
+            config.getString(configPath() + "spawn-pos"), 
+            this.level,
+            config.getInt(configPath() + "spawn-yaw")
+        );
     }
 
     public Lobby(Minigame minigame) {
@@ -58,13 +63,13 @@ public abstract class Lobby {
     }
 
     public boolean onJoin(CustomPlayer player) {
-        PlayerUtils.changeWorld(player, spawnPos, true);
+        PlayerUtils.changeWorld(player, spawnLoc, true);
 
         onJoinMessages(player);
 
         player.setLobby(this);
         player.minigameCurrent = minigame;
-        PlayerUtils.setLobbyState(player, onJoinState());
+        PlayerUtils.setLobbyState(player, player.state, onJoinState());
 
         onJoinBossBar(player);
         onJoinItems(player);
@@ -80,7 +85,7 @@ public abstract class Lobby {
     protected abstract void onJoinItems(CustomPlayer player);
     
     public void teleportToSpawn(CustomPlayer player) {
-        PlayerUtils.lobbyTeleport(player, spawnPos);
+        PlayerUtils.lobbyTeleport(player, spawnLoc);
     }
 
     protected void createHologram(Position pos, String text) {
@@ -132,7 +137,11 @@ public abstract class Lobby {
     }
 
     public void onConfigReload() {
-        this.spawnPos = YamlUtil.parsePositionCentered(config.getString(configPath() + "spawn-pos"), this.level);
+        this.spawnLoc = YamlUtil.parseLocationCentered(
+            config.getString(configPath() + "spawn-pos"), 
+            this.level,
+            config.getInt(configPath() + "spawn-yaw")
+        );
     }
 
     protected void reloadNpcConfigData(NPCEntity npc, String configPath, boolean fixedSubtitle) {
@@ -151,7 +160,7 @@ public abstract class Lobby {
     }
 
     public Level getLevel() { return this.level; }
-    public Position getSpawnPos() { return this.spawnPos; }
+    public Location getSpawnLoc() { return this.spawnLoc; }
     public abstract Config getConfig();
     public abstract Config getMessages();
     public abstract String requireConfigPath();

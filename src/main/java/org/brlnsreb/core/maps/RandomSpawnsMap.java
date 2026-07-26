@@ -7,6 +7,7 @@ import java.util.List;
 import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.voting.TimeOfDay;
 import org.brlnsreb.utils.voting.Weather;
+import org.powernukkitx.level.Location;
 import org.powernukkitx.level.Position;
 import org.powernukkitx.utils.Config;
 
@@ -29,10 +30,10 @@ public class RandomSpawnsMap extends MapLevel {
         Collections.shuffle(spawns);
     }
 
-    public Position getRandomSpawn() {
+    public Location getRandomSpawn() {
         if (spawns.isEmpty()) return null;
         if (spawnIndex >= spawns.size()) spawnIndex = 0;
-        return spawns.get(spawnIndex++);
+        return spawns.get(spawnIndex++).getLocation();
     }
 
     public List<Position> getSpawns() { return spawns; }

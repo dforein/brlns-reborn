@@ -45,9 +45,8 @@ public abstract class Minigame {
     public void onConfigReload() {
         lobby.onConfigReload();
 
-        for (Match match : pendingMatches) {
-            match.forceStop();
-        }
+        for (Match match : pendingMatches) match.forceStop();
+        pendingMatches.clear();
 
         createNewPendingMatch();
     }
@@ -99,7 +98,9 @@ public abstract class Minigame {
     }
 
     public boolean onReplacePendingMatch(Match match) {
-        if (!pendingMatches.contains(match)) return false;
+        if (getMainPendingMatch() != match) {
+            return pendingMatches.remove(match);
+        }
 
         if (!pendingMatches.isEmpty()
             && pendingMatches.element().getPlayers().size() < getMaxPlayers()) {

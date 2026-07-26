@@ -34,7 +34,7 @@ import org.powernukkitx.event.player.PlayerCommandPreprocessEvent;
 import org.powernukkitx.event.player.PlayerDropItemEvent;
 import org.powernukkitx.event.player.PlayerItemHeldEvent;
 import org.powernukkitx.item.Item;
-import org.powernukkitx.level.Position;
+import org.powernukkitx.level.Location;
 import org.powernukkitx.scheduler.ServerScheduler;
 import org.powernukkitx.utils.Config;
 import org.powernukkitx.utils.TextFormat;
@@ -77,14 +77,14 @@ public abstract class Game {
     //join-leave logic
 
     public void onJoin(CustomPlayer player) {
-        Position spawnPos = onJoinPosition(player);
-        if (spawnPos == null) {
+        Location spawnLoc = onJoinLocation(player);
+        if (spawnLoc == null) {
             player.sendMessage(ChatMsgs.ERROR_PFX + "Something went wrong with the match start, joining lobby...");  //TEXT
             match.onLeave(player);
             return;
         }
 
-        PlayerUtils.changeWorld(player, spawnPos, false);
+        PlayerUtils.changeWorld(player, spawnLoc, false);
         player.removeAllEffects();
 
         player.state = PlayerStateType.PLAYING;
@@ -93,13 +93,13 @@ public abstract class Game {
         setPregameNameTag(player);
     }
 
-    protected abstract Position onJoinPosition(CustomPlayer player);
+    protected abstract Location onJoinLocation(CustomPlayer player);
     protected abstract void prepareGameData(CustomPlayer player);
     protected abstract void onJoinPreparePlayer(CustomPlayer player);
     protected abstract void setPregameNameTag(CustomPlayer player);       //name tag + chat name tag
 
     public void onJoinAsSpectator(CustomPlayer player) {
-        PlayerUtils.changeWorld(player, onJoinPosition(player), false);
+        PlayerUtils.changeWorld(player, onJoinLocation(player), false);
 
         if (player.state == PlayerStateType.PLAYING) {      //reset everything
             PlayerUtils.resetUiAndInventories(player);

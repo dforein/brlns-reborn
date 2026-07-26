@@ -44,6 +44,7 @@ match:
   death-lobby:
     world: _deathlobby
     spawn-pos: 71 10 -146
+    spawn-yaw: 0
     npc:
       play-again:
         pos: 74 11 -148

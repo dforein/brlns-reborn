@@ -67,12 +67,18 @@ auth:
       title: Error during registration
       content: |-
         The server is having some trouble with the database, we will investigate the bug.
-        If you can, report this bug to staff members: AuthMenu::HandleResponse, database error.
+
+        If you can, 
+        report this bug to staff members: 
+        "Auth HandleResponse, database error".
     error:
       title: Error during registration
       content: |-
         Something wrong happened, we will investigate the bug.
-        If you can, report this bug to staff members: AuthMenu::HandleResponse, invalid switch.
+
+        If you can, 
+        report this bug to staff members: 
+        "Auth HandleResponse, invalid switch".
   login-outcome:
     ok: 
       title: 
@@ -97,9 +103,14 @@ auth:
       title: Error during login
       content: |-
         The server is having some trouble with the database, we will investigate the bug.
-        If you can, report this bug to staff members: "AuthMenu::HandleResponse, database error".
+
+        If you can, report this bug to staff members: 
+        "Auth HandleResponse, database error".
     error:
       title: Error during login
       content: |-
         Something wrong happened, we will investigate the bug.
-        If you can, report this bug to staff members: "AuthMenu::HandleResponse, invalid switch".
+
+        If you can, 
+        report this bug to staff members: 
+        "Auth HandleResponse, invalid switch".

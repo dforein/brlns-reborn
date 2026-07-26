@@ -30,7 +30,7 @@ import org.powernukkitx.entity.Entity;
 import org.powernukkitx.event.entity.EntityDamageByEntityEvent;
 import org.powernukkitx.event.entity.EntityDamageEvent;
 import org.powernukkitx.event.entity.EntityDamageEvent.DamageCause;
-import org.powernukkitx.level.Position;
+import org.powernukkitx.level.Location;
 import org.powernukkitx.math.BlockFace;
 import org.powernukkitx.math.Vector3;
 import org.powernukkitx.nbt.tag.CompoundTag;
@@ -96,9 +96,6 @@ public class CustomPlayer extends Player {
         PlayerUtils.updateOnlinePlayer(this, true);     //remove the name for players who aren't in the same level (main hub)
         PlayerUtils.cleanPlayerList(this);
 
-        if (this.data == null) this.data = new PlayerData();
-        this.updatePresetNameTags();
-        this.updateExp();
         if (this.data.isLogged()) this.setDisplayName(this.data.name);
         MainHub.instance.onServerJoin(this);
     }
@@ -326,7 +323,12 @@ public class CustomPlayer extends Player {
     @SuppressWarnings("deprecation")
     @Override
     public void saveNBT() {
-        Position spawn = Server.getInstance().getDefaultLevel().getSpawnLocation();
+        Location spawn = MainHub.instance.getSpawnLoc();
+        if (spawn == null) {
+            BrlnsReb.instance.getLogger().error("MainHub spawn is null! Proceeding to save player's NBT according to PNX...");
+            super.saveNBT();
+            return;
+        }
 
         this.nbt.putList("Pos", new ListTag<DoubleTag>()
                 .add(new DoubleTag(spawn.x))
@@ -340,9 +342,9 @@ public class CustomPlayer extends Player {
                 .add(new DoubleTag(0.0))
         );
 
-        this.nbt.putList("Rotation", new ListTag<FloatTag>()        //TODO: mainhub pitch yaw
-            .add(new FloatTag(0f))
-            .add(new FloatTag(0f))
+        this.nbt.putList("Rotation", new ListTag<FloatTag>()
+            .add(new FloatTag(spawn.yaw))
+            .add(new FloatTag(0.0F))
         );
 
         this.nbt.remove("FallDistance");

@@ -9,18 +9,19 @@ settings:
 lobby:
   world: mm__lobby
   spawn-pos: 5 27 13
+  spawn-yaw: 225
   npc:
     join:
       pos: 8 28 10
       text1: '&l&cQuickPlay'
       text2: '&dJoin: &a%s%d &e%d&7/&e%d'
-      default-yaw: 0
+      default-yaw: 45
       skin-file: global/skins/minigame-lobby-join.png
     back-to-hub:
       pos: -8 28 10
       text1: '&l&6Back To Hub'
       text2: '&d%d &eplaying'
-      default-yaw: 0
+      default-yaw: -45
       skin-file: global/skins/minigame-lobby-back-to-hub.png
 
 game:
@@ -64,6 +65,7 @@ game:
 waiting-lobby:
   world: mm__waitinglobby
   spawn-pos: 2431 32 2430
+  spawn-yaw: 0
   npc:
     leave:
       pos: 2433 32 2436

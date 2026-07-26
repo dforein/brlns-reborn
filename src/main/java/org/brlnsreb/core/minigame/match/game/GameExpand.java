@@ -5,7 +5,7 @@ import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.voting.TimeOfDay;
 import org.brlnsreb.utils.voting.Weather;
 import org.powernukkitx.event.entity.EntityDamageEvent.DamageCause;
-import org.powernukkitx.level.Position;
+import org.powernukkitx.level.Location;
 
 public abstract class GameExpand extends Game {
 
@@ -17,7 +17,7 @@ public abstract class GameExpand extends Game {
     }
 
     public abstract boolean onDeath(DamageCause cause, CustomPlayer victim, CustomPlayer killer);   //return true = tp to end lobby
-    public abstract void afterDeath(DamageCause cause, Position deathPos, CustomPlayer victim, CustomPlayer killer);
+    public abstract void afterDeath(DamageCause cause, Location deathLoc, CustomPlayer victim, CustomPlayer killer);
 
     public MatchExpand getMatch() { return (MatchExpand) match; }
     

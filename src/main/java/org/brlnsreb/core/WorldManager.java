@@ -8,11 +8,11 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashSet;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.brlnsreb.core.player.CustomPlayer;
-import org.brlnsreb.utils.YamlUtil;
 
 import org.powernukkitx.Server;
 import org.powernukkitx.level.GameRule;
@@ -24,40 +24,45 @@ public class WorldManager {
 
     private static Server server;
     private static HashSet<Integer> enabledPhysicsLevels = new HashSet<>();
+    private static final java.util.Set<String> reservedFolderNames = ConcurrentHashMap.newKeySet();
 
     public static void init() {
         server = Server.getInstance();
     }
 
-    public static Level loadLobbyLevel(String levelName) {
-        return loadLevel(levelName, true, null, null);
+    public static Level loadLobbyLevel(String levelName, boolean copyWorld) {
+        return loadLevel(levelName, true, copyWorld, null);
     }
 
-    public static Level loadLevel(String levelName, Config config, String configPath) {
-        return loadLevel(levelName, false, config, configPath);
+    public static Level loadLevel(String levelName, Config config) {
+        return loadLevel(levelName, false, true, config);
     }
 
-    private static Level loadLevel(String levelName, boolean isLobby, Config config, String configPath) {
+    private static Level loadLevel(String levelName, boolean isLobby, boolean copyWorld, Config config) {
         HashSet<String> availableLevels = getAllLevelNames();
         if (!availableLevels.contains(levelName)) return null;
 
         String folderName = levelName;
         
-        if (!isLobby) {
-            configPath = YamlUtil.checkConfigPath(configPath);
-
+        if (copyWorld) {
             //get lowest X number in "levelNameX" available for the level to load
             int count = 1;
-            while (server.getLevelByName(folderName) != null) {
-                count++;
-                folderName = levelName + count;
+            synchronized (reservedFolderNames) {
+                while (reservedFolderNames.contains(folderName) || server.getLevelByName(folderName) != null) {
+                    count++;
+                    folderName = levelName + count;
+                }
+                reservedFolderNames.add(folderName);
             }
 
             //check if folder of levelNameX exists, else create it
-            String worldPath = server.getDataPath() + "/worlds/";
-            Path levelFolder = Path.of(worldPath + folderName);
+            String worldsPath = server.getDataPath() + "/worlds/";
+            Path levelFolder = Path.of(worldsPath + folderName);
             if (!Files.exists(levelFolder)) {
-                if (!copyWorld(Path.of(worldPath + levelName), levelFolder)) return null;
+                if (!copyWorld(Path.of(worldsPath + levelName), levelFolder)) {
+                    reservedFolderNames.remove(folderName);
+                    return null;
+                }
                 availableLevels.add(folderName);
             }
         }
@@ -77,7 +82,12 @@ public class WorldManager {
     }
 
     public static void unloadLevel(Level level) {
-        server.getScheduler().scheduleDelayedTask(() -> server.unloadLevel(level, true), 20);
+        String folderName = level.getName();
+
+        server.getScheduler().scheduleDelayedTask(() -> {
+            server.unloadLevel(level, true);
+            reservedFolderNames.remove(folderName);
+        }, 20);
 
         CustomPlayer.removeLevel(level.getId());
         enabledPhysicsLevels.remove(level.getId());
@@ -107,7 +117,7 @@ public class WorldManager {
 
         for (GameRule rule : particulars) {
             gameRules.setGameRule(rule, 
-                isLobby? false : config.getBoolean("settings.gamerules." + rule.getName(), false)   //default: false
+                isLobby? false : config.getBoolean("settings.gamerules." + rule.getName(), false)  //default: false
             );
         }
 

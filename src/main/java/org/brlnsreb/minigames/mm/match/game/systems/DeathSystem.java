@@ -6,6 +6,7 @@ import org.powernukkitx.block.BlockRedstoneWire;
 import org.powernukkitx.entity.Entity;
 import org.powernukkitx.entity.item.EntityItem;
 import org.powernukkitx.item.Item;
+import org.powernukkitx.level.Location;
 import org.powernukkitx.level.Position;
 import org.powernukkitx.level.format.IChunk;
 import org.powernukkitx.nbt.tag.CompoundTag;
@@ -63,21 +64,21 @@ public class DeathSystem {
         deadBodyHeadYaw = game.getConfig().getDouble("game.dead-body.head-yaw-offset");
     }
     
-    public void onDeath(CustomPlayer victim, Position deathPos) {
-        createBody(victim, deathPos);
-        dropRedstone(deathPos);
+    public void onDeath(CustomPlayer victim, Location deathLoc) {
+        createBody(victim, deathLoc);
+        dropRedstone(deathLoc);
     }
     
-    private void createBody(Player victim, Position pos) {
-        pos = pos.add(0, -0.4, 0);
+    private void createBody(Player victim, Location loc) {
+        loc = loc.add(0, -0.4, 0);
 
-        IChunk chunk = (IChunk) pos.getLevel().getChunk(pos.getFloorX() >> 4, pos.getFloorZ() >> 4);
+        IChunk chunk = (IChunk) loc.getLevel().getChunk(loc.getFloorX() >> 4, loc.getFloorZ() >> 4);
 
-        DeadBodyEntity body = new DeadBodyEntity(chunk, Entity.getDefaultNBT(pos));
+        DeadBodyEntity body = new DeadBodyEntity(chunk, Entity.getDefaultNBT(loc));
 
         body.setFallForward(ThreadLocalRandom.current().nextBoolean());
         body.setSkin(victim.getSkin());
-        body.setRotation(victim.getYaw(), deadBodyPitch, deadBodyHeadYaw);
+        body.setRotation(loc.getYaw(), deadBodyPitch, deadBodyHeadYaw);
 
         body.setDataFlag(ActorFlags.INVISIBLE, true);       //TODO: test whether cloudburst is affected by the old limitations or not
         body.spawnToAll();

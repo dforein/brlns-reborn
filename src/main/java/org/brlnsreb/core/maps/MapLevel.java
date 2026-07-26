@@ -1,7 +1,7 @@
 package org.brlnsreb.core.maps;
 
 import org.powernukkitx.level.Level;
-import org.powernukkitx.level.Position;
+import org.powernukkitx.level.Location;
 import org.powernukkitx.math.Vector3;
 import org.powernukkitx.utils.Config;
 
@@ -30,8 +30,7 @@ public abstract class MapLevel {
 
         this.level = WorldManager.loadLevel(
             YamlUtil.getStr(configPath + "world", config), 
-            config, 
-            configPath
+            config
         );
 
         this.time = TimeOfDay.setTime(level, time);
@@ -52,7 +51,7 @@ public abstract class MapLevel {
     }
     
     protected abstract void loadSpawns(Config config);
-    public abstract Position getRandomSpawn();
+    public abstract Location getRandomSpawn();
     
     public boolean isInMap(Vector3 pos) {
         return pos.x >= min.x && pos.x <= max.x &&

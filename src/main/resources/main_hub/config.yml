@@ -1,5 +1,6 @@
 world: _mainhub
 spawn-pos: 2431 39 2431
+spawn-yaw: 90
 npc:
   list:
   - mm
@@ -7,5 +8,5 @@ npc:
     pos: 2387 38 2431
     text1: '&l&aMurder&2Mystery'
     text2: '&d%d &eplaying'
-    default-yaw: 0
+    default-yaw: -90
     skin-file: main_hub/skins/mm.png

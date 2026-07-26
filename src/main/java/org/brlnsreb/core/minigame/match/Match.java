@@ -37,6 +37,8 @@ public abstract class Match {
     protected Config messages;
     protected final Messages msgUtil;
 
+    public boolean closed = false;
+
     public Match(MinigameType minigame, int matchNumber) {
         this(MinigameManager.getMinigame(minigame), matchNumber);
     }
@@ -134,6 +136,8 @@ public abstract class Match {
     }
 
     public void forceStop() {
+        if (closed) return;
+        
         msgUtil.broadcast(msgUtil.getStrPrefix(
             "force-stop", 
             Configs.getGlobalMessages()
@@ -158,15 +162,19 @@ public abstract class Match {
         }
 
         minigame.onMatchEnding(this);
+        closed = true;
     }
 
     public void onEnding() {
+        if (closed) return;
+
         for (CustomPlayer p : players) {
             p.updatePresetNameTags();
             minigame.onLobbyJoin(p);
         }
 
         minigame.onMatchEnding(this);
+        closed = true;
     }
 
 

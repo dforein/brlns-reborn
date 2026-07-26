@@ -56,7 +56,7 @@ public class MainHub extends Lobby {
 
         onServerJoinMessages(player);
 
-        PlayerUtils.setLobbyState(player, onJoinState());
+        PlayerUtils.setLobbyState(player, null, onJoinState());
 
         onJoinBossBar(player);
         onJoinItems(player);
