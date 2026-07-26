@@ -106,7 +106,7 @@ public class BrlnsReb extends PluginBase {
 
     @Override
     public void beforeStop() {
-        MinigameManager.forceStop(true);
+        MinigameManager.forceStop();
 
         for (Player p : server.getOnlinePlayers().values()) {
             if (!p.isOnline()) continue;

@@ -39,7 +39,7 @@ game:
       name: '&o&l&6Lights Out'
       blindness-duration: 20
     hoe:
-      name: §o§l§9Sheriff Hoe
+      name: '&o&l&9Sheriff Hoe'
       shoot-cooldown: 0.2
       friendly-fire-death: true
       raycast-max-distance: 100
@@ -79,9 +79,9 @@ waiting-lobby:
       author: '@Woona, @BlueWillow'
       content:
       - |-
-        &lHow to play §aMurder§2Mystery&r&l!
+        &lHow to play &aMurder&2Mystery&r&l!
 
-        Rules...
+        &r&8Rules...
         - No Hacking (Creative, Fly Hacks, Etc.)
         - No inappropriate language or Content
         - No Impersonating other players since We can't see your actual name during game. (EXAMPLE: "I'm Kylie, I suck")
@@ -89,31 +89,31 @@ waiting-lobby:
       - |-
         &lHow to play:
 
-        here are 3 types of players randomly chosen each round, one &cMurderer&r, one &9Sheriff&r, and the rest of the players are
-        &aCivilians/Innocents&r.
+        &r&8here are 3 types of players randomly chosen each round, one &cMurderer&r&8, one &9Sheriff&r&8, and the rest of the players are
+        &aCivilians/Innocents&r&8.
 
         Here are their objectives:
 
-        •&cMurderer&r: The Murderer's Objective is to kill every single player in the game with out getting killed by the &9Sheriff&r. Be on the look out for a player (&9Sheriff&r) with a golden hoe because that player can kill you.
+        •&cMurderer&r&8: The Murderer's Objective is to kill every single player in the game with out getting killed by the &9Sheriff&r&8. Be on the look out for a player (&9Sheriff&r&8) with a golden hoe because that player can kill you.
 
-        •&9Sheriff/Detective&r: The Sheriff's Objective is to Kill the &cMurderer&r using the Sheriff's gun (Golden Hoe) by pressing and holding the screen with the gun in your hand to shoot at the &cMurderer&r to try to save as many &aCivilian/innocent&r as possible. Note: If you Shoot at an Innocent and he/she isn't the Murderer, you're automatically Eliminated from the game and someone else (An Innocent) gets to be Sheriff.
+        •&9Sheriff/Detective&r&8: The Sheriff's Objective is to Kill the &cMurderer&r&8 using the Sheriff's gun (Golden Hoe) by pressing and holding the screen with the gun in your hand to shoot at the &cMurderer&r&8 to try to save as many &aCivilian/innocent&r&8 as possible. Note: If you Shoot at an Innocent and he/she isn't the Murderer, you're automatically Eliminated from the game and someone else (An Innocent) gets to be Sheriff.
 
-        •&aCivilians/Innocent&r: The Innocent's/Civilians Objective is to survive, collect 5 Gold ingots to buy the Sheriff's Gun (Golden Hoe) to become the new &9Sheriff&r when the game needs a new &9Sheriff&r Because the old &9Sheriff&r either got killed or left the game. Another objective is not to get killed for the whole game until the &cMurderer&r either gets killed, runs out of time (Doesn't Kill everyone In the time limit).
+        •&aCivilians/Innocent&r&8: The Innocent's/Civilians Objective is to survive, collect 5 Gold ingots to buy the Sheriff's Gun (Golden Hoe) to become the new &9Sheriff&r&8 when the game needs a new &9Sheriff&r&8 Because the old &9Sheriff&r&8 either got killed or left the game. Another objective is not to get killed for the whole game until the &cMurderer&r&8 either gets killed, runs out of time (Doesn't Kill everyone In the time limit).
       - |-
         &lHow To Craft Sheriffs gun?
-        &l(ONLY for &aInnocents/Civilians&r)
+        &l(ONLY for &aInnocents/Civilians&r&8)
 
         1.) Gather ATLEAST 5 gold ingots which spawn randomly around the map.
-        2.) Wait till &9Sheriff/Detective&r Dies or leaves so a Yellow Dye will spawn in your inventory.
+        2.) Wait till &9Sheriff/Detective&r&8 Dies or leaves so a Yellow Dye will spawn in your inventory.
         3.) Hold and Click Yellow Dye By having it in your hand. (NOTE: If it disappears and says someone else is the sheriff, that means they beat you to clicking it)
         4.) If you're Sheriff, Congrats! Now go kill that murderer and save those innocent players!
       - |-
         &lRoles and their Weapons!
 
-        &cMurderer&r: Iron Sword/Knife
+        &cMurderer&r&8: Iron Sword/Knife
         (One hit one kill) and can throw their sword.(Hold and Click the Sword in your hand to throw)
-        &9Sheriff/Detective&r: Golden Hoe/Sheriff's Gun (1-2 shot Kill)
-        &aCivilians/Innocent&r: N/A (NOTE: CIVILIANS AND SHERIFFS WORK TOGETHER)
+        &9Sheriff/Detective&r&8: Golden Hoe/Sheriff's Gun (1-2 shot Kill)
+        &aCivilians/Innocent&r&8: N/A (NOTE: CIVILIANS AND SHERIFFS WORK TOGETHER)
 
 map-settings:
   default-map: thegrandhotel

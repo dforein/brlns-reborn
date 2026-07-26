@@ -19,7 +19,10 @@ public abstract class MenuAbstract {
     protected static final Cooldown openingCooldown = Cooldown.seconds(0.5);
 
     protected static boolean checkCooldown(Player player) {
-        return openingCooldown.check(player.getUniqueId());
+        boolean check = openingCooldown.check(player.getUniqueId());
+        if (check) player.getInventory().setHeldItemIndex(0);
+        
+        return check;
     }
 
     protected static int sendForm(Player player, Form<?> form) {

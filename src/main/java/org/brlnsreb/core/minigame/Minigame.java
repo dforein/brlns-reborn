@@ -22,7 +22,7 @@ public abstract class Minigame {
     protected Config messages;
 
     protected final MinigameLobby lobby;
-    protected final HashSet<? extends Match> matches;
+    protected final HashSet<Match> matches;
     protected final BitSet busyMatchNumbers;
     protected Queue<Match> pendingMatches;
 
@@ -87,9 +87,14 @@ public abstract class Minigame {
                 return false;
         }
 
-        pendingMatches.add(createMatch(getNewMatchNumber()));
+        Match match = createMatch(getNewMatchNumber());
+        matches.add(match);
+        pendingMatches.add(match);
+
         if (pendingMatches.size() < 2) {
-            pendingMatches.add(createMatch(getNewMatchNumber()));
+            Match match2 = createMatch(getNewMatchNumber());
+            matches.add(match2);
+            pendingMatches.add(match2);
         }
 
         lobby.onReplaceMainPendingMatch();
@@ -148,7 +153,7 @@ public abstract class Minigame {
     public List<String> getAvailableMapIds() { return config.getStringList("map-settings.enabled-maps"); }
 
     public MinigameLobby getLobby() { return lobby; }
-    public HashSet<? extends Match> getMatches() { return matches; }
+    public HashSet<Match> getMatches() { return matches; }
     public Match getMainPendingMatch() { return pendingMatches.isEmpty() ? null : pendingMatches.element(); }
     public Config getConfig() { return config; }
     public Config getMessages() { return messages; }

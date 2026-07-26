@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.MinigameManager;
@@ -129,7 +130,13 @@ public abstract class Match {
     public void onGameStart() {
         minigame.onReplacePendingMatch(this);
 
-        game.onPregameStart();
+        try {
+            game.onPregameStart();
+        } catch (Exception e) {
+            BrlnsReb.logger.error("Failed to start game, forcing match stop: " + e.getMessage(), e);
+            this.forceStop();
+            return;
+        }
 
         waitingLobby.close();
         waitingLobby = null;

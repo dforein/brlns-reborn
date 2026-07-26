@@ -58,18 +58,23 @@ public abstract class WaitingLobby extends Lobby {
     public WaitingLobby(Match match) {
         super(match);
 
+        level.loadChunk(spawnLoc.getChunkX(), spawnLoc.getChunkZ());
+
         this.players = match.getPlayers();
 
         this.minPlayers = minigame.getMinPlayers();
         this.maxPlayers = minigame.getMaxPlayers();
 
         Config globalConfig = Configs.getGlobalConfig();
-        this.secondsCountdown = globalConfig.getInt("match.waiting-lobby.countdown-seconds");
-        this.secondsShortenedCountdown = globalConfig.getInt("match.waiting-lobby.shortened-countdown-seconds");
+        this.secondsCountdown = globalConfig.getInt("match.waiting-lobby.bossbar.countdown-seconds");
+        this.secondsShortenedCountdown = globalConfig.getInt("match.waiting-lobby.bossbar.shortened-countdown-seconds");
 
         spawnNpc(
             configPath() + "npc.leave.",
-            player -> match.onLeave(player)
+            player -> {
+                match.onLeave(player);
+                minigame.onLobbyJoin(player);
+            }
         );
 
         this.msgUtil = match.getMsgUtil();
@@ -162,7 +167,6 @@ public abstract class WaitingLobby extends Lobby {
     protected void checkPlayerNumber(int playerNumber) {
         if (playerNumber >= maxPlayers) {
             if (!countdownShortened) shortenCountdown(true);
-            minigame.onReplacePendingMatch(match);
             
         } else if (playerNumber >= minPlayers && !countdownShortened) {    //if the countdown is already shortened, it will stay shortened
             match.getState().current = GameStateType.LOBBY_COUNTDOWN;

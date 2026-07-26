@@ -13,7 +13,7 @@ import org.powernukkitx.utils.Config;
 
 public class RandomSpawnsMap extends MapLevel {
 
-    private final List<Position> spawns = new ArrayList<>();
+    private List<Position> spawns;
     private int spawnIndex = 0;
     
     public RandomSpawnsMap(Config config, String mapId, String mapsConfigPath, TimeOfDay time, Weather weather) {
@@ -21,6 +21,8 @@ public class RandomSpawnsMap extends MapLevel {
     }
 
     protected void loadSpawns(Config config) {
+        if (spawns == null) spawns = new ArrayList<>();
+
         for (String rawCoords : config.getStringList(configPath + "spawns")) {
             this.spawns.add(Position.fromObject(
                 YamlUtil.parseVector3Centered(rawCoords), 

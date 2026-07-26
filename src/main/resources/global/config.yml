@@ -16,8 +16,8 @@ lobby:
 match:
   waiting-lobby:
     bossbar:
-      max-countdown: 45
-      shortened-countdown: 10
+      countdown-seconds: 45
+      shortened-countdown-seconds: 10
       medium-threshold: 60
       short-threshold: 10
       text-long: '&l&eStarting in &6%dm %ds'

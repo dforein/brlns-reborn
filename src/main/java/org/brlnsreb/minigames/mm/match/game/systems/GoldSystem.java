@@ -76,8 +76,8 @@ public class GoldSystem {
         nbt.putBoolean("Mergeable", false);
         nbt.putShort("Health", 5);
         
-        int cx = pos.getFloorX() >> 4;
-        int cz = pos.getFloorZ() >> 4;
+        int cx = pos.getChunkX();
+        int cz = pos.getChunkZ();
         
         if (!pos.getLevel().isChunkLoaded(cx, cz)) {
             pos.getLevel().loadChunk(cx, cz);

@@ -43,6 +43,8 @@ public class PlayerUtils {
             if (lobby) lobbyTeleport(p, loc);
             else p.teleport(loc);
 
+            p.getInventory().setHeldItemIndex(0);
+
             plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
                 p.spawnToAll(); 
                 p.setViewDistance(viewDistance);
@@ -61,12 +63,12 @@ public class PlayerUtils {
 
     public static void playerSpawnTeleport(CustomPlayer p) {
         p.teleport(MainHub.instance.getSpawnLoc().add(0.0, 1.0, 0.0));
-        p.setMotion(new Vector3(0.0, 0.42, 0.0));
+        p.setMotion(new Vector3(0.0, 0.5, 0.0));
     }
 
     public static void lobbyTeleport(CustomPlayer p, Location loc) {
         p.teleport(loc.add(0.0, 1.0, 0.0));
-        p.setMotion(new Vector3(0.0, 0.42, 0.0));
+        p.setMotion(new Vector3(0.0, 0.5, 0.0));
     }
 
     public static void setLobbyState(CustomPlayer p, PlayerStateType oldState, PlayerStateType newState) {

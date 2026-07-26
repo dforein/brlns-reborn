@@ -15,15 +15,10 @@ public class MinigameManager {
         );
     }
 
-    public static void forceStop(boolean shutdown) {
+    public static void forceStop() {
         for (Minigame mg : minigames) {
             for (Match match : mg.getMatches()) {
-                if (shutdown){
-                    //no need to destroy the matches, the whole server will shutdown
-                    match.getGame().forceStop();
-                } else {
-                    match.forceStop();
-                }
+                match.forceStop();
             }
         }
     }
