@@ -114,12 +114,12 @@ public class PlayerUtils {
         p.setGamemode(gamemode);
         p.removeAllEffects();
         p.setHealthCurrent(p.getHealthMax());
-        setFood(p, 18);
-    }
 
-    public static void setFood(CustomPlayer p, int food) {
         p.getFoodData().setFood(food);
         p.getFoodData().setEnabled(false);
+    }
+
+    public static void sendFood(CustomPlayer p, int food) {
         Attribute attribute = p.getAttributes().computeIfAbsent(Attribute.FOOD, Attribute::getAttribute);
         attribute.setValue(food);
         p.syncAttribute(attribute);
