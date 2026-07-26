@@ -55,7 +55,7 @@ public abstract class MinigameLobby extends Lobby {
         MainHub.friendAlertsNotify(player, minigame, minigame.mgt.displayName);
     }
 
-    protected void onJoinBossBar(CustomPlayer player) {
+    protected void onJoinUi(CustomPlayer player) {
         bossBar.updateLobbyBossBar(player);
     }
 
@@ -64,16 +64,7 @@ public abstract class MinigameLobby extends Lobby {
     }
 
 
-    public void onMatchJoin() {
-        updateJoinNpcSubtitle();
-    }
-
-    public void onReplaceMainPendingMatch() {
-        updateJoinNpcSubtitle();
-    }
-
-
-    private void updateJoinNpcSubtitle() {
+    public void updateJoinNpcSubtitle() {
         Match mainPendingMatch = minigame.getMainPendingMatch();
 
         String subtitle = YamlUtil.getStr(configPath() + "npc.join.text2", config).formatted(

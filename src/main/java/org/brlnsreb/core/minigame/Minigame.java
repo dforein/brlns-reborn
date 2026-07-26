@@ -70,9 +70,13 @@ public abstract class Minigame {
         if (mainPendingMatch == null) return false;
 
         boolean result = mainPendingMatch.onJoin(player);
-        if (result) lobby.onMatchJoin();
+        if (result) lobby.updateJoinNpcSubtitle();
 
         return result;
+    }
+
+    public void onMatchLeave() {
+        lobby.updateJoinNpcSubtitle();
     }
 
 
@@ -97,7 +101,7 @@ public abstract class Minigame {
             pendingMatches.add(match2);
         }
 
-        lobby.onReplaceMainPendingMatch();
+        lobby.updateJoinNpcSubtitle();
 
         return true;
     }

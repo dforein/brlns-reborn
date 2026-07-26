@@ -58,8 +58,6 @@ public abstract class WaitingLobby extends Lobby {
     public WaitingLobby(Match match) {
         super(match);
 
-        level.loadChunk(spawnLoc.getChunkX(), spawnLoc.getChunkZ());
-
         this.players = match.getPlayers();
 
         this.minPlayers = minigame.getMinPlayers();
@@ -111,9 +109,6 @@ public abstract class WaitingLobby extends Lobby {
         players.add(player);
         super.onJoin(player);
 
-        bossBar.updateWaitingLobbyBossBar(player);
-        scoreboard.updateWaitingLobby(player);
-
         checkPlayerNumber(players.size());
 
         return true;
@@ -133,8 +128,9 @@ public abstract class WaitingLobby extends Lobby {
         );
     }
 
-    protected void onJoinBossBar(CustomPlayer player) {
+    protected void onJoinUi(CustomPlayer player) {
         bossBar.updateWaitingLobbyBossBar();
+        scoreboard.updateWaitingLobby(player);
     }
 
     protected void onJoinItems(CustomPlayer player) {

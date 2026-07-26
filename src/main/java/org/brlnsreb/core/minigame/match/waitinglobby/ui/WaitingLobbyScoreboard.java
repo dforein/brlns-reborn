@@ -16,10 +16,13 @@ public class WaitingLobbyScoreboard extends ScoreboardAbstract {
 
     public void updateWaitingLobby(CustomPlayer player) {
         String[] lines = {
-            "&a" + minigameName,
+            minigameName,
             "&b",
             "  &l&9Game ID",
-            "   &e" + matchId
+            "   &e" + matchId,
+            "&1",
+            "&2",
+            "&3"
         };
 
         update(player, lines);

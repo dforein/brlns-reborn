@@ -72,15 +72,17 @@ public abstract class Lobby {
         player.matchCurrent = match;
         PlayerUtils.setLobbyState(player, player.state, onJoinState());
 
-        onJoinBossBar(player);
-        onJoinItems(player);
+        player.waitForAck(() -> {
+            onJoinUi(player);
+            onJoinItems(player);
+        });
 
         return true;
     }
 
     protected abstract PlayerStateType onJoinState();
     protected abstract void onJoinMessages(CustomPlayer player);    //chat, titles, etc.
-    protected abstract void onJoinBossBar(CustomPlayer player);
+    protected abstract void onJoinUi(CustomPlayer player);
     protected abstract void onJoinItems(CustomPlayer player);
     
     public void teleportToSpawn(CustomPlayer player) {

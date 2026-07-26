@@ -34,10 +34,10 @@ public class PlayerUtils {
 
         try {
             Level oldLevel = p.getLevel();
-            int viewDistance = p.getViewDistance();
+            //int viewDistance = p.getViewDistance();
 
             p.setTeleporting();
-            p.setViewDistance(2);
+            //p.setViewDistance(2);
             p.despawnFromAll();
 
             if (lobby) lobbyTeleport(p, loc);
@@ -47,7 +47,7 @@ public class PlayerUtils {
 
             plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
                 p.spawnToAll(); 
-                p.setViewDistance(viewDistance);
+                //p.setViewDistance(viewDistance);
             }, 20);
 
             updatePlayerList(oldLevel, p);
@@ -86,13 +86,14 @@ public class PlayerUtils {
                 default: break;
             }
         }
-        
+
         p.updatePresetNameTags();
+        p.updateExp();
+        
         resetVars(p);
         resetPlayer(p, Player.ADVENTURE, 18);
 
         giveEffect(p, EffectType.NIGHT_VISION, 99999999, 2, false);
-        p.updateExp();
     }
 
 
@@ -235,7 +236,7 @@ public class PlayerUtils {
     }
 
     public static void updateOnlinePlayer(Player player, boolean removeAllServer) {
-        removeViewerToOnlinePlayer(player, removeAllServer);
+        removeViewersToOnlinePlayer(player, removeAllServer);
         addViewersToOnlinePlayer(false, player);
     }
 
@@ -254,7 +255,7 @@ public class PlayerUtils {
         target.sendPacket(removeOnlinePlayerPacket(player));
     }
 
-    public static void removeViewerToOnlinePlayer(Player player, boolean allServer) {
+    public static void removeViewersToOnlinePlayer(Player player, boolean allServer) {
         sendPlayerListPacket(
             removeOnlinePlayerPacket(player), player, 
             allServer ? null : player.getLevel()

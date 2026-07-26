@@ -58,7 +58,7 @@ public class MainHub extends Lobby {
 
         PlayerUtils.setLobbyState(player, null, onJoinState());
 
-        onJoinBossBar(player);
+        onJoinUi(player);
         onJoinItems(player);
     } 
 
@@ -75,7 +75,7 @@ public class MainHub extends Lobby {
         friendAlertsNotify(player, null, ChatMsgs.BROKENLENS);
     }
 
-    protected void onJoinBossBar(CustomPlayer player) {
+    protected void onJoinUi(CustomPlayer player) {
         bossBar.updateLobbyBossBar(player);
     }
 

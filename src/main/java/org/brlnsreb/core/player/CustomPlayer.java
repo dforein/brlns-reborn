@@ -96,7 +96,6 @@ public class CustomPlayer extends Player {
         PlayerUtils.updateOnlinePlayer(this, true);     //remove the name for players who aren't in the same level (main hub)
         PlayerUtils.cleanPlayerList(this);
 
-        if (this.data.isLogged()) this.setDisplayName(this.data.name);
         MainHub.instance.onServerJoin(this);
     }
 
@@ -167,11 +166,15 @@ public class CustomPlayer extends Player {
     public boolean hasBossBar() { return this.bossBarId != null; }
 
     public void updateExp() {
-        int barExp = calculateRequireExperience(data.getFloorLevel())                   //deltaExp between minecraft xp levels
-                    - calculateRequireExperience(data.getFloorLevel() + 1);
-        barExp *= (data.getLevel() - data.getFloorLevel());                             //level - floorLevel = % exp needed for next exp level
+        if (data.isLogged()) {
+            int barExp = calculateRequireExperience(data.getFloorLevel())                   //deltaExp between minecraft xp levels
+                        - calculateRequireExperience(data.getFloorLevel() + 1);
+            barExp *= (data.getLevel() - data.getFloorLevel());                             //level - floorLevel = % exp needed for next exp level
 
-        this.setExperience(barExp, data.getFloorLevel());
+            this.setExperience(barExp, data.getFloorLevel());
+        } else {
+            this.setExperience(0);
+        }
     }
 
 

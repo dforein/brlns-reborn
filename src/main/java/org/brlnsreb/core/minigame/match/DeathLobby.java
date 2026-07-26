@@ -46,7 +46,7 @@ public class DeathLobby extends Lobby {
         );
     }
 
-    protected void onJoinBossBar(CustomPlayer player) {}
+    protected void onJoinUi(CustomPlayer player) {}
     protected void onJoinItems(CustomPlayer player) {}
 
     

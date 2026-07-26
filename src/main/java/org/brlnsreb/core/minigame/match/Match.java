@@ -102,6 +102,7 @@ public abstract class Match {
                 game.onLeave(player);
                 break;
         }
+        minigame.onMatchLeave();
     }
 
 

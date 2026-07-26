@@ -97,12 +97,9 @@ public class AccountsManager {
             data.name = name;
             data.setCoins(0);
             data.setExp(0);
+            data.updateLevel();
 
-            if (!player.spawned) return;
-            player.updatePresetNameTags();
-            player.updateExp();
-            player.setDisplayName(name);
-            PlayerUtils.updateOnlinePlayer(player, false);
+            updatePlayer(player, name);
         });
 
         return Outcome.OK;
@@ -115,6 +112,7 @@ public class AccountsManager {
             data.name = name;
             data.setCoins(dataResults.getInt("coins"));
             data.setExp(dataResults.getInt("exp"));
+            data.updateLevel();
             data.setFriendAlerts(dataResults.getBoolean("friend_alerts"));
             data.setFriendNotify(dataResults.getBoolean("friend_notify"));
 
@@ -128,11 +126,7 @@ public class AccountsManager {
                 );
             }
 
-            if (!player.spawned) return;
-            player.updatePresetNameTags();
-            player.updateExp();
-            player.setDisplayName(name);
-            PlayerUtils.updateOnlinePlayer(player, false);
+            if (player.spawned) updatePlayer(player, name);
         });
     }
 
@@ -144,9 +138,8 @@ public class AccountsManager {
 
         FriendsManager.removeOnlineFriend(data);
         data.resetData();
-        player.updatePresetNameTags();
-        player.setDisplayName(player.getName());
-        PlayerUtils.updateOnlinePlayer(player, false);
+
+        updatePlayer(player, player.getName());
 
         return outcome;
     }
@@ -259,6 +252,13 @@ public class AccountsManager {
         } catch (SQLException e) {
             return PlayerDataManager.onDBError(e);
         }
+    }
+
+    private static void updatePlayer(CustomPlayer player, String name) {
+        player.updatePresetNameTags();
+        player.updateExp();
+        player.setDisplayName(name);
+        PlayerUtils.updateOnlinePlayer(player, false);
     }
 
 }

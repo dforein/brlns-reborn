@@ -1,6 +1,7 @@
 package org.brlnsreb.listeners.general;
 
 import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.core.player.PlayerUtils;
 import org.powernukkitx.event.EventHandler;
 import org.powernukkitx.event.Listener;
 import org.powernukkitx.event.player.PlayerCreationEvent;
@@ -18,6 +19,12 @@ public class PlayerCreationListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         event.setJoinMessage("");
+
+        CustomPlayer player = (CustomPlayer) event.getPlayer();
+        player.updateExp();
+        player.updatePresetNameTags();
+        if (player.data.isLogged()) player.setDisplayName(player.data.name);
+        PlayerUtils.updateOnlinePlayer(player, true);
     }
 
 }

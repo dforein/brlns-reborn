@@ -37,7 +37,9 @@ public abstract class ScoreboardAbstract {
             "&a",
             "  &l&dGame time:",
             "   &a" + timer,
-            "&b"
+            "&b",
+            "&1",
+            "&2",
         };
 
         update(players, lines);

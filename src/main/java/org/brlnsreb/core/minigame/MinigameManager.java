@@ -1,5 +1,6 @@
 package org.brlnsreb.core.minigame;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.brlnsreb.core.minigame.match.Match;
@@ -17,7 +18,7 @@ public class MinigameManager {
 
     public static void forceStop() {
         for (Minigame mg : minigames) {
-            for (Match match : mg.getMatches()) {
+            for (Match match : new ArrayList<>(mg.getMatches())) {
                 match.forceStop();
             }
         }
