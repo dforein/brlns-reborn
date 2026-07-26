@@ -36,7 +36,6 @@ public abstract class WaitingLobby extends Lobby {
 
     protected final int minPlayers;
     protected final int maxPlayers;
-    protected final int minPlayersShortenedCountdown;
 
     protected final int secondsCountdown;
     protected final int secondsShortenedCountdown;
@@ -63,7 +62,6 @@ public abstract class WaitingLobby extends Lobby {
 
         this.minPlayers = minigame.getMinPlayers();
         this.maxPlayers = minigame.getMaxPlayers();
-        this.minPlayersShortenedCountdown = config.getInt("settings.min-players-shortened-countdown");
 
         Config globalConfig = Configs.getGlobalConfig();
         this.secondsCountdown = globalConfig.getInt("match.waiting-lobby.countdown-seconds");
@@ -163,10 +161,8 @@ public abstract class WaitingLobby extends Lobby {
 
     protected void checkPlayerNumber(int playerNumber) {
         if (playerNumber >= maxPlayers) {
+            if (!countdownShortened) shortenCountdown(true);
             minigame.onReplacePendingMatch(match);
-            
-        } else if (playerNumber >= minPlayersShortenedCountdown && !countdownShortened) {
-            shortenCountdown(true);
             
         } else if (playerNumber >= minPlayers && !countdownShortened) {    //if the countdown is already shortened, it will stay shortened
             match.getState().current = GameStateType.LOBBY_COUNTDOWN;

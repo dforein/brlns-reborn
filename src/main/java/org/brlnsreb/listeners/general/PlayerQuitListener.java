@@ -1,5 +1,6 @@
 package org.brlnsreb.listeners.general;
 
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.data.database.AccountsManager;
 import org.brlnsreb.core.player.data.database.FriendsManager;
@@ -27,8 +28,9 @@ public class PlayerQuitListener implements Listener {
         event.setQuitMessage("");
     }
 
-
     private void handlePlayerLeave(Player p) {
+        BrlnsReb.logger.info("Player " + p.getDisplayName() + " logout registered successfully");
+
         MainHub.onlinePlayers--;
         CustomPlayer player = (CustomPlayer) p;
 
