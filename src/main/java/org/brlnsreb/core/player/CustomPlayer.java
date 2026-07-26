@@ -90,8 +90,8 @@ public class CustomPlayer extends Player {
     }
 
     @Override
-    public void doFirstSpawn() {
-        super.doFirstSpawn();
+    public void onPlayerLocallyInitialized() {
+        super.onPlayerLocallyInitialized();
         
         PlayerUtils.updateOnlinePlayer(this, true);     //remove the name for players who aren't in the same level (main hub)
         PlayerUtils.cleanPlayerList(this);

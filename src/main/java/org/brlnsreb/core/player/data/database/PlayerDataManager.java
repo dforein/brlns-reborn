@@ -61,9 +61,8 @@ public class PlayerDataManager {
                 player.resetAsync();
             }
         }).exceptionally(e -> {
-            e.printStackTrace();
             player.kick("Database error onServerJoin: report this error to the dev team, if you can.");
-            return Outcome.DB_ERROR;
+            return onDBError(e);
         });
     }
 
@@ -92,8 +91,7 @@ public class PlayerDataManager {
                 player.resetAsync();
             }
         }).exceptionally(e -> {
-            e.printStackTrace();
-            return Outcome.DB_ERROR;
+            return onDBError(e);
         });
     }
 
@@ -141,8 +139,7 @@ public class PlayerDataManager {
                 player.resetAsync();
             }
         }).exceptionally(e -> {
-            e.printStackTrace();
-            return Outcome.DB_ERROR;
+            return onDBError(e);
         });
     }
 
@@ -176,8 +173,7 @@ public class PlayerDataManager {
                 player.resetAsync();
             }
         }).exceptionally(e -> {
-            e.printStackTrace();
-            return Outcome.DB_ERROR;
+            return onDBError(e);
         });
     }
 

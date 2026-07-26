@@ -15,6 +15,7 @@ import org.cloudburstmc.protocol.bedrock.packet.PlayerListPacket;
 
 import org.powernukkitx.Player;
 import org.powernukkitx.Server;
+import org.powernukkitx.entity.Attribute;
 import org.powernukkitx.entity.effect.Effect;
 import org.powernukkitx.entity.effect.EffectType;
 import org.powernukkitx.item.Item;
@@ -112,9 +113,12 @@ public class PlayerUtils {
         p.removeAllEffects();
 
         p.setHealthCurrent(p.getHealthMax());
-        p.getFoodData().setEnabled(true);
+
         p.getFoodData().setFood(food);
         p.getFoodData().setEnabled(false);
+        Attribute attribute = p.getAttributes().computeIfAbsent(Attribute.FOOD, Attribute::getAttribute);
+        attribute.setValue(food);
+        p.syncAttribute(attribute);
     }
 
 
