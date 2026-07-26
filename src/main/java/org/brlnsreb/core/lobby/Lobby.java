@@ -69,12 +69,11 @@ public abstract class Lobby {
 
         player.setLobby(this);
         player.minigameCurrent = minigame;
+        player.matchCurrent = match;
         PlayerUtils.setLobbyState(player, player.state, onJoinState());
 
         onJoinBossBar(player);
         onJoinItems(player);
-
-        player.matchCurrent = match;
 
         return true;
     }

@@ -72,8 +72,8 @@ public class PlayerUtils {
     public static void setLobbyState(CustomPlayer p, PlayerStateType oldState, PlayerStateType newState) {
         if (!p.isOnline()) return;
 
-        p.state = newState;
         resetUiAndInventories(p);
+        p.state = newState;
 
         if (oldState != null) {
             switch (oldState) {
