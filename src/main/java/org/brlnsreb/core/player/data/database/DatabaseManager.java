@@ -22,7 +22,6 @@ public class DatabaseManager {
     
     private static HikariDataSource dataSource;
     private static boolean enabled;
-    private final BrlnsReb plugin;
 
     private String accountsTable = """
         CREATE TABLE IF NOT EXISTS accounts (
@@ -84,8 +83,7 @@ public class DatabaseManager {
     """;
 
 
-    public DatabaseManager(BrlnsReb plugin) {
-        this.plugin = plugin;
+    public DatabaseManager() {
         enabled = initConnectionPool();
     }
 
@@ -100,7 +98,7 @@ public class DatabaseManager {
         Config config = Configs.getConfig("global/database.yml");
 
         if (!config.getBoolean("enabled", false)) {
-            plugin.getLogger().warning(TextFormat.GOLD + "Database disabled by settings.");
+            BrlnsReb.logger.warning(TextFormat.GOLD + "Database disabled by settings.");
             return false;
         }
 
@@ -112,12 +110,13 @@ public class DatabaseManager {
         int poolSize = config.getInt("database.pool-size");
 
         String jdbcUrl = String.format(
-            "jdbc:mysql://%s:%d/%s?useSSL=false&characterEncoding=UTF-8&autoReconnect=true",
+            "jdbc:mariadb://%s:%d/%s?useSSL=false&characterEncoding=UTF-8&autoReconnect=true",
             host, port, database
         );
 
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(jdbcUrl);
+        hikariConfig.setDriverClassName("org.mariadb.jdbc.Driver");
         hikariConfig.setUsername(username);
         hikariConfig.setPassword(password);
 
@@ -135,7 +134,7 @@ public class DatabaseManager {
             dataSource = new HikariDataSource(hikariConfig);
             
             try (Connection testConn = dataSource.getConnection()) {
-                plugin.getLogger().info(TextFormat.GREEN + "Database connected successfully to " + database);
+                BrlnsReb.logger.info(TextFormat.DARK_GREEN + "Database connected successfully to " + database);
             }
             
             createTables();
@@ -143,13 +142,13 @@ public class DatabaseManager {
             return true;
             
         } catch (Exception e) {
-            plugin.getLogger().error(TextFormat.RED + "Failed to connect to database: " + e.getMessage());
+            BrlnsReb.logger.error(TextFormat.RED + "Failed to connect to database: " + e.getMessage());
             return false;
         }
     }
 
     private void createTables() {
-        try (Connection conn = getConnection();
+        try (Connection conn = dataSource.getConnection();
              var stmt = conn.createStatement()) {
             
             //accounts
@@ -164,10 +163,10 @@ public class DatabaseManager {
             stmt.execute(friendRequestsTable);
 
 
-            plugin.getLogger().info(TextFormat.GRAY + "Database tables ready");
+            BrlnsReb.logger.info(TextFormat.DARK_GREEN + "Database tables ready");
             
         } catch (SQLException e) {
-            plugin.getLogger().error("Failed to create tables: " + e.getMessage());
+            BrlnsReb.logger.error("Failed to create tables: " + e.getMessage());
         }
     }
 
@@ -248,7 +247,7 @@ public class DatabaseManager {
     public void closePool() {
         if (dataSource != null && !dataSource.isClosed()) {
             dataSource.close();
-            plugin.getLogger().info("Database connection pool closed.");
+            BrlnsReb.logger.info("Database connection pool closed.");
         }
     }
 

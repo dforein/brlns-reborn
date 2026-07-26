@@ -109,11 +109,12 @@ public class PlayerUtils {
 
     public static void resetPlayer(CustomPlayer p, int gamemode, int food) {
         p.setGamemode(gamemode);
-
         p.removeAllEffects();
-
         p.setHealthCurrent(p.getHealthMax());
+        setFood(p, 18);
+    }
 
+    public static void setFood(CustomPlayer p, int food) {
         p.getFoodData().setFood(food);
         p.getFoodData().setEnabled(false);
         Attribute attribute = p.getAttributes().computeIfAbsent(Attribute.FOOD, Attribute::getAttribute);

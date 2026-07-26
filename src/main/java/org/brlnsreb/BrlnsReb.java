@@ -18,6 +18,7 @@ import org.brlnsreb.core.auth.AuthSystem;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.minigame.MinigameType;
+import org.brlnsreb.core.player.data.database.DatabaseManager;
 import org.brlnsreb.core.player.data.database.PlayerDataManager;
 import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.minigames.mm.match.game.entities.DeadBodyEntity;
@@ -38,6 +39,7 @@ public class BrlnsReb extends PluginBase {
     private static boolean underMaintenance;
     private static Server server;
 
+    private DatabaseManager databaseManager;
     private MinigameManager minigameManager;
     private MainHub mainHub;
 
@@ -89,6 +91,8 @@ public class BrlnsReb extends PluginBase {
             server.getSettings().save();
             server.reloadWhitelist();
         }
+
+        databaseManager = new DatabaseManager();
 
         WorldManager.init();
         AuthSystem.init();
@@ -159,5 +163,6 @@ public class BrlnsReb extends PluginBase {
     public static int getDebugVar() { return debugVar; }
     public static void setDebugVar(int value) { debugVar = value; }
 
+    public DatabaseManager getDatabaseManager() { return databaseManager; }
     public MinigameManager getMinigameManager() { return minigameManager; }
 }
