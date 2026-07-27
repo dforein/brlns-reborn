@@ -213,7 +213,7 @@ public abstract class WaitingLobby extends Lobby {
         }, this::onGameStart);
 
         if (sendMessage) {
-            msgUtil.broadcastPrefix(YamlUtil.getStr("waiting-lobby.timer-shortened", Configs.getGlobalMessages()));
+            msgUtil.broadcastPrefix(YamlUtil.getStr("match.waiting-lobby.timer-shortened", Configs.getGlobalMessages()));
         }
 
         match.preloadGame(selectedMapId, selectedTime, selectedWeather);

@@ -113,7 +113,7 @@ public abstract class Match {
         game = createGame(mapId, time, weather);
 
         msgUtil.broadcastPresetPrefix(
-            YamlUtil.getStr("waiting-lobby.going-to-play", Configs.getGlobalMessages()), 
+            YamlUtil.getStr("match.waiting-lobby.going-to-play", Configs.getGlobalMessages()), 
             new String[] {
                 YamlUtil.getStr("map-settings.maps." + mapId + ".name", config),
                 game.getMap().getTime().displayName,
