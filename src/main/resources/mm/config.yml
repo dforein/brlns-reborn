@@ -108,9 +108,9 @@ waiting-lobby:
       - |-
         &lRoles and their Weapons!
 
-        &cMurderer&r&8: Iron Sword/Knife (one hit one kill) and can throw their sword (Hold and Click)
-        &9Sheriff&r&8: Golden Hoe/Sheriff's Gun (Hold and Click)
-        &aInnocents&r&8: N/A (civilians and innocents work together)
+        &l&cMurderer&r&8: Iron Sword/Knife (one hit one kill) and can throw their sword (Hold and Click)
+        &l&9Sheriff&r&8: Golden Hoe/Sheriff's Gun (Hold and Click)
+        &l&aInnocents&r&8: N/A (civilians and innocents work together)
 
 map-settings:
   default-map: thegrandhotel
