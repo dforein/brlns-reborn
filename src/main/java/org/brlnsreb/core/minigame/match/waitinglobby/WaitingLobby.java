@@ -64,8 +64,8 @@ public abstract class WaitingLobby extends Lobby {
         this.maxPlayers = minigame.getMaxPlayers();
 
         Config globalConfig = Configs.getGlobalConfig();
-        this.secondsCountdown = globalConfig.getInt("match.waiting-lobby.bossbar.countdown-seconds");
-        this.secondsShortenedCountdown = globalConfig.getInt("match.waiting-lobby.bossbar.shortened-countdown-seconds");
+        this.secondsCountdown = globalConfig.getInt("match.waiting-lobby.countdown-seconds");
+        this.secondsShortenedCountdown = globalConfig.getInt("match.waiting-lobby.shortened-countdown-seconds");
 
         spawnNpc(
             configPath() + "npc.leave.",

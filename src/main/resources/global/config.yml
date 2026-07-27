@@ -15,11 +15,11 @@ lobby:
 
 match:
   waiting-lobby:
+    countdown-seconds: 45
+    shortened-countdown-seconds: 10
     bossbar:
-      countdown-seconds: 45
-      shortened-countdown-seconds: 10
-      medium-threshold: 60
-      short-threshold: 10
+      medium-threshold-seconds: 60
+      short-threshold-seconds: 10
       text-long: '&l&eStarting in &6%dm %ds'
       text-medium: '&l&eStarting in &6%ds'
       text-short: '&l&eStarting in &c%ds'
@@ -34,6 +34,7 @@ match:
         - Night
 
   game:
+    pregame-countdown-seconds: 10
     items:
       spectator:
         teleporter:
