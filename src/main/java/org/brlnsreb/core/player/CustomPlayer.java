@@ -17,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.minigame.Minigame;
-import org.brlnsreb.core.minigame.match.game.GameExpand;
 import org.brlnsreb.core.player.data.PlayerData;
 import org.brlnsreb.core.player.data.database.PlayerDataManager;
 import org.brlnsreb.mainhub.MainHub;
@@ -243,8 +242,8 @@ public class CustomPlayer extends Player {
                 break;
 
             case ONLY_PLAYERS:
-                if (source instanceof EntityDamageByEntityEvent) {
-                    Entity entity = ((EntityDamageByEntityEvent) source).getDamager();
+                if (source instanceof EntityDamageByEntityEvent event) {
+                    Entity entity = event.getDamager();
                     if (entity instanceof Player) {
                         return checkAndAttack(source);
                     }
@@ -263,18 +262,16 @@ public class CustomPlayer extends Player {
                 return checkAndAttack(source);
                 
             case ONLY_MOBS:
-                if (source instanceof EntityDamageByEntityEvent) {
-                    EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) source;
+                if (source instanceof EntityDamageByEntityEvent event) {
                     if (event.getDamager() instanceof Player) break;
-
                     return checkAndAttack(source);
                 }
                 break;
             
             case MOBS_AND_PLAYERS:
-                if (!(source instanceof EntityDamageByEntityEvent)) break;
-                Entity entity = ((EntityDamageByEntityEvent) source).getDamager();
-                if (entity instanceof Player && !((CustomPlayer) entity).canAttackPlayers) break;
+                if (!(source instanceof EntityDamageByEntityEvent event)) break;
+                Entity entity = event.getDamager();
+                if (entity instanceof CustomPlayer player && !player.canAttackPlayers) break;
                 return checkAndAttack(source);
         }
         
@@ -285,10 +282,9 @@ public class CustomPlayer extends Player {
     private boolean checkAndAttack(EntityDamageEvent source) {
         //canAttackPlayer check
         CustomPlayer damager = null;
-        if (source instanceof EntityDamageByEntityEvent) {
-            Entity entity = ((EntityDamageByEntityEvent) source).getDamager();
-            if (entity instanceof Player) {
-                damager = (CustomPlayer) entity;
+        if (source instanceof EntityDamageByEntityEvent event) {
+            if (event.getDamager() instanceof CustomPlayer) {
+                damager = (CustomPlayer) event.getDamager();
                 if (!damager.canAttackPlayers) return false;
             }
         }
@@ -306,8 +302,8 @@ public class CustomPlayer extends Player {
                 super.attack(source);               //to show the damage animation  //TODO: need to test whether i have to wait one tick to show the anim
                 this.setHealthCurrent(this.getHealthMax());
 
-                if (matchCurrent instanceof MatchExpand) {
-                    ((GameExpand) matchCurrent.getGame()).onDeath(source.getCause(), this, damager);
+                if (matchCurrent instanceof MatchExpand matchExpand) {
+                    matchExpand.getGame().onDeath(source.getCause(), this, damager);
                 }
             }
 

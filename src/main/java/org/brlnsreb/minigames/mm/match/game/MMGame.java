@@ -477,9 +477,11 @@ public class MMGame extends GameExpand {
         }
     }
 
-    private boolean newSheriff(CustomPlayer player) {
+    private boolean newSheriff(CustomPlayer player, boolean checkGold) {
+        if (player == murderer || player == sheriff) return false;
         MMPlayerGameData gameData = gameDataMap.get(player);
-        if (!gameData.canBecomeSheriff()) {
+
+        if (checkGold && !gameData.hasEnoughGoldForSheriff()) {
             msgUtil.sendPresetMessagePrefix(player, "not-enough-gold", new Integer[] { gameData.gold });
             return false;
         }
@@ -578,7 +580,7 @@ public class MMGame extends GameExpand {
             case Item.BLAZE_ROD -> useFlash(player);
 
             //innocent
-            case Item.YELLOW_DYE -> newSheriff(player);
+            case Item.YELLOW_DYE -> newSheriff(player, true);
             
             //spectator
             case Item.NETHER_STAR -> spectatorMenu.openSpectateMenu(player);
@@ -594,7 +596,7 @@ public class MMGame extends GameExpand {
         }
 
         if (itemEntity.getItem() instanceof ItemGoldenHoe) {
-            if (newSheriff(player)) itemEntity.close();
+            if (newSheriff(player, false)) itemEntity.close();
         }
 
         return false;
@@ -619,10 +621,10 @@ public class MMGame extends GameExpand {
 
     public void onProjectileHit(CustomPlayer player, ProjectileHitEvent event) {
         if (state.current != GameStateType.IN_GAME) return;
-        if (!(event.getEntity() instanceof ThrownSwordEntity)) return;
+        if (!(event.getEntity() instanceof ThrownSwordEntity thrownSword)) return;
         if (player == murderer) return;
 
-        getMatch().onDeath(player, (CustomPlayer) ((ThrownSwordEntity) event.getEntity()).shootingEntity);
+        getMatch().onDeath(player, (CustomPlayer) thrownSword.shootingEntity);
     }
 
 

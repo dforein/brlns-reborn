@@ -30,8 +30,8 @@ public class MMPlayerGameData extends PlayerGameData {
         super(player);
     }
 
-    public boolean canBecomeSheriff() {
-        return role == MMRole.INNOCENT && gold >= GOLD_SHERIFF;
+    public boolean hasEnoughGoldForSheriff() {
+        return gold >= GOLD_SHERIFF;
     }
 
     public static void setExpPrizes(Config config) {

@@ -1,7 +1,6 @@
 package org.brlnsreb.listeners.games;
 
 import org.brlnsreb.core.player.CustomPlayer;
-import org.powernukkitx.entity.Entity;
 import org.powernukkitx.event.EventHandler;
 import org.powernukkitx.event.Listener;
 import org.powernukkitx.event.inventory.InventoryPickupItemEvent;
@@ -26,10 +25,7 @@ public class PlayerInventoryListener implements Listener {
 
     @EventHandler
     public void onItemPickup(InventoryPickupItemEvent event) {
-        Entity entity = (Entity) event.getInventory().getHolder();
-
-        if (event.getInventory().getHolder() instanceof CustomPlayer) {
-            CustomPlayer player = (CustomPlayer) entity;
+        if (event.getInventory().getHolder() instanceof CustomPlayer player) {
             switch (player.state) {
                 case PLAYING -> { 
                     if (!player.matchCurrent.getGame().onItemPickup(player, event.getItem())) event.setCancelled();

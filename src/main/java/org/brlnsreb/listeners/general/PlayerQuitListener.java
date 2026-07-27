@@ -4,6 +4,7 @@ import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.data.database.AccountsManager;
 import org.brlnsreb.core.player.data.database.FriendsManager;
+import org.brlnsreb.core.player.data.database.PlayerDataManager;
 import org.brlnsreb.mainhub.MainHub;
 import org.powernukkitx.Player;
 import org.powernukkitx.event.EventHandler;
@@ -37,6 +38,7 @@ public class PlayerQuitListener implements Listener {
         AccountsManager.savePlayerData(player);
         FriendsManager.removeOnlineFriend(player.data);
         if (player.matchCurrent != null) player.matchCurrent.onLeave(player);
+        PlayerDataManager.onServerLeave(player);
         player.save();
     }
     

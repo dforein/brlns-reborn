@@ -152,12 +152,12 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
 
     @Override
     public boolean attack(EntityDamageEvent source) {
-        if (source instanceof EntityDamageByEntityEvent
-            && ((EntityDamageByEntityEvent) source).getDamager() instanceof Player
-            && task != null) {
+        if (source instanceof EntityDamageByEntityEvent event
+                && event.getDamager() instanceof CustomPlayer player
+                && task != null) {
 
-                task.accept((CustomPlayer) ((EntityDamageByEntityEvent) source).getDamager());
-                //Server.getInstance().getLogger().info("NPC: attack");
+            task.accept(player);
+            //Server.getInstance().getLogger().info("NPC: attack");
         }
         source.setCancelled(true);
     

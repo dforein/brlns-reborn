@@ -6,6 +6,7 @@ import org.powernukkitx.block.BlockRedstoneWire;
 import org.powernukkitx.entity.Entity;
 import org.powernukkitx.entity.item.EntityItem;
 import org.powernukkitx.item.Item;
+import org.powernukkitx.item.ItemGoldenHoe;
 import org.powernukkitx.level.Location;
 import org.powernukkitx.level.Position;
 import org.powernukkitx.level.format.IChunk;
@@ -162,7 +163,8 @@ public class DeathSystem {
 
     public void cleanupSheriffHoe() {
         for (Entity entity : game.getMap().getLevel().getEntities()) {
-            if (entity instanceof EntityItem) {
+            if (entity instanceof EntityItem itemEntity 
+                    && itemEntity.getItem() instanceof ItemGoldenHoe) {
                 entity.close();
             }
         }

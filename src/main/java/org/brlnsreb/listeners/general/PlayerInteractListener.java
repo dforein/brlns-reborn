@@ -32,13 +32,13 @@ public class PlayerInteractListener implements Listener {
 
     @EventHandler
     public void onEntityInteract(PlayerInteractEntityEvent event) {
-        if (event.getEntity() instanceof NPCEntity) {
+        if (event.getEntity() instanceof NPCEntity npc) {
             CustomPlayer player = (CustomPlayer) event.getPlayer();
             if (player.state == PlayerStateType.LOBBY || player.state == PlayerStateType.WAITING_LOBBY) {
                 if (!event.getItem().getName().equals(Item.AIR.getName())) return;
             }
 
-            ((NPCEntity) event.getEntity()).executeTask(player);
+            npc.executeTask(player);
         }
     }
 

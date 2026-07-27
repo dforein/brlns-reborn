@@ -66,6 +66,13 @@ public class PlayerDataManager {
         });
     }
 
+    public static void onServerLeave(CustomPlayer player) {
+        dataMap.remove(player.getUniqueId());
+        if (player.data.isLogged()) {
+            nameIdMap.remove(player.data.name.toLowerCase());
+        }
+    }
+
     public static CompletableFuture<Outcome> registerNewPlayer(CustomPlayer player, String name, String password) {
         if (!player.canRunAsync()) {
             return CompletableFuture.completedFuture(

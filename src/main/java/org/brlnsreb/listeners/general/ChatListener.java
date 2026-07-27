@@ -51,8 +51,8 @@ public class ChatListener implements Listener {
 
         Level senderLevel = event.getPlayer().getLevel();
         event.getRecipients().removeIf(recipient -> 
-            (recipient instanceof Player) &&
-            !((Player) recipient).getLevel().equals(senderLevel)
+            (recipient instanceof Player player) &&
+            !player.getLevel().equals(senderLevel)
         );
     }
 
