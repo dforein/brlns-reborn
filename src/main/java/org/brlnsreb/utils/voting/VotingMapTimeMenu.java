@@ -97,7 +97,7 @@ public class VotingMapTimeMenu extends MenuAbstract {
             String selectedMapId = mapVoting.getAvailableOptions().get(mapIndex - 1);
             mapVoting.vote(player, selectedMapId);
             
-            message = YamlUtil.getStr("map-vote", Configs.getGlobalMessages());
+            message = YamlUtil.getStr("match.waiting-lobby.voting.map-vote", Configs.getGlobalMessages());
             placeholder[0] = YamlUtil.getStr("map-settings.maps." + selectedMapId + ".name", config);
             
             msgUtil.sendMessagePrefix(player, message, placeholder);
@@ -110,7 +110,7 @@ public class VotingMapTimeMenu extends MenuAbstract {
             TimeOfDay selectedTime = timeVoting.getAvailableOptions().get(timeIndex - 1);
             timeVoting.vote(player, selectedTime);
             
-            message = YamlUtil.getStr("time-vote", Configs.getGlobalMessages());
+            message = YamlUtil.getStr("match.waiting-lobby.voting.time-vote", Configs.getGlobalMessages());
             placeholder[0] = selectedTime.displayName;
 
             msgUtil.sendMessagePrefix(player, message, placeholder);

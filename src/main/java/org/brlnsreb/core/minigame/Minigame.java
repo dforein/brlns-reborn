@@ -86,9 +86,8 @@ public abstract class Minigame {
     protected abstract Match createMatch(int newMatchNumber);
 
     public boolean createNewPendingMatch() {
-        if (!pendingMatches.isEmpty()
-            && pendingMatches.element().getPlayers().size() < getMaxPlayers()) {
-                return false;
+        if (!pendingMatches.isEmpty() && pendingMatches.element().getPlayers().size() < getMaxPlayers()) {
+            return false;
         }
 
         Match match = createMatch(getNewMatchNumber());
@@ -107,17 +106,15 @@ public abstract class Minigame {
     }
 
     public boolean onReplacePendingMatch(Match match) {
+        if (!pendingMatches.contains(match)) return false;
         if (getMainPendingMatch() != match) {
             return pendingMatches.remove(match);
         }
 
-        if (!pendingMatches.isEmpty()
-            && pendingMatches.element().getPlayers().size() < getMaxPlayers()) {
-                return false;
-        }
-
         pendingMatches.remove();
         createNewPendingMatch();
+
+        lobby.updateJoinNpcSubtitle();
 
         return true;
     }

@@ -55,7 +55,7 @@ public class TimerSystem {
     
     public String getFormattedTime() {
         int minutes = secondsRemaining / 60;
-        int seconds = secondsRemaining % 60;
+        int seconds = secondsRemaining - minutes * 60;
         return String.format("%d:%02d", minutes, seconds);
     }
 }

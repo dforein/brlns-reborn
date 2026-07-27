@@ -26,7 +26,7 @@ import org.powernukkitx.plugin.annotation.CommandDefinition;
     usage = """
             §l§eINFO§r §aUsage: §e/friend <subcommand>
             §l§eINFO§r §aSubcommands:
-            §3§o》§r§2▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬§3§o《
+            §3》§r§2▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬§3《
             §2- §dadd §7- §aAdd a friend!
             §2- §dremove §7- §aRemove a friend from your friends list
             §2- §daccept §7- §aAccept a friend invite
@@ -39,7 +39,7 @@ import org.powernukkitx.plugin.annotation.CommandDefinition;
             §2- §dalerts §7- §aToggle friend join/left alerts
             §2- §dnotify §7- §aToggle online/joinable status
             §2- §doff §7- §aTurn off friend invites for your current session
-            3§o》§r§2▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬§3§o《
+            §3》§r§2▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬§3《
             """ //TEXT
 )
 

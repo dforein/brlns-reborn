@@ -1,5 +1,7 @@
 package org.brlnsreb.utils;
 
+import org.powernukkitx.utils.TextFormat;
+
 public class ChatMsgs {
 
     public static final String BROKENLENS = "&l&eBroken&6Lens§r";
@@ -12,7 +14,7 @@ public class ChatMsgs {
 
     public static final String SPEC_PFX = "§l§fSPEC§r §7";
 
-    public static final String BAR = "§3§o》§r§2▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬§3《";
+    public static final String BAR = "§3》§r§2▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬§3《";
     private static final int BAR_CHARACTERS = 40;
 
     public enum Alignment { 
@@ -30,7 +32,7 @@ public class ChatMsgs {
             strBuilder.append("§2-§r");
 
             if (alignment == Alignment.CENTER) {
-                spaces = (int) (BAR_CHARACTERS - line.length() * 1.1 - 1) / 2;
+                spaces = (int) (BAR_CHARACTERS - TextFormat.clean(line).length() * 1.1 - 1) / 2;
                 for (i = 0; i < spaces; i++) strBuilder.append("§l §r");
             } else if (alignment == Alignment.LEFT) {
                 strBuilder.append("§l §r");

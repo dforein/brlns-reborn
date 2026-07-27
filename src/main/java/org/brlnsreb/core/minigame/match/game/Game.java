@@ -226,7 +226,10 @@ public abstract class Game {
         
         endGame();
 
-        scheduler.scheduleDelayedTask(BrlnsReb.instance, match::onEnding, config.getInt("game.ending-duration") * 20);
+        scheduler.scheduleDelayedTask(BrlnsReb.instance, () -> {
+            match.onEnding();
+            map.close();
+        }, config.getInt("game.ending-duration") * 20);
     }
 
     protected abstract void endGame();

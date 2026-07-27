@@ -77,6 +77,8 @@ public class MMGame extends GameExpand {
 
     private final boolean nightVision;
 
+    private boolean murdererWin;
+
     private final Set<Entity> deadBodies = new HashSet<>();
 
     private static final String[] blockedChatCommands = {
@@ -227,7 +229,7 @@ public class MMGame extends GameExpand {
 
         //timer start
         timer = new TimerSystem();
-        timer.start(config.getInt("game.duration"), this::onGameEnding);
+        timer.start(config.getInt("game.duration"), this::onTimeOut);
 
         //ui
         updateUiTask = new Task() {
@@ -261,7 +263,7 @@ public class MMGame extends GameExpand {
         gold.startSpawning();
 
         //player check at game start
-        if (config.getBoolean("settings.check-players-at-game-start")) {
+        if (config.getBoolean("settings.check-players-at-game-start") && players.size() != 2) {     //2 players (sheriff and murderer) are an exception
             scheduler.scheduleDelayedTask(BrlnsReb.instance, this::checkWinConditions, 20);      //end the game directly if the players aren't enough
         }
     }
@@ -324,7 +326,7 @@ public class MMGame extends GameExpand {
     public void afterDeath(DamageCause cause, Location deathLoc, CustomPlayer victim, CustomPlayer killer) {
         MMPlayerGameData gameData = gameDataMap.get(killer);
 
-        if (killer == murderer) {
+        if (isMurdererAlive() && killer == murderer) {
             if (isFirstKill()) {
                 msgUtil.sendPresetMessagePrefix(murderer, "murderer-warning");
             }
@@ -335,7 +337,7 @@ public class MMGame extends GameExpand {
                 murdererKillsInnocent(gameData, victim.data.name);
             }
 
-        } else if (killer == sheriff) {
+        } else if (isSheriffAlive() && killer == sheriff) {
             if (victim == murderer) {
                 sheriffKillsMurderer(gameData);
             } else {
@@ -508,19 +510,27 @@ public class MMGame extends GameExpand {
         if (state.current != GameStateType.IN_GAME) return false;
 
         if (!isMurdererAlive()) {
+            murdererWin = false;
             onGameEnding();
             return true;
 
         } else if (players.size() <= 1 && isMurdererAlive()) {
+            murdererWin = true;
             onGameEnding();
             return true;
 
         } else if (players.size() <= 2 && isMurdererAlive() && isSheriffAlive()) {
+            murdererWin = true;
             onGameEnding();
             return true;
         }
 
         return false;
+    }
+
+    private void onTimeOut() {
+        murdererWin = false;
+        onGameEnding();
     }
 
 
@@ -530,7 +540,7 @@ public class MMGame extends GameExpand {
         stopGame();
         
         for (CustomPlayer p : players) {
-            if (isMurdererAlive() && isSheriffAlive()) {
+            if (murdererWin && isSheriffAlive()) {
                 if (p == murderer) gameDataMap.get(p).incrementStat(StatType.WINS);
                 if (p == sheriff) gameDataMap.get(p).incrementStat(StatType.LOSSES);
             } else {
@@ -538,12 +548,12 @@ public class MMGame extends GameExpand {
             }
         }
 
-        if (!isMurdererAlive()) msgUtil.broadcastPresetPrefix("murderer-dead");
+        if (!murdererWin) msgUtil.broadcastPresetPrefix("murderer-dead");
 
-        msgUtil.broadcastPresetPrefix(isMurdererAlive() ? "murderer-won" : "innocents-won");
+        msgUtil.broadcastPresetPrefix(murdererWin ? "murderer-won" : "innocents-won");
         msgUtil.broadcastPresetPrefix(players, "congratulations");
         
-        msgUtil.sendTitle(isMurdererAlive() ? "title.murderer-won" : "title.innocents-won", null);
+        msgUtil.sendTitle(murdererWin ? "title.murderer-won" : "title.innocents-won", null);
 
         SoundUtil.sendSoundTo(players, Sound.RANDOM_CLICK.getSound());
         SoundUtil.sendSoundTo(players, "entity.generic.extinguish_fire");

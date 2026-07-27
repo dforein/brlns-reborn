@@ -17,6 +17,7 @@ import org.brlnsreb.core.minigame.MinigameType;
 import org.brlnsreb.core.minigame.match.game.Game;
 import org.brlnsreb.core.minigame.match.waitinglobby.WaitingLobby;
 import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.utils.ChatMsgs;
 import org.brlnsreb.utils.Messages;
 import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.voting.TimeOfDay;
@@ -112,7 +113,7 @@ public abstract class Match {
         //used when the waiting lobby countdown is finishing
         game = createGame(mapId, time, weather);
 
-        msgUtil.broadcastPresetPrefix(
+        msgUtil.broadcastPrefix(
             YamlUtil.getStr("match.waiting-lobby.going-to-play", Configs.getGlobalMessages()), 
             new String[] {
                 YamlUtil.getStr("map-settings.maps." + mapId + ".name", config),
@@ -154,6 +155,7 @@ public abstract class Match {
         switch (state.current) {
             case WAITING_LOBBY, LOBBY_COUNTDOWN:
                 for (CustomPlayer p : players) {
+                    p.sendMessage(ChatMsgs.INFO_PFX + "Match stopped due to config reload.");
                     waitingLobby.onLeave(p);
                     minigame.onLobbyJoin(p);
                 }
@@ -177,7 +179,6 @@ public abstract class Match {
         if (closed) return;
 
         for (CustomPlayer p : players) {
-            p.updatePresetNameTags();
             minigame.onLobbyJoin(p);
         }
 
