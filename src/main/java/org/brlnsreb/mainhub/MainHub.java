@@ -23,7 +23,6 @@ import org.brlnsreb.mainhub.ui.MainLobbyBossBar;
 import org.brlnsreb.utils.ChatMsgs;
 import org.brlnsreb.utils.YamlUtil;
 
-import org.powernukkitx.Server;
 import org.powernukkitx.utils.Config;
 
 public class MainHub extends Lobby {
@@ -176,7 +175,7 @@ public class MainHub extends Lobby {
 
             mgtNpcMap.put(MinigameType.fromNameTag(mgNameTag), npc);
 
-            Server.getInstance().getScheduler().scheduleRepeatingTask(BrlnsReb.instance, 
+            BrlnsReb.getScheduler().scheduleRepeatingTask(BrlnsReb.instance, 
                 () -> updateNpcSubtitle(npc, npcMinigame), 
                 ThreadLocalRandom.current().nextInt(90, 100)
             );

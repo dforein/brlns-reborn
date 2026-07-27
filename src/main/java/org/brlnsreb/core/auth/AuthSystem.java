@@ -1,5 +1,6 @@
 package org.brlnsreb.core.auth;
 
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.data.database.Outcome;
@@ -21,7 +22,7 @@ public class AuthSystem extends MenuAbstract {
     private static Config config;
 
     public static void init() {
-        scheduler = Server.getInstance().getScheduler();
+        scheduler = BrlnsReb.getScheduler();
         config = Configs.getGlobalMessages();
     }
 

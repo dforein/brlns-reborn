@@ -1,6 +1,5 @@
 package org.brlnsreb.minigames.mm.match.game.systems;
 
-import org.powernukkitx.Server;
 import org.powernukkitx.entity.Entity;
 import org.powernukkitx.entity.item.EntityItem;
 import org.powernukkitx.item.Item;
@@ -48,7 +47,7 @@ public class GoldSystem {
             }
         };
         
-        Server.getInstance().getScheduler().scheduleDelayedTask(BrlnsReb.instance, spawnTask, delay);
+        BrlnsReb.getScheduler().scheduleDelayedTask(BrlnsReb.instance, spawnTask, delay);
     }
 
     private void spawnGold() {

@@ -8,6 +8,7 @@ import org.powernukkitx.plugin.PluginLogger;
 import org.powernukkitx.plugin.annotation.PluginMeta;
 import org.powernukkitx.registry.RegisterException;
 import org.powernukkitx.registry.Registries;
+import org.powernukkitx.scheduler.ServerScheduler;
 import org.powernukkitx.utils.TextFormat;
 
 import java.util.ArrayList;
@@ -76,11 +77,9 @@ public class BrlnsReb extends PluginBase {
     @Override
     public void onEnable() {
         saveAllResources();
-        
         underMaintenance = Configs.getGlobalConfig().getBoolean("server-under-maintenance");
-        server = getServer();
 
-        server.setDifficulty(2);
+        server = getServer();
 
         if (underMaintenance) {
             server.getSettings().baseSettings().allowList(true);
@@ -91,6 +90,8 @@ public class BrlnsReb extends PluginBase {
             server.getSettings().save();
             server.reloadWhitelist();
         }
+
+        server.setDifficulty(2);
 
         databaseManager = new DatabaseManager();
 
@@ -150,8 +151,8 @@ public class BrlnsReb extends PluginBase {
 
     public static boolean getGlobalChat() { return globalChat; }
     public static void setGlobalChat(boolean value) { globalChat = value; }
-    public static boolean getSave() { return saveAtShutdown; }
 
+    public static boolean getSave() { return saveAtShutdown; }
     public static void setSave(boolean value) {
         saveAtShutdown = value;
 
@@ -165,4 +166,5 @@ public class BrlnsReb extends PluginBase {
 
     public DatabaseManager getDatabaseManager() { return databaseManager; }
     public MinigameManager getMinigameManager() { return minigameManager; }
+    public static ServerScheduler getScheduler() { return server.getScheduler(); }
 }

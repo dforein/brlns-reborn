@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.core.player.data.PlayerData;
@@ -13,7 +14,6 @@ import org.brlnsreb.core.player.data.StatType;
 import org.brlnsreb.utils.database.DBResults;
 import org.mindrot.jbcrypt.BCrypt;
 
-import org.powernukkitx.Server;
 import org.powernukkitx.scheduler.ServerScheduler;
 
 public class AccountsManager {
@@ -21,7 +21,7 @@ public class AccountsManager {
     private static ServerScheduler scheduler;
 
     public static void init() {
-        scheduler = Server.getInstance().getScheduler();
+        scheduler = BrlnsReb.getScheduler();
     }
 
     public static void loadAccountDataSync(CustomPlayer player, String name) throws SQLException {
@@ -107,6 +107,7 @@ public class AccountsManager {
 
     private static void setAccountData(CustomPlayer player, String name, DBResults dataResults) {
         scheduler.scheduleTask(() -> {
+            if (!player.isOnline()) return;
             PlayerData data = player.data;
 
             data.name = name;
@@ -127,6 +128,8 @@ public class AccountsManager {
             }
 
             if (player.spawned) updatePlayer(player, name);
+
+            PlayerDataManager.onLogin(name, player.getUniqueId());
         });
     }
 
@@ -139,7 +142,7 @@ public class AccountsManager {
         FriendsManager.removeOnlineFriend(data);
         data.resetData();
 
-        updatePlayer(player, player.getName());
+        scheduler.scheduleTask(BrlnsReb.instance, () -> updatePlayer(player, player.getName()));
 
         return outcome;
     }

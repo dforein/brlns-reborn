@@ -2,7 +2,6 @@ package org.brlnsreb.utils;
 
 import org.brlnsreb.BrlnsReb;
 
-import org.powernukkitx.Server;
 import org.powernukkitx.scheduler.Task;
 
 public class TimerSystem {
@@ -40,7 +39,7 @@ public class TimerSystem {
         };
 
         if (onTick != null) onTick.run();   //first run (0 seconds)
-        Server.getInstance().getScheduler().scheduleDelayedRepeatingTask(BrlnsReb.instance, task, 20, 20);
+        BrlnsReb.getScheduler().scheduleDelayedRepeatingTask(BrlnsReb.instance, task, 20, 20);
     }
     
     public void stop() {

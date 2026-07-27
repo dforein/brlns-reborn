@@ -1,9 +1,8 @@
 package org.brlnsreb.minigames.mm.match.game.ui;
 
-import org.powernukkitx.Server;
 import org.powernukkitx.form.window.SimpleForm;
 import org.powernukkitx.scheduler.TaskHandler;
-
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.minigame.match.GameStateType;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerUtils;
@@ -112,7 +111,7 @@ public class MMSpectatorMenu extends MenuAbstract {
         if (oldHandler != null) oldHandler.cancel();
 
         final TaskHandler[] currHandler = new TaskHandler[1];
-        currHandler[0] = Server.getInstance().getScheduler().scheduleRepeatingTask(() -> {
+        currHandler[0] = BrlnsReb.getScheduler().scheduleRepeatingTask(() -> {
             if (!game.getPlayers().contains(target) || !game.getSpectators().contains(spectator)
                     || !(game.getCurrentState() == GameStateType.IN_GAME || game.getCurrentState() == GameStateType.ENDING)
             ) {

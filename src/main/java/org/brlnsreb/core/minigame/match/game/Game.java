@@ -25,7 +25,6 @@ import org.brlnsreb.utils.voting.TimeOfDay;
 import org.brlnsreb.utils.voting.Weather;
 
 import org.powernukkitx.Player;
-import org.powernukkitx.Server;
 import org.powernukkitx.entity.item.EntityItem;
 import org.powernukkitx.event.entity.EntityDamageEvent;
 import org.powernukkitx.event.entity.ProjectileHitEvent;
@@ -69,7 +68,7 @@ public abstract class Game {
         this.msgUtil = match.getMsgUtil();
         this.spectatorItems = new SpectatorItemManager();
 
-        this.scheduler = Server.getInstance().getScheduler();
+        this.scheduler = BrlnsReb.getScheduler();
     }
 
     protected abstract MapLevel prepareMap(String mapId, TimeOfDay time, Weather weather);

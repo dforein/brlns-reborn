@@ -12,7 +12,7 @@ import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.mainhub.items.MainLobbyItemManager;
 import org.brlnsreb.mainhub.ui.MainLobbyBossBar;
 import org.brlnsreb.utils.YamlUtil;
-import org.powernukkitx.Server;
+
 import org.powernukkitx.utils.Config;
 
 public abstract class MinigameLobby extends Lobby {
@@ -36,7 +36,7 @@ public abstract class MinigameLobby extends Lobby {
             player -> MainHub.instance.onJoin(player),
             false
         );
-        Server.getInstance().getScheduler().scheduleRepeatingTask(BrlnsReb.instance, 
+        BrlnsReb.getScheduler().scheduleRepeatingTask(BrlnsReb.instance, 
             () -> updateBackToHubNpcSubtitle(), 
             ThreadLocalRandom.current().nextInt(190, 210)
         );
@@ -87,6 +87,9 @@ public abstract class MinigameLobby extends Lobby {
 
     public void onConfigReload() {
         super.onConfigReload();
+        
+        joinNpc.blockNpc(7);
+        backToHubNpc.blockNpc(7);
 
         reloadNpcConfigData(
             joinNpc, 

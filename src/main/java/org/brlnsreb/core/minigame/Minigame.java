@@ -48,7 +48,7 @@ public abstract class Minigame {
         for (Match match : pendingMatches) match.forceStop();
         pendingMatches.clear();
 
-        createNewPendingMatch();
+        BrlnsReb.getScheduler().scheduleDelayedTask(BrlnsReb.instance, () -> createNewPendingMatch(), 6);
     }
 
 

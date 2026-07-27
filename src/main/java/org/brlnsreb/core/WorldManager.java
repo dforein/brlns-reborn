@@ -87,7 +87,7 @@ public class WorldManager {
         server.getScheduler().scheduleDelayedTask(() -> {
             server.unloadLevel(level, true);
             reservedFolderNames.remove(folderName);
-        }, 20);
+        }, 5);
 
         CustomPlayer.removeLevel(level.getId());
         enabledPhysicsLevels.remove(level.getId());

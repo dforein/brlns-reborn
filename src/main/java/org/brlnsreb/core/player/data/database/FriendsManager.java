@@ -7,6 +7,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.function.Consumer;
 
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerUtils;
@@ -14,7 +15,7 @@ import org.brlnsreb.core.player.data.PlayerData;
 import org.brlnsreb.utils.ChatMsgs;
 import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.database.DBResults;
-import org.powernukkitx.Server;
+
 import org.powernukkitx.scheduler.ServerScheduler;
 
 public class FriendsManager {
@@ -22,7 +23,7 @@ public class FriendsManager {
     private static ServerScheduler scheduler;
 
     public static void init() {
-        scheduler = Server.getInstance().getScheduler();
+        scheduler = BrlnsReb.getScheduler();
     }
 
     //friends init

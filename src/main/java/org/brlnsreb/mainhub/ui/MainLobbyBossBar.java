@@ -9,7 +9,6 @@ import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.abstraction.BossBarAbstract;
 
 import org.powernukkitx.Player;
-import org.powernukkitx.Server;
 import org.powernukkitx.level.Level;
 import org.powernukkitx.scheduler.TaskHandler;
 import org.powernukkitx.utils.Config;
@@ -47,7 +46,7 @@ public class MainLobbyBossBar extends BossBarAbstract {
     }
 
     public void startBossBarUpdates(Level level) {
-        Server.getInstance().getScheduler().scheduleRepeatingTask(BrlnsReb.instance,
+        BrlnsReb.getScheduler().scheduleRepeatingTask(BrlnsReb.instance,
             () -> {
                 for (Player player : level.getPlayers().values()) {
                     this.updateLobbyBossBar((CustomPlayer) player);
@@ -72,7 +71,7 @@ public class MainLobbyBossBar extends BossBarAbstract {
                 int[] colorIndex = {0};
 
                 TaskHandler[] taskRef = new TaskHandler[1];
-                taskRef[0] = Server.getInstance().getScheduler().scheduleRepeatingTask(BrlnsReb.instance,
+                taskRef[0] = BrlnsReb.getScheduler().scheduleRepeatingTask(BrlnsReb.instance,
                     () -> {
                         int index = colorIndex[0];
                         if (index >= colors.size()) {
