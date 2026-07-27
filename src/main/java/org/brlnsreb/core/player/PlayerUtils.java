@@ -79,7 +79,7 @@ public class PlayerUtils {
 
         if (oldState != null) {
             switch (oldState) {
-                case LOBBY, WAITING_LOBBY, END_LOBBY:
+                case LOBBY, WAITING_LOBBY, DEATH_LOBBY:
                     p.setPresetNameTag();
                     return;                     //already coming from a lobby, no need to execute the following code
                 

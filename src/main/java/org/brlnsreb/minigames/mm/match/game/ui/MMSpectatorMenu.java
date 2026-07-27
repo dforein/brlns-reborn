@@ -95,7 +95,7 @@ public class MMSpectatorMenu extends MenuAbstract {
                 : (buttonId - 1)
         ));
         
-        if (target == null) {
+        if (target == null || !game.getPlayers().contains(target)) {
             game.getMsgUtil().sendPresetMessagePrefix(spectator, "player-not-available");
             return;
         }

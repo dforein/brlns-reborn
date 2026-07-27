@@ -75,6 +75,8 @@ public class MMGame extends GameExpand {
     private CustomPlayer sheriff;
     private static boolean friendlyFireDeath;
 
+    private final boolean nightVision;
+
     private final Set<Entity> deadBodies = new HashSet<>();
 
     private static final String[] blockedChatCommands = {
@@ -100,9 +102,11 @@ public class MMGame extends GameExpand {
         this.projectile = new ProjectileSystem(this);
         this.raycast = new RaycastSystem(this, scheduler);
 
-        firstKill = true;
+        this.firstKill = true;
         damageMultiplier = (float) config.getDouble("game.murderer-damage-multiplier");
         friendlyFireDeath = config.getBoolean("game.items.hoe.friendly-fire-death");
+
+        this.nightVision = config.getBoolean(map.getConfigPath() + "night-vision");
 
         MMPlayerGameData.setExpPrizes(config);
         MMPlayerGameData.setCoinsPrizes(config);
@@ -129,10 +133,14 @@ public class MMGame extends GameExpand {
     protected void onJoinPreparePlayer(CustomPlayer player) {
         player.interactMode = InteractMode.LIMITED;
 
-        if (config.getBoolean(map.getConfigPath() + "night-vision")) {
-            for (CustomPlayer p : players) {
-                PlayerUtils.giveEffect(p, EffectType.NIGHT_VISION, 99999999, 2, false);
-            }
+        if (nightVision) {
+            PlayerUtils.giveEffect(
+                player, 
+                EffectType.NIGHT_VISION, 
+                99999999, 
+                2, 
+                false
+            );
         }
 
         bossBar.updateExp(player, gameDataMap.get(player));
@@ -160,7 +168,7 @@ public class MMGame extends GameExpand {
 
 
     public void onLeave(CustomPlayer player) {
-        if (player.isGameSpectator()) return;
+        if (!player.isPlaying()) return;
 
         roleCheckOnLeave(player, player.getPosition());
         checkWinConditions();
@@ -296,6 +304,7 @@ public class MMGame extends GameExpand {
 
             case SHERIFF -> {
                 sheriff = player;
+                raycast.resetXpBarRecharge(sheriff);
                 msgUtil.sendPresetMessagePrefix(player, "sheriff-advice");
             }
         
@@ -416,16 +425,20 @@ public class MMGame extends GameExpand {
     private void sheriffKillsInnocent() {
         if (friendlyFireDeath) {
             msgUtil.broadcastPresetPrefix("sheriff-friendly-fire-death");
-            getMatch().onDeath(sheriff, null);
+            scheduler.scheduleTask(BrlnsReb.instance, 
+                () -> getMatch().onDeath(sheriff, null)
+            );
         } else {
             msgUtil.broadcastPresetPrefix("sheriff-friendly-fire");
         }
     }
 
     private void roleCheckOnLeave(CustomPlayer player, Position lastPos) {
-        if (gameDataMap.get(player).role == MMRole.MURDERER) {
+        MMPlayerGameData gameData = gameDataMap.remove(player);
+        if (gameData == null) return;
+        if (gameData.role == MMRole.MURDERER) {
             murderer = null;
-        } else if (gameDataMap.get(player).role == MMRole.SHERIFF) {
+        } else if (gameData.role == MMRole.SHERIFF) {
             sheriff = null;
 
             death.dropSheriffHoe(lastPos);
@@ -434,8 +447,6 @@ public class MMGame extends GameExpand {
             msgUtil.broadcastPresetPrefix("sheriff-gun-dropped");
             msgUtil.broadcastPresetPrefix("sheriff-dead-instructions");
         }
-
-        gameDataMap.remove(player);
     }
 
 

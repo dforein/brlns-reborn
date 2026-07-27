@@ -231,7 +231,7 @@ public class FriendCommand extends Command {
                             friend.minigameCurrent.onLobbyJoin(sender);
                         }
                         break;
-                    case WAITING_LOBBY, END_LOBBY:
+                    case WAITING_LOBBY, DEATH_LOBBY:
                         friend.matchCurrent.onJoin(sender);
                         break;
                     case PLAYING, SPECTATOR:

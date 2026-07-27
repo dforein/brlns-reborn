@@ -35,7 +35,7 @@ public class DeathLobby extends Lobby {
     //join logic
 
     protected PlayerStateType onJoinState() {
-        return PlayerStateType.END_LOBBY;
+        return PlayerStateType.DEATH_LOBBY;
     }
 
     protected void onJoinMessages(CustomPlayer player) {

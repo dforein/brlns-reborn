@@ -1,7 +1,6 @@
 package org.brlnsreb.listeners.games;
 
 import org.brlnsreb.core.player.CustomPlayer;
-import org.brlnsreb.core.player.PlayerStateType;
 import org.powernukkitx.entity.Entity;
 import org.powernukkitx.event.EventHandler;
 import org.powernukkitx.event.Listener;
@@ -17,7 +16,7 @@ public class EntityDamageListener implements Listener {
         if (entity instanceof CustomPlayer) {
             CustomPlayer player = (CustomPlayer) entity;
             
-            if (player.state == PlayerStateType.PLAYING) {
+            if (player.isPlaying()) {
                 player.matchCurrent.getGame().onPlayerDamage(player, event);
             }
         }

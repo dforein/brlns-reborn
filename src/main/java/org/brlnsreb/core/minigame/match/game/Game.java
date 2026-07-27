@@ -101,7 +101,7 @@ public abstract class Game {
     public void onJoinAsSpectator(CustomPlayer player) {
         PlayerUtils.changeWorld(player, onJoinLocation(player), false);
 
-        if (player.state == PlayerStateType.PLAYING) {      //reset everything
+        if (player.isPlaying()) {      //reset everything
             PlayerUtils.resetUiAndInventories(player);
             PlayerUtils.resetPlayer(player, Player.ADVENTURE, 20);
         }

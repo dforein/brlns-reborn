@@ -110,6 +110,8 @@ public class CustomPlayer extends Player {
         this.asyncFlag.set(false);
     }
 
+    public boolean isPlaying() { return this.state == PlayerStateType.PLAYING; }
+
     public boolean isGameSpectator() { return this.state == PlayerStateType.SPECTATOR; }
     public void setGameSpectator() {
         this.state = PlayerStateType.SPECTATOR;
@@ -146,7 +148,7 @@ public class CustomPlayer extends Player {
         switch (this.state) {
             case LOBBY -> this.setNameTag(this.grayNameTag);
             case WAITING_LOBBY -> this.setNameTag(this.greenNameTag);
-            case END_LOBBY -> this.setNameTag("§l§fGHOST§r " + data.name);
+            case DEATH_LOBBY -> this.setNameTag("§l§fGHOST§r " + data.name);
             default -> BrlnsReb.instance.getLogger().alert("CustomPlayer::resetNameTag, unrecognized state: " + state.toString());
         } 
     }
@@ -309,7 +311,7 @@ public class CustomPlayer extends Player {
                 }
             }
 
-            case LOBBY, WAITING_LOBBY, END_LOBBY -> {
+            case LOBBY, WAITING_LOBBY, DEATH_LOBBY -> {
                 //go back to lobby spawn (in case of void)
                 this.lobbyCurrent.get().teleportToSpawn(this);
             }

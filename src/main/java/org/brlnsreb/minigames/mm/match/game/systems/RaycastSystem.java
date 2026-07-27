@@ -55,6 +55,8 @@ public class RaycastSystem {
             }
         }
 
+        startXpBarRecharge(shooter);
+
         boolean particle = true;
         for (double d = 0; d < maxDistance; d += step) {
             Vector3 point = start.add(direction.multiply(d));
@@ -70,8 +72,6 @@ public class RaycastSystem {
                 }
             }
         }
-
-        startXpBarRecharge(shooter);
         
         return null;
     }
@@ -81,6 +81,7 @@ public class RaycastSystem {
             final int tick = i;
             
             scheduler.scheduleDelayedTask(() -> {
+                if (!shooter.isPlaying()) return;
                 int progress = (int) (tick / cooldownTicks * 100.0);
                 shooter.setExperience(progress, shooter.data.getFloorLevel());
             }, i);
