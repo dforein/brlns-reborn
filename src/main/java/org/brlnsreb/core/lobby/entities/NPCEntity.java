@@ -168,7 +168,7 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
         task.accept(player);
     }
 
-    public void blockNpc(int ticks) {
+    public void tempBlockTask(int ticks) {
         Consumer<CustomPlayer> taskTemp = task;
         task = player -> {};
         BrlnsReb.getScheduler().scheduleDelayedTask(BrlnsReb.instance, () -> this.setTask(taskTemp), ticks);

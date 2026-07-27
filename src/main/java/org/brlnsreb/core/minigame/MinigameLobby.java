@@ -88,8 +88,8 @@ public abstract class MinigameLobby extends Lobby {
     public void onConfigReload() {
         super.onConfigReload();
         
-        joinNpc.blockNpc(7);
-        backToHubNpc.blockNpc(7);
+        joinNpc.tempBlockTask(7);
+        backToHubNpc.tempBlockTask(7);
 
         reloadNpcConfigData(
             joinNpc, 
