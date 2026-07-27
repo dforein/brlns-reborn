@@ -122,19 +122,25 @@ public class FriendsManager {
     public static CompletableFuture<Outcome> sendRequest(String senderName, String receiverName) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                if (senderName.equals(receiverName)) return Outcome.CANNOT_FRIEND_SELF;
+                if (senderName.equalsIgnoreCase(receiverName)) return Outcome.CANNOT_FRIEND_SELF;
                 if (areFriends(senderName, receiverName)) return Outcome.ALREADY_FRIENDS;
 
-                //check if player is online, in such case use the player's data for next checks
-                PlayerData data;
-                data = PlayerDataManager.getPlayerData(senderName);
+                //check if receiver exists
+                DBResults accountsResults = DatabaseManager.executeSelect(
+                    "SELECT * FROM accounts WHERE name = ?", 
+                    receiverName
+                );
+                if (accountsResults.isEmpty()) return Outcome.NAME_NOT_FOUND;
 
-                if (data != null) {
+                //check if sender is online, in such case use the sender's data for next checks
+                PlayerData senderData = PlayerDataManager.getPlayerData(senderName);
+
+                if (senderData != null) {
                     //(1) check if the request was already sent
-                    if (data.hasSentRequestTo(receiverName)) return Outcome.REQUEST_ALREADY_SENT;
+                    if (senderData.hasSentRequestTo(receiverName)) return Outcome.REQUEST_ALREADY_SENT;
 
                     //(2) check if the other player sent as well a request in the past, in such case accept directly
-                    if (data.hasReceivedRequestFrom(receiverName)) {
+                    if (senderData.hasReceivedRequestFrom(receiverName)) {
                         acceptRequestSync(receiverName, senderName);    //the receiver is a past sender, so i put the receiver as the sender arg
                         return Outcome.ADDED_FRIEND;
                     }

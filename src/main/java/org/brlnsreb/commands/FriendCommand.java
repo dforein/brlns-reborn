@@ -67,6 +67,7 @@ public class FriendCommand extends Command {
                                 case OK -> ChatMsgs.SUCCESS_PFX + "Friend request sent to §e" + ctx.getArg("name");
                                 //ps: here ADDED_FRIEND isn't OK, it's an extraordinary outcome; while in /friend accept it's normal so it's OK
                                 case ADDED_FRIEND -> ChatMsgs.SUCCESS_PFX + "§e" + ctx.getArg("name") + "§a added to your friend list";
+                                case NAME_NOT_FOUND -> ChatMsgs.ERROR_PFX + "Does not exist such a player named " + ctx.getArg("name");
                                 case CANNOT_FRIEND_SELF -> ChatMsgs.ERROR_PFX + "You cannot send a request to yourself!";
                                 case ALREADY_FRIENDS -> ChatMsgs.ERROR_PFX + ctx.getArg("name") + " is already your friend!";
                                 case REQUEST_ALREADY_SENT -> ChatMsgs.ERROR_PFX + "You have already sent a request to " + ctx.getArg("name");
