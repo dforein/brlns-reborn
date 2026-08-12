@@ -1,4 +1,4 @@
-package org.brlnsreb.commands;
+package org.brlnsreb.commands.op;
 
 import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.minigame.MinigameManager;

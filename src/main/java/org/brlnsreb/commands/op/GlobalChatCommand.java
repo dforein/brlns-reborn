@@ -1,4 +1,4 @@
-package org.brlnsreb.commands;
+package org.brlnsreb.commands.op;
 
 import org.brlnsreb.BrlnsReb;
 import org.powernukkitx.command.Command;
@@ -8,13 +8,13 @@ import org.powernukkitx.plugin.annotation.CommandDefinition.CommandMode;
 import org.powernukkitx.utils.TextFormat;
 
 @CommandDefinition(
-    name = "togglesave", 
+    name = "globalchat",
     permission = "admin",
-    description = "Toggle saving worlds at server shutdown",
+    description = "Toggle global server chat or local level chat",
     commandMode = CommandMode.RAW
 )
 
-public class ToggleSaveCommand extends Command {
+public class GlobalChatCommand extends Command {
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
@@ -23,12 +23,12 @@ public class ToggleSaveCommand extends Command {
             return true;
         }
 
-        if (BrlnsReb.getSave()) {
-            BrlnsReb.setSave(false);
-            sender.sendMessage(TextFormat.RED + "Saving disabled");
+        if (BrlnsReb.getGlobalChat()) {
+            BrlnsReb.setGlobalChat(false);
+            sender.sendMessage(TextFormat.RED + "Global Chat disabled");
         } else {
-            BrlnsReb.setSave(true);
-            sender.sendMessage(TextFormat.GREEN + "Saving enabled");
+            BrlnsReb.setGlobalChat(true);
+            sender.sendMessage(TextFormat.GREEN + "Global Chat enabled");
         }
         return true;
     }
