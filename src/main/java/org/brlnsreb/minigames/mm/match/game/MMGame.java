@@ -60,7 +60,6 @@ public class MMGame extends GameExpand {
     private final MMItemManager items;
     private final MMSpectatorMenu spectatorMenu;
 
-    private TimerSystem timer;
     private Task updateUiTask;
     private Task checkPosTask;
     private final GoldSystem gold;
@@ -324,6 +323,8 @@ public class MMGame extends GameExpand {
     }
 
     public void afterDeath(DamageCause cause, Location deathLoc, CustomPlayer victim, CustomPlayer killer) {
+        if (state.current != GameStateType.IN_GAME) return;
+
         MMPlayerGameData gameData = gameDataMap.get(killer);
 
         if (isMurdererAlive() && killer == murderer) {
@@ -523,6 +524,7 @@ public class MMGame extends GameExpand {
             murdererWin = true;
             onGameEnding();
             return true;
+
         }
 
         return false;
@@ -562,11 +564,11 @@ public class MMGame extends GameExpand {
     }
 
     public void forceStop() {
-        timer.stop();
         stopGame();
     }
 
     private void stopGame() {
+        timer.stop();
         if (updateUiTask != null) updateUiTask.cancel();
         if (checkPosTask != null) checkPosTask.cancel();
         gold.stop();

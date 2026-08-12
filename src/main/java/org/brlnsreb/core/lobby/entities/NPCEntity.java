@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.function.Consumer;
 
 import javax.imageio.ImageIO;
@@ -189,22 +190,26 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
 
             org.cloudburstmc.protocol.bedrock.data.skin.Skin skin = org.cloudburstmc.protocol.bedrock.data.skin.Skin.builder()
                 .skinId(skinFilePath)
-                .skinData(skinData)
+                .fullSkinId(skinFilePath + "_")
+                .playFabId("")
                 .skinResourcePatch(GEOMETRY_CUSTOM)
+                .skinData(skinData)
+                .geometryData(GEOMETRY_HUMANOID_JSON)
+                .geometryDataEngineVersion("0.0.0")
                 .geometryName("geometry.humanoid.custom")
+                .animationData("")
+                .animations(List.of())
+                .capeId("")
                 .capeData(ImageData.EMPTY)
+                .capeOnClassic(false)
                 .premium(false)
                 .persona(false)
-                .capeOnClassic(false)
-                .primaryUser(true)
-                .playFabId("")
-                .capeId("")
-                .fullSkinId(skinFilePath + "_")
                 .armSize("wide")
                 .skinColor("#0")
-                .geometryData(GEOMETRY_HUMANOID_JSON)
-                .animationData("")
-                .geometryDataEngineVersion("")
+                .personaPieces(List.of())
+                .tintColors(List.of())
+                .primaryUser(true)
+                .overridingPlayerAppearance(true)
                 .build();
             
             return new Skin(skin, true);

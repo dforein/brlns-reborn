@@ -13,7 +13,6 @@ import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.mainhub.MainHub;
-import org.brlnsreb.utils.ChatMsgs;
 import org.brlnsreb.utils.YamlUtil;
 import org.powernukkitx.Player;
 import org.powernukkitx.entity.Entity;
@@ -129,7 +128,6 @@ public abstract class Lobby {
         Map<Long, Player> players = level.getPlayers();
         if (!players.isEmpty()) {
             for (Player p : players.values()) {
-                p.sendMessage(ChatMsgs.ERROR_PFX + "Something wrong happened, joining main hub...");
                 MainHub.instance.onJoin((CustomPlayer) p);
             }
         }
