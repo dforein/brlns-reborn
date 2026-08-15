@@ -7,6 +7,7 @@ import org.brlnsreb.core.player.data.database.AccountsManager;
 import org.brlnsreb.core.player.data.database.FriendsManager;
 import org.brlnsreb.core.player.data.database.PlayerDataManager;
 import org.brlnsreb.mainhub.MainHub;
+import org.brlnsreb.utils.abstraction.ScoreboardAbstract;
 import org.powernukkitx.Player;
 import org.powernukkitx.event.EventHandler;
 import org.powernukkitx.event.EventPriority;
@@ -44,6 +45,7 @@ public class PlayerQuitListener implements Listener {
         if (player.getLobby() != null && player.getLobby() instanceof DeathLobby deathLobby) {
             deathLobby.onLeave(p);
         }
+        ScoreboardAbstract.remove(player);
         PlayerDataManager.onServerLeave(player);
         player.save();
     }

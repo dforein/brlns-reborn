@@ -113,6 +113,12 @@ public abstract class WaitingLobby extends Lobby {
         onGameStart();
     }
 
+    @Override
+    public void close() {
+        updateUiTask.cancel();
+        super.close();
+    }
+
 
     //join-leave logic
 
@@ -261,8 +267,6 @@ public abstract class WaitingLobby extends Lobby {
     //game start
 
     protected void onGameStart() {
-        updateUiTask.cancel();
-
         for (CustomPlayer p : players) {
             PlayerUtils.resetUiAndInventories(p);
         }

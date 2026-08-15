@@ -74,7 +74,7 @@ public class DeathLobby extends Lobby {
                 }
             }
         };
-        BrlnsReb.getScheduler().scheduleDelayedRepeatingTask(BrlnsReb.instance, afkCheckTask, 120 * 20, 30 * 20);
+        BrlnsReb.getScheduler().scheduleDelayedRepeatingTask(BrlnsReb.instance, afkCheckTask, 30 * 20, 30 * 20);
     }
 
 
