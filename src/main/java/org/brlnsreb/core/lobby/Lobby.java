@@ -33,6 +33,18 @@ public abstract class Lobby {
     protected Config messages;
     protected Map<NPCEntity, String> npcConfigPathMap = new HashMap<>();
 
+    public Lobby(Minigame minigame) {
+        this(minigame, null);
+    }
+
+    public Lobby(Match match) {
+        this(match.getMinigame(), match);
+    }
+
+    public Lobby() {
+        this(null, null);
+    }
+
     public Lobby(Minigame minigame, Match match) {
         this.minigame = minigame;
         this.match = match;
@@ -49,17 +61,6 @@ public abstract class Lobby {
         );
     }
 
-    public Lobby(Minigame minigame) {
-        this(minigame, null);
-    }
-
-    public Lobby(Match match) {
-        this(match.getMinigame(), match);
-    }
-
-    public Lobby() {
-        this(null, null);
-    }
 
     public boolean onJoin(CustomPlayer player) {
         PlayerUtils.changeWorld(player, spawnLoc, true);
@@ -87,6 +88,7 @@ public abstract class Lobby {
     public void teleportToSpawn(CustomPlayer player) {
         PlayerUtils.lobbyTeleport(player, spawnLoc);
     }
+
 
     protected void createHologram(Position pos, String text) {
         HologramEntity holo = new HologramEntity(pos.getChunk(), Entity.getDefaultNBT(pos));
@@ -124,6 +126,7 @@ public abstract class Lobby {
         return npc;
     }
 
+
     public void close() {
         Map<Long, Player> players = level.getPlayers();
         if (!players.isEmpty()) {
@@ -134,6 +137,7 @@ public abstract class Lobby {
 
         WorldManager.unloadLevel(this.level);
     }
+
 
     public void onConfigReload() {
         this.spawnLoc = YamlUtil.parseLocationCentered(
@@ -157,6 +161,7 @@ public abstract class Lobby {
         if (fixedSubtitle) npc.updateSubtitle(customConfig.getString(configPath + "text2"));
         npc.setSkin(customConfig.getString(configPath + "skin-file"));
     }
+    
 
     public Level getLevel() { return this.level; }
     public Location getSpawnLoc() { return this.spawnLoc; }

@@ -45,20 +45,20 @@ match:
   death-lobby:
     world: _deathlobby
     spawn-pos: 71 10 -146
-    spawn-yaw: -50
+    spawn-yaw: -90
     npc:
       play-again:
         pos: 74 11 -148
         text1: '&l&aPlay Again'
-        default-yaw: 50
+        default-yaw: 90
         skin-file: global/skins/death-lobby-play-again.png
       spectate:
         pos: 75 11 -146
         text1: '&l&9Spectate'
-        default-yaw: 50
+        default-yaw: 90
         skin-file: global/skins/death-lobby-spectate.png
       return-to-lobby:
         pos: 74 11 -144
         text1: '&l&cReturn To Lobby'
-        default-yaw: 50
+        default-yaw: 0
         skin-file: global/skins/death-lobby-return-to-lobby.png

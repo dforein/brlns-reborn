@@ -88,7 +88,6 @@ public abstract class WaitingLobby extends Lobby {
         this.updateUiTask = new Task() {
             @Override
             public void onRun(int currentTick) {
-                for (CustomPlayer p : players) scoreboard.updateWaitingLobby(p);
                 Messages.sendActionBar(
                     players, 
                     hasJoinedLast ? "match.waiting-lobby.action-bar.on-join" : "match.waiting-lobby.action-bar.on-leave", 
@@ -153,7 +152,7 @@ public abstract class WaitingLobby extends Lobby {
     }
 
     protected void onJoinUi(CustomPlayer player) {
-        bossBar.updateWaitingLobbyBossBar();
+        bossBar.updatePlayer(player);
         scoreboard.updateWaitingLobby(player);
     }
 
@@ -217,7 +216,7 @@ public abstract class WaitingLobby extends Lobby {
                 shortenCountdown(false);
             }
 
-            bossBar.updateWaitingLobbyBossBar(remaining);
+            bossBar.updateLobbyCountdown(remaining);
         }, null);
     }
 
@@ -233,7 +232,7 @@ public abstract class WaitingLobby extends Lobby {
         timer.start(secondsShortenedCountdown, () -> {
             int remaining = timer.getSecondsRemaining();
 
-            bossBar.updateWaitingLobbyBossBar(remaining);
+            bossBar.updateLobbyCountdown(remaining);
             
             float pitch = ThreadLocalRandom.current().nextFloat(0.9f, 1.01f);
             SoundUtil.sendSoundTo(players, Sound.RANDOM_CLICK.getSound(), 1.0f, pitch);
@@ -263,7 +262,6 @@ public abstract class WaitingLobby extends Lobby {
 
     protected void onGameStart() {
         updateUiTask.cancel();
-        Messages.resetActionBar(players);
 
         for (CustomPlayer p : players) {
             PlayerUtils.resetUiAndInventories(p);

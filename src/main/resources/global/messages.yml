@@ -15,6 +15,7 @@ lobby:
   friend-server-left: '&3%s &ais no longer online'
 
 match:
+  force-stop: '&cMatch is stopping!'
   waiting-lobby:
     action-bar:
       on-join: '&3%s &7joined (&a%d&7/&a%d&7)'
@@ -25,10 +26,8 @@ match:
       weather-vote: '&aYou voted on the weather: &e%s'
     going-to-play: '&eYou''re going to play on the map &d%s &eat &d%s &e/ &d%s'
     timer-shortened: '&aTimer shortened to %d seconds'
-    
   game:
     map-credits: '&eMap created by &d%s'
-  force-stop: '&cMatch is stopping!'
   death-lobby:
     title: '&cYOU ARE DEAD'
     subtitle: '&6Oh no... too bad'

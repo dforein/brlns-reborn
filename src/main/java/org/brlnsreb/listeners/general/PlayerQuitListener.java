@@ -1,6 +1,7 @@
 package org.brlnsreb.listeners.general;
 
 import org.brlnsreb.BrlnsReb;
+import org.brlnsreb.core.minigame.match.DeathLobby;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.data.database.AccountsManager;
 import org.brlnsreb.core.player.data.database.FriendsManager;
@@ -37,7 +38,12 @@ public class PlayerQuitListener implements Listener {
 
         AccountsManager.savePlayerData(player);
         FriendsManager.removeOnlineFriend(player.data);
-        if (player.matchCurrent != null) player.matchCurrent.onLeave(player);
+        if (player.matchCurrent != null) {
+            player.matchCurrent.onLeave(player);
+        }
+        if (player.getLobby() != null && player.getLobby() instanceof DeathLobby deathLobby) {
+            deathLobby.onLeave(p);
+        }
         PlayerDataManager.onServerLeave(player);
         player.save();
     }

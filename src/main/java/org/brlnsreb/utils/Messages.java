@@ -60,15 +60,6 @@ public class Messages {
         }
     }
 
-    public static void resetActionBar(Collection<? extends Player> players) {
-        for (Player p : players) resetActionBar(p);
-    }
-
-    public static void resetActionBar(Player player) {
-        player.sendActionBar("", 0, 0, 0);
-    }
-
-
     //title
 
     public void sendTitle(String pathTitle, String pathSubTitle) {

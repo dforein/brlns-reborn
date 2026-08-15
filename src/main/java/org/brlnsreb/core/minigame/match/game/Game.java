@@ -40,6 +40,10 @@ import org.powernukkitx.utils.TextFormat;
 
 public abstract class Game {
 
+    protected final Config config;
+    protected final Config messages;
+    protected final Messages msgUtil;
+
     protected final Match match;
     protected final Minigame minigame;
     protected final GameState state;
@@ -47,8 +51,6 @@ public abstract class Game {
     protected final Set<CustomPlayer> spectators;
     protected final MapLevel map;
 
-    protected final Config config;
-    protected final Messages msgUtil;
     protected final SpectatorItemManager spectatorItems;
 
     protected TimerSystem timer;
@@ -57,6 +59,8 @@ public abstract class Game {
 
     public Game(Match match, String mapId, TimeOfDay time, Weather weather) {
         this.config = match.getConfig();
+        this.messages = match.getMessages();
+        this.msgUtil = match.getMsgUtil();
 
         this.match = match;
         this.minigame = match.getMinigame();
@@ -64,8 +68,7 @@ public abstract class Game {
         this.players = match.getPlayers();
         this.spectators = match.getSpectators();
         this.map = prepareMap(mapId, time, weather);
-
-        this.msgUtil = match.getMsgUtil();
+        
         this.spectatorItems = new SpectatorItemManager();
 
         this.scheduler = BrlnsReb.getScheduler();

@@ -17,6 +17,7 @@ import org.brlnsreb.core.minigame.MinigameType;
 import org.brlnsreb.core.minigame.match.game.Game;
 import org.brlnsreb.core.minigame.match.waitinglobby.WaitingLobby;
 import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.utils.ChatMsgs;
 import org.brlnsreb.utils.Messages;
 import org.brlnsreb.utils.YamlUtil;
@@ -90,20 +91,25 @@ public abstract class Match {
     }
 
     public void onLeave(CustomPlayer player) {
+        if (player.state == PlayerStateType.DEATH_LOBBY) return;
+
         switch (state.current) {
-            case WAITING_LOBBY, LOBBY_COUNTDOWN:
+            case WAITING_LOBBY, LOBBY_COUNTDOWN -> {
                 players.remove(player);
                 waitingLobby.onLeave(player);
-                break;
+                minigame.onMatchLeave();
+            }
         
-            case PREGAME_COUNTDOWN, IN_GAME, ENDING:
-                players.remove(player);
-                spectators.remove(player);
-                game.prepareAndSaveData(player, false);
-                game.onLeave(player);
-                break;
+            case PREGAME_COUNTDOWN, IN_GAME, ENDING -> {
+                if (player.isPlaying()) {
+                    players.remove(player);
+                    game.prepareAndSaveData(player, false);
+                    game.onLeave(player);
+                } else if (player.isGameSpectator()) {
+                    spectators.remove(player);
+                }
+            }
         }
-        minigame.onMatchLeave();
     }
 
 
@@ -149,7 +155,7 @@ public abstract class Match {
         if (closed) return;
         
         msgUtil.broadcast(msgUtil.getStrPrefix(
-            "force-stop", 
+            "match.force-stop", 
             Configs.getGlobalMessages()
         ));
 
@@ -181,6 +187,10 @@ public abstract class Match {
 
         for (CustomPlayer p : players) {
             minigame.onLobbyJoin(p);
+        }
+
+        for (CustomPlayer s : spectators) {
+            minigame.onLobbyJoin(s);
         }
 
         minigame.onMatchEnding(this);

@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.brlnsreb.core.player.CustomPlayer;
-import org.brlnsreb.core.player.PlayerUtils;
 
 public abstract class ScoreboardAbstract {
     
@@ -23,6 +22,8 @@ public abstract class ScoreboardAbstract {
     protected Scoreboard getScoreboardOrCreate(CustomPlayer player) {
         if (player == null || !player.isOnline()) return null;
         if (player.hasScoreboard()) return player.getScoreboard();
+
+        remove(player);
 
         Scoreboard sb = new Scoreboard(OBJECTIVE_NAME, DISPLAY_TITLE);
         player.setScoreboard(sb);
@@ -60,13 +61,9 @@ public abstract class ScoreboardAbstract {
         draw(sb, player.getUniqueId(), lines);
     }
 
-    public void remove(CustomPlayer player) {
-        //use this to remove the scoreboard, if there is one
-        PlayerUtils.removeScoreboard(player);
+    public static void remove(CustomPlayer player) {
+        //use this to remove the scorers associated to the player
         activeScorers.remove(player.getUniqueId());
-        
-        //PlayerUtils.removeScoreboard(player) can be used also outside this class, so in that case activeScorers won't be cleared, 
-        //however, this class will be used in already started matches, therefore at match ending it will be deleted (-> no memory leak)
     }
 
 

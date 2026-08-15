@@ -25,6 +25,7 @@ public class MMMatch extends MatchExpand {
             "map-settings.maps." + map + ".weather", 
             config
         ));
+        
         return new MMGame(this, map, time, weather);
     }
 

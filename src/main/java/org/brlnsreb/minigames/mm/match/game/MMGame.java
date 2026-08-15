@@ -291,8 +291,8 @@ public class MMGame extends GameExpand {
             case INNOCENT -> "title.innocent-sub";
         };
         player.sendTitle(
-            YamlUtil.getStr(titlePath, config),
-            YamlUtil.getStr(subtitlePath, config),
+            YamlUtil.getStr(titlePath, messages),
+            YamlUtil.getStr(subtitlePath, messages),
             10, 60, 10
         );
 

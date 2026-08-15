@@ -18,7 +18,7 @@ public class SpectatorItemManager extends ItemManager {
             player, 
             2, 
             Item.COMPASS,
-            YamlUtil.getStr("match.game.spectator.items.teleporter.name", config)
+            YamlUtil.getStr("match.game.items.spectator.teleporter.name", config)
         );
     }
 
@@ -27,7 +27,7 @@ public class SpectatorItemManager extends ItemManager {
             player, 
             6, 
             Item.CLOCK,
-            YamlUtil.getStr("match.game.spectator.items.actions.name", config)
+            YamlUtil.getStr("match.game.items.spectator.actions.name", config)
         );
     }
 

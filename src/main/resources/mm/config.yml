@@ -34,7 +34,7 @@ game:
     sword:
       name: '&o&l&cMurderstick'
       throw-cooldown: 10
-      throw-speed: 30
+      throw-speed: 3
     blaze-rod:
       name: '&o&l&6Lights Out'
       blindness-duration: 20

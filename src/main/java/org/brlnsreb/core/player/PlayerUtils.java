@@ -7,13 +7,14 @@ import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer.DamageMode;
 import org.brlnsreb.core.player.CustomPlayer.InteractMode;
 import org.brlnsreb.core.player.data.database.PlayerDataManager;
-import org.brlnsreb.utils.Messages;
+import org.brlnsreb.utils.abstraction.ScoreboardAbstract;
 import org.cloudburstmc.protocol.bedrock.data.BuildPlatform;
 import org.cloudburstmc.protocol.bedrock.data.payload.list.PlayerListAddEntry;
 import org.cloudburstmc.protocol.bedrock.data.payload.list.PlayerListRemoveEntry;
 import org.cloudburstmc.protocol.bedrock.packet.PlayerListPacket;
 
 import org.powernukkitx.Player;
+import org.powernukkitx.PlayerFood;
 import org.powernukkitx.Server;
 import org.powernukkitx.entity.Attribute;
 import org.powernukkitx.entity.effect.Effect;
@@ -41,8 +42,11 @@ public class PlayerUtils {
             //p.setViewDistance(2);
             p.despawnFromAll();
 
-            if (lobby) lobbyTeleport(p, loc);
-            else p.teleport(loc);
+            if (lobby) {
+                lobbyTeleport(p, loc);
+            } else {
+                p.teleport(loc.add(0, 0.07, 0));    //adding y component to avoid falling through blocks (e.g. when tp on carpets)
+            }
 
             p.getInventory().setHeldItemIndex(0);
 
@@ -99,7 +103,6 @@ public class PlayerUtils {
         clearInventory(p);
         removeScoreboard(p);
         removeBossBar(p);
-        Messages.resetActionBar(p);
     }
 
     public static void resetVars(CustomPlayer p) {
@@ -112,8 +115,11 @@ public class PlayerUtils {
         p.removeAllEffects();
         p.setHealthCurrent(p.getHealthMax());
 
-        p.getFoodData().setFood(food);
-        p.getFoodData().setEnabled(false);
+        PlayerFood fd = p.getFoodData();
+        fd.setFood(food);
+        fd.setSaturation((float) food);
+        fd.setExhaustion(0.0F);
+        fd.setEnabled(false);
     }
 
     public static void sendFood(CustomPlayer p, int food) {
@@ -132,6 +138,7 @@ public class PlayerUtils {
             p.getScoreboard().removeViewer(p, DisplaySlot.SIDEBAR);
             p.resetScoreboard();
         }
+        ScoreboardAbstract.remove(p);
     }
 
     public static void removeBossBar(CustomPlayer p) {

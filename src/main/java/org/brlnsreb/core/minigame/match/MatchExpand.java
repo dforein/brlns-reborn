@@ -37,13 +37,11 @@ public abstract class MatchExpand extends Match {
     @Override
     public void forceStop() {
         super.forceStop();
-        deathLobby.close();
     }
 
     @Override
     public void onEnding() {
         super.onEnding();
-        deathLobby.close();
     }
 
     @Override

@@ -21,7 +21,7 @@ public class WaitingLobbyBossBar extends BossBarAbstract {
     private final int mediumThreshold;
     private final int shortThreshold;
 
-    private Integer currentSeconds = null;
+    private int currentSeconds = -1;
     private final int secondsCountdown;
 
     public WaitingLobbyBossBar(WaitingLobby waitingLobby, int secondsCountdown) {
@@ -35,7 +35,7 @@ public class WaitingLobbyBossBar extends BossBarAbstract {
         this.secondsCountdown = secondsCountdown;
     }
 
-    public void updateWaitingLobbyBossBar() {
+    public void updateWaitingLobby() {
         for (Player p : players) {
             updateBossBar(
                 (CustomPlayer) p, 
@@ -44,7 +44,7 @@ public class WaitingLobbyBossBar extends BossBarAbstract {
         }
     }
 
-    public void updateWaitingLobbyBossBar(int seconds) {
+    public void updateLobbyCountdown(int seconds) {
         this.currentSeconds = seconds;
 
         for (Player p : players) {
@@ -57,8 +57,8 @@ public class WaitingLobbyBossBar extends BossBarAbstract {
         }
     }
 
-    public void updateWaitingLobbyBossBar(Player player) {
-        if (this.currentSeconds == null) {
+    public void updatePlayer(Player player) {
+        if (this.currentSeconds > 0) {
             updateBossBar(
                 (CustomPlayer) player, 
                 YamlUtil.getStr(PATH + "text-waiting-players", config)
@@ -74,8 +74,8 @@ public class WaitingLobbyBossBar extends BossBarAbstract {
     }
 
     public void cancelCountdown() {
-        this.currentSeconds = null;
-        updateWaitingLobbyBossBar();
+        this.currentSeconds = -1;
+        updateWaitingLobby();
     }
 
     private String formatCountdownMessage(int seconds) {

@@ -229,21 +229,22 @@ public class FriendCommand extends Command {
                 CustomPlayer sender = getSender(ctx);
                 if (getPlayerName(sender) == null) return loginFail;
 
-                if (!sender.data.isFriendWith((String) ctx.getArg("name"))) {
+                String friendName = ctx.getArg("name");
+                if (!sender.data.isFriendWith(friendName)) {
                     return CommandResult.fail(
-                        ChatMsgs.ERROR_PFX + ctx.getArg("name") + " not found in your friend list"
+                        ChatMsgs.ERROR_PFX + ctx.getArg("name") + " not found in your friend list."
                     );
                 }
 
-                CustomPlayer friend = PlayerUtils.getPlayer((String) ctx.getArg("name"));
+                CustomPlayer friend = PlayerUtils.getPlayer(friendName);
                 if (friend == null) {
                     return CommandResult.fail(
-                        ChatMsgs.ERROR_PFX + ctx.getArg("name") + " is not online"
+                        ChatMsgs.ERROR_PFX + friendName + " is not online."
                     );
                 }
 
                 if (friend.state == PlayerStateType.TELEPORTING) {
-                    return CommandResult.fail(ChatMsgs.ERROR_PFX + "You cannot join " + ctx.getArg("name") + " right now, retry in a few seconds.");
+                    return CommandResult.fail(ChatMsgs.ERROR_PFX + "You cannot join " + friendName + " right now, retry in a few seconds.");
                 }
 
                 Match match = sender.matchCurrent;
@@ -268,7 +269,7 @@ public class FriendCommand extends Command {
                         return CommandResult.fail(ChatMsgs.ERROR_PFX + "Report this error to developers: spectate_join_switch.error");
                 }
 
-                sender.sendMessage(ChatMsgs.SUCCESS_PFX + "You joined " + ctx.getArg("name") + "!");
+                sender.sendMessage(ChatMsgs.SUCCESS_PFX + "You joined " + friendName + "!");
                 return CommandResult.success();
             });
 
