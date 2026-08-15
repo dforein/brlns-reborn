@@ -1,7 +1,6 @@
 package org.brlnsreb.utils;
 
 import java.util.Collection;
-import java.util.Set;
 
 import org.powernukkitx.Player;
 import org.powernukkitx.Server;
@@ -49,22 +48,24 @@ public class Messages {
 
     //action bar
 
-    public static void sendActionBar(Set<? extends Player> players, String path, Config messages, int duration) {
+    public static void sendActionBar(Collection<? extends Player> players, String path, Config messages, int duration) {
         for (Player p : players) {
-            p.sendActionBar(YamlUtil.getStr(path, messages), 10, duration, 10);
+            p.sendActionBar(YamlUtil.getStr(path, messages), 1, duration, 1);
         }
     }
 
-    public static void sendActionBar(Set<? extends Player> players, String path, Object[] placeholders, Config messages, int duration) {
+    public static void sendActionBar(Collection<? extends Player> players, String path, Object[] placeholders, Config messages, int duration) {
         for (Player p : players) {
-            p.sendActionBar(YamlUtil.getStr(path, messages).formatted(placeholders), 10, duration, 10);
+            p.sendActionBar(YamlUtil.getStr(path, messages).formatted(placeholders), 1, duration, 1);
         }
     }
 
-    public static void resetActionBar(Set<? extends Player> players) {
-        for (Player p : players) {
-            p.sendActionBar("", 0, 0, 0);
-        }
+    public static void resetActionBar(Collection<? extends Player> players) {
+        for (Player p : players) resetActionBar(p);
+    }
+
+    public static void resetActionBar(Player player) {
+        player.sendActionBar("", 0, 0, 0);
     }
 
 

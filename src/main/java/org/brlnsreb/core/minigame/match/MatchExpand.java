@@ -15,7 +15,10 @@ public abstract class MatchExpand extends Match {
         this.deathLobby = new DeathLobby(this);
     }
 
-    public boolean onDeath(CustomPlayer victim, CustomPlayer killer) { return onDeath(null, victim, killer); }
+    public boolean onDeath(CustomPlayer victim, CustomPlayer killer) { 
+        return onDeath(null, victim, killer); 
+    }
+    
     public boolean onDeath(DamageCause cause, CustomPlayer victim, CustomPlayer killer) {
         Location deathLoc = victim.getLocation();
 

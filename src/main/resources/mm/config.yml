@@ -116,7 +116,6 @@ map-settings:
   default-map: thegrandhotel
   enabled-maps:
   - museum
-  - village
   - school_n
   - thegrandhotel
   - fnaf6
@@ -162,8 +161,8 @@ map-settings:
     village:
       name: Minetown
       world: mm_map_village
-      min: -10 -1 -71
-      max: 124 15 143
+      min: -11 -2 -72
+      max: 133 60 145
       night-vision: true
       weather: clear
       builders:
@@ -189,8 +188,8 @@ map-settings:
     school_n:
       name: School N
       world: mm_map_school_n
-      min: 2428 31 2407
-      max: 2464 62 2468
+      min: 2427 31 2406
+      max: 2468 64 2469
       night-vision: false
       weather: clear
       builders:
@@ -219,8 +218,8 @@ map-settings:
     thegrandhotel:
       name: The Grand Hotel
       world: mm_map_thegrandhotel
-      min: 2435 33 2368
-      max: 2513 68 2430
+      min: 2434 30 2357
+      max: 2515 73 2432
       night-vision: true
       weather: clear
       builders:
@@ -250,8 +249,8 @@ map-settings:
     fnaf6:
       name: FNAF 6
       world: mm_map_fnaf6
-      min: 2384 22 2392
-      max: 2435 40 2459
+      min: 2383 20 2390
+      max: 2451 45 2461
       night-vision: true
       weather: clear
       builders:
@@ -296,8 +295,8 @@ map-settings:
     abandonedschool:
       name: Abandoned School
       world: mm_map_abandonedschool
-      min: -22 5 -23
-      max: 57 27 27
+      min: -23 3 -24
+      max: 58 28 28
       night-vision: false
       weather: rain
       builders:

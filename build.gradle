@@ -42,7 +42,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.powernukkitx:server:nightly-SNAPSHOT'
+    compileOnly 'org.powernukkitx:server:3.0.3-SNAPSHOT'
     compileOnly 'org.powernukkitx.protocol:bedrock-connection:3.0.0.Beta7-Debug-SNAPSHOT'
     compileOnly 'eu.okaeri:okaeri-configs-core:5.0.1'
 

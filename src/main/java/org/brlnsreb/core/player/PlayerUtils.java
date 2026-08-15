@@ -7,7 +7,7 @@ import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer.DamageMode;
 import org.brlnsreb.core.player.CustomPlayer.InteractMode;
 import org.brlnsreb.core.player.data.database.PlayerDataManager;
-import org.brlnsreb.mainhub.MainHub;
+import org.brlnsreb.utils.Messages;
 import org.cloudburstmc.protocol.bedrock.data.BuildPlatform;
 import org.cloudburstmc.protocol.bedrock.data.payload.list.PlayerListAddEntry;
 import org.cloudburstmc.protocol.bedrock.data.payload.list.PlayerListRemoveEntry;
@@ -24,6 +24,7 @@ import org.powernukkitx.level.Location;
 import org.powernukkitx.math.Vector3;
 import org.powernukkitx.scoreboard.data.DisplaySlot;
 import org.powernukkitx.utils.DummyBossBar;
+import org.powernukkitx.utils.SkinConverter;
 
 public class PlayerUtils {
 
@@ -60,11 +61,6 @@ public class PlayerUtils {
 
 
     //lobby-specific
-
-    public static void playerSpawnTeleport(CustomPlayer p) {
-        p.teleport(MainHub.instance.getSpawnLoc().add(0.0, 1.0, 0.0));
-        p.setMotion(new Vector3(0.0, 0.5, 0.0));
-    }
 
     public static void lobbyTeleport(CustomPlayer p, Location loc) {
         p.teleport(loc.add(0.0, 1.0, 0.0));
@@ -103,6 +99,7 @@ public class PlayerUtils {
         clearInventory(p);
         removeScoreboard(p);
         removeBossBar(p);
+        Messages.resetActionBar(p);
     }
 
     public static void resetVars(CustomPlayer p) {
@@ -285,7 +282,7 @@ public class PlayerUtils {
         entry.setPlatformOnlineID("");
         entry.setBuildPlatform(BuildPlatform.UNKNOWN);
         entry.setSkin(player.getSkin().getSkin());
-        entry.setTrustedSkin(player.getSkin().isTrusted());
+        entry.setSerializedSkin(SkinConverter.toSerializedSkin(player.getSkin().getSkin(), player.getSkin().isTrusted()));
         entry.setPlayerColor(player.getLocatorBarColor().getRGB());
 
         pk.getEntries().add(entry);

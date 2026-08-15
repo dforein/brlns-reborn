@@ -33,7 +33,7 @@ public abstract class Match {
     protected final Minigame minigame;
 
     protected WaitingLobby waitingLobby;
-    protected Game game;
+    protected Game game = null;
 
     protected Config config;
     protected Config messages;
@@ -109,8 +109,9 @@ public abstract class Match {
 
     //game logic
 
-    public void preloadGame(String mapId, TimeOfDay time, Weather weather) {
+    public void loadGame(String mapId, TimeOfDay time, Weather weather) {
         //used when the waiting lobby countdown is finishing
+        if (game != null) return;
         game = createGame(mapId, time, weather);
 
         msgUtil.broadcastPrefix(
@@ -155,7 +156,7 @@ public abstract class Match {
         switch (state.current) {
             case WAITING_LOBBY, LOBBY_COUNTDOWN:
                 for (CustomPlayer p : players) {
-                    p.sendMessage(ChatMsgs.INFO_PFX + "Match stopped due to config reload.");
+                    p.sendMessage(ChatMsgs.INFO_PFX + "Match stopped by server or op, joining hub...");
                     waitingLobby.onLeave(p);
                     minigame.onLobbyJoin(p);
                 }

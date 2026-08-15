@@ -624,7 +624,8 @@ public class MMGame extends GameExpand {
         if (event instanceof EntityDamageByEntityEvent) {
             MMPlayerGameData damagerGameData = gameDataMap.get(event.getEntity());
             if (damagerGameData == null || damagerGameData.role != MMRole.MURDERER) return;
-            event.setDamage(event.getDamage() * damageMultiplier);
+
+            event.setDamage(event.getFinalDamage() * damageMultiplier);
         }
     }
 
@@ -643,8 +644,9 @@ public class MMGame extends GameExpand {
     //chat
 
     public boolean onChat(CustomPlayer player, PlayerChatEvent event) {
-        if (players.contains(player)) return roleCheckOnChat(player);
+        if (state.current != GameStateType.IN_GAME) return true;
 
+        if (players.contains(player)) return roleCheckOnChat(player);
         if (spectators.contains(player)) {
             event.getRecipients().removeIf(recipient -> players.contains(recipient));
         }
@@ -653,10 +655,15 @@ public class MMGame extends GameExpand {
     }
 
     public boolean onCommandPreprocess(CustomPlayer player, PlayerCommandPreprocessEvent event) {
-        String message = event.getMessage().substring(1).trim().split(" ")[0];
+        if (state.current != GameStateType.IN_GAME) return true;
 
-        for (String command : blockedChatCommands) {
-            if (!message.equals(command)) continue;
+        String command = event.getMessage()
+            .substring(1)
+            .trim()
+            .split(" ")[0];
+
+        for (String blocked : blockedChatCommands) {
+            if (!command.equals(blocked)) continue;
 
             if (players.contains(player)) return roleCheckOnChat(player);
             if (spectators.contains(player)) {

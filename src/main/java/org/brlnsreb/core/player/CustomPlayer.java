@@ -303,7 +303,7 @@ public class CustomPlayer extends Player {
                 this.setHealthCurrent(this.getHealthMax());
 
                 if (matchCurrent instanceof MatchExpand matchExpand) {
-                    matchExpand.getGame().onDeath(source.getCause(), this, damager);
+                    matchExpand.onDeath(source.getCause(), this, damager);
                 }
             }
 

@@ -28,6 +28,7 @@ import org.brlnsreb.utils.voting.Weather;
 import org.powernukkitx.event.player.PlayerItemHeldEvent;
 import org.powernukkitx.item.Item;
 import org.powernukkitx.level.Sound;
+import org.powernukkitx.scheduler.Task;
 import org.powernukkitx.utils.Config;
 
 public abstract class WaitingLobby extends Lobby {
@@ -45,6 +46,10 @@ public abstract class WaitingLobby extends Lobby {
     protected final WaitingLobbyBossBar bossBar;
     protected final WaitingLobbyScoreboard scoreboard;
     protected final WaitingLobbyItemManager items;
+
+    protected final Task updateUiTask;
+    private String lastPlayerName;
+    private boolean hasJoinedLast;
 
     protected TimerSystem timer;
     protected VotingSystem<String> mapVoting;
@@ -80,16 +85,32 @@ public abstract class WaitingLobby extends Lobby {
         this.scoreboard = new WaitingLobbyScoreboard(match);
         this.items = requireItemManager();
 
+        this.updateUiTask = new Task() {
+            @Override
+            public void onRun(int currentTick) {
+                for (CustomPlayer p : players) scoreboard.updateWaitingLobby(p);
+                Messages.sendActionBar(
+                    players, 
+                    hasJoinedLast ? "match.waiting-lobby.action-bar.on-join" : "match.waiting-lobby.action-bar.on-leave", 
+                    new Object[] {lastPlayerName, players.size(), maxPlayers},
+                    Configs.getGlobalMessages(),
+                    20
+                );
+            }
+        };
+        BrlnsReb.getScheduler().scheduleRepeatingTask(BrlnsReb.instance, updateUiTask, 10);
+
         initVotingSystems();
         requireVotingMenu();
         prepareVoting();
     }
 
     public void forceStart() {
-        msgUtil.broadcastPrefix("§aGame start was forced by an op!");
+        msgUtil.broadcast(ChatMsgs.INFO_PFX + "Game start was forced by an op!");
 
         finalizeVoting();
-        stopCountdown();
+        match.loadGame(selectedMapId, selectedTime, selectedWeather);
+        timer.stop();
         onGameStart();
     }
 
@@ -119,12 +140,15 @@ public abstract class WaitingLobby extends Lobby {
     }
 
     protected void onJoinMessages(CustomPlayer player) {
+        lastPlayerName = player.data.name;
+        hasJoinedLast = true;
+
         Messages.sendActionBar(
             players, 
             "match.waiting-lobby.action-bar.on-join", 
-            new Object[] {player.data.name, players.size(), maxPlayers},
+            new Object[] {lastPlayerName, players.size(), maxPlayers},
             Configs.getGlobalMessages(),
-            999999
+            20
         );
     }
 
@@ -145,12 +169,15 @@ public abstract class WaitingLobby extends Lobby {
 
     //OVERRIDE if you need more voting options
     public void onLeave(CustomPlayer player) {
+        lastPlayerName = player.data.name;
+        hasJoinedLast = true;
+
         Messages.sendActionBar(
             players, 
-            "action-bar.on-leave", 
-            new Object[] {player.data.name, players.size(), maxPlayers},
+            "match.waiting-lobby.action-bar.on-leave", 
+            new Object[] {lastPlayerName, players.size(), maxPlayers},
             Configs.getGlobalMessages(),
-            999999
+            20
         );
 
         mapVoting.removePlayerVote(player);
@@ -216,7 +243,7 @@ public abstract class WaitingLobby extends Lobby {
             msgUtil.broadcastPrefix(YamlUtil.getStr("match.waiting-lobby.timer-shortened", Configs.getGlobalMessages()));
         }
 
-        match.preloadGame(selectedMapId, selectedTime, selectedWeather);
+        match.loadGame(selectedMapId, selectedTime, selectedWeather);
     }
 
     protected void stopCountdown() {
@@ -235,6 +262,7 @@ public abstract class WaitingLobby extends Lobby {
     //game start
 
     protected void onGameStart() {
+        updateUiTask.cancel();
         Messages.resetActionBar(players);
 
         for (CustomPlayer p : players) {
