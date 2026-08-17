@@ -17,7 +17,7 @@ import org.powernukkitx.plugin.annotation.CommandDefinition;
 @CommandDefinition(
     name = "grm",
     description = "Talk to all your online friends in the network",
-    usage = "/grm <message>"
+    usage = "§e/grm <message>"
 )
 
 public class GRMCommand extends Command {

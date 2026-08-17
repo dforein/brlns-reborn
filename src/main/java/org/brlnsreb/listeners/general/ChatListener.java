@@ -15,6 +15,16 @@ import org.powernukkitx.plugin.annotation.EventListener;
 @EventListener
 public class ChatListener implements Listener {
 
+    private String[] CHAT_COMMANDS_0 = {        //0 args before text
+        "/grm",
+        "/frm",
+        "/reply"
+    };
+
+    private String[] CHAT_COMMANDS_1 = {        //1 arg before text (e.g. the player name)
+        "/pvt"
+    };
+
     @EventHandler
     public void onChat(PlayerChatEvent event) {
         CustomPlayer player = (CustomPlayer) event.getPlayer();
@@ -69,6 +79,27 @@ public class ChatListener implements Listener {
             
             default: break;
         }
+
+        boolean preprocessed = false;
+        String command = event.getMessage().trim();
+
+        for (String root : CHAT_COMMANDS_0) {
+            if (!command.startsWith(root)) continue;
+            
+            preprocessed = true;
+            command = command.replaceFirst(root + " ", root + " \"") + "\"";
+            event.setMessage(command);
+        }
+        if (preprocessed) return;
+        
+        for (String root : CHAT_COMMANDS_1) {
+            if (!command.startsWith(root)) continue;
+
+            preprocessed = true;
+            command = command.replaceAll("(" + root + "\\s+\\w+\\s)", "$1\"") + "\"";
+            event.setMessage(command);
+        }
+        if (preprocessed) return;
     }
 
 }

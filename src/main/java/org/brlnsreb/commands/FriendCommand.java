@@ -46,10 +46,6 @@ import org.powernukkitx.plugin.annotation.CommandDefinition;
 
 public class FriendCommand extends Command {
 
-    public FriendCommand() {
-        this.enableCommandTree();
-    }
-
     @Override
     public void buildCommandTree(RouteTree tree) {
         CommandResult loginFail = CommandResult.fail(ChatMsgs.ERROR_PFX + "You are not logged in!");  //TEXT
@@ -370,6 +366,11 @@ public class FriendCommand extends Command {
         }
 
         int pages = (onlineFriends.size() + offlineFriends.size() + 9) / 10;
+        if (pages == 0) {
+            sender.sendMessage(ChatMsgs.INFO_PFX + "Your friend list is empty.");
+            return true;
+        }
+
         if (currentPage < 1 || currentPage > pages) {
             sender.sendMessage(ChatMsgs.ERROR_PFX + "This friend list page doesn't exist!");
             return true;

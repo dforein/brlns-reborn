@@ -7,13 +7,13 @@ import org.powernukkitx.command.CommandResult;
 import org.powernukkitx.command.SenderType;
 import org.powernukkitx.command.route.RouteTree;
 import org.powernukkitx.command.route.node.RouteNode;
-import org.powernukkitx.command.tree.node.RawTextNode;
+import org.powernukkitx.command.tree.node.StringNode;
 import org.powernukkitx.plugin.annotation.CommandDefinition;
 
 @CommandDefinition(
     name = "reply",
     description = "Reply to the last PVT you've received",
-    usage = "/reply <message>"
+    usage = "§e/reply <message>"
 )
 
 public class ReplyCommand extends Command {
@@ -25,7 +25,7 @@ public class ReplyCommand extends Command {
     @Override
     public void buildCommandTree(RouteTree tree) {
         tree.getRoot().senderType(SenderType.PLAYER)                   //whatever player, also non-logged
-            .then(RouteNode.argument("message", new RawTextNode())
+            .then(RouteNode.argument("message", new StringNode())
                 .exec(ctx -> {
                     CustomPlayer sender = (CustomPlayer) ctx.getSender();
                     CustomPlayer receiver = sender.data.getLastPvtPlayer();

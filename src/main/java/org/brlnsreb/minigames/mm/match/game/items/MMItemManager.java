@@ -61,9 +61,7 @@ public class MMItemManager extends ItemManager {
         giveItem(
             player, 
             1, 
-            Item.GOLDEN_HOE, getStr(PATH + "hoe.name"),
-            Enchantment.ID_DAMAGE_ALL, 5, 
-            true
+            Item.GOLDEN_HOE, getStr(PATH + "hoe.name")
         );
     }
 

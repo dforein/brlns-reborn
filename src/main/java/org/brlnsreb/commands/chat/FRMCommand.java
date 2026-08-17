@@ -17,7 +17,7 @@ import org.powernukkitx.plugin.annotation.CommandDefinition;
 @CommandDefinition(
     name = "frm",
     description = "Talk to all your online friends in the current server",
-    usage = "/frm <message>"
+    usage = "§e/frm <message>"
 )
 
 public class FRMCommand extends Command {

@@ -9,14 +9,14 @@ import org.powernukkitx.command.CommandResult;
 import org.powernukkitx.command.SenderType;
 import org.powernukkitx.command.route.RouteTree;
 import org.powernukkitx.command.route.node.RouteNode;
-import org.powernukkitx.command.tree.node.RawTextNode;
+import org.powernukkitx.command.tree.node.StringNode;
 import org.powernukkitx.command.tree.node.StringNode;
 import org.powernukkitx.plugin.annotation.CommandDefinition;
 
 @CommandDefinition(
     name = "pvt",
     description = "Send a private message",
-    usage = "/pvt <player> <message>"
+    usage = "§e/pvt <player> <message>"
 )
 
 public class PVTCommand extends Command {
@@ -29,7 +29,7 @@ public class PVTCommand extends Command {
     public void buildCommandTree(RouteTree tree) {
         tree.getRoot().senderType(SenderType.PLAYER)                    //whatever player, also non-logged
             .then(RouteNode.argument("player", new StringNode())
-                .then(RouteNode.argument("message", new RawTextNode())
+                .then(RouteNode.argument("message", new StringNode())
                     .exec(ctx -> {
                         CustomPlayer sender = (CustomPlayer) ctx.getSender();
                         CustomPlayer receiver = PlayerUtils.getPlayer((String) ctx.getArg("player"));

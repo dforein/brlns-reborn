@@ -1,6 +1,7 @@
 target/
 .gradle
 build
+bin
 PowerNukkitX-master
 
 # Eclipse m2e generated files

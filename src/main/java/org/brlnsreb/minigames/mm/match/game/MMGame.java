@@ -621,8 +621,8 @@ public class MMGame extends GameExpand {
     //damage
 
     public void onPlayerDamage(CustomPlayer player, EntityDamageEvent event) {
-        if (event instanceof EntityDamageByEntityEvent) {
-            MMPlayerGameData damagerGameData = gameDataMap.get(event.getEntity());
+        if (event instanceof EntityDamageByEntityEvent e) {
+            MMPlayerGameData damagerGameData = gameDataMap.get(e.getDamager());
             if (damagerGameData == null || damagerGameData.role != MMRole.MURDERER) return;
 
             event.setDamage(event.getFinalDamage() * damageMultiplier);

@@ -83,6 +83,11 @@ public class PlayerUtils {
                     p.setPresetNameTag();
                     return;                     //already coming from a lobby, no need to execute the following code
                 
+                case SPECTATOR:
+                    p.setFlying(false);
+                    p.waitForAck(() -> p.setAllowFlight(false));
+                    break;
+
                 default: break;
             }
         }
@@ -112,7 +117,9 @@ public class PlayerUtils {
 
     public static void resetPlayer(CustomPlayer p, int gamemode, int food) {
         p.setGamemode(gamemode);
+
         p.removeAllEffects();
+
         p.setHealthCurrent(p.getHealthMax());
 
         PlayerFood fd = p.getFoodData();

@@ -63,6 +63,7 @@ public abstract class Lobby {
 
 
     public boolean onJoin(CustomPlayer player) {
+        PlayerStateType oldState = player.state;
         PlayerUtils.changeWorld(player, spawnLoc, true);
 
         onJoinMessages(player);
@@ -70,7 +71,7 @@ public abstract class Lobby {
         player.setLobby(this);
         player.minigameCurrent = minigame;
         player.matchCurrent = match;
-        PlayerUtils.setLobbyState(player, player.state, onJoinState());
+        PlayerUtils.setLobbyState(player, oldState, onJoinState());
 
         player.waitForAck(() -> {
             onJoinUi(player);
