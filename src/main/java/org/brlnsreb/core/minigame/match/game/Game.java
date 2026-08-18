@@ -101,12 +101,12 @@ public abstract class Game {
     protected abstract void setPregameNameTag(CustomPlayer player);       //name tag + chat name tag
 
     public void onJoinAsSpectator(CustomPlayer player) {
-        PlayerUtils.changeWorld(player, onJoinLocation(player), false);
-
         if (player.isPlaying()) {      //reset everything
             PlayerUtils.resetUiAndInventories(player);
             PlayerUtils.resetPlayer(player, Player.ADVENTURE, 20);
         }
+
+        PlayerUtils.changeWorld(player, onJoinLocation(player), false);
 
         player.setGameSpectator();
         spectatorItems.giveTeleporter(player);
@@ -121,6 +121,8 @@ public abstract class Game {
 
     public void prepareAndSaveData(CustomPlayer player) { prepareAndSaveData(player, true); }
     public void prepareAndSaveData(CustomPlayer player, boolean message) {
+        if (state.current == GameStateType.PREGAME_COUNTDOWN) return;
+
         AccountsManager.savePlayerData(player);
 
         int oldLevel = player.data.getFloorLevel();

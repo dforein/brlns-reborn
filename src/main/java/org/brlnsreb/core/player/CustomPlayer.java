@@ -280,10 +280,16 @@ public class CustomPlayer extends Player {
     }
 
     private boolean checkAndAttack(EntityDamageEvent source) {
+        //game preprocessing
+        if (this.isPlaying()) {
+            matchCurrent.getGame().onPlayerDamage(this, source);
+        }
+
         //canAttackPlayer check
         CustomPlayer damager = null;
         if (source instanceof EntityDamageByEntityEvent event) {
             if (event.getDamager() instanceof CustomPlayer) {
+ 
                 damager = (CustomPlayer) event.getDamager();
                 if (!damager.canAttackPlayers) return false;
             }
@@ -299,6 +305,8 @@ public class CustomPlayer extends Player {
             case PLAYING -> {
                 //not ok, player death
                 this.setHealthCurrent(this.getHealthMax());
+
+                source.setDamage(1);
                 super.attack(source);               //to show the damage animation  //TODO: need to test whether i have to wait one tick to show the anim
                 this.setHealthCurrent(this.getHealthMax());
 

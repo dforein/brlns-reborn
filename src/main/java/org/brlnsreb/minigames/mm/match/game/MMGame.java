@@ -169,7 +169,7 @@ public class MMGame extends GameExpand {
 
 
     public void onLeave(CustomPlayer player) {
-        if (!player.isPlaying()) return;
+        if (!player.isPlaying() || state.current != GameStateType.IN_GAME) return;
 
         roleCheckOnLeave(player, player.getPosition());
         checkWinConditions();

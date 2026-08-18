@@ -5,6 +5,7 @@ import java.util.List;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.data.PlayerData;
+import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.utils.ChatMsgs;
 import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandResult;
@@ -47,7 +48,7 @@ public class GRMCommand extends Command {
                         
                         friend.sendMessage(
                             "§l§aGRM %s §3%s§7: §7%s".formatted(      //TEXT
-                                minigame != null ? minigame.mgt.displayNameTag : "HUB",
+                                minigame != null ? minigame.mgt.displayNameTag : MainHub.displayNameTag,
                                 senderData.name,
                                 ctx.getArg("message")
                             )

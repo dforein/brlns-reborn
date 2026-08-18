@@ -10,7 +10,6 @@ import org.powernukkitx.command.SenderType;
 import org.powernukkitx.command.route.RouteTree;
 import org.powernukkitx.command.route.node.RouteNode;
 import org.powernukkitx.command.tree.node.StringNode;
-import org.powernukkitx.command.tree.node.StringNode;
 import org.powernukkitx.plugin.annotation.CommandDefinition;
 
 @CommandDefinition(
