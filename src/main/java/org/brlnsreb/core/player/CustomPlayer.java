@@ -303,14 +303,12 @@ public class CustomPlayer extends Player {
 
         switch (state) {
             case PLAYING -> {
-                //not ok, player death
-                this.setHealthCurrent(this.getHealthMax());
-
-                source.setDamage(1);
-                super.attack(source);               //to show the damage animation  //TODO: need to test whether i have to wait one tick to show the anim
-                this.setHealthCurrent(this.getHealthMax());
-
                 if (matchCurrent instanceof MatchExpand matchExpand) {
+                    //not ok, player death
+                    this.setHealthCurrent(this.getHealthMax());
+                    source.setDamage(1);
+                    super.attack(source);               //to show the damage animation  //TODO: need to test whether i have to wait one tick to show the anim
+                    this.setHealthCurrent(this.getHealthMax());
                     matchExpand.onDeath(source.getCause(), this, damager);
                 }
             }

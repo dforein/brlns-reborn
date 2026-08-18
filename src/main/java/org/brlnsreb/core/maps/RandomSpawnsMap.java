@@ -2,8 +2,12 @@ package org.brlnsreb.core.maps;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
+import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.voting.TimeOfDay;
 import org.brlnsreb.utils.voting.Weather;
@@ -15,6 +19,7 @@ public class RandomSpawnsMap extends MapLevel {
 
     private List<Position> spawns;
     private int spawnIndex = 0;
+    private Map<UUID, Location> playerSpawns = new HashMap<>();
     
     public RandomSpawnsMap(Config config, String mapId, String mapsConfigPath, TimeOfDay time, Weather weather) {
         super(config, mapId, mapsConfigPath, time, weather);
@@ -32,10 +37,18 @@ public class RandomSpawnsMap extends MapLevel {
         Collections.shuffle(spawns);
     }
 
-    public Location getRandomSpawn() {
+    public Location getRandomSpawn(CustomPlayer player) {
         if (spawns.isEmpty()) return null;
+
+        UUID uuid = player.getUniqueId();
+        if (playerSpawns.containsKey(uuid)) {
+            return playerSpawns.get(uuid);
+        }
+
         if (spawnIndex >= spawns.size()) spawnIndex = 0;
-        return spawns.get(spawnIndex++).getLocation();
+        Location spawnLoc = spawns.get(spawnIndex++).getLocation();
+        playerSpawns.put(uuid, spawnLoc);
+        return spawnLoc;
     }
 
     public List<Position> getSpawns() { return spawns; }

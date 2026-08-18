@@ -45,6 +45,7 @@ public class PlayerUtils {
             if (lobby) {
                 lobbyTeleport(p, loc);
             } else {
+                p.setMotion(Vector3.ZERO);
                 p.teleport(loc.add(0, 0.07, 0));    //adding y component to avoid falling through blocks (e.g. when tp on carpets)
             }
 

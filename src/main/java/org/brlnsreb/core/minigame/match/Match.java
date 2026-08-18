@@ -160,38 +160,42 @@ public abstract class Match {
         ));
 
         switch (state.current) {
-            case WAITING_LOBBY, LOBBY_COUNTDOWN:
+            case WAITING_LOBBY, LOBBY_COUNTDOWN -> {
                 for (CustomPlayer p : players) {
                     p.sendMessage(ChatMsgs.INFO_PFX + "Match stopped by server or op, joining hub...");
                     waitingLobby.onLeave(p);
                     minigame.onLobbyJoin(p);
                 }
                 waitingLobby.close();
-                break;
+            }
         
-            case PREGAME_COUNTDOWN, IN_GAME, ENDING:
+            case PREGAME_COUNTDOWN, IN_GAME, ENDING -> {
                 game.forceStop();
                 for (CustomPlayer p : players) {
                     game.onLeave(p);
                     minigame.onLobbyJoin(p);
                 }
-                break;
+                for (CustomPlayer s : spectators) {
+                    minigame.onLobbyJoin(s);
+                }
+            }
         }
 
-        minigame.onMatchEnding(this);
-        closed = true;
+        closeMatch();
     }
 
     public void onEnding() {
         if (closed) return;
 
-        for (CustomPlayer p : players) {
-            minigame.onLobbyJoin(p);
-        }
+        for (CustomPlayer p : players) minigame.onLobbyJoin(p);
+        for (CustomPlayer s : spectators) minigame.onLobbyJoin(s);
 
-        for (CustomPlayer s : spectators) {
-            minigame.onLobbyJoin(s);
-        }
+        closeMatch();
+    }
+
+    private void closeMatch() {
+        players.clear();
+        spectators.clear();
 
         minigame.onMatchEnding(this);
         closed = true;

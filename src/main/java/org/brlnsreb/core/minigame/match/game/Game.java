@@ -121,7 +121,7 @@ public abstract class Game {
 
     public void prepareAndSaveData(CustomPlayer player) { prepareAndSaveData(player, true); }
     public void prepareAndSaveData(CustomPlayer player, boolean message) {
-        if (state.current == GameStateType.PREGAME_COUNTDOWN) return;
+        if (isPregameCountdown()) return;
 
         AccountsManager.savePlayerData(player);
 
@@ -264,6 +264,8 @@ public abstract class Game {
     public abstract boolean onCommandPreprocess(CustomPlayer player, PlayerCommandPreprocessEvent event);
 
 
+    public boolean isPregameCountdown() { return state.current == GameStateType.PREGAME_COUNTDOWN; }
+    public boolean isInGame() { return state.current == GameStateType.IN_GAME; }
 
     protected abstract PlayerGameData getGameData(CustomPlayer player);
     public Set<CustomPlayer> getPlayers() { return players; }

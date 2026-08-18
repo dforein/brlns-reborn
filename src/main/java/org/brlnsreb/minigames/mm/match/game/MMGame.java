@@ -124,7 +124,7 @@ public class MMGame extends GameExpand {
     //join-leave logic
 
     protected Location onJoinLocation(CustomPlayer player) {
-        return map.getRandomSpawn();
+        return map.getRandomSpawn(player);
     }
 
     protected void prepareGameData(CustomPlayer player) {
@@ -251,8 +251,11 @@ public class MMGame extends GameExpand {
                         outOfBounds.add(p);
                     }
                 }
-                if (outOfBounds != null) {
-                    for (CustomPlayer p : outOfBounds) match.onDeath(p, null);
+                if (outOfBounds == null) return;
+
+                for (CustomPlayer p : outOfBounds) {
+                    if (isInGame()) match.onDeath(p, null);
+                    else p.teleport(onJoinLocation(p));
                 }
             }
         };

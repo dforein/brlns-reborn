@@ -6,6 +6,7 @@ import org.powernukkitx.math.Vector3;
 import org.powernukkitx.utils.Config;
 
 import org.brlnsreb.core.WorldManager;
+import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.voting.TimeOfDay;
 import org.brlnsreb.utils.voting.Weather;
@@ -51,7 +52,7 @@ public abstract class MapLevel {
     }
     
     protected abstract void loadSpawns(Config config);
-    public abstract Location getRandomSpawn();
+    public abstract Location getRandomSpawn(CustomPlayer player);
     
     public boolean isInMap(Vector3 pos) {
         return pos.x >= min.x && pos.x <= max.x &&
