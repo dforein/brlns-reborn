@@ -187,6 +187,27 @@ public class MMGame extends GameExpand {
 
         //load gold spawns
         gold.loadSpawns();
+
+        //check player position (the player must be inside the map!)
+        checkPosTask = new Task() {
+            @Override
+            public void onRun(int currentTick) {
+                List<CustomPlayer> outOfBounds = null;
+                for (CustomPlayer p : players) {
+                    if (!map.isInMap(p)) {
+                        if (outOfBounds == null) outOfBounds = new ArrayList<>();
+                        outOfBounds.add(p);
+                    }
+                }
+                if (outOfBounds == null) return;
+
+                for (CustomPlayer p : outOfBounds) {
+                    if (isInGame()) match.onDeath(p, null);
+                    else p.teleport(onJoinLocation(p));
+                }
+            }
+        };
+        scheduler.scheduleRepeatingTask(BrlnsReb.instance, checkPosTask, 10);
     }
 
     protected void updatePregameScoreboards(String formattedTime) {
@@ -239,27 +260,6 @@ public class MMGame extends GameExpand {
             }
         };
         scheduler.scheduleRepeatingTask(BrlnsReb.instance, updateUiTask, config.getInt("game.ui-update-ticks"));
-
-        //check player position (the player must be inside the map!)
-        checkPosTask = new Task() {
-            @Override
-            public void onRun(int currentTick) {
-                List<CustomPlayer> outOfBounds = null;
-                for (CustomPlayer p : players) {
-                    if (!map.isInMap(p)) {
-                        if (outOfBounds == null) outOfBounds = new ArrayList<>();
-                        outOfBounds.add(p);
-                    }
-                }
-                if (outOfBounds == null) return;
-
-                for (CustomPlayer p : outOfBounds) {
-                    if (isInGame()) match.onDeath(p, null);
-                    else p.teleport(onJoinLocation(p));
-                }
-            }
-        };
-        scheduler.scheduleRepeatingTask(BrlnsReb.instance, checkPosTask, 10);
 
         //spawn gold
         gold.startSpawning();
