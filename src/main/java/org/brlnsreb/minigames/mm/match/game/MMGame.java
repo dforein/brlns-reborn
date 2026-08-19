@@ -492,9 +492,11 @@ public class MMGame extends GameExpand {
             return false;
         }
 
-        if (isSheriffAlive()) return true;
-
-        sheriff = player;
+        synchronized (sheriff) {
+            if (isSheriffAlive()) return true;
+            sheriff = player;
+        }
+        
         setRole(sheriff, MMRole.SHERIFF);
         
         death.cleanupSheriffHoe();

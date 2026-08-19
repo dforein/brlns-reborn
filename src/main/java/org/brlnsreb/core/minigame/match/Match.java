@@ -72,7 +72,9 @@ public abstract class Match {
 
         switch (state.current) {
             case WAITING_LOBBY, LOBBY_COUNTDOWN:
-                return waitingLobby.onJoin(player);
+                synchronized (players) {
+                    return waitingLobby.onJoin(player);
+                }
         
             default:
                 onJoinAsSpectator(player);
@@ -95,7 +97,7 @@ public abstract class Match {
 
         switch (state.current) {
             case WAITING_LOBBY, LOBBY_COUNTDOWN -> {
-                players.remove(player);
+                synchronized (players) { players.remove(player); }
                 waitingLobby.onLeave(player);
                 minigame.onMatchLeave();
             }
