@@ -22,10 +22,6 @@ import org.powernukkitx.plugin.annotation.CommandDefinition;
 )
 
 public class FRMCommand extends Command {
-
-    public FRMCommand() {
-        this.enableCommandTree();
-    }
     
     @Override
     public void buildCommandTree(RouteTree tree) {

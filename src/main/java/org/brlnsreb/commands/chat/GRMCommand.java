@@ -22,10 +22,6 @@ import org.powernukkitx.plugin.annotation.CommandDefinition;
 )
 
 public class GRMCommand extends Command {
-    
-    public GRMCommand() {
-        this.enableCommandTree();
-    }
 
     @Override
     public void buildCommandTree(RouteTree tree) {

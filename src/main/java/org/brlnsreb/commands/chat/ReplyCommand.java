@@ -18,10 +18,6 @@ import org.powernukkitx.plugin.annotation.CommandDefinition;
 
 public class ReplyCommand extends Command {
     
-    public ReplyCommand() {
-        this.enableCommandTree();
-    }
-
     @Override
     public void buildCommandTree(RouteTree tree) {
         tree.getRoot().senderType(SenderType.PLAYER)                   //whatever player, also non-logged

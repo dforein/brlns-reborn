@@ -19,10 +19,6 @@ import org.powernukkitx.plugin.annotation.CommandDefinition;
 )
 
 public class PVTCommand extends Command {
-    
-    public PVTCommand() {
-        this.enableCommandTree();
-    }
 
     @Override
     public void buildCommandTree(RouteTree tree) {
