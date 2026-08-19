@@ -31,15 +31,12 @@ public class PlayerUtils {
 
     //change world
 
-    public static void changeWorld(CustomPlayer p, Location loc, boolean lobby) {
-        BrlnsReb plugin = BrlnsReb.instance;
-
+    public static PlayerStateType changeWorld(CustomPlayer p, Location loc, boolean lobby) {
         try {
+            PlayerStateType oldState = p.state;
             Level oldLevel = p.getLevel();
-            //int viewDistance = p.getViewDistance();
 
             p.setTeleporting();
-            //p.setViewDistance(2);
             p.despawnFromAll();
 
             if (lobby) {
@@ -51,16 +48,16 @@ public class PlayerUtils {
 
             p.getInventory().setHeldItemIndex(0);
 
-            plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
-                p.spawnToAll(); 
-                //p.setViewDistance(viewDistance);
-            }, 20);
+            BrlnsReb.getScheduler().scheduleDelayedTask(BrlnsReb.instance, () -> p.spawnToAll(), 20);
 
             updatePlayerList(oldLevel, p);
             updateOnlinePlayer(p, true);    //remove the name for players who aren't in the same level
 
+            return oldState;
+
         } catch (Exception e) {
-            plugin.getLogger().error("Error teleporting player: " + e.getMessage());
+            BrlnsReb.instance.getLogger().error("Error teleporting player: " + e.getMessage());
+            return null;
         }
     }
 

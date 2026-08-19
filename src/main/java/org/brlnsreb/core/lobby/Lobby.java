@@ -63,8 +63,7 @@ public abstract class Lobby {
 
 
     public boolean onJoin(CustomPlayer player) {
-        PlayerStateType oldState = player.state;
-        PlayerUtils.changeWorld(player, spawnLoc, true);
+        PlayerStateType oldState = PlayerUtils.changeWorld(player, spawnLoc, true);
 
         onJoinMessages(player);
 
