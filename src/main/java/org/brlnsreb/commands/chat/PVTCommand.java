@@ -15,7 +15,7 @@ import org.powernukkitx.plugin.annotation.CommandDefinition;
 @CommandDefinition(
     name = "pvt",
     description = "Send a private message",
-    usage = "§e/pvt <player> <message>"
+    usage = ChatMsgs.INFO_PFX + "Usage: §e/pvt <player> <message>"
 )
 
 public class PVTCommand extends Command {
@@ -55,7 +55,8 @@ public class PVTCommand extends Command {
                         receiver.data.setLastPvtPlayer(sender);
 
                         return CommandResult.success();
-                    })));
+                    })))
+            .orElse(ctx -> ctx.getSender().sendMessage(usageMessage));
     }
 
 }

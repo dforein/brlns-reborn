@@ -18,7 +18,7 @@ import org.powernukkitx.plugin.annotation.CommandDefinition;
 @CommandDefinition(
     name = "grm",
     description = "Talk to all your online friends in the network",
-    usage = "§e/grm <message>"
+    usage = ChatMsgs.INFO_PFX + "Usage: §e/grm <message>"
 )
 
 public class GRMCommand extends Command {
@@ -59,7 +59,8 @@ public class GRMCommand extends Command {
                     );
 
                     return CommandResult.success();
-                }));
+                }))
+            .orElse(ctx -> ctx.getSender().sendMessage(usageMessage));
     }
 
 }

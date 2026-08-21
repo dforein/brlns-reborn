@@ -13,11 +13,11 @@ import org.powernukkitx.plugin.annotation.CommandDefinition;
 @CommandDefinition(
     name = "reply",
     description = "Reply to the last PVT you've received",
-    usage = "§e/reply <message>"
+    usage = ChatMsgs.INFO_PFX + "Usage: §e/reply <message>"
 )
 
 public class ReplyCommand extends Command {
-    
+
     @Override
     public void buildCommandTree(RouteTree tree) {
         tree.getRoot().senderType(SenderType.PLAYER)                   //whatever player, also non-logged
@@ -47,7 +47,8 @@ public class ReplyCommand extends Command {
                     );
 
                     return CommandResult.success();
-                }));
+                }))
+            .orElse(ctx -> ctx.getSender().sendMessage(usageMessage));
     }
 
 }
