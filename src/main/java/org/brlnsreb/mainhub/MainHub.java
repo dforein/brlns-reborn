@@ -44,14 +44,14 @@ public class MainHub extends Lobby {
         this.bossBar = new MainLobbyBossBar(ChatMsgs.BROKENLENS);
         items = new MainLobbyItemManager(config);
 
-        this.bossBar.startBossBarUpdates(this.level);
+        this.bossBar.startBossBarUpdates(map.level);
         this.spawnAllNpcs();
     }
 
     public void onServerJoin(CustomPlayer player) {
         onlinePlayers++;
 
-        PlayerUtils.lobbyTeleport(player, spawnLoc);
+        PlayerUtils.lobbyTeleport(player, map.spawn);
 
         onServerJoinMessages(player);
 

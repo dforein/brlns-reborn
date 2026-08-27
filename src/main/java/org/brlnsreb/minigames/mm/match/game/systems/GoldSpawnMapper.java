@@ -90,9 +90,9 @@ public class GoldSpawnMapper {
         
         List<Vector3> validSpawns = new ArrayList<>();
         
-        Level level = map.getLevel();
-        Vector3 min = map.getMin();
-        Vector3 max = map.getMax();
+        Level level = map.level;
+        Vector3 min = map.min;
+        Vector3 max = map.max;
         
         int totalBlocks = (int)((max.x - min.x) * (max.y - min.y) * (max.z - min.z));
         int checked = 0;
@@ -137,9 +137,9 @@ public class GoldSpawnMapper {
         
         List<Vector3> barriers = new ArrayList<>();
         
-        Level level = map.getLevel();
-        Vector3 min = map.getMin();
-        Vector3 max = map.getMax();
+        Level level = map.level;
+        Vector3 min = map.min;
+        Vector3 max = map.max;
         
         int totalBlocks = (int)((max.x - min.x) * (max.y - min.y) * (max.z - min.z));
         int checked = 0;
@@ -182,9 +182,9 @@ public class GoldSpawnMapper {
     public void countBarriers(RandomSpawnsMap map, Player admin) {
         admin.sendMessage(TextFormat.YELLOW + "Counting barriers in map...");
         
-        Level level = map.getLevel();
-        Vector3 min = map.getMin();
-        Vector3 max = map.getMax();
+        Level level = map.level;
+        Vector3 min = map.min;
+        Vector3 max = map.max;
         
         int barrierCount = 0;
         

@@ -141,7 +141,7 @@ public abstract class Minigame {
     public int getPlayerCount() {
         int count = 0;
 
-        count += lobby.getLevel().getPlayers().size();
+        count += lobby.getMap().getPlayers().size();
         for (Match match : matches) {
             count += match.getPlayers().size();
         }

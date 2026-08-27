@@ -330,7 +330,7 @@ public class CustomPlayer extends Player {
     @SuppressWarnings("deprecation")
     @Override
     public void saveNBT() {
-        Location spawn = MainHub.instance.getSpawnLoc();
+        Location spawn = MainHub.instance.getMap().spawn;
         if (spawn == null) {
             BrlnsReb.instance.getLogger().error("MainHub spawn is null! Proceeding to save player's NBT according to PNX...");
             super.saveNBT();

@@ -11,7 +11,7 @@ import org.powernukkitx.utils.Config;
 import org.powernukkitx.utils.ItemHelper;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.maps.MapLevel;
+import org.brlnsreb.core.maps.GameMapLevel;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -19,12 +19,12 @@ import java.util.concurrent.ThreadLocalRandom;
 public class GoldSystem {
     
     private final Config config;
-    private final MapLevel map;
+    private final GameMapLevel map;
 
     private Task spawnTask;
     private List<Vector3> validSpawns;
     
-    public GoldSystem(Config config, MapLevel map) {
+    public GoldSystem(Config config, GameMapLevel map) {
         this.config = config;
         this.map = map;
     }
@@ -61,7 +61,7 @@ public class GoldSystem {
             randomSpawn.x, 
             randomSpawn.y, 
             randomSpawn.z, 
-            map.getLevel()
+            map.level
         ).add(0.5, 0.5, 0.5);
         
         spawnGoldAt(spawnPos);
@@ -101,10 +101,10 @@ public class GoldSystem {
 
     public void loadSpawns() {
         GoldSpawnMapper mapper = new GoldSpawnMapper();
-        this.validSpawns = mapper.getSpawns(map.getMapId());
+        this.validSpawns = mapper.getSpawns(map.mapId);
         
         if (validSpawns.isEmpty()) {
-            BrlnsReb.instance.getLogger().warning("MM: No gold spawns found for map: " + map.getMapId());
+            BrlnsReb.instance.getLogger().warning("MM: No gold spawns found for map: " + map.mapId);
         }
     }
 }

@@ -141,8 +141,8 @@ public class BrlnsReb extends PluginBase {
     private void prepareMainHub() {
         this.mainHub = new MainHub();
 
-        server.setDefaultLevel(mainHub.getLevel());
-        server.getDefaultLevel().setSpawnLocation(mainHub.getSpawnLoc());
+        server.setDefaultLevel(mainHub.getMap().level);
+        server.getDefaultLevel().setSpawnLocation(mainHub.getMap().spawn);
 
         server.getDefaultLevel().save();
     }

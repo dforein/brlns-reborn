@@ -126,8 +126,8 @@ public abstract class Match {
             YamlUtil.getStr("match.waiting-lobby.going-to-play", Configs.getGlobalMessages()), 
             new String[] {
                 YamlUtil.getStr("map-settings.maps." + mapId + ".name", config),
-                game.getMap().getTime().displayName,
-                game.getMap().getWeather().displayName
+                game.getMap().time.displayName,
+                game.getMap().weather.displayName
             }
         );
     }

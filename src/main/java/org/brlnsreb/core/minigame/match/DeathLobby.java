@@ -60,7 +60,7 @@ public class DeathLobby extends Lobby {
         afkCheckTask = new Task() {
             @Override
             public void onRun(int currentTick) {
-                for (Player p : level.getPlayers().values()) {
+                for (Player p : map.getPlayers().values()) {
                     Location prev = playerLocs.putIfAbsent(p.getUniqueId(), p.getLocation());
                     if (prev != null && playerLocs.get(p.getUniqueId()).equals(prev)) {
                         onLeave(p);
@@ -68,7 +68,7 @@ public class DeathLobby extends Lobby {
                     }
                 }
 
-                if (match.closed && level.getPlayers().isEmpty()) {
+                if (match.closed && map.getPlayers().isEmpty()) {
                     close();
                     this.cancel();
                 }

@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import org.brlnsreb.core.WorldManager;
 import org.brlnsreb.core.lobby.entities.HologramEntity;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
+import org.brlnsreb.core.maps.LobbyLevel;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.player.CustomPlayer;
@@ -16,8 +16,6 @@ import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.utils.YamlUtil;
 import org.powernukkitx.Player;
 import org.powernukkitx.entity.Entity;
-import org.powernukkitx.level.Level;
-import org.powernukkitx.level.Location;
 import org.powernukkitx.level.Position;
 import org.powernukkitx.utils.Config;
 
@@ -26,8 +24,7 @@ public abstract class Lobby {
     protected final Minigame minigame;
     protected final Match match;
 
-    protected final Level level;
-    protected Location spawnLoc;
+    protected final LobbyLevel map;
 
     protected Config config;
     protected Config messages;
@@ -52,18 +49,12 @@ public abstract class Lobby {
         this.config = getConfig();
         this.messages = getMessages();
 
-        String levelPath = configPath() + "world";
-        this.level = WorldManager.loadLobbyLevel(config.getString(levelPath), match != null);
-        this.spawnLoc = YamlUtil.parseLocationCentered(
-            config.getString(configPath() + "spawn-pos"), 
-            this.level,
-            config.getInt(configPath() + "spawn-yaw")
-        );
+        this.map = new LobbyLevel(this, match != null);
     }
 
 
     public boolean onJoin(CustomPlayer player) {
-        PlayerStateType oldState = PlayerUtils.changeWorld(player, spawnLoc, true);
+        PlayerStateType oldState = PlayerUtils.changeWorld(player, map.spawn, true);
 
         onJoinMessages(player);
 
@@ -86,7 +77,7 @@ public abstract class Lobby {
     protected abstract void onJoinItems(CustomPlayer player);
     
     public void teleportToSpawn(CustomPlayer player) {
-        PlayerUtils.lobbyTeleport(player, spawnLoc);
+        PlayerUtils.lobbyTeleport(player, map.spawn);
     }
 
 
@@ -111,7 +102,7 @@ public abstract class Lobby {
     protected NPCEntity spawnNpc(String configPath, Config customConfig, Consumer<CustomPlayer> task, boolean fixedSubtitle) {
         configPath = YamlUtil.checkConfigPath(configPath);
         
-        Position pos = YamlUtil.parsePositionCentered(customConfig.getString(configPath + "pos"), this.level);
+        Position pos = YamlUtil.parsePositionCentered(customConfig.getString(configPath + "pos"), map.level);
         NPCEntity npc = new NPCEntity(pos.getChunk(), Entity.getDefaultNBT(pos));
 
         npc.updateTitle(customConfig.getString(configPath + "text1"));
@@ -128,21 +119,21 @@ public abstract class Lobby {
 
 
     public void close() {
-        Map<Long, Player> players = level.getPlayers();
+        Map<Long, Player> players = map.getPlayers();
         if (!players.isEmpty()) {
             for (Player p : players.values()) {
                 MainHub.instance.onJoin((CustomPlayer) p);
             }
         }
 
-        WorldManager.unloadLevel(this.level);
+        map.close();
     }
 
 
     public void onConfigReload() {
-        this.spawnLoc = YamlUtil.parseLocationCentered(
+        map.spawn = YamlUtil.parseLocationCentered(
             config.getString(configPath() + "spawn-pos"), 
-            this.level,
+            map.level,
             config.getInt(configPath() + "spawn-yaw")
         );
     }
@@ -163,11 +154,10 @@ public abstract class Lobby {
     }
     
 
-    public Level getLevel() { return this.level; }
-    public Location getSpawnLoc() { return this.spawnLoc; }
+    public LobbyLevel getMap() { return map; };
     public abstract Config getConfig();
     public abstract Config getMessages();
-    public abstract String requireConfigPath();
+    protected abstract String requireConfigPath();
     public String configPath() { return YamlUtil.checkConfigPath(requireConfigPath()); }
 
 }

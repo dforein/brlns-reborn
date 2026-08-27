@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.Configs;
-import org.brlnsreb.core.maps.MapLevel;
+import org.brlnsreb.core.maps.GameMapLevel;
 import org.brlnsreb.core.minigame.match.game.items.SpectatorItemManager;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.match.GameState;
@@ -49,7 +49,7 @@ public abstract class Game {
     protected final GameState state;
     protected final Set<CustomPlayer> players;
     protected final Set<CustomPlayer> spectators;
-    protected final MapLevel map;
+    protected final GameMapLevel map;
 
     protected final SpectatorItemManager spectatorItems;
 
@@ -74,7 +74,7 @@ public abstract class Game {
         this.scheduler = BrlnsReb.getScheduler();
     }
 
-    protected abstract MapLevel prepareMap(String mapId, TimeOfDay time, Weather weather);
+    protected abstract GameMapLevel prepareMap(String mapId, TimeOfDay time, Weather weather);
     
     //join-leave logic
 
@@ -166,11 +166,11 @@ public abstract class Game {
         ));
 
         //builders message
-        List<String> builders = config.getStringList(map.getConfigPath() + "builders");
+        List<String> builders = config.getStringList(map.configPath + "builders");
         if (!builders.isEmpty()) {
             String buildersStr = String.join("&7, &d", builders);
             
-            String buildersTeam = YamlUtil.getStr(map.getConfigPath() + "build-team", config);
+            String buildersTeam = YamlUtil.getStr(map.configPath + "build-team", config);
             if (buildersTeam != null && buildersTeam.length() > 0) buildersStr = buildersStr + " &7/ &d" + buildersTeam;
 
             String creditsMsg = YamlUtil.getStr("match.game.map-credits", Configs.getGlobalMessages()).formatted(buildersStr);
@@ -270,7 +270,7 @@ public abstract class Game {
     protected abstract PlayerGameData getGameData(CustomPlayer player);
     public Set<CustomPlayer> getPlayers() { return players; }
     public Set<CustomPlayer> getSpectators() { return spectators; }
-    public MapLevel getMap() { return map; }
+    public GameMapLevel getMap() { return map; }
     public Config getConfig() { return config; }
     public Messages getMsgUtil() { return msgUtil; }
     public GameState getState() { return state; }

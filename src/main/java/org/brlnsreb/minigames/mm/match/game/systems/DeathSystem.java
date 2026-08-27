@@ -162,7 +162,7 @@ public class DeathSystem {
     }
 
     public void cleanupSheriffHoe() {
-        for (Entity entity : game.getMap().getLevel().getEntities()) {
+        for (Entity entity : game.getMap().level.getEntities()) {
             if (entity instanceof EntityItem itemEntity 
                     && itemEntity.getItem() instanceof ItemGoldenHoe) {
                 entity.close();

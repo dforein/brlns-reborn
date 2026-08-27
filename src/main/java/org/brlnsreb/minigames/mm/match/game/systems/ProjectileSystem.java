@@ -25,7 +25,7 @@ public class ProjectileSystem {
     public boolean throwSword(Player murderer) {
         if (!cooldown.check(murderer.getUniqueId())) return false;
 
-        Level level = game.getMap().getLevel();
+        Level level = game.getMap().level;
         Vector3 eyePosition = new Vector3(
             murderer.x,
             murderer.y + murderer.getEyeHeight(),

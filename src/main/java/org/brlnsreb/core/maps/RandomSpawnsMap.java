@@ -15,21 +15,20 @@ import org.powernukkitx.level.Location;
 import org.powernukkitx.level.Position;
 import org.powernukkitx.utils.Config;
 
-public class RandomSpawnsMap extends MapLevel {
+public class RandomSpawnsMap extends GameMapLevel {
 
-    private List<Position> spawns;
+    private final List<Position> spawns = new ArrayList<>();
     private int spawnIndex = 0;
-    private Map<UUID, Location> playerSpawns = new HashMap<>();
+
+    private final Map<UUID, Location> playerSpawns = new HashMap<>();
     
     public RandomSpawnsMap(Config config, String mapId, String mapsConfigPath, TimeOfDay time, Weather weather) {
         super(config, mapId, mapsConfigPath, time, weather);
     }
 
-    protected void loadSpawns(Config config) {
-        if (spawns == null) spawns = new ArrayList<>();
-
+    protected void loadSpawns() {
         for (String rawCoords : config.getStringList(configPath + "spawns")) {
-            this.spawns.add(Position.fromObject(
+            spawns.add(Position.fromObject(
                 YamlUtil.parseVector3Centered(rawCoords), 
                 level
             ));
@@ -37,7 +36,7 @@ public class RandomSpawnsMap extends MapLevel {
         Collections.shuffle(spawns);
     }
 
-    public Location getRandomSpawn(CustomPlayer player) {
+    public Location getSpawnFor(CustomPlayer player) {
         if (spawns.isEmpty()) return null;
 
         UUID uuid = player.getUniqueId();

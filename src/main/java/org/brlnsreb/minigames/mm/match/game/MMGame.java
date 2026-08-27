@@ -3,7 +3,7 @@ package org.brlnsreb.minigames.mm.match.game;
 import java.util.*;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.maps.MapLevel;
+import org.brlnsreb.core.maps.GameMapLevel;
 import org.brlnsreb.core.maps.RandomSpawnsMap;
 import org.brlnsreb.core.minigame.match.GameStateType;
 import org.brlnsreb.core.minigame.match.MatchExpand;
@@ -107,13 +107,13 @@ public class MMGame extends GameExpand {
         damageMultiplier = (float) config.getDouble("game.murderer-damage-multiplier");
         friendlyFireDeath = config.getBoolean("game.items.hoe.friendly-fire-death");
 
-        this.nightVision = config.getBoolean(map.getConfigPath() + "night-vision");
+        this.nightVision = config.getBoolean(map.configPath + "night-vision");
 
         MMPlayerGameData.setExpPrizes(config);
         MMPlayerGameData.setCoinsPrizes(config);
     }
 
-    protected MapLevel prepareMap(String mapId, TimeOfDay time, Weather weather) {
+    protected GameMapLevel prepareMap(String mapId, TimeOfDay time, Weather weather) {
         return new RandomSpawnsMap(
             config, "map-settings.maps." + mapId,
             mapId, time, weather
@@ -124,7 +124,7 @@ public class MMGame extends GameExpand {
     //join-leave logic
 
     protected Location onJoinLocation(CustomPlayer player) {
-        return map.getRandomSpawn(player);
+        return map.getSpawnFor(player);
     }
 
     protected void prepareGameData(CustomPlayer player) {
@@ -484,6 +484,7 @@ public class MMGame extends GameExpand {
     }
 
     private boolean newSheriff(CustomPlayer player, boolean checkGold) {
+        if (!isInGame()) return false;
         if (player == murderer || player == sheriff) return false;
         MMPlayerGameData gameData = gameDataMap.get(player);
 
@@ -573,6 +574,7 @@ public class MMGame extends GameExpand {
     }
 
     private void stopGame() {
+        items.removeYellowDye();
         timer.stop();
         if (updateUiTask != null) updateUiTask.cancel();
         if (checkPosTask != null) checkPosTask.cancel();
@@ -597,7 +599,9 @@ public class MMGame extends GameExpand {
             case Item.BLAZE_ROD -> useFlash(player);
 
             //innocent
-            case Item.YELLOW_DYE -> newSheriff(player, true);
+            case Item.YELLOW_DYE -> {
+                newSheriff(player, true);
+            }
             
             //spectator
             case Item.NETHER_STAR -> spectatorMenu.openSpectateMenu(player);
@@ -606,7 +610,7 @@ public class MMGame extends GameExpand {
     }
 
     public boolean onItemPickup(CustomPlayer player, EntityItem itemEntity) {
-        if (state.current != GameStateType.IN_GAME) return false;
+        if (!this.isInGame()) return false;
 
         if (itemEntity.getItem() instanceof ItemGoldIngot) {
             if (collectGold(player)) itemEntity.close();

@@ -39,7 +39,7 @@ public class RaycastSystem {
     public CustomPlayer shoot(CustomPlayer shooter) {
         if (!cooldown.check(shooter.getUniqueId())) return null;
 
-        Level level = game.getMap().getLevel();
+        Level level = game.getMap().level;
 
         level.addSound(shooter, Sound.RANDOM_FIZZ, 0.8f, 0.9f);
 

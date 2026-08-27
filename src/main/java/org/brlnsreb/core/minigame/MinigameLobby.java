@@ -42,7 +42,7 @@ public abstract class MinigameLobby extends Lobby {
         );
 
         this.bossBar = new MainLobbyBossBar(minigame.mgt.displayName);
-        this.bossBar.startBossBarUpdates(level);
+        this.bossBar.startBossBarUpdates(map.level);
     }
 
 

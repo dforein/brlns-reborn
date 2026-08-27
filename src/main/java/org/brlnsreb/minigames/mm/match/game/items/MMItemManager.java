@@ -79,6 +79,7 @@ public class MMItemManager extends ItemManager {
     }
 
     public void removeYellowDye() {
+        if (!game.isInGame() && game.isSheriffAlive()) return;
         for (CustomPlayer p : game.getPlayers()) {
             if (game.getGameData(p).role != MMRole.INNOCENT) continue;
             PlayerUtils.clearItem(p, Item.YELLOW_DYE);
