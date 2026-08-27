@@ -352,7 +352,7 @@ public class FriendCommand extends Command {
             .then(alertsNode)
             .then(notifyNode)
             .then(offNode)
-            .orElse(ctx -> ctx.getSender().sendMessage(usageMessage));
+            ;//.orElse(ctx -> ctx.getSender().sendMessage(usageMessage)); TODO: enable
     }
 
     private boolean listExec(CommandContext ctx, int currentPage) {

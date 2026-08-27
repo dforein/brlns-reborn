@@ -56,7 +56,7 @@ public class PVTCommand extends Command {
 
                         return CommandResult.success();
                     })))
-            .orElse(ctx -> ctx.getSender().sendMessage(usageMessage));
+            ;//.orElse(ctx -> ctx.getSender().sendMessage(usageMessage)); TODO: enable
     }
 
 }

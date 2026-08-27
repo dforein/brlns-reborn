@@ -124,7 +124,7 @@ public class DatabaseManager {
         hikariConfig.setMinimumIdle(2);
         hikariConfig.setConnectionTimeout(30000);
         hikariConfig.setIdleTimeout(600000);
-        hikariConfig.setMaxLifetime(1800000);
+        hikariConfig.setMaxLifetime(1000000);
 
         hikariConfig.addDataSourceProperty("cachePrepStmts", "true");
         hikariConfig.addDataSourceProperty("prepStmtCacheSize", "250");
