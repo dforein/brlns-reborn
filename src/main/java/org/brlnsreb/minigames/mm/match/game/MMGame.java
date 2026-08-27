@@ -5,7 +5,6 @@ import java.util.*;
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.maps.GameMapLevel;
 import org.brlnsreb.core.maps.RandomSpawnsMap;
-import org.brlnsreb.core.minigame.match.GameStateType;
 import org.brlnsreb.core.minigame.match.MatchExpand;
 import org.brlnsreb.core.minigame.match.game.GameExpand;
 import org.brlnsreb.core.player.CustomPlayer;
@@ -169,7 +168,7 @@ public class MMGame extends GameExpand {
 
 
     public void onLeave(CustomPlayer player) {
-        if (!player.isPlaying() || state.current != GameStateType.IN_GAME) return;
+        if (!player.isPlaying() || !this.isInGame()) return;
 
         roleCheckOnLeave(player, player.getPosition());
         checkWinConditions();
@@ -326,7 +325,7 @@ public class MMGame extends GameExpand {
     }
 
     public void afterDeath(DamageCause cause, Location deathLoc, CustomPlayer victim, CustomPlayer killer) {
-        if (state.current != GameStateType.IN_GAME) return;
+        if (!this.isInGame()) return;
 
         MMPlayerGameData gameData = gameDataMap.get(killer);
 
@@ -484,7 +483,7 @@ public class MMGame extends GameExpand {
     }
 
     private boolean newSheriff(CustomPlayer player, boolean checkGold) {
-        if (!isInGame()) return false;
+        if (!this.isInGame()) return false;
         if (player == murderer || player == sheriff) return false;
         MMPlayerGameData gameData = gameDataMap.get(player);
 
@@ -514,7 +513,7 @@ public class MMGame extends GameExpand {
     //check win conditions
 
     public boolean checkWinConditions() {
-        if (state.current != GameStateType.IN_GAME) return false;
+        if (!this.isInGame()) return false;
 
         if (!isMurdererAlive()) {
             murdererWin = false;
@@ -599,9 +598,7 @@ public class MMGame extends GameExpand {
             case Item.BLAZE_ROD -> useFlash(player);
 
             //innocent
-            case Item.YELLOW_DYE -> {
-                newSheriff(player, true);
-            }
+            case Item.YELLOW_DYE -> newSheriff(player, true);
             
             //spectator
             case Item.NETHER_STAR -> spectatorMenu.openSpectateMenu(player);
@@ -642,7 +639,7 @@ public class MMGame extends GameExpand {
     //projectile
 
     public void onProjectileHit(CustomPlayer player, ProjectileHitEvent event) {
-        if (state.current != GameStateType.IN_GAME) return;
+        if (!this.isInGame()) return;
         if (!(event.getEntity() instanceof ThrownSwordEntity thrownSword)) return;
         if (player == murderer) return;
 
@@ -653,7 +650,7 @@ public class MMGame extends GameExpand {
     //chat
 
     public boolean onChat(CustomPlayer player, PlayerChatEvent event) {
-        if (state.current != GameStateType.IN_GAME) return true;
+        if (!this.isInGame()) return true;
 
         if (players.contains(player)) return roleCheckOnChat(player);
         if (spectators.contains(player)) {
@@ -664,7 +661,7 @@ public class MMGame extends GameExpand {
     }
 
     public boolean onCommandPreprocess(CustomPlayer player, PlayerCommandPreprocessEvent event) {
-        if (state.current != GameStateType.IN_GAME) return true;
+        if (!this.isInGame()) return true;
 
         String command = event.getMessage()
             .substring(1)
