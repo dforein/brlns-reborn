@@ -10,18 +10,23 @@ import org.powernukkitx.utils.Config;
 
 public abstract class GameMapLevel extends MapLevel {
 
-    public final Vector3 min;
-    public final Vector3 max;
     public final String mapId;
     public final String name;
+    public final Vector3 min;
+    public final Vector3 max;
+    
+    private boolean nightVision;
 
     public GameMapLevel(Config config, String configPath, String mapId, TimeOfDay time, Weather weather) {
         super(config, configPath, time, weather, true);
 
         this.mapId = mapId;
         this.name = YamlUtil.getStr(configPath + "name", config);
+
         this.min = YamlUtil.parseVector3(YamlUtil.getStr(configPath + "min", config));
         this.max = YamlUtil.parseVector3(YamlUtil.getStr(configPath + "max", config));
+
+        this.nightVision = config.getBoolean(configPath + "night-vision");
     }
 
     public boolean isInMap(Vector3 pos) {
@@ -30,8 +35,8 @@ public abstract class GameMapLevel extends MapLevel {
                pos.z >= min.z && pos.z <= max.z;
     }
 
-    public boolean isNightVisionEnabled() {
-        return config.getBoolean(configPath + "night-vision");
+    public boolean isNightVisionEnabled() { 
+        return nightVision;
     }
 
     protected Level loadLevel(boolean copyworld) {

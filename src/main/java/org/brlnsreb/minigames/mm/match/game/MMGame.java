@@ -73,8 +73,6 @@ public class MMGame extends GameExpand {
     private CustomPlayer sheriff;
     private static boolean friendlyFireDeath;
 
-    private final boolean nightVision;
-
     private boolean murdererWin;
 
     private final Set<Entity> deadBodies = new HashSet<>();
@@ -106,8 +104,6 @@ public class MMGame extends GameExpand {
         damageMultiplier = (float) config.getDouble("game.murderer-damage-multiplier");
         friendlyFireDeath = config.getBoolean("game.items.hoe.friendly-fire-death");
 
-        this.nightVision = config.getBoolean(map.configPath + "night-vision");
-
         MMPlayerGameData.setExpPrizes(config);
         MMPlayerGameData.setCoinsPrizes(config);
     }
@@ -133,7 +129,7 @@ public class MMGame extends GameExpand {
     protected void onJoinPreparePlayer(CustomPlayer player) {
         player.interactMode = InteractMode.LIMITED;
 
-        if (nightVision) {
+        if (map.isNightVisionEnabled()) {
             PlayerUtils.giveEffect(
                 player, 
                 EffectType.NIGHT_VISION, 
