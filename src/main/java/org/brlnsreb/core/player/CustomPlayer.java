@@ -110,7 +110,6 @@ public class CustomPlayer extends Player {
     }
 
     public boolean isPlaying() { return this.state == PlayerStateType.PLAYING; }
-
     public boolean isGameSpectator() { return this.state == PlayerStateType.SPECTATOR; }
     public void setGameSpectator() {
         this.state = PlayerStateType.SPECTATOR;
@@ -168,13 +167,15 @@ public class CustomPlayer extends Player {
 
     public void updateExp() {
         if (data.isLogged()) {
-            int barExp = calculateRequireExperience(data.getFloorLevel())                   //deltaExp between minecraft xp levels
-                        - calculateRequireExperience(data.getFloorLevel() + 1);
-            barExp *= (data.getLevel() - data.getFloorLevel());                             //level - floorLevel = % exp needed for next exp level
+            int fLevel = data.getFloorLevel();
+            double deltaExp = calculateRequireExperience(fLevel) * (data.getLevel() - fLevel);
 
-            this.setExperience(barExp, data.getFloorLevel());
+            this.setExperience(
+                (int) deltaExp,
+                fLevel
+            );
         } else {
-            this.setExperience(0);
+            this.setExperience(0, 0);
         }
     }
 

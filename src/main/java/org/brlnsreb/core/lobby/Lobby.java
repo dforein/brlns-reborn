@@ -81,10 +81,11 @@ public abstract class Lobby {
     }
 
 
-    protected void createHologram(Position pos, String text) {
+    protected HologramEntity createHologram(Position pos, String text) {
         HologramEntity holo = new HologramEntity(pos.getChunk(), Entity.getDefaultNBT(pos));
         holo.setText(text);
         holo.spawnToAll();
+        return holo;
     }
 
     protected NPCEntity spawnNpc(String configPath, Consumer<CustomPlayer> task) {

@@ -246,14 +246,14 @@ public class PlayerUtils {
 
     public static void updateOnlinePlayer(Player player, boolean removeAllServer) {
         removeViewersToOnlinePlayer(player, removeAllServer);
-        addViewersToOnlinePlayer(false, player);
+        addViewersToOnlinePlayer(player, false);
     }
 
     public static void addViewerToOnlinePlayer(Player viewer, Player player) {
         viewer.sendPacket(addOnlinePlayerPacket(player));
     }
 
-    public static void addViewersToOnlinePlayer(boolean allServer, Player player) {
+    public static void addViewersToOnlinePlayer(Player player, boolean allServer) {
         sendPlayerListPacket(
             addOnlinePlayerPacket(player), player, 
             allServer ? null : player.getLevel()
@@ -315,6 +315,16 @@ public class PlayerUtils {
 
 
     //misc
+
+    public static void giveNightVision(Player player) {
+        PlayerUtils.giveEffect(
+            player, 
+            EffectType.NIGHT_VISION, 
+            99999999, 
+            2, 
+            false
+        );
+    }
 
     public static void giveEffect(Player player, EffectType type, int duration, int amplifier, boolean isVisible) {
         Effect effect = Effect.get(type);

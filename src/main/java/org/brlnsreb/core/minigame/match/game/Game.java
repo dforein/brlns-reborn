@@ -101,14 +101,12 @@ public abstract class Game {
     protected abstract void setPregameNameTag(CustomPlayer player);       //name tag + chat name tag
 
     public void onJoinAsSpectator(CustomPlayer player) {
-        if (player.isPlaying()) {      //reset everything
-            PlayerUtils.resetUiAndInventories(player);
-            PlayerUtils.resetPlayer(player, Player.ADVENTURE, 20);
-        }
-
         PlayerUtils.changeWorld(player, onJoinLocation(player), false);
 
         player.setGameSpectator();
+        
+        PlayerUtils.resetUiAndInventories(player);
+        PlayerUtils.resetPlayer(player, Player.ADVENTURE, 20);
         spectatorItems.giveTeleporter(player);
         spectatorItems.giveActions(player);
 
@@ -132,14 +130,14 @@ public abstract class Game {
         if (!message) return;
 
         PlayerGameData gameData = getGameData(player);
-        player.sendMessage(ChatMsgs.buildString(Alignment.CENTER, 
+        Messages.sendMessageBlock(player, Alignment.CENTER, true,
             "§l§3Reward Summary",
             "§6You earned §l§2" + gameData.getCoinsEarned() + "§r §6coins",
             "§2You earned §l§6" + gameData.getExpEarned() + "§r §2of experience",
             "§6You got §l§d" + 0 + " §c" + 0 + " §e" + 0 + " §9" + 0 + "§r §6gems",     //TODO: gems
             "§2Support us at:",
             "§6store.brlns.reb"
-        ));
+        );
         
         if (oldLevel < player.data.getFloorLevel()) {
             player.sendMessage(ChatMsgs.INFO_PFX + "Congratulations! you are now on level §e" + player.data.getFloorLevel());    //TEXT
@@ -157,13 +155,13 @@ public abstract class Game {
         }
 
         //starting message
-        msgUtil.broadcast(ChatMsgs.buildString(Alignment.CENTER, 
+        msgUtil.sendMessageBlock(Alignment.CENTER, true,
             ChatMsgs.BROKENLENS_GAMES,
             "",
             "§7- " + minigame.mgt.displayName + " §7-",
             "",
             "§7 Starting in 10 seconds..."
-        ));
+        );
 
         //builders message
         List<String> builders = config.getStringList(map.configPath + "builders");

@@ -1,7 +1,7 @@
 package org.brlnsreb.commands;
 
 import org.brlnsreb.tasks.CheckPingTask;
-import org.brlnsreb.utils.ChatMsgs;
+import org.brlnsreb.utils.Messages;
 import org.brlnsreb.utils.ChatMsgs.Alignment;
 import org.powernukkitx.Player;
 import org.powernukkitx.command.Command;
@@ -13,8 +13,7 @@ import org.powernukkitx.utils.TextFormat;
 
 @CommandDefinition(
     name = "ping",
-    description = "Check your ping",
-    usage = "/ping or /ping <player>"
+    description = "Check your ping"
 )
 
 public class PingCommand extends Command {
@@ -23,8 +22,8 @@ public class PingCommand extends Command {
         POOR(TextFormat.DARK_RED),
         BAD(TextFormat.RED),
         AVERAGE(TextFormat.GOLD),
-        GOOD(TextFormat.RED),
-        EXCELLENT(TextFormat.DARK_RED),
+        GOOD(TextFormat.YELLOW),
+        EXCELLENT(TextFormat.GREEN),
         UNKNOWN(TextFormat.GRAY);
 
         public TextFormat color;
@@ -47,14 +46,14 @@ public class PingCommand extends Command {
                 Grade health = getPingGrade(median >= 0 ? median : ping);
                 Grade stability = getStability(CheckPingTask.getMedianAbsDeviation(player));
                 
-                player.sendMessage(ChatMsgs.buildString(Alignment.LEFT, 
+                Messages.sendMessageBlock(player, Alignment.LEFT, false,
                     "§e--- §l§dConnection status§r §e---",
                     "§ePing/Latency: " + getPingGrade(ping).color + ping + "ms",
                     "§eAverage Ping/Latency: " + health.color + median + "ms",
                     "§eConnection Health: " + health.str,
                     "§eConnection Stability: " + stability.str,
                     "§eServer Location: §dEUROPE"
-                ));
+                );
 
                 return CommandResult.success();
             });

@@ -21,12 +21,12 @@ public abstract class GameMapLevel extends MapLevel {
         super(config, configPath, time, weather, true);
 
         this.mapId = mapId;
-        this.name = YamlUtil.getStr(configPath + "name", config);
+        this.name = YamlUtil.getStr(this.configPath + "name", this.config);
 
-        this.min = YamlUtil.parseVector3(YamlUtil.getStr(configPath + "min", config));
-        this.max = YamlUtil.parseVector3(YamlUtil.getStr(configPath + "max", config));
+        this.min = YamlUtil.parseVector3(YamlUtil.getStr(this.configPath + "min", this.config));
+        this.max = YamlUtil.parseVector3(YamlUtil.getStr(this.configPath + "max", this.config));
 
-        this.nightVision = config.getBoolean(configPath + "night-vision");
+        this.nightVision = this.config.getBoolean(this.configPath + "night-vision");
     }
 
     public boolean isInMap(Vector3 pos) {

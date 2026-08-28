@@ -2,6 +2,7 @@ package org.brlnsreb.utils;
 
 import java.util.Collection;
 
+import org.brlnsreb.utils.ChatMsgs.Alignment;
 import org.powernukkitx.Player;
 import org.powernukkitx.Server;
 import org.powernukkitx.utils.Config;
@@ -43,6 +44,40 @@ public class Messages {
 
     private String getString(String path) {
         return YamlUtil.getStr(path, this.messages);
+    }
+
+
+    //message block
+
+    public void sendMessageBlock(Alignment alignment, boolean addSpace, String... lines) {
+        sendMessageBlock(players, alignment, addSpace, lines);
+        if (spectators != null) sendMessageBlock(spectators, alignment, addSpace, lines);
+    }
+
+    public static void sendMessageBlock(Collection<? extends Player> players, Alignment alignment, boolean addSpace, String... lines) {
+        String content = ChatMsgs.buildBlockContent(alignment, lines);
+
+        for (Player p : players) {
+            sendMessageBlock(p, addSpace, content);
+        }
+    }
+
+    public static void sendMessageBlock(Player player, Alignment alignment, boolean addSpace, String... lines) {
+        sendMessageBlock(
+            player, 
+            addSpace, 
+            ChatMsgs.buildBlockContent(alignment, lines)
+        );
+    }
+
+    private static void sendMessageBlock(Player player, boolean addSpace, String content) {
+        player.sendMessage(ChatMsgs.BAR);
+        if (addSpace) player.sendMessage("§2-§r");
+
+        player.sendMessage(content);
+
+        if (addSpace) player.sendMessage("§2-§r");
+        player.sendMessage(ChatMsgs.BAR);
     }
 
 

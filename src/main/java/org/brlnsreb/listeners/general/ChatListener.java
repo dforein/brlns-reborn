@@ -28,26 +28,19 @@ public class ChatListener implements Listener {
     @EventHandler
     public void onChat(PlayerChatEvent event) {
         CustomPlayer player = (CustomPlayer) event.getPlayer();
-        String formatted;
 
-        switch (player.state) {
-            case PLAYING:
-                if (!player.matchCurrent.getGame().onChat(player, event)) {
-                    event.setCancelled();
-                    return;
-                }
-                formatted = player.ingameChatNameTag + "§7: " + event.getMessage();
-                break;
-
-            case SPECTATOR:
-                formatted = ChatMsgs.SPEC_PFX + player.data.name + ": " + event.getMessage();
-                break;
-
-            default:
-                int floorLevel = player.data.getFloorLevel();
-                formatted = (floorLevel < 1000 ? " " : "") + player.getNameTag() + "§7: " + event.getMessage();
-                break;
+        if (player.isPlaying() || player.isGameSpectator()) {
+            if (!player.matchCurrent.getGame().onChat(player, event)) {
+                event.setCancelled();
+                return;
+            }
         }
+
+        String formatted = switch (player.state) {
+            case PLAYING -> player.ingameChatNameTag + "§7: ";
+            case SPECTATOR -> ChatMsgs.SPEC_PFX + player.data.name + ": ";
+            default -> (player.data.getFloorLevel() < 1000 ? " " : "") + player.getNameTag() + "§7: ";
+        } + event.getMessage();
 
         filterPlayerBySenderLevel(event);
 

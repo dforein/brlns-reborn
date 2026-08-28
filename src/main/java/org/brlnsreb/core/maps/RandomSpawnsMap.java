@@ -17,16 +17,18 @@ import org.powernukkitx.utils.Config;
 
 public class RandomSpawnsMap extends GameMapLevel {
 
-    private final List<Position> spawns = new ArrayList<>();
+    private List<Position> spawns;
     private int spawnIndex = 0;
 
     private final Map<UUID, Location> playerSpawns = new HashMap<>();
     
-    public RandomSpawnsMap(Config config, String mapId, String mapsConfigPath, TimeOfDay time, Weather weather) {
-        super(config, mapId, mapsConfigPath, time, weather);
+    public RandomSpawnsMap(Config config, String configPath, String mapId, TimeOfDay time, Weather weather) {
+        super(config, configPath, mapId, time, weather);
     }
 
     protected void loadSpawns() {
+        spawns = new ArrayList<>();
+
         for (String rawCoords : config.getStringList(configPath + "spawns")) {
             spawns.add(Position.fromObject(
                 YamlUtil.parseVector3Centered(rawCoords), 

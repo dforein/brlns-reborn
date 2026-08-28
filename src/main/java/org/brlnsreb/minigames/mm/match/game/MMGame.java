@@ -72,6 +72,7 @@ public class MMGame extends GameExpand {
 
     private CustomPlayer sheriff;
     private static boolean friendlyFireDeath;
+    private final Object lock = new Object();
 
     private boolean murdererWin;
 
@@ -129,15 +130,7 @@ public class MMGame extends GameExpand {
     protected void onJoinPreparePlayer(CustomPlayer player) {
         player.interactMode = InteractMode.LIMITED;
 
-        if (map.isNightVisionEnabled()) {
-            PlayerUtils.giveEffect(
-                player, 
-                EffectType.NIGHT_VISION, 
-                99999999, 
-                2, 
-                false
-            );
-        }
+        if (map.isNightVisionEnabled()) PlayerUtils.giveNightVision(player);
 
         bossBar.updateExp(player, gameDataMap.get(player));
     }
@@ -149,7 +142,7 @@ public class MMGame extends GameExpand {
     public void onJoinPrepareSpectator(CustomPlayer player) {
         player.setAllowFlight(true);
         player.setFlying(true);
-        PlayerUtils.giveEffect(player, EffectType.NIGHT_VISION, 99999999, 2, false);
+        if (map.isNightVisionEnabled()) PlayerUtils.giveNightVision(player);
 
         scheduler.scheduleDelayedTask(BrlnsReb.instance, () -> playDeadBodyAnimation(player), 20);
         scheduler.scheduleDelayedTask(BrlnsReb.instance, () -> playDeadBodyAnimation(player), 60);
@@ -387,7 +380,8 @@ public class MMGame extends GameExpand {
         msgUtil.sendPresetMessagePrefix(
             murderer, 
             "murderer-kills-player",
-            new Integer[] { 
+            new Object[] {
+                victimName,
                 MMPlayerGameData.getExpPrize(MMEvent.KILL), 
                 MMPlayerGameData.getCoinsPrize(MMEvent.KILL), 
             }
@@ -488,7 +482,7 @@ public class MMGame extends GameExpand {
             return false;
         }
 
-        synchronized (sheriff) {
+        synchronized (lock) {
             if (isSheriffAlive()) return true;
             sheriff = player;
         }
@@ -597,8 +591,8 @@ public class MMGame extends GameExpand {
             case Item.YELLOW_DYE -> newSheriff(player, true);
             
             //spectator
-            case Item.NETHER_STAR -> spectatorMenu.openSpectateMenu(player);
-            case Item.COMPASS -> spectatorMenu.openActionsMenu(player);
+            case Item.COMPASS -> spectatorMenu.openSpectateMenu(player);
+            case Item.CLOCK -> spectatorMenu.openActionsMenu(player);
         }
     }
 
@@ -651,6 +645,7 @@ public class MMGame extends GameExpand {
         if (players.contains(player)) return roleCheckOnChat(player);
         if (spectators.contains(player)) {
             event.getRecipients().removeIf(recipient -> players.contains(recipient));
+            return true;
         }
 
         return false;

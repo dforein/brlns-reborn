@@ -22,17 +22,15 @@ public class ChatMsgs {
         CENTER 
     };
 
-    public static String buildString(Alignment alignment, String... lines) {
+    public static String buildBlockContent(Alignment alignment, String... lines) {
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append(BAR);
-        strBuilder.append("§2-§r\n");
-
         int i, spaces;
+
         for (String line : lines) {
             strBuilder.append("§2-§r");
 
             if (alignment == Alignment.CENTER) {
-                spaces = (int) (BAR_CHARACTERS - TextFormat.clean(line).length() * 1.1 - 1) / 2;
+                spaces = (int) (BAR_CHARACTERS - TextFormat.clean(line).length() - 1) / 2;
                 for (i = 0; i < spaces; i++) strBuilder.append("§l §r");
             } else if (alignment == Alignment.LEFT) {
                 strBuilder.append("§l §r");
@@ -42,8 +40,6 @@ public class ChatMsgs {
             strBuilder.append("§r\n");
         }
 
-        strBuilder.append("§2-§r\n");
-        strBuilder.append(BAR);
         return strBuilder.toString();
     }
 

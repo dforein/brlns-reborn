@@ -6,12 +6,14 @@ import org.brlnsreb.utils.ChatMsgs;
 import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandSender;
 import org.powernukkitx.plugin.annotation.CommandDefinition;
+import org.powernukkitx.plugin.annotation.CommandDefinition.CommandMode;
 import org.powernukkitx.utils.TextFormat;
 
 @CommandDefinition(
     name = "login",
     aliases = {"login", "register"},
-    description = "Login/Register a §eBroken§6Lens§r account"
+    description = "Login/Register a §eBroken§6Lens§r account",
+    commandMode = CommandMode.RAW
 )
 
 public class LoginCommand extends Command {

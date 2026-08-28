@@ -6,11 +6,13 @@ import org.brlnsreb.utils.ChatMsgs;
 import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandSender;
 import org.powernukkitx.plugin.annotation.CommandDefinition;
+import org.powernukkitx.plugin.annotation.CommandDefinition.CommandMode;
 import org.powernukkitx.utils.TextFormat;
 
 @CommandDefinition(
     name = "logout",
-    description = "Log-out from your account"
+    description = "Log-out from your account",
+    commandMode = CommandMode.RAW
 )
 
 public class LogoutCommand extends Command {

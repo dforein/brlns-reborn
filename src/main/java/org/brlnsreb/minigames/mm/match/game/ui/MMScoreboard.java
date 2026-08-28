@@ -32,7 +32,7 @@ public class MMScoreboard extends ScoreboardAbstract {
     public void updateIngame(CustomPlayer player, int innocents, boolean isSheriffAlive, String formattedTime, MMRole role) {
         String[] lines = {
             "§a",
-            "  §aInnocents:",
+            "  §l§aInnocents:",
             "   §l§a" + innocents,
             "  §l§eSheriff:",
             "   §a" + (isSheriffAlive ? "alive" : "dead"),
@@ -58,13 +58,13 @@ public class MMScoreboard extends ScoreboardAbstract {
     public void updateSpectator(CustomPlayer player, int innocents, boolean isSheriffAlive, String formattedTime, int spectators) {
         String[] lines = {
             "§a",
-            "  §aInnocents:",
+            "  §l§aInnocents:",
             "   §a" + innocents,
             "  §l§eSheriff:",
             "   §a" + (isSheriffAlive ? "alive" : "dead"),
             "  §l§dGame time:",
             "   §a" + formattedTime,
-            "  §l§4Spectators:",
+            "  §l§6Spectators:",
             "   §a" + spectators,
             "§b"
         };

@@ -70,7 +70,7 @@ public class FriendCommand extends Command {
                                 case ALREADY_FRIENDS -> ChatMsgs.ERROR_PFX + receiverName + " is already your friend!";
                                 case REQUEST_ALREADY_SENT -> ChatMsgs.ERROR_PFX + "You have already sent a request to " + receiverName;
                                 case REQUESTS_DISABLED -> ChatMsgs.ERROR_PFX + "Sorry, requests are not enabled for " + receiverName;
-                                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend add command";
+                                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend_add_error";
                             }
                         );
 
@@ -101,7 +101,7 @@ public class FriendCommand extends Command {
                                 case OK -> ChatMsgs.SUCCESS_PFX + "§e" + ctx.getArg("name") + "§a removed from your friend list";
                                 case NOT_FRIENDS -> ChatMsgs.ERROR_PFX + ctx.getArg("name") + " not found in your friend list!";
                                 case DB_ERROR -> ChatMsgs.ERROR_PFX + "Report this error to developers: DB_ERROR";
-                                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend remove command";
+                                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend_remove_error";
                             }
                         );
                     });
@@ -124,7 +124,7 @@ public class FriendCommand extends Command {
                                 case OK -> ChatMsgs.SUCCESS_PFX + "§e" + requestSenderName + "§a added to your friend list";
                                 case REQUEST_NOT_FOUND -> ChatMsgs.ERROR_PFX + "Request not found from " + requestSenderName;
                                 case DB_ERROR -> ChatMsgs.ERROR_PFX + "Report this error to developers: DB_ERROR";
-                                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend remove command";
+                                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend_accept_error";
                             }
                         );
 
@@ -156,7 +156,7 @@ public class FriendCommand extends Command {
                             switch (outcome) {
                                 case OK -> ChatMsgs.SUCCESS_PFX + "§e" + requestSenderName + "§a added to your friend list";
                                 case DB_ERROR -> ChatMsgs.ERROR_PFX + "Report this error to developers: DB_ERROR";
-                                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend remove command";
+                                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend_acceptall_error";
                             }
                         );
 
@@ -185,7 +185,7 @@ public class FriendCommand extends Command {
                                 case OK -> ChatMsgs.SUCCESS_PFX + "Denied friend request from §e" + ctx.getArg("name");
                                 case REQUEST_NOT_FOUND -> ChatMsgs.ERROR_PFX + "Request not found from " + ctx.getArg("name");
                                 case DB_ERROR -> ChatMsgs.ERROR_PFX + "Report this error to developers: DB_ERROR";
-                                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend remove command";
+                                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend_deny_error";
                             }
                         );
                     });
@@ -210,7 +210,7 @@ public class FriendCommand extends Command {
                             switch (outcome) {
                                 case OK -> ChatMsgs.SUCCESS_PFX + "Denied friend request from §e" + requestSenderName;
                                 case DB_ERROR -> ChatMsgs.ERROR_PFX + "Report this error to developers: DB_ERROR";
-                                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend remove command";
+                                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend_denyall_error";
                             }
                         );
                     });
@@ -246,23 +246,25 @@ public class FriendCommand extends Command {
                 Match match = sender.matchCurrent;
                 if (match != null) match.onLeave(sender);
                 switch (friend.state) {
-                    case LOBBY:
+                    case LOBBY -> {
                         if (friend.minigameCurrent == null) {
                             MainHub.instance.onJoin(sender);
                         } else {
                             friend.minigameCurrent.onLobbyJoin(sender);
                         }
-                        break;
-                    case WAITING_LOBBY, DEATH_LOBBY:
-                        friend.matchCurrent.onJoin(sender);
-                        break;
-                    case PLAYING, SPECTATOR:
+                    }
+                    
+                    case WAITING_LOBBY, DEATH_LOBBY -> friend.matchCurrent.onJoin(sender);
+
+                    case PLAYING, SPECTATOR -> {
                         friend.matchCurrent.onJoin(sender);
                         friend.sendMessage(ChatMsgs.INFO_PFX + "§d" + getPlayerName(sender) + "§a is now spectating.");
-                        break;
-                    default:
+                    }
+
+                    default -> {
                         MainHub.instance.onJoin(sender);
-                        return CommandResult.fail(ChatMsgs.ERROR_PFX + "Report this error to developers: spectate_join_switch.error");
+                        return CommandResult.fail(ChatMsgs.ERROR_PFX + "Report this error to developers: friend_join_switch_error");
+                    }
                 }
 
                 sender.sendMessage(ChatMsgs.SUCCESS_PFX + "You joined " + friendName + "!");
