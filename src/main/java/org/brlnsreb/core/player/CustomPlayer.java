@@ -169,11 +169,7 @@ public class CustomPlayer extends Player {
         if (data.isLogged()) {
             int fLevel = data.getFloorLevel();
             double deltaExp = calculateRequireExperience(fLevel) * (data.getLevel() - fLevel);
-
-            this.setExperience(
-                (int) deltaExp,
-                fLevel
-            );
+            this.setExperience((int) deltaExp, fLevel);
         } else {
             this.setExperience(0, 0);
         }
