@@ -76,7 +76,7 @@ public class FriendsManager {
     //online - offline
 
     private static void addOnlineFriend(PlayerData data, String accountName) {
-        //player login
+        //player login: add new online friend to all friends in data passed
         String friendJoined = null;
         if (data.getFriendNotify()) {
             friendJoined = ChatMsgs.INFO_PFX + YamlUtil.getStr(
@@ -97,7 +97,7 @@ public class FriendsManager {
     }
 
     public static void removeOnlineFriend(PlayerData data) {
-        //player logout
+        //player logout: remove online friend to all friends in data passed
         String friendLeft = null;
         if (data.getFriendNotify()) {
             friendLeft = ChatMsgs.INFO_PFX + YamlUtil.getStr(
