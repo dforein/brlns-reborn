@@ -149,6 +149,9 @@ public abstract class Game {
     //pregame
 
     public void onPregameStart() {
+        int secondsCountdown = Configs.getGlobalConfig().getInt("match.game.pregame-countdown-seconds");
+
+        //all players join game world
         for (CustomPlayer p : players) {
             onJoin(p);
         }
@@ -159,7 +162,7 @@ public abstract class Game {
             "",
             "§7- " + minigame.mgt.displayName + " §7-",
             "",
-            "§7 Starting in 10 seconds..."
+            "§7 Starting in "+ secondsCountdown +" seconds..."
         );
 
         //builders message
@@ -175,7 +178,7 @@ public abstract class Game {
         }
 
         prepareGame();
-        onPregameCountdown();
+        onPregameCountdown(secondsCountdown);
     }
 
     protected abstract void prepareGame();
@@ -183,11 +186,8 @@ public abstract class Game {
 
     //pregame countdown
 
-    protected void onPregameCountdown() {
+    protected void onPregameCountdown(int secondsCountdown) {
         state.current = GameStateType.PREGAME_COUNTDOWN;
-
-        Config globalConfig = Configs.getGlobalConfig();
-        int secondsCountdown = globalConfig.getInt("match.game.pregame-countdown-seconds");
 
         timer = new TimerSystem();
         timer.start(secondsCountdown, () -> {
