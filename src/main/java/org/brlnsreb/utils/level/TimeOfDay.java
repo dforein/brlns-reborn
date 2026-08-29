@@ -1,4 +1,4 @@
-package org.brlnsreb.utils.voting;
+package org.brlnsreb.utils.level;
 
 import org.powernukkitx.level.Level;
 

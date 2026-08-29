@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.lobby.entities.HologramEntity;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
@@ -17,9 +16,9 @@ import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.mainhub.items.MainLobbyItemManager;
 import org.brlnsreb.mainhub.ui.MainLobbyBossBar;
-import org.brlnsreb.utils.ChatMsgs;
-import org.brlnsreb.utils.YamlUtil;
-
+import org.brlnsreb.utils.config.Configs;
+import org.brlnsreb.utils.config.YamlUtil;
+import org.brlnsreb.utils.messages.ChatMsgs;
 import org.powernukkitx.utils.Config;
 
 public class MainHub extends Lobby {
@@ -65,7 +64,7 @@ public class MainHub extends Lobby {
     } 
 
     protected void onServerJoinMessages(CustomPlayer player) {
-        HubUtils.friendAlertsNotify(player, null, null, false);
+        MainLobbyUtils.friendAlertsNotify(player, null, null, false);
     }
 
 
@@ -76,7 +75,7 @@ public class MainHub extends Lobby {
     }
 
     protected void onJoinMessages(CustomPlayer player) {
-        HubUtils.friendAlertsNotify(player, null, ChatMsgs.BROKENLENS);
+        MainLobbyUtils.friendAlertsNotify(player, null, ChatMsgs.BROKENLENS);
     }
 
     protected void onJoinUi(CustomPlayer player) {

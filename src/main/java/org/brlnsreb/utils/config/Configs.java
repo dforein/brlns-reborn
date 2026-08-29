@@ -1,4 +1,4 @@
-package org.brlnsreb.core;
+package org.brlnsreb.utils.config;
 
 import java.util.HashMap;
 

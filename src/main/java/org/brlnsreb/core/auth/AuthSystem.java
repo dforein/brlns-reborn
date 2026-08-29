@@ -1,13 +1,12 @@
 package org.brlnsreb.core.auth;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.data.database.Outcome;
 import org.brlnsreb.core.player.data.database.PlayerDataManager;
-import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.abstraction.MenuAbstract;
-
+import org.brlnsreb.utils.config.Configs;
+import org.brlnsreb.utils.config.YamlUtil;
 import org.powernukkitx.Player;
 import org.powernukkitx.Server;
 import org.powernukkitx.form.response.CustomResponse;

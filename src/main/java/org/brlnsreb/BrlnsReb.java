@@ -13,9 +13,8 @@ import org.powernukkitx.utils.TextFormat;
 
 import java.util.ArrayList;
 
-import org.brlnsreb.core.Configs;
-import org.brlnsreb.core.WorldManager;
 import org.brlnsreb.core.auth.AuthSystem;
+import org.brlnsreb.core.levels.LevelManager;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.minigame.MinigameType;
@@ -24,6 +23,7 @@ import org.brlnsreb.core.player.data.database.PlayerDataManager;
 import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.minigames.mm.match.game.entities.DeadBodyEntity;
 import org.brlnsreb.minigames.mm.match.game.entities.ThrownSwordEntity;
+import org.brlnsreb.utils.config.Configs;
 
 @PluginMeta(
     name = "brlnsreb",
@@ -95,7 +95,7 @@ public class BrlnsReb extends PluginBase {
 
         databaseManager = new DatabaseManager();
 
-        WorldManager.init();
+        LevelManager.init();
         AuthSystem.init();
         PlayerDataManager.init();
 

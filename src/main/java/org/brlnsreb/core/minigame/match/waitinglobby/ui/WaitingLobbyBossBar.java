@@ -2,12 +2,11 @@ package org.brlnsreb.core.minigame.match.waitinglobby.ui;
 
 import java.util.Set;
 
-import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.minigame.match.waitinglobby.WaitingLobby;
 import org.brlnsreb.core.player.CustomPlayer;
-import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.abstraction.BossBarAbstract;
-
+import org.brlnsreb.utils.config.Configs;
+import org.brlnsreb.utils.config.YamlUtil;
 import org.powernukkitx.Player;
 import org.powernukkitx.utils.Config;
 

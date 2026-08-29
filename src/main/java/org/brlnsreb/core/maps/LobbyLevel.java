@@ -1,9 +1,9 @@
 package org.brlnsreb.core.maps;
 
-import org.brlnsreb.core.WorldManager;
+import org.brlnsreb.core.levels.LevelManager;
 import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.player.CustomPlayer;
-import org.brlnsreb.utils.YamlUtil;
+import org.brlnsreb.utils.config.YamlUtil;
 import org.powernukkitx.level.Level;
 import org.powernukkitx.level.Location;
 
@@ -20,7 +20,7 @@ public class LobbyLevel extends MapLevel {
     }
 
     protected Level loadLevel(boolean copyWorld) {
-        return WorldManager.loadLobbyLevel(config.getString(configPath + "world"), copyWorld);
+        return LevelManager.loadLobbyLevel(config.getString(configPath + "world"), copyWorld);
     }
 
     protected void loadSpawns() {

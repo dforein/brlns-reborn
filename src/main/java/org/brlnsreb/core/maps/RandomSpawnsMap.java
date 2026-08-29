@@ -8,9 +8,9 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.brlnsreb.core.player.CustomPlayer;
-import org.brlnsreb.utils.YamlUtil;
-import org.brlnsreb.utils.voting.TimeOfDay;
-import org.brlnsreb.utils.voting.Weather;
+import org.brlnsreb.utils.config.YamlUtil;
+import org.brlnsreb.utils.level.TimeOfDay;
+import org.brlnsreb.utils.level.Weather;
 import org.powernukkitx.level.Location;
 import org.powernukkitx.level.Position;
 import org.powernukkitx.utils.Config;

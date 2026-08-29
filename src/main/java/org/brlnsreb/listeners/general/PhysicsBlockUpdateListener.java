@@ -1,7 +1,6 @@
 package org.brlnsreb.listeners.general;
 
-import org.brlnsreb.core.WorldManager;
-
+import org.brlnsreb.core.levels.LevelManager;
 import org.powernukkitx.event.EventHandler;
 import org.powernukkitx.event.Listener;
 import org.powernukkitx.event.block.BlockUpdateEvent;
@@ -15,7 +14,7 @@ public class PhysicsBlockUpdateListener implements Listener {
         //by default the physics are disabled; 
         //if the levelName is inside enabledLevels, the physics are enabled
 
-        if (WorldManager.getEnabledPhysicsLevels().contains(
+        if (LevelManager.getEnabledPhysicsLevels().contains(
             event.getBlock().getLevel().getId()
         )) return;
         

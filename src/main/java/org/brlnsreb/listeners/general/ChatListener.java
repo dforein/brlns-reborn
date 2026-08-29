@@ -2,7 +2,7 @@ package org.brlnsreb.listeners.general;
 
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer;
-import org.brlnsreb.utils.ChatMsgs;
+import org.brlnsreb.utils.messages.ChatMsgs;
 import org.powernukkitx.event.EventHandler;
 import org.powernukkitx.event.Listener;
 import org.powernukkitx.event.player.PlayerChatEvent;

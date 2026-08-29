@@ -7,7 +7,7 @@ import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.minigames.mm.match.game.MMGame;
 import org.brlnsreb.minigames.mm.match.game.gamedata.MMPlayerGameData;
 import org.brlnsreb.minigames.mm.match.game.gamedata.MMRole;
-import org.brlnsreb.utils.ItemManager;
+import org.brlnsreb.utils.items.ItemManager;
 import org.powernukkitx.Player;
 import org.powernukkitx.entity.effect.EffectType;
 import org.powernukkitx.inventory.Inventory;

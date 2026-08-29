@@ -1,8 +1,8 @@
 package org.brlnsreb.commands;
 
 import org.brlnsreb.tasks.CheckPingTask;
-import org.brlnsreb.utils.Messages;
-import org.brlnsreb.utils.ChatMsgs.Alignment;
+import org.brlnsreb.utils.messages.Messages;
+import org.brlnsreb.utils.messages.ChatMsgs.Alignment;
 import org.powernukkitx.Player;
 import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandResult;

@@ -1,9 +1,9 @@
 package org.brlnsreb.core.maps;
 
-import org.brlnsreb.core.WorldManager;
-import org.brlnsreb.utils.YamlUtil;
-import org.brlnsreb.utils.voting.TimeOfDay;
-import org.brlnsreb.utils.voting.Weather;
+import org.brlnsreb.core.levels.LevelManager;
+import org.brlnsreb.utils.config.YamlUtil;
+import org.brlnsreb.utils.level.TimeOfDay;
+import org.brlnsreb.utils.level.Weather;
 import org.powernukkitx.level.Level;
 import org.powernukkitx.math.Vector3;
 import org.powernukkitx.utils.Config;
@@ -40,7 +40,7 @@ public abstract class GameMapLevel extends MapLevel {
     }
 
     protected Level loadLevel(boolean copyworld) {
-        return WorldManager.loadLevel(
+        return LevelManager.loadLevel(
             YamlUtil.getStr(configPath + "world", config), 
             config
         );

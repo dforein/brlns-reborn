@@ -26,7 +26,7 @@ import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.minigames.mm.match.game.MMGame;
 import org.brlnsreb.minigames.mm.match.game.entities.DeadBodyEntity;
-import org.brlnsreb.utils.YamlUtil;
+import org.brlnsreb.utils.config.YamlUtil;
 
 public class DeathSystem {
     

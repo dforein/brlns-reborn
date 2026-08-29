@@ -7,7 +7,7 @@ import org.brlnsreb.core.minigame.match.waitinglobby.WaitingLobby;
 import org.brlnsreb.core.minigame.match.waitinglobby.items.WaitingLobbyItemManager;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.minigames.mm.match.waitinglobby.items.MMWaitingLobbyItemManager;
-import org.brlnsreb.utils.voting.TimeOfDay;
+import org.brlnsreb.utils.level.TimeOfDay;
 import org.brlnsreb.utils.voting.VotingMapTimeMenu;
 import org.brlnsreb.utils.voting.VotingSystem;
 import org.powernukkitx.event.player.PlayerItemHeldEvent;

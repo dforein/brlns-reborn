@@ -1,4 +1,4 @@
-package org.brlnsreb.utils;
+package org.brlnsreb.utils.messages;
 
 public class ChatMsgs {
 

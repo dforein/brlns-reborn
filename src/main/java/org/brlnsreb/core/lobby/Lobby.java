@@ -14,7 +14,7 @@ import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.mainhub.MainHub;
-import org.brlnsreb.utils.YamlUtil;
+import org.brlnsreb.utils.config.YamlUtil;
 import org.powernukkitx.Player;
 import org.powernukkitx.entity.Entity;
 import org.powernukkitx.level.Position;
@@ -94,18 +94,18 @@ public abstract class Lobby {
         return spawnNpc(npcId, customConfig, task, false);
     }
 
-    protected NPCEntity spawnNpc(String npcId, Consumer<CustomPlayer> task, boolean fixedSubtitle) {
-        return spawnNpc(npcId, this.config, task, fixedSubtitle);
+    protected NPCEntity spawnNpc(String npcId, Consumer<CustomPlayer> task, boolean setFixedSubtitle) {
+        return spawnNpc(npcId, this.config, task, setFixedSubtitle);
     }
 
-    protected NPCEntity spawnNpc(String npcId, Config customConfig, Consumer<CustomPlayer> task, boolean fixedSubtitle) {
+    protected NPCEntity spawnNpc(String npcId, Config customConfig, Consumer<CustomPlayer> task, boolean setFixedSubtitle) {
         String configPath = configPath() + "npcs." + npcId + ".";
         
         Position pos = getPosCentered(customConfig, configPath);
         NPCEntity npc = new NPCEntity(pos.getChunk(), Entity.getDefaultNBT(pos));
 
         npc.updateTitle(customConfig.getString(configPath + "text1"));
-        if (fixedSubtitle) npc.updateSubtitle(customConfig.getString(configPath + "text2"));
+        if (setFixedSubtitle) npc.updateSubtitle(customConfig.getString(configPath + "text2"));
 
         npc.setDefaultPose(customConfig.getDouble(configPath + "default-yaw"));
         npc.setTask(task);
@@ -165,11 +165,11 @@ public abstract class Lobby {
     }
 
 
-    protected void reloadNpcConfigData(NPCEntity npc, String npcId, boolean fixedSubtitle) {
-        reloadNpcConfigData(npc, npcId, this.config, fixedSubtitle);
+    protected void reloadNpcConfigData(NPCEntity npc, String npcId, boolean setFixedSubtitle) {
+        reloadNpcConfigData(npc, npcId, this.config, setFixedSubtitle);
     }
 
-    protected void reloadNpcConfigData(NPCEntity npc, String npcId, Config customConfig, boolean fixedSubtitle) {
+    protected void reloadNpcConfigData(NPCEntity npc, String npcId, Config customConfig, boolean setFixedSubtitle) {
         if (npc == null) {
             BrlnsReb.logger.error("NPC non saved: " + npcId);
             return;
@@ -180,7 +180,7 @@ public abstract class Lobby {
         npc.teleport(getPosCentered(customConfig, configPath));
         npc.setDefaultPose(customConfig.getDouble(configPath + "default-yaw"));
         npc.updateTitle(customConfig.getString(configPath + "text1"));
-        if (fixedSubtitle) npc.updateSubtitle(customConfig.getString(configPath + "text2"));
+        if (setFixedSubtitle) npc.updateSubtitle(customConfig.getString(configPath + "text2"));
         npc.setSkin(customConfig.getString(configPath + "skin-file"));
     }
 

@@ -1,13 +1,12 @@
 package org.brlnsreb.mainhub.ui;
 
-import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.mainhub.MainHub;
-import org.brlnsreb.utils.YamlUtil;
 import org.brlnsreb.utils.abstraction.MenuAbstract;
-
+import org.brlnsreb.utils.config.Configs;
+import org.brlnsreb.utils.config.YamlUtil;
 import org.powernukkitx.Player;
 import org.powernukkitx.form.window.SimpleForm;
 import org.powernukkitx.utils.Config;

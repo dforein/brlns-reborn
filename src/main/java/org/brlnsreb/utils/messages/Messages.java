@@ -1,8 +1,9 @@
-package org.brlnsreb.utils;
+package org.brlnsreb.utils.messages;
 
 import java.util.Collection;
 
-import org.brlnsreb.utils.ChatMsgs.Alignment;
+import org.brlnsreb.utils.config.YamlUtil;
+import org.brlnsreb.utils.messages.ChatMsgs.Alignment;
 import org.powernukkitx.Player;
 import org.powernukkitx.Server;
 import org.powernukkitx.utils.Config;

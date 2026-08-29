@@ -1,9 +1,8 @@
 package org.brlnsreb.core.minigame.match.game.items;
 
-import org.brlnsreb.core.Configs;
-import org.brlnsreb.utils.ItemManager;
-import org.brlnsreb.utils.YamlUtil;
-
+import org.brlnsreb.utils.config.Configs;
+import org.brlnsreb.utils.config.YamlUtil;
+import org.brlnsreb.utils.items.ItemManager;
 import org.powernukkitx.Player;
 import org.powernukkitx.item.Item;
 

@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.minigame.MinigameType;
@@ -18,11 +17,12 @@ import org.brlnsreb.core.minigame.match.game.Game;
 import org.brlnsreb.core.minigame.match.waitinglobby.WaitingLobby;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
-import org.brlnsreb.utils.ChatMsgs;
-import org.brlnsreb.utils.Messages;
-import org.brlnsreb.utils.YamlUtil;
-import org.brlnsreb.utils.voting.TimeOfDay;
-import org.brlnsreb.utils.voting.Weather;
+import org.brlnsreb.utils.config.Configs;
+import org.brlnsreb.utils.config.YamlUtil;
+import org.brlnsreb.utils.level.TimeOfDay;
+import org.brlnsreb.utils.level.Weather;
+import org.brlnsreb.utils.messages.ChatMsgs;
+import org.brlnsreb.utils.messages.Messages;
 
 public abstract class Match {
     

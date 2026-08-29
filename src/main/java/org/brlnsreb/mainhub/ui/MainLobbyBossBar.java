@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.abstraction.BossBarAbstract;
-
+import org.brlnsreb.utils.config.Configs;
 import org.powernukkitx.Player;
 import org.powernukkitx.level.Level;
 import org.powernukkitx.scheduler.TaskHandler;

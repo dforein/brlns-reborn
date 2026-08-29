@@ -1,7 +1,7 @@
 package org.brlnsreb.commands.chat;
 
 import org.brlnsreb.core.player.CustomPlayer;
-import org.brlnsreb.utils.ChatMsgs;
+import org.brlnsreb.utils.messages.ChatMsgs;
 import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandResult;
 import org.powernukkitx.command.SenderType;

@@ -6,9 +6,9 @@ import org.brlnsreb.core.minigame.match.game.Game;
 import org.brlnsreb.core.minigame.match.waitinglobby.WaitingLobby;
 import org.brlnsreb.minigames.mm.match.game.MMGame;
 import org.brlnsreb.minigames.mm.match.waitinglobby.MMWaitingLobby;
-import org.brlnsreb.utils.YamlUtil;
-import org.brlnsreb.utils.voting.TimeOfDay;
-import org.brlnsreb.utils.voting.Weather;
+import org.brlnsreb.utils.config.YamlUtil;
+import org.brlnsreb.utils.level.TimeOfDay;
+import org.brlnsreb.utils.level.Weather;
 
 public class MMMatch extends MatchExpand {
 

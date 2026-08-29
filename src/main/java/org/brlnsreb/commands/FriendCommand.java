@@ -10,7 +10,7 @@ import org.brlnsreb.core.player.data.PlayerData;
 import org.brlnsreb.core.player.data.database.FriendsManager;
 import org.brlnsreb.core.player.data.database.Outcome;
 import org.brlnsreb.mainhub.MainHub;
-import org.brlnsreb.utils.ChatMsgs;
+import org.brlnsreb.utils.messages.ChatMsgs;
 import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandContext;
 import org.powernukkitx.command.CommandResult;

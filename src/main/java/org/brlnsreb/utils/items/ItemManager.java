@@ -1,5 +1,6 @@
-package org.brlnsreb.utils;
+package org.brlnsreb.utils.items;
 
+import org.brlnsreb.utils.config.YamlUtil;
 import org.powernukkitx.Player;
 import org.powernukkitx.item.Item;
 import org.powernukkitx.item.enchantment.Enchantment;

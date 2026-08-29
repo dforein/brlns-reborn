@@ -7,11 +7,11 @@ import org.powernukkitx.utils.Config;
 
 import java.util.Map;
 
-import org.brlnsreb.core.WorldManager;
+import org.brlnsreb.core.levels.LevelManager;
 import org.brlnsreb.core.player.CustomPlayer;
-import org.brlnsreb.utils.YamlUtil;
-import org.brlnsreb.utils.voting.TimeOfDay;
-import org.brlnsreb.utils.voting.Weather;
+import org.brlnsreb.utils.config.YamlUtil;
+import org.brlnsreb.utils.level.TimeOfDay;
+import org.brlnsreb.utils.level.Weather;
 
 public abstract class MapLevel {
     
@@ -41,12 +41,12 @@ public abstract class MapLevel {
         loadSpawns();
 
         if (arePhysicsEnabled()) {
-            WorldManager.enablePhysicsIn(level);
+            LevelManager.enablePhysicsIn(level);
         }
     }
 
     public void close() {
-        WorldManager.unloadLevel(level);
+        LevelManager.unloadLevel(level);
     }
     
     protected abstract Level loadLevel(boolean copyWorld);

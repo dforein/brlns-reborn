@@ -3,7 +3,6 @@ package org.brlnsreb.core.minigame;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.lobby.entities.HologramEntity;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
@@ -11,13 +10,13 @@ import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
-import org.brlnsreb.mainhub.HubUtils;
+import org.brlnsreb.mainhub.MainLobbyUtils;
 import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.mainhub.items.MainLobbyItemManager;
 import org.brlnsreb.mainhub.ui.MainLobbyBossBar;
-import org.brlnsreb.utils.ChatMsgs;
-import org.brlnsreb.utils.YamlUtil;
-
+import org.brlnsreb.utils.config.Configs;
+import org.brlnsreb.utils.config.YamlUtil;
+import org.brlnsreb.utils.messages.ChatMsgs;
 import org.powernukkitx.utils.Config;
 
 public abstract class MinigameLobby extends Lobby {
@@ -64,13 +63,15 @@ public abstract class MinigameLobby extends Lobby {
     }
 
 
+    //join
+
     protected PlayerStateType onJoinState() { 
         return PlayerStateType.LOBBY; 
     }
     
     protected void onJoinMessages(CustomPlayer player) {
         player.sendTitle(minigame.mgt.displayName, "§eplay.brlns.reb");
-        HubUtils.friendAlertsNotify(player, minigame, minigame.mgt.displayName);
+        MainLobbyUtils.friendAlertsNotify(player, minigame, minigame.mgt.displayName);
     }
 
     protected void onJoinUi(CustomPlayer player) {
@@ -81,6 +82,8 @@ public abstract class MinigameLobby extends Lobby {
         MainLobbyItemManager.instance.giveMinigameLobbyItems(player);
     }
 
+
+    //updates
 
     public void updateJoinNpcSubtitle() {
         Match mainPendingMatch = minigame.getMainPendingMatch();
@@ -113,18 +116,18 @@ public abstract class MinigameLobby extends Lobby {
     }
 
 
+    //config
+
     public void onConfigReload() {
         super.onConfigReload();
         
         joinNpc.tempBlockTask(7);
         backToHubNpc.tempBlockTask(7);
-
         reloadNpcConfigData(joinNpc, "join", false);
         reloadNpcConfigData(backToHubNpc, "back-to-hub", false);
 
         reloadHologramConfigData(mainHolo, "main");
     }
-
 
     public Config getConfig() { return minigame.getConfig(); }
     public Config getMessages() { return minigame.getMessages(); }

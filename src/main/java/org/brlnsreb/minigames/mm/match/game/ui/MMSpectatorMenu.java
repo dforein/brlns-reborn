@@ -9,8 +9,8 @@ import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.minigames.mm.match.game.MMGame;
 import org.brlnsreb.minigames.mm.match.game.gamedata.MMPlayerGameData;
-import org.brlnsreb.utils.ChatMsgs;
 import org.brlnsreb.utils.abstraction.MenuAbstract;
+import org.brlnsreb.utils.messages.ChatMsgs;
 
 import java.util.ArrayList;
 import java.util.List;

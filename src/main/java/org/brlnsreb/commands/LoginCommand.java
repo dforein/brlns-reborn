@@ -2,7 +2,7 @@ package org.brlnsreb.commands;
 
 import org.brlnsreb.core.auth.AuthSystem;
 import org.brlnsreb.core.player.CustomPlayer;
-import org.brlnsreb.utils.ChatMsgs;
+import org.brlnsreb.utils.messages.ChatMsgs;
 import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandSender;
 import org.powernukkitx.plugin.annotation.CommandDefinition;

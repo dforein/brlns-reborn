@@ -5,13 +5,13 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.mainhub.MainHub;
-import org.brlnsreb.utils.ChatMsgs;
-import org.brlnsreb.utils.YamlUtil;
+import org.brlnsreb.utils.config.Configs;
+import org.brlnsreb.utils.config.YamlUtil;
+import org.brlnsreb.utils.messages.ChatMsgs;
 import org.powernukkitx.Player;
 import org.powernukkitx.level.Location;
 import org.powernukkitx.scheduler.Task;

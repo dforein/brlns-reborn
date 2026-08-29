@@ -1,7 +1,7 @@
 package org.brlnsreb.core.player.data.database;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.Configs;
+import org.brlnsreb.utils.config.Configs;
 import org.brlnsreb.utils.database.DBResults;
 import org.brlnsreb.utils.database.SQLConsumer;
 

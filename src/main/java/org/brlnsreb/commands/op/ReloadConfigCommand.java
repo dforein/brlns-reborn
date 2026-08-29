@@ -1,10 +1,10 @@
 package org.brlnsreb.commands.op;
 
-import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.mainhub.MainHub;
-import org.brlnsreb.utils.ChatMsgs;
-import org.brlnsreb.utils.YamlUtil;
+import org.brlnsreb.utils.config.Configs;
+import org.brlnsreb.utils.config.YamlUtil;
+import org.brlnsreb.utils.messages.ChatMsgs;
 import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandSender;
 import org.powernukkitx.plugin.annotation.CommandDefinition;

@@ -1,4 +1,4 @@
-package org.brlnsreb.core;
+package org.brlnsreb.core.levels;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -20,7 +20,7 @@ import org.powernukkitx.level.GameRules;
 import org.powernukkitx.level.Level;
 import org.powernukkitx.utils.Config;
 
-public class WorldManager {
+public class LevelManager {
 
     private static Server server;
     private static HashSet<Integer> enabledPhysicsLevels = new HashSet<>();

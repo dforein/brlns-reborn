@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Queue;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.auth.AuthSystem;
 import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.utils.config.Configs;
 import org.powernukkitx.utils.Config;
 
 public abstract class Minigame {
