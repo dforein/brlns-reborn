@@ -46,7 +46,6 @@ public class MainLobbyItemManager extends ItemManager {
     }
 
     private void giveMenu(Player player) {
-        //TODO: purple or green? it changes
         giveItem(player, 2, Item.PURPLE_DYE, getStr("lobby.items.menu.name"));
     }
 

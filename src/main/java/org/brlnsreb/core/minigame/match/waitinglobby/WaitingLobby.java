@@ -73,7 +73,7 @@ public abstract class WaitingLobby extends Lobby {
         this.secondsShortenedCountdown = globalConfig.getInt("match.waiting-lobby.shortened-countdown-seconds");
 
         spawnNpc(
-            configPath() + "npc.leave.",
+            "leave",
             player -> {
                 match.onLeave(player);
                 minigame.onLobbyJoin(player);
@@ -109,7 +109,7 @@ public abstract class WaitingLobby extends Lobby {
 
         finalizeVoting();
         match.loadGame(selectedMapId, selectedTime, selectedWeather);
-        timer.stop();
+        if (timer != null) timer.stop();
         onGameStart();
     }
 
@@ -165,7 +165,7 @@ public abstract class WaitingLobby extends Lobby {
     protected void onJoinItems(CustomPlayer player) {
         if (countdownShortened) {
             items.giveItemsCountdownShortened(player);
-        } else if (match.getCurrentState() == GameStateType.LOBBY_COUNTDOWN) {
+        } else if (match.state() == GameStateType.LOBBY_COUNTDOWN) {
             items.giveItemsCountdown(player);
         } else {
             items.giveItemsWaitingPlayers(player);
@@ -196,11 +196,11 @@ public abstract class WaitingLobby extends Lobby {
         if (playerNumber >= maxPlayers) {
             if (!countdownShortened) shortenCountdown(true);
             
-        } else if (playerNumber >= minPlayers && !countdownShortened) {    //if the countdown is already shortened, it will stay shortened
+        } else if (playerNumber >= minPlayers && match.state() == GameStateType.WAITING_LOBBY) {
             match.getState().current = GameStateType.LOBBY_COUNTDOWN;
             startCountdown();
 
-        } else if (playerNumber < minPlayers && match.getCurrentState() == GameStateType.LOBBY_COUNTDOWN) {  //not enough players
+        } else if (playerNumber < minPlayers && match.state() == GameStateType.LOBBY_COUNTDOWN) {  //not enough players
             match.getState().current = GameStateType.WAITING_LOBBY;
             stopCountdown();
             minigame.readdPendingMatch(match);

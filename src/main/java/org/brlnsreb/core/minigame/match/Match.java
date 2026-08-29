@@ -164,7 +164,7 @@ public abstract class Match {
         switch (state.current) {
             case WAITING_LOBBY, LOBBY_COUNTDOWN -> {
                 for (CustomPlayer p : players) {
-                    p.sendMessage(ChatMsgs.INFO_PFX + "Match stopped by server or op, joining hub...");
+                    p.sendMessage(ChatMsgs.INFO_PFX + "§cThe server is forcing match stop, joining hub...");
                     waitingLobby.onLeave(p);
                     minigame.onLobbyJoin(p);
                 }
@@ -232,7 +232,7 @@ public abstract class Match {
 
     public int getId() { return id; }
     public GameState getState() { return state; }
-    public GameStateType getCurrentState() { return state.current; }
+    public GameStateType state() { return state.current; }
     public Set<CustomPlayer> getPlayers() { return players; }
     public Set<CustomPlayer> getSpectators() { return spectators; }
     public int getNumber() { return number; }

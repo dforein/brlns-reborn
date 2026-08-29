@@ -113,7 +113,7 @@ public class MMSpectatorMenu extends MenuAbstract {
         final TaskHandler[] currHandler = new TaskHandler[1];
         currHandler[0] = BrlnsReb.getScheduler().scheduleRepeatingTask(() -> {
             if (!game.getPlayers().contains(target) || !game.getSpectators().contains(spectator)
-                    || !(game.getCurrentState() == GameStateType.IN_GAME || game.getCurrentState() == GameStateType.ENDING)
+                    || !(game.state() == GameStateType.IN_GAME || game.state() == GameStateType.ENDING)
             ) {
                 if (currHandler[0] != null) currHandler[0].cancel();
                 spectateHandlers.remove(spectator.getUniqueId());

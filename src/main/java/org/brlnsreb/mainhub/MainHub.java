@@ -10,6 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.lobby.Lobby;
+import org.brlnsreb.core.lobby.entities.HologramEntity;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.MinigameManager;
@@ -27,15 +28,18 @@ import org.powernukkitx.utils.Config;
 
 public class MainHub extends Lobby {
 
-    public static final String displayNameTag = "§l§dHUB§r";
+    public static final String displayNameTagP = "§l§dHUB§r";
+    public static final String displayNameTagY = "§l§eHUB§r";
     public static MainHub instance;
 
-    public static int onlinePlayers = 0;
+    public static int onlinePlayers = 0;        //all players server-wide, not just main hub
 
     private final MainLobbyBossBar bossBar;
     private static MainLobbyItemManager items;
 
+    private NPCEntity randomGameNpc;
     private final HashMap<MinigameType, NPCEntity> mgtNpcMap = new HashMap<>();
+    private final HologramEntity frontalHolo;
 
     public MainHub() {
         super();
@@ -46,7 +50,12 @@ public class MainHub extends Lobby {
 
         this.bossBar.startBossBarUpdates(map.level);
         this.spawnAllNpcs();
+
+        this.frontalHolo = createHologram("frontal", true);
     }
+
+
+    //server join
 
     public void onServerJoin(CustomPlayer player) {
         onlinePlayers++;
@@ -65,6 +74,8 @@ public class MainHub extends Lobby {
         friendAlertsNotify(player, null, null, false);
     }
 
+
+    //join
 
     protected PlayerStateType onJoinState() { 
         return PlayerStateType.LOBBY; 
@@ -141,14 +152,14 @@ public class MainHub extends Lobby {
 
         if (!hubFriends.isEmpty()) {
             alertsBuilder.append(" ")
-                        .append(MainHub.displayNameTag)
+                        .append(MainHub.displayNameTagP)
                         .append("§7: §3")
                         .append(String.join("§7, §3", hubFriends));
         }
 
         for (Map.Entry<Minigame, List<String>> entry : minigameGroups.entrySet()) {
             alertsBuilder.append(" ")
-                        .append(entry.getKey().mgt.displayNameTag)
+                        .append(entry.getKey().mgt.displayNameTagP)
                         .append("§7: §3")
                         .append(String.join("§7, §3", entry.getValue()));
         }
@@ -157,23 +168,33 @@ public class MainHub extends Lobby {
     }
 
 
+    //npcs
+
     private void spawnAllNpcs() {
-        //TODO: random minigame
-        for (String mgNameTag : config.getStringList("npc.list")) {
-            String configPath = configPath() + "npc." + mgNameTag;
-            Minigame npcMinigame = MinigameManager.getMinigame(mgNameTag);
+        //random minigame npc
+        randomGameNpc = spawnNpc(
+            "random-game",
+            player -> {
+                int random = ThreadLocalRandom.current().nextInt(MinigameManager.getMinigames().size());
+                MinigameManager.getMinigames().get(random).onLobbyJoin(player);
+            }
+        );
+
+        //minigame npcs
+        for (MinigameType mgt : MinigameType.values()) {
+            Minigame npcMinigame = MinigameManager.getMinigame(mgt.nameTag);
             if (npcMinigame == null) {
-                BrlnsReb.instance.getLogger().error("§cNo such minigame nametag (from config): " + mgNameTag);
+                BrlnsReb.instance.getLogger().error("§cNo such minigame nametag (from config): " + mgt.nameTag);
                 continue;
             }
 
             NPCEntity npc = spawnNpc(
-                configPath,
+                mgt.nameTag,
                 player -> npcMinigame.onLobbyJoin(player),
                 false
             );
 
-            mgtNpcMap.put(MinigameType.fromNameTag(mgNameTag), npc);
+            mgtNpcMap.put(mgt, npc);
 
             BrlnsReb.getScheduler().scheduleRepeatingTask(BrlnsReb.instance, 
                 () -> updateNpcSubtitle(npc, npcMinigame), 
@@ -183,25 +204,27 @@ public class MainHub extends Lobby {
     }
 
     private void updateNpcSubtitle(NPCEntity npc, Minigame npcMinigame) {
-        String subtitle = YamlUtil.getStr(configPath() + "npc." + npcMinigame.mgt.nameTag + ".text2", config).formatted(
+        String subtitle = YamlUtil.getStr(configPath() + "npcs." + npcMinigame.mgt.nameTag + ".text2", config).formatted(
             npcMinigame.getPlayerCount()
         );
         
         npc.updateSubtitle(subtitle);
     }
 
+
+    //config
+
     public void onConfigReload() {
         super.onConfigReload();
 
-        for (Map.Entry<MinigameType, NPCEntity> npcEntry : mgtNpcMap.entrySet()) {
-            reloadNpcConfigData(
-                npcEntry.getValue(), 
-                configPath() + "npc." + npcEntry.getKey().nameTag,
-                false
-            );
+        reloadNpcConfigData(randomGameNpc, "random-game", false);
 
+        for (Map.Entry<MinigameType, NPCEntity> npcEntry : mgtNpcMap.entrySet()) {
+            reloadNpcConfigData(npcEntry.getValue(), npcEntry.getKey().nameTag, false);
             updateNpcSubtitle(npcEntry.getValue(), MinigameManager.getMinigame(npcEntry.getKey()));
         }
+
+        reloadHologramConfigData(frontalHolo, "frontal", true);
 
         bossBar.onConfigReload(ChatMsgs.BROKENLENS);
     }

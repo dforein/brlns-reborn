@@ -27,7 +27,7 @@ public class DeathLobby extends Lobby {
 
         //play again NPC
         spawnNpc(
-            configPath() + "npc.play-again.",
+            "play-again",
             player -> {
                 onLeave(player);
                 minigame.onMatchJoin(player);
@@ -36,7 +36,7 @@ public class DeathLobby extends Lobby {
 
         //spectate NPC
         spawnNpc(
-            configPath() + "npc.spectate.",
+            "spectate",
             player -> {
                 if (match.closed) {
                     player.sendMessage(ChatMsgs.ERROR_PFX + "The match has already ended! You can return to lobby or join a new match.");
@@ -49,7 +49,7 @@ public class DeathLobby extends Lobby {
 
         //return to lobby NPC
         spawnNpc(
-            configPath() + "npc.return-to-lobby.",
+            "return-to-lobby",
             player -> {
                 onLeave(player);
                 minigame.onLobbyJoin(player);

@@ -58,7 +58,7 @@ public class WaitingLobbyBossBar extends BossBarAbstract {
     }
 
     public void updatePlayer(Player player) {
-        if (this.currentSeconds > 0) {
+        if (this.currentSeconds < 0) {
             updateBossBar(
                 (CustomPlayer) player, 
                 YamlUtil.getStr(PATH + "text-waiting-players", config)
@@ -67,7 +67,7 @@ public class WaitingLobbyBossBar extends BossBarAbstract {
             updateCountdown(
                 (CustomPlayer) player, 
                 formatCountdownMessage(this.currentSeconds),
-                currentSeconds,
+                this.currentSeconds,
                 secondsCountdown
             );
         }

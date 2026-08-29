@@ -40,16 +40,14 @@ public class MMItemManager extends ItemManager {
         player.getInventory().setHeldItemIndex(1);
         
         giveItem(
-            player, 
-            0, 
+            player, 0, 
             Item.IRON_SWORD, getStr(PATH + "sword.name"),
             Enchantment.ID_DAMAGE_ALL, 5, 
             true
         );
 
         giveItem(
-            player, 
-            2, 
+            player, 2, 
             Item.BLAZE_ROD, 
             getStr(PATH + "blaze-rod.name")
         );
@@ -59,9 +57,9 @@ public class MMItemManager extends ItemManager {
         player.getInventory().setHeldItemIndex(0);
 
         giveItem(
-            player, 
-            1, 
-            Item.GOLDEN_HOE, getStr(PATH + "hoe.name")
+            player, 1, 
+            Item.GOLDEN_HOE, getStr(PATH + "hoe.name"),
+            true
         );
     }
 
@@ -104,7 +102,7 @@ public class MMItemManager extends ItemManager {
 
         game.getMsgUtil().sendPresetMessagePrefix(murderer, "lights-out-murderer", placeholder);
 
-        if (game.getCurrentState() == GameStateType.ENDING) return;
+        if (game.state() == GameStateType.ENDING) return;
         
         scheduler.scheduleDelayedTask(BrlnsReb.instance,
             () -> {

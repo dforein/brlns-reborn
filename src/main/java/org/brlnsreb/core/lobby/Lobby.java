@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.lobby.entities.HologramEntity;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.maps.LobbyLevel;
@@ -53,6 +54,8 @@ public abstract class Lobby {
     }
 
 
+    //join
+
     public boolean onJoin(CustomPlayer player) {
         PlayerStateType oldState = PlayerUtils.changeWorld(player, map.spawn, true);
 
@@ -81,29 +84,24 @@ public abstract class Lobby {
     }
 
 
-    protected HologramEntity createHologram(Position pos, String text) {
-        HologramEntity holo = new HologramEntity(pos.getChunk(), Entity.getDefaultNBT(pos));
-        holo.setText(text);
-        holo.spawnToAll();
-        return holo;
+    //npcs and holograms
+
+    protected NPCEntity spawnNpc(String npcId, Consumer<CustomPlayer> task) {
+        return spawnNpc(npcId, task, false);
     }
 
-    protected NPCEntity spawnNpc(String configPath, Consumer<CustomPlayer> task) {
-        return spawnNpc(configPath, task, false);
+    protected NPCEntity spawnNpc(String npcId, Config customConfig, Consumer<CustomPlayer> task) {
+        return spawnNpc(npcId, customConfig, task, false);
     }
 
-    protected NPCEntity spawnNpc(String configPath, Config customConfig, Consumer<CustomPlayer> task) {
-        return spawnNpc(configPath, customConfig, task, false);
+    protected NPCEntity spawnNpc(String npcId, Consumer<CustomPlayer> task, boolean fixedSubtitle) {
+        return spawnNpc(npcId, this.config, task, fixedSubtitle);
     }
 
-    protected NPCEntity spawnNpc(String configPath, Consumer<CustomPlayer> task, boolean fixedSubtitle) {
-        return spawnNpc(configPath, this.config, task, fixedSubtitle);
-    }
-
-    protected NPCEntity spawnNpc(String configPath, Config customConfig, Consumer<CustomPlayer> task, boolean fixedSubtitle) {
-        configPath = YamlUtil.checkConfigPath(configPath);
+    protected NPCEntity spawnNpc(String npcId, Config customConfig, Consumer<CustomPlayer> task, boolean fixedSubtitle) {
+        String configPath = configPath() + "npcs." + npcId + ".";
         
-        Position pos = YamlUtil.parsePositionCentered(customConfig.getString(configPath + "pos"), map.level);
+        Position pos = getPosCentered(customConfig, configPath);
         NPCEntity npc = new NPCEntity(pos.getChunk(), Entity.getDefaultNBT(pos));
 
         npc.updateTitle(customConfig.getString(configPath + "text1"));
@@ -119,6 +117,31 @@ public abstract class Lobby {
     }
 
 
+    protected HologramEntity createHologram(String hologramId) {
+        return createHologram(hologramId, this.config, false);
+    }
+
+    protected HologramEntity createHologram(String hologramId, boolean setText) {
+        return createHologram(hologramId, this.config, setText);
+    }
+
+    protected HologramEntity createHologram(String hologramId, Config customConfig) {
+        return createHologram(hologramId, customConfig, false);
+    }
+
+    protected HologramEntity createHologram(String hologramId, Config customConfig, boolean setText) {
+        String configPath = configPath() + "holograms." + hologramId + ".";
+
+        Position pos = getPosCentered(customConfig, configPath);
+        HologramEntity holo = new HologramEntity(pos.getChunk(), Entity.getDefaultNBT(pos));
+        holo.spawnToAll();
+        if (setText) holo.setText(customConfig.getString(configPath + "text"));
+        return holo;
+    }
+
+
+    //close
+
     public void close() {
         Map<Long, Player> players = map.getPlayers();
         if (!players.isEmpty()) {
@@ -131,6 +154,8 @@ public abstract class Lobby {
     }
 
 
+    //config reload
+
     public void onConfigReload() {
         map.spawn = YamlUtil.parseLocationCentered(
             config.getString(configPath() + "spawn-pos"), 
@@ -139,21 +164,60 @@ public abstract class Lobby {
         );
     }
 
-    protected void reloadNpcConfigData(NPCEntity npc, String configPath, boolean fixedSubtitle) {
-        reloadNpcConfigData(npc, configPath, this.config, fixedSubtitle);
+
+    protected void reloadNpcConfigData(NPCEntity npc, String npcId, boolean fixedSubtitle) {
+        reloadNpcConfigData(npc, npcId, this.config, fixedSubtitle);
     }
 
-    protected void reloadNpcConfigData(NPCEntity npc, String configPath, Config customConfig, boolean fixedSubtitle) {
-        if (npc == null) return;
+    protected void reloadNpcConfigData(NPCEntity npc, String npcId, Config customConfig, boolean fixedSubtitle) {
+        if (npc == null) {
+            BrlnsReb.logger.error("NPC non saved: " + npcId);
+            return;
+        }
 
-        configPath = YamlUtil.checkConfigPath(configPath);
+        String configPath = configPath() + "npcs." + npcId + ".";
         
+        npc.teleport(getPosCentered(customConfig, configPath));
         npc.setDefaultPose(customConfig.getDouble(configPath + "default-yaw"));
         npc.updateTitle(customConfig.getString(configPath + "text1"));
         if (fixedSubtitle) npc.updateSubtitle(customConfig.getString(configPath + "text2"));
         npc.setSkin(customConfig.getString(configPath + "skin-file"));
     }
+
+
+    protected void reloadHologramConfigData(HologramEntity holo, String hologramId) {
+        reloadHologramConfigData(holo, hologramId, this.config, false);
+    }
+
+    protected void reloadHologramConfigData(HologramEntity holo, String hologramId, boolean setText) {
+        reloadHologramConfigData(holo, hologramId, this.config, setText);
+    }
+
+    protected void reloadHologramConfigData(HologramEntity holo, String hologramId, Config customConfig) {
+        reloadHologramConfigData(holo, hologramId, customConfig, false);
+    }
+
+    protected void reloadHologramConfigData(HologramEntity holo, String hologramId, Config customConfig, boolean setText) {
+        if (holo == null) {
+            BrlnsReb.logger.error("Holo non saved: " + hologramId);
+            return;
+        }
+
+        String configPath = configPath() + "holograms." + hologramId + ".";
+
+        holo.teleport(getPosCentered(customConfig, configPath));
+        if (setText) holo.setText(customConfig.getString(configPath + "text"));
+    }
     
+
+    //utils
+
+    private Position getPosCentered(Config config, String configPath) {
+        return YamlUtil.parsePositionCentered(config.getString(configPath + "pos"), map.level);
+    }
+    
+
+    //getters
 
     public LobbyLevel getMap() { return map; };
     public abstract Config getConfig();

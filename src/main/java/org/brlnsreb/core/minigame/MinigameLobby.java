@@ -3,7 +3,9 @@ package org.brlnsreb.core.minigame;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.brlnsreb.BrlnsReb;
+import org.brlnsreb.core.Configs;
 import org.brlnsreb.core.lobby.Lobby;
+import org.brlnsreb.core.lobby.entities.HologramEntity;
 import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.player.CustomPlayer;
@@ -11,6 +13,7 @@ import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.mainhub.items.MainLobbyItemManager;
 import org.brlnsreb.mainhub.ui.MainLobbyBossBar;
+import org.brlnsreb.utils.ChatMsgs;
 import org.brlnsreb.utils.YamlUtil;
 
 import org.powernukkitx.utils.Config;
@@ -19,20 +22,23 @@ public abstract class MinigameLobby extends Lobby {
 
     protected final NPCEntity joinNpc;
     protected final NPCEntity backToHubNpc;
+    protected final HologramEntity mainHolo;
 
-    protected MainLobbyBossBar bossBar;
+    protected final MainLobbyBossBar bossBar;
 
     public MinigameLobby(Minigame minigame) {
         super(minigame);
 
+        //npcs
+
         this.joinNpc = spawnNpc(
-            configPath() + "npc.join.",
+            "join",
             player -> minigame.onMatchJoin(player),
             false
         );
 
         this.backToHubNpc = spawnNpc(
-            configPath() + "npc.back-to-hub.",
+            "back-to-hub",
             player -> MainHub.instance.onJoin(player),
             false
         );
@@ -40,6 +46,16 @@ public abstract class MinigameLobby extends Lobby {
             () -> updateBackToHubNpcSubtitle(), 
             ThreadLocalRandom.current().nextInt(190, 210)
         );
+
+        //holos
+
+        this.mainHolo = createHologram("main");
+        BrlnsReb.getScheduler().scheduleRepeatingTask(BrlnsReb.instance, 
+            () -> updateMainHolo(), 
+            ThreadLocalRandom.current().nextInt(190, 210)
+        );
+
+        //bossbar
 
         this.bossBar = new MainLobbyBossBar(minigame.mgt.displayName);
         this.bossBar.startBossBarUpdates(map.level);
@@ -67,7 +83,7 @@ public abstract class MinigameLobby extends Lobby {
     public void updateJoinNpcSubtitle() {
         Match mainPendingMatch = minigame.getMainPendingMatch();
 
-        String subtitle = YamlUtil.getStr(configPath() + "npc.join.text2", config).formatted(
+        String subtitle = YamlUtil.getStr(configPath() + "npcs.join.text2", config).formatted(
             minigame.mgt.nameTag,
             mainPendingMatch.getNumber(),
             mainPendingMatch.getPlayers().size(),
@@ -78,10 +94,20 @@ public abstract class MinigameLobby extends Lobby {
     }
  
     private void updateBackToHubNpcSubtitle() {
-        String subtitle = YamlUtil.getStr(configPath() + "npc.back-to-hub.text2", config)
+        String subtitle = YamlUtil.getStr(configPath() + "npcs.back-to-hub.text2", config)
             .formatted(MainHub.onlinePlayers);
 
         backToHubNpc.updateSubtitle(subtitle);
+    }
+
+    private void updateMainHolo() {
+        String text = YamlUtil.getStr("lobby.holograms.main.text", Configs.getGlobalConfig()).formatted(
+            ChatMsgs.BROKENLENS_GAMES,
+            minigame.mgt.displayNameTagY,
+            MainHub.onlinePlayers
+        );
+
+        mainHolo.setText(text);
     }
 
 
@@ -91,17 +117,10 @@ public abstract class MinigameLobby extends Lobby {
         joinNpc.tempBlockTask(7);
         backToHubNpc.tempBlockTask(7);
 
-        reloadNpcConfigData(
-            joinNpc, 
-            configPath() + "npc.join.", 
-            false
-        );
+        reloadNpcConfigData(joinNpc, "join", false);
+        reloadNpcConfigData(backToHubNpc, "back-to-hub", false);
 
-        reloadNpcConfigData(
-            backToHubNpc, 
-            configPath() + "npc.back-to-hub.", 
-            false
-        );
+        reloadHologramConfigData(mainHolo, "main");
     }
 
 

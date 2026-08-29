@@ -42,11 +42,11 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.powernukkitx:server:nightly-SNAPSHOT'
+    compileOnly 'org.powernukkitx:server:3.0.4-SNAPSHOT'
     compileOnly 'org.powernukkitx.protocol:bedrock-connection:3.0.0.Beta7-Debug-SNAPSHOT'
     compileOnly 'eu.okaeri:okaeri-configs-core:5.0.1'
 
-    annotationProcessor 'org.powernukkitx:server:nightly-SNAPSHOT'
+    annotationProcessor 'org.powernukkitx:server:3.0.4-SNAPSHOT'
 
     implementation 'org.mariadb.jdbc:mariadb-java-client:3.4.1'
     implementation 'com.zaxxer:HikariCP:7.1.0'

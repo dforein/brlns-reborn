@@ -27,7 +27,7 @@ import org.powernukkitx.plugin.annotation.CommandDefinition;
     usage = """
             §l§eINFO§r §aUsage: §e/friend <subcommand>
             §l§eINFO§r §aSubcommands:
-            §3》§r§2▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬§3《
+            §3»§r§2▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬§3«
             §2- §dadd §7- §aAdd a friend!
             §2- §dremove §7- §aRemove a friend from your friends list
             §2- §daccept §7- §aAccept a friend invite
@@ -409,8 +409,8 @@ public class FriendCommand extends Command {
             } else {
                 message += "§aOnline §7(§d" 
                     + (friend.minigameCurrent == null 
-                        ? MainHub.displayNameTag
-                        : friend.minigameCurrent.mgt.displayNameTag)
+                        ? MainHub.displayNameTagP
+                        : friend.minigameCurrent.mgt.displayNameTagP)
                     + "§7)";
             }
             

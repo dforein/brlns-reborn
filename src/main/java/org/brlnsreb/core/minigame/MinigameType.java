@@ -8,14 +8,16 @@ public enum MinigameType {
     public final int id;
     public final String nameTag;
     public final String displayName;
-    public final String displayNameTag;
+    public final String displayNameTagP;
+    public final String displayNameTagY;
     public final String prefix;
 
     private MinigameType(int id, String nameTag, String displayName, String prefix) {
         this.id = id;
         this.nameTag = nameTag;
         this.displayName = "§l" + displayName;
-        this.displayNameTag = "§l§d" + nameTag.toUpperCase() + "§r";
+        this.displayNameTagP = "§l§d" + nameTag.toUpperCase() + "§r";
+        this.displayNameTagY = "§l§e" + nameTag.toUpperCase() + "§r";
         this.prefix = "§l" + prefix + " §r";
     }
     

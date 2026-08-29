@@ -32,7 +32,6 @@ import org.brlnsreb.utils.voting.TimeOfDay;
 import org.brlnsreb.utils.voting.Weather;
 import org.powernukkitx.Player;
 import org.powernukkitx.entity.Entity;
-import org.powernukkitx.entity.effect.EffectType;
 import org.powernukkitx.entity.item.EntityItem;
 import org.powernukkitx.event.entity.EntityDamageByEntityEvent;
 import org.powernukkitx.event.entity.EntityDamageEvent;

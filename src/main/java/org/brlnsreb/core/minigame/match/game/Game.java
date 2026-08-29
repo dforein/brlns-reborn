@@ -272,7 +272,7 @@ public abstract class Game {
     public Config getConfig() { return config; }
     public Messages getMsgUtil() { return msgUtil; }
     public GameState getState() { return state; }
-    public GameStateType getCurrentState() { return state.current; }
+    public GameStateType state() { return state.current; }
     public TimerSystem getTimer() { return timer; }
 
 }

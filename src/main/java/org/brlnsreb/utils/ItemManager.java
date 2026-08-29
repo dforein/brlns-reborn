@@ -29,6 +29,12 @@ public class ItemManager {
         player.getInventory().setItem(slot, item);
     }
 
+    public static void giveItem(Player player, int slot, String itemId, String itemName, boolean unbreakable) {
+        //give player an item (with name + unbreakable)
+        Item item = buildItem(itemId, itemName, unbreakable);
+        player.getInventory().setItem(slot, item);
+    }
+
     public static void giveItem(Player player, int slot, String itemId, String itemName, int enchantmentId, int enchantmentLevel) {
         //give player an item (with name + enchantment)
         Item item = buildItem(itemId, itemName, enchantmentId, enchantmentLevel);
@@ -36,7 +42,7 @@ public class ItemManager {
     }
 
     public static void giveItem(Player player, int slot, String itemId, String itemName, int enchantmentId, int enchantmentLevel, boolean unbreakable) {
-        //give player an item (with name + enchantment)
+        //give player an item (with name + enchantment + unbreakable)
         Item item = buildItem(itemId, itemName, enchantmentId, enchantmentLevel, unbreakable);
         player.getInventory().setItem(slot, item);
     }
@@ -50,6 +56,13 @@ public class ItemManager {
         return item;
     }
 
+    public static Item buildItem(String itemId, String itemName, boolean unbreakable) {
+        Item item = buildItem(itemId, itemName);
+        if (unbreakable) makeUnbreakable(item);
+
+        return item;
+    }
+
     public static Item buildItem(String itemId, String itemName, int enchantmentId, int enchantmentLevel) {
         Item item = buildItem(itemId, itemName);
         item.addEnchantment(Enchantment.get(enchantmentId).setLevel(enchantmentLevel));
@@ -59,11 +72,15 @@ public class ItemManager {
 
     public static Item buildItem(String itemId, String itemName, int enchantmentId, int enchantmentLevel, boolean unbreakable) {
         Item item = buildItem(itemId, itemName, enchantmentId, enchantmentLevel);
+        if (unbreakable) makeUnbreakable(item);
+
+        return item;
+    }
+
+    public static void makeUnbreakable(Item item) {
         CompoundTag tag = item.getNbt();
         tag.putByte("Unbreakable", 1);
         item.setNbt(tag);
-
-        return item;
     }
     
 }

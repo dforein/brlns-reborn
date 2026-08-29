@@ -17,6 +17,8 @@ public class PlayerData {
     
     private int coins;
     private int exp;
+    
+    final double EXP_PER_LEVEL = 2262.5;
     private double level;
     private int levelFloor;
     
@@ -97,24 +99,12 @@ public class PlayerData {
     }
 
     /**
-     * The level growth functions are based on values gathered from different yt videos, 
-     * at different levels (3-5, 40-60, 149, 7000+, 8000+), considering a more probable 
-     * use of exp boosters at higher level (=> higher player longevity) to correct some 
-     * weird data (i.e. abnormal level growth compared to the other values at lower levels)
+     * The level growth function is based on values gathered from different yt videos, 
+     * at different levels (3-5, 40-60, 149, 7000+, 8000+). It seems constant.
      */
     public void updateLevel() {
         synchronized (accountLock) {
-            final int expThreshold = 562500;          //equivalent to 150 levels
-            final int levelThreshold = 150;
-            final double expPerHighLevel = 7500.0;    //reciprocal of the derivative of the level function lvl(exp) at x=150
-
-            if (this.exp < expThreshold) {
-                this.level = Math.sqrt((double) this.exp) / 5.0;     //lvl(exp)
-            } else {
-                // using the derivative of lvl(exp) to get a linear constant growth
-                int temp = this.exp - expThreshold;
-                this.level = levelThreshold + temp / expPerHighLevel;
-            }
+            this.level = exp / EXP_PER_LEVEL;
             this.levelFloor = (int) this.level;
         }
     }

@@ -1,19 +1,24 @@
 package org.brlnsreb.commands.op;
 
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.minigame.MinigameType;
 import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.utils.ChatMsgs;
 import org.brlnsreb.utils.ChatMsgs.Alignment;
+import org.cloudburstmc.math.vector.Vector3f;
+import org.cloudburstmc.protocol.bedrock.data.Dimension;
+import org.cloudburstmc.protocol.bedrock.data.payload.common.DimensionType;
+import org.cloudburstmc.protocol.bedrock.packet.ChangeDimensionPacket;
 import org.powernukkitx.command.Command;
+import org.powernukkitx.command.CommandContext;
 import org.powernukkitx.command.CommandResult;
 import org.powernukkitx.command.CommandSender;
 import org.powernukkitx.command.SenderType;
 import org.powernukkitx.command.route.RouteTree;
 import org.powernukkitx.command.route.node.RouteNode;
-import org.powernukkitx.command.tree.node.DoubleNode;
 import org.powernukkitx.command.tree.node.MessageStringNode;
 import org.powernukkitx.plugin.annotation.CommandDefinition;
-import org.powernukkitx.utils.TextFormat;
 
 @CommandDefinition(
     name = "test",
@@ -33,11 +38,11 @@ public class TestCommand extends Command {
                     return CommandResult.success();
             })))
             .then(RouteNode.literal("block")
-                .then(RouteNode.argument("coeff", new DoubleNode()).exec(ctx -> {
+                .exec(ctx -> {
                     CommandSender s = ctx.getSender();
                     s.sendMessage(ChatMsgs.BAR);
                     s.sendMessage("§2-§r");
-                    s.sendMessage(buildBlockContent(Alignment.CENTER, ctx.getArg("coeff"),
+                    s.sendMessage(ChatMsgs.buildBlockContent(Alignment.CENTER,
                         ChatMsgs.BROKENLENS_GAMES,
                         "",
                         "§7- " + MinigameType.MURDER_MYSTERY.displayName + " §7-",
@@ -47,29 +52,38 @@ public class TestCommand extends Command {
                     s.sendMessage("§2-§r");
                     s.sendMessage(ChatMsgs.BAR);
                     return CommandResult.success();
-            })));
+            }))
+            .then(RouteNode.literal("loadingscreen").exec(ctx -> {
+                CustomPlayer p = getPlayer(ctx);
+
+                sendCDPk(p, Dimension.NETHER);
+                scheduleDelayedTask(2, () -> sendCDPk(p, null));
+                scheduleDelayedTask(4, () -> {
+                    p.teleport(MainHub.instance.getMap().spawn);
+                    sendCDPk(p, Dimension.OVERWORLD);
+                });
+                scheduleDelayedTask(6, () -> sendCDPk(p, null));
+
+                return CommandResult.success();
+            }));
 
     }
 
-    private String buildBlockContent(Alignment alignment, double coeff, String... lines) {
-        StringBuilder strBuilder = new StringBuilder();
-        int i, spaces;
+    private CustomPlayer getPlayer(CommandContext ctx) {
+        return (CustomPlayer) ctx.getSender();
+    }
 
-        for (String line : lines) {
-            strBuilder.append("§2-§r");
+    private void sendCDPk(CustomPlayer p, Dimension dim) {
+        final ChangeDimensionPacket pk = new ChangeDimensionPacket();
+        pk.setDimension(DimensionType.from(dim));
+        pk.setPosition(Vector3f.from((float) p.getX(), (float) p.getY(), (float) p.getZ()));
+        pk.setRespawn(false);
+        pk.setLoadingScreenId(2831038);
+        p.sendPacket(pk);
+    }
 
-            if (alignment == Alignment.CENTER) {
-                spaces = (int) (40 - TextFormat.clean(line).length() * coeff - 1.5) / 2;
-                for (i = 0; i < spaces; i++) strBuilder.append("§l §r");
-            } else if (alignment == Alignment.LEFT) {
-                strBuilder.append("§l §r");
-            }
-
-            strBuilder.append(line);
-            strBuilder.append("§r\n");
-        }
-
-        return strBuilder.toString();
+    private void scheduleDelayedTask(int seconds, Runnable task) {
+        BrlnsReb.getScheduler().scheduleDelayedTask(BrlnsReb.instance, task, seconds*20);
     }
 
 }

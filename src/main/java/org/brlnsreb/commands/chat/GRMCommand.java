@@ -44,7 +44,7 @@ public class GRMCommand extends Command {
                         
                         friend.sendMessage(
                             "§l§aGRM %s §3%s§7: §7%s".formatted(      //TEXT
-                                minigame != null ? minigame.mgt.displayNameTag : MainHub.displayNameTag,
+                                minigame != null ? minigame.mgt.displayNameTagP : MainHub.displayNameTagP,
                                 senderData.name,
                                 ctx.getArg("message")
                             )

@@ -24,7 +24,7 @@ public class ForceStartCommand extends Command {
         }
 
         if (sender instanceof CustomPlayer player && player.matchCurrent != null) {
-            switch (player.matchCurrent.getCurrentState()) {
+            switch (player.matchCurrent.state()) {
                 case WAITING_LOBBY, LOBBY_COUNTDOWN -> player.matchCurrent.getWaitingLobby().forceStart();
                 default -> {}
             }

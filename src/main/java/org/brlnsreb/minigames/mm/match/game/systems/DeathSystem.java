@@ -81,7 +81,7 @@ public class DeathSystem {
         body.setSkin(victim.getSkin());
         body.setRotation(loc.getYaw(), deadBodyPitch, deadBodyHeadYaw);
 
-        body.setDataFlag(ActorFlags.INVISIBLE, true);       //TODO: test whether cloudburst is affected by the old limitations or not
+        body.setDataFlag(ActorFlags.INVISIBLE, true);
         body.spawnToAll();
 
         scheduler.scheduleDelayedTask(BrlnsReb.instance, 
