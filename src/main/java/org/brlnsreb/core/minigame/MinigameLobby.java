@@ -10,6 +10,8 @@ import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
+import org.brlnsreb.core.player.PlayerUtils;
+import org.brlnsreb.mainhub.HubUtils;
 import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.mainhub.items.MainLobbyItemManager;
 import org.brlnsreb.mainhub.ui.MainLobbyBossBar;
@@ -68,7 +70,7 @@ public abstract class MinigameLobby extends Lobby {
     
     protected void onJoinMessages(CustomPlayer player) {
         player.sendTitle(minigame.mgt.displayName, "§eplay.brlns.reb");
-        MainHub.friendAlertsNotify(player, minigame, minigame.mgt.displayName);
+        HubUtils.friendAlertsNotify(player, minigame, minigame.mgt.displayName);
     }
 
     protected void onJoinUi(CustomPlayer player) {
@@ -95,7 +97,7 @@ public abstract class MinigameLobby extends Lobby {
  
     private void updateBackToHubNpcSubtitle() {
         String subtitle = YamlUtil.getStr(configPath() + "npcs.back-to-hub.text2", config)
-            .formatted(MainHub.onlinePlayers);
+            .formatted(PlayerUtils.onlinePlayers);
 
         backToHubNpc.updateSubtitle(subtitle);
     }
@@ -104,7 +106,7 @@ public abstract class MinigameLobby extends Lobby {
         String text = YamlUtil.getStr("lobby.holograms.main.text", Configs.getGlobalConfig()).formatted(
             ChatMsgs.BROKENLENS_GAMES,
             minigame.mgt.displayNameTagY,
-            MainHub.onlinePlayers
+            PlayerUtils.onlinePlayers
         );
 
         mainHolo.setText(text);

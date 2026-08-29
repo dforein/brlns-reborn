@@ -29,6 +29,8 @@ import org.powernukkitx.utils.SkinConverter;
 
 public class PlayerUtils {
 
+    public static int onlinePlayers = 0;
+
     //change world
 
     public static PlayerStateType changeWorld(CustomPlayer p, Location loc, boolean lobby) {
