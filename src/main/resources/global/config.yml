@@ -15,21 +15,21 @@ lobby:
   holograms:
     main:
       text: |-
-         %s
-         §aYou're on %s
-         §d-
-         §aPlayers online: §e%d
-         §d-
-         §eFollow Us on Twitter
-         §b@BrokenLensMCPE
-         §d-
-         §eJoin our Discord
-         §dbrlns.reb/discord
-         §d-
-         §aVisit our website at
-         §6brokenlens.xyz
-         §afor help
-         no §6Premium §aranks and more
+        %s
+        §aYou're on %s
+        §d-
+        §aPlayers online: §e%d
+        §d-
+        §eFollow Us on Twitter
+        §b@BrokenLensMCPE
+        §d-
+        §eJoin our Discord
+        §dbrlns.reb/discord
+        §d-
+        §aVisit our website at
+        §6brokenlens.xyz
+        §afor help
+        &ano §6Premium §aranks and more
 
 match:
   waiting-lobby:
