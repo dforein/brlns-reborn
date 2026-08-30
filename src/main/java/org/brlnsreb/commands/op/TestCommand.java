@@ -3,13 +3,14 @@ package org.brlnsreb.commands.op;
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.minigame.MinigameType;
 import org.brlnsreb.core.player.CustomPlayer;
-import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.utils.messages.ChatMsgs;
 import org.brlnsreb.utils.messages.ChatMsgs.Alignment;
 import org.cloudburstmc.math.vector.Vector3f;
 import org.cloudburstmc.protocol.bedrock.data.Dimension;
+import org.cloudburstmc.protocol.bedrock.data.PlayerActionType;
 import org.cloudburstmc.protocol.bedrock.data.payload.common.DimensionType;
 import org.cloudburstmc.protocol.bedrock.packet.ChangeDimensionPacket;
+import org.cloudburstmc.protocol.bedrock.packet.PlayerActionPacket;
 import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandContext;
 import org.powernukkitx.command.CommandResult;
@@ -56,13 +57,17 @@ public class TestCommand extends Command {
             .then(RouteNode.literal("loadingscreen").exec(ctx -> {
                 CustomPlayer p = getPlayer(ctx);
 
-                sendCDPk(p, Dimension.NETHER);
-                scheduleDelayedTask(2, () -> sendCDPk(p, null));
-                scheduleDelayedTask(4, () -> {
-                    p.teleport(MainHub.instance.getMap().spawn);
-                    sendCDPk(p, Dimension.OVERWORLD);
-                });
-                scheduleDelayedTask(6, () -> sendCDPk(p, null));
+                final ChangeDimensionPacket pk = new ChangeDimensionPacket();
+                pk.setDimension(DimensionType.from(Dimension.NETHER));
+                pk.setPosition(Vector3f.from((float) p.getX(), (float) p.getY(), (float) p.getZ()));
+                p.sendPacket(pk);
+
+                final PlayerActionPacket playerActionPacket = new PlayerActionPacket();
+                playerActionPacket.setPlayerRuntimeID(p.getId());
+                playerActionPacket.setAction(PlayerActionType.CHANGE_DIMENSION_ACK);
+                playerActionPacket.setBlockPosition(p.toNetwork().toInt());
+                playerActionPacket.setResultPos(p.toNetwork().toInt());
+                BrlnsReb.getScheduler().scheduleDelayedTask(() -> p.waitForAck(() -> p.sendPacket(playerActionPacket) ), 40);
 
                 return CommandResult.success();
             }));
@@ -71,19 +76,6 @@ public class TestCommand extends Command {
 
     private CustomPlayer getPlayer(CommandContext ctx) {
         return (CustomPlayer) ctx.getSender();
-    }
-
-    private void sendCDPk(CustomPlayer p, Dimension dim) {
-        final ChangeDimensionPacket pk = new ChangeDimensionPacket();
-        pk.setDimension(DimensionType.from(dim));
-        pk.setPosition(Vector3f.from((float) p.getX(), (float) p.getY(), (float) p.getZ()));
-        pk.setRespawn(false);
-        pk.setLoadingScreenId(2831038);
-        p.sendPacket(pk);
-    }
-
-    private void scheduleDelayedTask(int seconds, Runnable task) {
-        BrlnsReb.getScheduler().scheduleDelayedTask(BrlnsReb.instance, task, seconds*20);
     }
 
 }

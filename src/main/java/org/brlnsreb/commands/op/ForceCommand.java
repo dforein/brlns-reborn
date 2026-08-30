@@ -24,7 +24,7 @@ public class ForceCommand extends Command {
             .then(RouteNode.literal("start").exec(ctx -> {
                 CustomPlayer player = (CustomPlayer) ctx.getSender();
 
-                if (player.matchCurrent != null) {
+                if (player.matchCurrent == null) {
                     return CommandResult.fail(ChatMsgs.ERROR_PFX + "You are not in a waiting lobby.");
                 }
 
@@ -40,7 +40,7 @@ public class ForceCommand extends Command {
             .then(RouteNode.literal("stop").exec(ctx -> {
                 CustomPlayer player = (CustomPlayer) ctx.getSender();
 
-                if (player.matchCurrent != null) {
+                if (player.matchCurrent == null) {
                     return CommandResult.fail(ChatMsgs.ERROR_PFX + "You are not in a match.");
                 }
 
