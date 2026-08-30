@@ -20,7 +20,7 @@ public class ChatCommand extends Command {
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (sender instanceof CustomPlayer player) {
             player.data.toggleChatVisible();
-            player.sendMessage(ChatMsgs.SUCCESS_PFX + (player.data.isChatVisible() ? "Enabled" : "Disabled") + "the chat.");
+            player.sendMessage(ChatMsgs.SUCCESS_PFX + (player.data.isChatVisible() ? "Enabled" : "Disabled") + " the chat.");
         } else {
             sender.sendMessage(TextFormat.RED + "Only players can use this command!");
         }

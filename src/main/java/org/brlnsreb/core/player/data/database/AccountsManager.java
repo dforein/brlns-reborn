@@ -13,7 +13,7 @@ import org.brlnsreb.core.player.data.PlayerData;
 import org.brlnsreb.core.player.data.StatType;
 import org.brlnsreb.utils.database.DBResults;
 import org.mindrot.jbcrypt.BCrypt;
-
+import org.powernukkitx.scheduler.AsyncTask;
 import org.powernukkitx.scheduler.ServerScheduler;
 
 public class AccountsManager {
@@ -25,6 +25,8 @@ public class AccountsManager {
     }
 
     public static void loadAccountDataSync(CustomPlayer player, String name) throws SQLException {
+        //used if the player has a link with the account
+
         DBResults dataResults = DatabaseManager.executeSelect(
             """
             SELECT a.coins, a.exp, a.friend_alerts, a.friend_notify,
@@ -40,6 +42,8 @@ public class AccountsManager {
     }
 
     public static Outcome checkAndLoadAccountDataSync(CustomPlayer player, String name, String password) throws SQLException {
+        //used if the player doesn't have a link with the account
+
         DBResults dataResults = DatabaseManager.executeSelect(
             """
             SELECT a.password_hash, a.coins, a.exp, a.friend_alerts, a.friend_notify,
@@ -57,6 +61,23 @@ public class AccountsManager {
         }
 
         setAccountData(player, name, dataResults);
+        
+        scheduler.scheduleAsyncTask(new AsyncTask() {
+            @Override
+            public void onRun() {
+                try {
+                    DatabaseManager.executeUpdate(
+                        """
+                        INSERT INTO players (uuid, name)
+                        VALUES (?, ?)
+                        """,
+                        player.getUniqueId().toString(), name
+                    );
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         return Outcome.OK;
     }
