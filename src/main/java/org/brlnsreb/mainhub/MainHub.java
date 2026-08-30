@@ -15,6 +15,7 @@ import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.mainhub.items.MainLobbyItemManager;
+import org.brlnsreb.mainhub.messages.MainLobbyMessages;
 import org.brlnsreb.mainhub.ui.MainLobbyBossBar;
 import org.brlnsreb.utils.config.Configs;
 import org.brlnsreb.utils.config.YamlUtil;
@@ -29,6 +30,7 @@ public class MainHub extends Lobby {
 
     private final MainLobbyBossBar bossBar;
     private static MainLobbyItemManager items;
+    private final MainLobbyMessages lobbyMessages;
 
     private NPCEntity randomGameNpc;
     private final HashMap<MinigameType, NPCEntity> mgtNpcMap = new HashMap<>();
@@ -40,8 +42,10 @@ public class MainHub extends Lobby {
 
         this.bossBar = new MainLobbyBossBar(ChatMsgs.BROKENLENS);
         items = new MainLobbyItemManager(config);
+        this.lobbyMessages = new MainLobbyMessages(messages);
 
         this.bossBar.startBossBarUpdates(map.level);
+        this.lobbyMessages.startMessagesRotation(config.getInt(configPath() + "messages-period"));
         this.spawnAllNpcs();
 
         this.frontalHolo = createHologram("frontal", true);
@@ -57,6 +61,7 @@ public class MainHub extends Lobby {
 
         onServerJoinMessages(player);
 
+        player.setLobby(this);
         PlayerUtils.setLobbyState(player, null, onJoinState());
 
         onJoinUi(player);
@@ -64,6 +69,10 @@ public class MainHub extends Lobby {
     } 
 
     protected void onServerJoinMessages(CustomPlayer player) {
+        player.sendMessage(         //send disclaimer
+            ChatMsgs.BROKENLENS_PFX + YamlUtil.getStr(configPath() + "disclaimer", messages)
+        );
+
         MainLobbyUtils.friendAlertsNotify(player, null, null, false);
     }
 
@@ -146,6 +155,7 @@ public class MainHub extends Lobby {
         reloadHologramConfigData(frontalHolo, "frontal", true);
 
         bossBar.onConfigReload(ChatMsgs.BROKENLENS);
+        lobbyMessages.onConfigReload();
     }
 
     public Config getConfig() { 

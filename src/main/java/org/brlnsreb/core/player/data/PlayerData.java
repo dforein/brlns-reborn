@@ -37,6 +37,8 @@ public class PlayerData {
     private final Object accountLock = new Object();
     private final Object friendLock = new Object();
 
+    private boolean isChatVisible = true;
+
     public PlayerData() {
         resetData();
     }
@@ -275,5 +277,10 @@ public class PlayerData {
     //locks
     public Object getAccountLock() { return this.accountLock; }
     public Object getFriendLock() { return this.friendLock; }
+
+
+    //chat
+    public void toggleChatVisible() { this.isChatVisible = !this.isChatVisible; }
+    public boolean isChatVisible() { return this.isChatVisible; }
 
 }

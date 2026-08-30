@@ -1,6 +1,7 @@
 world: _mainhub
 spawn-pos: 2431 39 2431
 spawn-yaw: 90
+messages-period: 50   #seconds to wait before sending the next main lobby general message
 npcs:
   random-game:
     pos: 2415 37.5 2441

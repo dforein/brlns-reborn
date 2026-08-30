@@ -7,7 +7,6 @@ import org.powernukkitx.event.EventHandler;
 import org.powernukkitx.event.Listener;
 import org.powernukkitx.event.player.PlayerChatEvent;
 import org.powernukkitx.event.player.PlayerCommandPreprocessEvent;
-import org.powernukkitx.Player;
 import org.powernukkitx.Server;
 import org.powernukkitx.level.Level;
 import org.powernukkitx.plugin.annotation.EventListener;
@@ -43,6 +42,7 @@ public class ChatListener implements Listener {
         } + event.getMessage();
 
         filterPlayerBySenderLevel(event);
+        filterPlayerByChatSettings(event);
 
         event.setCancelled();
         Server.getInstance().broadcastMessage(formatted, event.getRecipients());
@@ -54,8 +54,15 @@ public class ChatListener implements Listener {
 
         Level senderLevel = event.getPlayer().getLevel();
         event.getRecipients().removeIf(recipient -> 
-            (recipient instanceof Player player) &&
+            (recipient instanceof CustomPlayer player) &&
             !player.getLevel().equals(senderLevel)
+        );
+    }
+
+    private void filterPlayerByChatSettings(PlayerChatEvent event) {
+        event.getRecipients().removeIf(recipient ->
+            (recipient instanceof CustomPlayer player) &&
+            !player.data.isChatVisible()
         );
     }
 

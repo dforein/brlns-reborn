@@ -312,7 +312,10 @@ public class CustomPlayer extends Player {
 
             case LOBBY, WAITING_LOBBY, DEATH_LOBBY -> {
                 //go back to lobby spawn (in case of void)
-                this.lobbyCurrent.get().teleportToSpawn(this);
+                Lobby lobby = this.lobbyCurrent.get();
+                if (lobby != null) {
+                    lobby.teleportToSpawn(this);
+                }
             }
 
             default -> {}
