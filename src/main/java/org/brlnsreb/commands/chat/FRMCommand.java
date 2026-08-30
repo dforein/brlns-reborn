@@ -5,6 +5,7 @@ import java.util.List;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.data.PlayerData;
+import org.brlnsreb.listeners.general.ChatListener;
 import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.utils.messages.ChatMsgs;
 import org.powernukkitx.command.Command;
@@ -35,6 +36,7 @@ public class FRMCommand extends Command {
                         return CommandResult.fail(ChatMsgs.ERROR_PFX + "You are not logged in!");  //TEXT
                     }
                     
+                    String message = ChatListener.getMessage(ctx);
                     Minigame minigame = sender.minigameCurrent;
                     List<String> friends = senderData.getOnlineFriendsKeysCopy();
 
@@ -48,7 +50,7 @@ public class FRMCommand extends Command {
                             "§l§aFRM %s §3%s§7: §7%s".formatted(      //TEXT
                                 minigame != null ? minigame.mgt.displayNameTagP : MainHub.displayNameTagP,
                                 senderData.name,
-                                ctx.getArg("message")
+                                message
                             )
                         );
                         receiversCount++;
@@ -57,7 +59,7 @@ public class FRMCommand extends Command {
                     sender.sendMessage(
                         "§l§aFRM §dCURRENT§r §a%d §eyou§7: §7%s".formatted(      //TODO: CURRENT? //TEXT
                             receiversCount,
-                            ctx.getArg("message")
+                            message
                         )
                     );
 

@@ -3,8 +3,10 @@ package org.brlnsreb.commands.chat;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.core.player.data.PlayerData;
+import org.brlnsreb.listeners.general.ChatListener;
 import org.brlnsreb.utils.messages.ChatMsgs;
 import org.powernukkitx.command.Command;
+import org.powernukkitx.command.CommandContext;
 import org.powernukkitx.command.CommandResult;
 import org.powernukkitx.command.SenderType;
 import org.powernukkitx.command.route.RouteTree;
@@ -33,30 +35,36 @@ public class PVTCommand extends Command {
                             return CommandResult.fail(ChatMsgs.ERROR_PFX + "No player found with such name");     //TEXT
                         }
 
-                        PlayerData data;
-                        data = receiver.data;
-                        sender.sendMessage(
-                            "§l§aPVT§r §3%s §7> §3%s§7: §b%s".formatted(       //TEXT
-                                "you",
-                                data.isLogged() ? data.name : receiver.getDisplayName(),
-                                ctx.getArg("message")
-                            )
-                        );
-
-                        data = sender.data;
-                        receiver.sendMessage(
-                            "§l§aPVT§r §3%s §7> §3%s§7: §b%s".formatted(        //TEXT
-                                 data.isLogged() ? data.name : sender.getDisplayName(),
-                                "you",
-                                ctx.getArg("message")
-                            )
-                        );
-
-                        receiver.data.setLastPvtPlayer(sender);
-
-                        return CommandResult.success();
+                        return sendPVT(ctx, sender, receiver);
                     })))
             ;//.orElse(ctx -> ctx.getSender().sendMessage(usageMessage)); TODO: enable
+    }
+
+    public static CommandResult sendPVT(CommandContext ctx, CustomPlayer sender, CustomPlayer receiver) {
+        PlayerData data;
+        String message = ChatListener.getMessage(ctx);
+
+        data = receiver.data;
+        sender.sendMessage(
+            "§l§aPVT§r §3%s §7> §3%s§7: §b%s".formatted(       //TEXT
+                "you",
+                data.isLogged() ? data.name : receiver.getDisplayName(),
+                message
+            )
+        );
+
+        data = sender.data;
+        receiver.sendMessage(
+            "§l§aPVT§r §3%s §7> §3%s§7: §b%s".formatted(        //TEXT
+                data.isLogged() ? data.name : sender.getDisplayName(),
+                "you",
+                message
+            )
+        );
+
+        receiver.data.setLastPvtPlayer(sender);
+
+        return CommandResult.success();
     }
 
 }

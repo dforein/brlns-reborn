@@ -8,11 +8,16 @@ import org.powernukkitx.event.Listener;
 import org.powernukkitx.event.player.PlayerChatEvent;
 import org.powernukkitx.event.player.PlayerCommandPreprocessEvent;
 import org.powernukkitx.Server;
+import org.powernukkitx.command.CommandContext;
 import org.powernukkitx.level.Level;
 import org.powernukkitx.plugin.annotation.EventListener;
+import org.powernukkitx.utils.TextFormat;
 
 @EventListener
 public class ChatListener implements Listener {
+
+    public static final String curlyBrktOpenCode = "§§[§§curly";
+    public static final String curlyBrktCloseCode = "§§]§§curly";
 
     private String[] CHAT_COMMANDS_0 = {        //0 args before text
         "/grm",
@@ -23,6 +28,14 @@ public class ChatListener implements Listener {
     private String[] CHAT_COMMANDS_1 = {        //1 arg before text (e.g. the player name)
         "/pvt"
     };
+
+    public static String getMessage(CommandContext ctx) {
+        String message = ctx.getArg("message");
+        message = message.substring(1, message.length() - 1)
+            .replace(curlyBrktOpenCode, "{")
+            .replace(curlyBrktCloseCode, "}");
+        return TextFormat.colorize(message);
+    }
 
     @EventHandler
     public void onChat(PlayerChatEvent event) {
@@ -81,13 +94,14 @@ public class ChatListener implements Listener {
         }
 
         boolean preprocessed = false;
-        String command = event.getMessage().trim();
+        String command = event.getMessage().stripLeading();
 
         for (String root : CHAT_COMMANDS_0) {
-            if (!command.startsWith(root)) continue;
+            if (!command.startsWith(root) || command.equals(root)) continue;
             
             preprocessed = true;
-            command = command.replaceFirst(root + " ", root + " \"") + "\"";
+            command = command.replace("{", curlyBrktOpenCode).replace("}", curlyBrktCloseCode);
+            command = command.replaceFirst(root + " ", root + " {") + "}";
             event.setMessage(command);
         }
         if (preprocessed) return;
@@ -96,7 +110,8 @@ public class ChatListener implements Listener {
             if (!command.startsWith(root)) continue;
 
             preprocessed = true;
-            command = command.replaceAll("(" + root + "\\s+\\w+\\s)", "$1\"") + "\"";
+            command = command.replace("{", curlyBrktOpenCode).replace("}", curlyBrktCloseCode);
+            command = command.replaceAll("(" + root + "\\s+\\w+\\s)", "$1{") + "}";
             event.setMessage(command);
         }
         if (preprocessed) return;

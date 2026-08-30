@@ -30,23 +30,7 @@ public class ReplyCommand extends Command {
                         return CommandResult.fail(ChatMsgs.ERROR_PFX + "You didn't receive any PVT!");     //TEXT
                     }
 
-                    sender.sendMessage(
-                        "§l§aPVT§r §3%s §7> §3%s§7: §b%s".formatted(       //TEXT
-                            "you",
-                            receiver.data.name,
-                            ctx.getArg("message")
-                        )
-                    );
-
-                    receiver.sendMessage(
-                        "§l§aPVT§r §3%s §7> §3%s§7: §b%s".formatted(        //TEXT
-                            sender.data.name,
-                            "you",
-                            ctx.getArg("message")
-                        )
-                    );
-
-                    return CommandResult.success();
+                    return PVTCommand.sendPVT(ctx, sender, receiver);
                 }))
             ;//.orElse(ctx -> ctx.getSender().sendMessage(usageMessage)); TODO: enable
     }
