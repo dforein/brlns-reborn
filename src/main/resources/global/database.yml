@@ -9,9 +9,8 @@ enabled: false
 # 1) you can write only the connection string, if it already contains the 
 #    username and password (check it!), and leave everything else null;
 # 2) you can write the connection string, the username, and the password, 
-#   if the connection string doesn't contain them, and leave everything else null;
+#    if the connection string doesn't contain them, and leave everything else null;
 # 3) you can leave the connection string null and write all the other fields.
-# Note: if your connection string starts with 'mysql', replace it with 'mariadb'
 database:
   connection-string: null
   username: null
