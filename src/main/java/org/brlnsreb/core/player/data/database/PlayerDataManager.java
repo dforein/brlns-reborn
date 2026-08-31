@@ -78,9 +78,7 @@ public class PlayerDataManager {
 
     public static CompletableFuture<Outcome> registerNewPlayer(CustomPlayer player, String name, String password) {
         if (!player.canRunAsync()) {
-            return CompletableFuture.completedFuture(
-                Outcome.ASYNC_TASK_ALREADY_RUNNING
-            );
+            return CompletableFuture.completedFuture(Outcome.ASYNC_TASK_ALREADY_RUNNING);
         }
 
         return CompletableFuture.supplyAsync(() -> {
@@ -107,9 +105,7 @@ public class PlayerDataManager {
 
     public static CompletableFuture<Outcome> playerLogin(CustomPlayer player, String name, String password) {
         if (!player.canRunAsync()) {
-            return CompletableFuture.completedFuture(
-                Outcome.ASYNC_TASK_ALREADY_RUNNING
-            );
+            return CompletableFuture.completedFuture(Outcome.ASYNC_TASK_ALREADY_RUNNING);
         }
         
         return CompletableFuture.supplyAsync(() -> {
@@ -155,9 +151,7 @@ public class PlayerDataManager {
 
     public static CompletableFuture<Outcome> playerLogout(CustomPlayer player) {
         if (!player.canRunAsync()) {
-            return CompletableFuture.completedFuture(
-                Outcome.ASYNC_TASK_ALREADY_RUNNING
-            );
+            return CompletableFuture.completedFuture(Outcome.ASYNC_TASK_ALREADY_RUNNING);
         }
         
         return CompletableFuture.supplyAsync(() -> {

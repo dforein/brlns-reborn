@@ -23,7 +23,7 @@ public class DatabaseManager {
     private static HikariDataSource dataSource;
     private static boolean enabled;
 
-    private String accountsTable = """
+    private static final String ACCOUNTS_TABLE = """
         CREATE TABLE IF NOT EXISTS accounts (
             name VARCHAR(26) PRIMARY KEY,
             password_hash VARCHAR(60) NOT NULL,
@@ -38,7 +38,7 @@ public class DatabaseManager {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     """;
 
-    private String playersTable = """
+    private static final String PLAYERS_TABLE = """
         CREATE TABLE IF NOT EXISTS players (
             uuid VARCHAR(36) PRIMARY KEY,
             name VARCHAR(26) NOT NULL,
@@ -47,7 +47,7 @@ public class DatabaseManager {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     """;
 
-    private String statsTable = """
+    private static final String STATS_TABLE = """
         CREATE TABLE IF NOT EXISTS stats (
             player_name VARCHAR(26) NOT NULL,
             minigame_id TINYINT UNSIGNED NOT NULL,
@@ -59,7 +59,7 @@ public class DatabaseManager {
     """;
 
     //yes, i'll use double lines to save friends' associations, cus they are easier to retrieve and elaborate
-    private String friendsTable = """
+    private static final String FRIENDS_TABLE = """
         CREATE TABLE IF NOT EXISTS friends (
             player_name VARCHAR(26) NOT NULL,
             friend_name VARCHAR(26) NOT NULL,
@@ -70,7 +70,7 @@ public class DatabaseManager {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     """;
 
-    private String friendRequestsTable = """
+    private static final String FRIEND_REQUESTS_TABLE = """
         CREATE TABLE IF NOT EXISTS friend_requests (
             sender_name VARCHAR(26) NOT NULL,
             receiver_name VARCHAR(26) NOT NULL,
@@ -152,15 +152,15 @@ public class DatabaseManager {
              var stmt = conn.createStatement()) {
             
             //accounts
-            stmt.execute(accountsTable);
-            stmt.execute(playersTable);
+            stmt.execute(ACCOUNTS_TABLE);
+            stmt.execute(PLAYERS_TABLE);
 
             //stats
-            stmt.execute(statsTable);
+            stmt.execute(STATS_TABLE);
 
             //friends
-            stmt.execute(friendsTable);
-            stmt.execute(friendRequestsTable);
+            stmt.execute(FRIENDS_TABLE);
+            stmt.execute(FRIEND_REQUESTS_TABLE);
 
 
             BrlnsReb.logger.info(TextFormat.DARK_GREEN + "Database tables ready");

@@ -176,7 +176,7 @@ public abstract class Match {
             case PREGAME_COUNTDOWN, IN_GAME, ENDING -> {
                 game.forceStop();
                 for (CustomPlayer p : players) {
-                    game.onLeave(p);
+                    onLeave(p);
                     minigame.onLobbyJoin(p);
                 }
                 for (CustomPlayer s : spectators) {

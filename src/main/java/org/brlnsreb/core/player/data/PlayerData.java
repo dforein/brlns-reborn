@@ -106,7 +106,7 @@ public class PlayerData {
      */
     public void updateLevel() {
         synchronized (accountLock) {
-            this.level = exp / EXP_PER_LEVEL;
+            this.level = 1 + exp / EXP_PER_LEVEL;
             this.levelFloor = (int) this.level;
         }
     }

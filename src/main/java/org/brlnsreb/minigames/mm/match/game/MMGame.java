@@ -503,6 +503,7 @@ public class MMGame extends GameExpand {
 
     public boolean checkWinConditions() {
         if (!this.isInGame()) return false;
+        if (players.size() == 0) forceStop();
 
         if (!isMurdererAlive()) {
             murdererWin = false;
@@ -518,7 +519,6 @@ public class MMGame extends GameExpand {
             murdererWin = true;
             onGameEnding();
             return true;
-
         }
 
         return false;
