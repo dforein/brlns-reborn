@@ -345,5 +345,6 @@ public abstract class WaitingLobby extends Lobby {
     public VotingSystem<String> getMapVoting() { return mapVoting; }
     public VotingSystem<TimeOfDay> getTimeVoting() { return timeVoting; }
     public VotingSystem<Weather> getWeatherVoting() { return weatherVoting; }
+    public Config getMapSettings() { return match.getMapSettings(); }
     
 }

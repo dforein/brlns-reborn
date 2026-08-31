@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.brlnsreb.BrlnsReb;
+import org.brlnsreb.core.maps.GameMapLevel;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.minigame.MinigameType;
@@ -39,6 +40,7 @@ public abstract class Match {
     protected Config config;
     protected Config messages;
     protected final Messages msgUtil;
+    protected Config mapSettings;
 
     public boolean closed = false;
 
@@ -57,6 +59,7 @@ public abstract class Match {
         this.config = getConfig();
         this.messages = getMessages();
         this.msgUtil = new Messages(this.messages, minigame.mgt.prefix, this.players, this.spectators);
+        this.mapSettings = getMapSettings();
 
         this.waitingLobby = createWaitingLobby();
     }
@@ -124,12 +127,13 @@ public abstract class Match {
         if (game != null) return;
         game = createGame(mapId, time, weather);
 
+        GameMapLevel map = game.getMap();
         msgUtil.broadcastPrefix(
             YamlUtil.getStr("match.waiting-lobby.going-to-play", Configs.getGlobalMessages()), 
             new String[] {
-                YamlUtil.getStr("map-settings.maps." + mapId + ".name", config),
-                game.getMap().time.displayName,
-                game.getMap().weather.displayName
+                YamlUtil.getStr(map.configPath + "name", mapSettings),
+                map.time.displayName,
+                map.weather.displayName
             }
         );
     }
@@ -243,6 +247,7 @@ public abstract class Match {
     public Minigame getMinigame() { return minigame; }
     public Config getConfig() { return minigame.getConfig(); }
     public Config getMessages() { return minigame.getMessages(); }
+    public Config getMapSettings() { return minigame.getMapSettings(); }
     public Messages getMsgUtil() { return msgUtil; }
     
 }

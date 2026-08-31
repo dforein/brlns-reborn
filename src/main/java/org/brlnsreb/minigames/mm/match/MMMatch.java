@@ -22,8 +22,8 @@ public class MMMatch extends MatchExpand {
 
     protected Game createGame(String map, TimeOfDay time, Weather weather) {
         weather = Weather.get(YamlUtil.getStr(
-            "map-settings.maps." + map + ".weather", 
-            config
+            "maps." + map + ".weather", 
+            mapSettings
         ));
         
         return new MMGame(this, map, time, weather);

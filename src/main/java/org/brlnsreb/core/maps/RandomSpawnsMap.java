@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.config.YamlUtil;
 import org.brlnsreb.utils.level.TimeOfDay;
 import org.brlnsreb.utils.level.Weather;
 import org.powernukkitx.level.Location;
 import org.powernukkitx.level.Position;
-import org.powernukkitx.utils.Config;
 
 public class RandomSpawnsMap extends GameMapLevel {
 
@@ -22,14 +22,14 @@ public class RandomSpawnsMap extends GameMapLevel {
 
     private final Map<UUID, Location> playerSpawns = new HashMap<>();
     
-    public RandomSpawnsMap(Config config, String configPath, String mapId, TimeOfDay time, Weather weather) {
-        super(config, configPath, mapId, time, weather);
+    public RandomSpawnsMap(Minigame minigame, String mapId, TimeOfDay time, Weather weather) {
+        super(minigame, mapId, time, weather);
     }
 
     protected void loadSpawns() {
         spawns = new ArrayList<>();
 
-        for (String rawCoords : config.getStringList(configPath + "spawns")) {
+        for (String rawCoords : mapSettings.getStringList(configPath + "spawns")) {
             spawns.add(Position.fromObject(
                 YamlUtil.parseVector3Centered(rawCoords), 
                 level

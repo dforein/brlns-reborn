@@ -18,8 +18,9 @@ public abstract class Minigame {
     public final MinigameType mgt;
 
     protected final BrlnsReb plugin;
-    protected Config config;
-    protected Config messages;
+    protected final Config config;
+    protected final Config messages;
+    protected final Config mapSettings;
 
     protected final MinigameLobby lobby;
     protected final HashSet<Match> matches;
@@ -33,6 +34,7 @@ public abstract class Minigame {
 
         this.config = Configs.getConfig(this.mgt.nameTag + "/config.yml");
         this.messages = Configs.getConfig(this.mgt.nameTag + "/messages.yml");
+        this.mapSettings = Configs.getConfig(this.mgt.nameTag + "/maps.yml");
 
         this.lobby = createLobby();
         this.matches = new HashSet<>();
@@ -152,12 +154,13 @@ public abstract class Minigame {
 
     public int getMinPlayers() { return config.getInt("settings.min-players"); }
     public int getMaxPlayers() { return config.getInt("settings.max-players"); }
-    public List<String> getAvailableMapIds() { return config.getStringList("map-settings.enabled-maps"); }
+    public List<String> getAvailableMapIds() { return mapSettings.getStringList("enabled-maps"); }
 
     public MinigameLobby getLobby() { return lobby; }
     public HashSet<Match> getMatches() { return matches; }
     public Match getMainPendingMatch() { return pendingMatches.isEmpty() ? null : pendingMatches.element(); }
     public Config getConfig() { return config; }
     public Config getMessages() { return messages; }
+    public Config getMapSettings() { return mapSettings; }
 
 }

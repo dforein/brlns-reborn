@@ -109,10 +109,7 @@ public class MMGame extends GameExpand {
     }
 
     protected GameMapLevel prepareMap(String mapId, TimeOfDay time, Weather weather) {
-        return new RandomSpawnsMap(
-            config, "map-settings.maps." + mapId,
-            mapId, time, weather
-        );
+        return new RandomSpawnsMap(minigame, mapId, time, weather);
     }
 
 

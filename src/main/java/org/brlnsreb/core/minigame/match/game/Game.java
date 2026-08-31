@@ -41,6 +41,7 @@ public abstract class Game {
 
     protected final Config config;
     protected final Config messages;
+    protected final Config mapSettings;
     protected final Messages msgUtil;
 
     protected final Match match;
@@ -60,6 +61,7 @@ public abstract class Game {
         this.config = match.getConfig();
         this.messages = match.getMessages();
         this.msgUtil = match.getMsgUtil();
+        this.mapSettings = match.getMapSettings();
 
         this.match = match;
         this.minigame = match.getMinigame();
@@ -166,11 +168,11 @@ public abstract class Game {
         );
 
         //builders message
-        List<String> builders = config.getStringList(map.configPath + "builders");
+        List<String> builders = mapSettings.getStringList(map.configPath + "builders");
         if (!builders.isEmpty()) {
             String buildersStr = String.join("&7, &d", builders);
             
-            String buildersTeam = YamlUtil.getStr(map.configPath + "build-team", config);
+            String buildersTeam = YamlUtil.getStr(map.configPath + "build-team", mapSettings);
             if (buildersTeam != null && buildersTeam.length() > 0) buildersStr = buildersStr + " &7/ &d" + buildersTeam;
 
             String creditsMsg = YamlUtil.getStr("match.game.map-credits", Configs.getGlobalMessages()).formatted(buildersStr);

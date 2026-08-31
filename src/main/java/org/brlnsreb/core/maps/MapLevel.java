@@ -16,22 +16,20 @@ import org.brlnsreb.utils.level.Weather;
 public abstract class MapLevel {
     
     protected final Config config;
+    protected final Config mapSettings;
     public final String configPath;
+
     public final Level level;
     public final TimeOfDay time;
     public final Weather weather;
 
-
     public MapLevel(Config config, String configPath, boolean copyWorld) {
-        this(config, configPath, null, null, copyWorld);
+        this(config, null, configPath, null, null, copyWorld);
     }
     
-    public MapLevel(Config config, String configPath, TimeOfDay time, boolean copyWorld) {
-        this(config, configPath, time, null, copyWorld);
-    }
-    
-    public MapLevel(Config config, String configPath, TimeOfDay time, Weather weather, boolean copyWorld) {
+    public MapLevel(Config config, Config mapSettings, String configPath, TimeOfDay time, Weather weather, boolean copyWorld) {
         this.config = config;
+        this.mapSettings = mapSettings;
         this.configPath = YamlUtil.checkConfigPath(configPath);
 
         this.level = loadLevel(copyWorld);

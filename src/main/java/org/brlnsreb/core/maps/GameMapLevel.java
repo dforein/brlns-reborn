@@ -1,12 +1,12 @@
 package org.brlnsreb.core.maps;
 
 import org.brlnsreb.core.levels.LevelManager;
+import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.utils.config.YamlUtil;
 import org.brlnsreb.utils.level.TimeOfDay;
 import org.brlnsreb.utils.level.Weather;
 import org.powernukkitx.level.Level;
 import org.powernukkitx.math.Vector3;
-import org.powernukkitx.utils.Config;
 
 public abstract class GameMapLevel extends MapLevel {
 
@@ -17,16 +17,22 @@ public abstract class GameMapLevel extends MapLevel {
     
     private boolean nightVision;
 
-    public GameMapLevel(Config config, String configPath, String mapId, TimeOfDay time, Weather weather) {
-        super(config, configPath, time, weather, true);
+    public GameMapLevel(Minigame minigame, String mapId, TimeOfDay time, Weather weather) {
+        super(
+            minigame.getConfig(), 
+            minigame.getMapSettings(), 
+            "maps." + mapId + ".",
+            time, weather, 
+            true
+        );
 
         this.mapId = mapId;
-        this.name = YamlUtil.getStr(this.configPath + "name", this.config);
+        this.name = YamlUtil.getStr(configPath + "name", this.mapSettings);
 
-        this.min = YamlUtil.parseVector3(YamlUtil.getStr(this.configPath + "min", this.config));
-        this.max = YamlUtil.parseVector3(YamlUtil.getStr(this.configPath + "max", this.config));
+        this.min = YamlUtil.parseVector3(YamlUtil.getStr(configPath + "min", this.mapSettings));
+        this.max = YamlUtil.parseVector3(YamlUtil.getStr(configPath + "max", this.mapSettings));
 
-        this.nightVision = this.config.getBoolean(this.configPath + "night-vision");
+        this.nightVision = this.mapSettings.getBoolean(configPath + "night-vision");
     }
 
     public boolean isInMap(Vector3 pos) {
@@ -41,8 +47,8 @@ public abstract class GameMapLevel extends MapLevel {
 
     protected Level loadLevel(boolean copyworld) {
         return LevelManager.loadLevel(
-            YamlUtil.getStr(configPath + "world", config), 
-            config
+            YamlUtil.getStr(configPath + "world", mapSettings),
+            mapSettings
         );
     }
 

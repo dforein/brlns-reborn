@@ -53,8 +53,8 @@ public class GoldSpawnMapper {
         this.plugin = BrlnsReb.instance;
         this.mapCache = new HashMap<>();
         this.barrierCache = new HashMap<>();
-        this.mapsFolder = new File(plugin.getDataFolder(), "maps");
-        this.barriersFolder = new File(plugin.getDataFolder(), "barriers");
+        this.mapsFolder = new File(plugin.getDataFolder(), "mm/maps");
+        this.barriersFolder = new File(plugin.getDataFolder(), "mm/barriers");
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         
         if (!mapsFolder.exists()) {

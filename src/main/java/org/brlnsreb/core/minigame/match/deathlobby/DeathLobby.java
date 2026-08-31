@@ -87,8 +87,8 @@ public class DeathLobby extends Lobby {
 
     protected void onJoinMessages(CustomPlayer player) {
         player.sendTitle(
-            YamlUtil.getStr(requireConfigPath() + "title", config), 
-            YamlUtil.getStr(requireConfigPath() + "subtitle", config),
+            YamlUtil.getStr(requireConfigPath() + "title", messages), 
+            YamlUtil.getStr(requireConfigPath() + "subtitle", messages),
             10, 60, 10
         );
     }
@@ -104,6 +104,6 @@ public class DeathLobby extends Lobby {
     
     
     public Config getConfig() { return Configs.getGlobalConfig(); }
-    public Config getMessages() { return null; }
+    public Config getMessages() { return Configs.getGlobalMessages(); }
     public String requireConfigPath() { return "match.death-lobby."; }
 }

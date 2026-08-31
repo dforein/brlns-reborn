@@ -12,11 +12,7 @@ public class LobbyLevel extends MapLevel {
     public Location spawn;
     
     public LobbyLevel(Lobby lobby, boolean matchRelated) {
-        super(
-            lobby.getConfig(), 
-            lobby.configPath(), 
-            matchRelated
-        );
+        super(lobby.getConfig(), lobby.configPath(), matchRelated);
     }
 
     protected Level loadLevel(boolean copyWorld) {

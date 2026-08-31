@@ -19,13 +19,13 @@ public class VotingMapTimeMenu extends MenuAbstract {
 
     private VotingSystem<String> mapVoting;
     private VotingSystem<TimeOfDay> timeVoting;
-    private Config config;
+    private Config mapSettings;
     private Messages msgUtil;
 
     public VotingMapTimeMenu(WaitingLobby waitingLobby) {
         this.mapVoting = waitingLobby.getMapVoting();
         this.timeVoting = waitingLobby.getTimeVoting();
-        this.config = waitingLobby.getConfig();
+        this.mapSettings = waitingLobby.getMapSettings();
         this.msgUtil = waitingLobby.getMsgUtil();
     }
     
@@ -41,7 +41,7 @@ public class VotingMapTimeMenu extends MenuAbstract {
         mapOptions.add("None");                       //"None" option
         for (String mapId : availableMapIds) {              //all randomly selected maps options
             int votes = mapVoting.getVoteCount(mapId);
-            String mapDisplayName = YamlUtil.getStr("map-settings.maps." + mapId + ".name", config);
+            String mapDisplayName = YamlUtil.getStr("maps." + mapId + ".name", mapSettings);
             mapOptions.add(mapDisplayName + " (" + votes + ")");
         }
         
@@ -99,7 +99,7 @@ public class VotingMapTimeMenu extends MenuAbstract {
             mapVoting.vote(player, selectedMapId);
             
             message = YamlUtil.getStr("match.waiting-lobby.voting.map-vote", Configs.getGlobalMessages());
-            placeholder[0] = YamlUtil.getStr("map-settings.maps." + selectedMapId + ".name", config);
+            placeholder[0] = YamlUtil.getStr("maps." + selectedMapId + ".name", mapSettings);
             
             msgUtil.sendMessagePrefix(player, message, placeholder);
         } else {
