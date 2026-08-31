@@ -82,7 +82,9 @@ public abstract class Match {
         }
     }
 
-    protected void onJoinAsSpectator(CustomPlayer player) {
+    public void onJoinAsSpectator(CustomPlayer player) {
+        if (player.isTeleporting()) return;
+
         if (game != null) {
             game.onJoinAsSpectator(player);
             spectators.add(player);

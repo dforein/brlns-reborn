@@ -1,6 +1,7 @@
 package org.brlnsreb.core.minigame.match;
 
 import org.brlnsreb.core.minigame.Minigame;
+import org.brlnsreb.core.minigame.match.deathlobby.DeathLobby;
 import org.brlnsreb.core.minigame.match.game.GameExpand;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.level.TimeOfDay;

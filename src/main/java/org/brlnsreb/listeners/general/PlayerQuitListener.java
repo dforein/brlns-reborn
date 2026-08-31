@@ -1,7 +1,7 @@
 package org.brlnsreb.listeners.general;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.minigame.match.DeathLobby;
+import org.brlnsreb.core.minigame.match.deathlobby.DeathLobby;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.core.player.data.database.AccountsManager;

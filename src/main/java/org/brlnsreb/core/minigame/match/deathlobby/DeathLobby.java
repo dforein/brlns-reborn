@@ -1,4 +1,4 @@
-package org.brlnsreb.core.minigame.match;
+package org.brlnsreb.core.minigame.match.deathlobby;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.lobby.Lobby;
+import org.brlnsreb.core.minigame.match.MatchExpand;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.mainhub.MainHub;
