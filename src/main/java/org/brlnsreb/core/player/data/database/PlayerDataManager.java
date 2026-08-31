@@ -145,6 +145,7 @@ public class PlayerDataManager {
                 player.resetAsync();
             }
         }).exceptionally(e -> {
+            name2UuidMap.remove(name.toLowerCase());
             return onDBError(e);
         });
     }

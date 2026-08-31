@@ -58,7 +58,7 @@ public class PlayerUtils {
             return oldState;
 
         } catch (Exception e) {
-            BrlnsReb.instance.getLogger().error("Error teleporting player: " + e.getMessage());
+            BrlnsReb.logger.error("Error teleporting player: " + e.getMessage());
             return null;
         }
     }

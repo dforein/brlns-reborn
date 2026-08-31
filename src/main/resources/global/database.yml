@@ -1,9 +1,24 @@
+# The database has to be MariaDB.
+
+# You can enable or disable the database (note: if it's disabled you cannot play).
+# After you have written all the database fields below, put this 'true' 
+# to enable the database for the next startups of your server.
 enabled: false
 
+# You have 3 possibilities, you choose one of them depeding on your needs:
+# 1) you can write only the connection string, if it already contains the 
+#    username and password (check it!), and leave everything else null;
+# 2) you can write the connection string, the username, and the password, 
+#   if the connection string doesn't contain them, and leave everything else null;
+# 3) you can leave the connection string null and write all the other fields.
+# Note: if your connection string starts with 'mysql', replace it with 'mariadb'
 database:
-  host:
-  port:
-  database:
-  username:
-  password:
-  pool-size: 10
+  connection-string: null
+  username: null
+  password: null
+  host: null
+  port: null
+  database: null
+
+# Number of active connections in HikariCP pool
+pool-size: 5

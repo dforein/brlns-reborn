@@ -11,7 +11,6 @@ import org.brlnsreb.utils.messages.ChatMsgs;
 import org.brlnsreb.utils.messages.Messages;
 import org.brlnsreb.utils.messages.ChatMsgs.Alignment;
 import org.powernukkitx.Player;
-import org.powernukkitx.Server;
 import org.powernukkitx.form.response.CustomResponse;
 import org.powernukkitx.form.window.CustomForm;
 import org.powernukkitx.form.window.SimpleForm;
@@ -58,7 +57,9 @@ public class AuthSystem extends MenuAbstract {
         }
     }
 
-    private static void registerPlayer(CustomPlayer player, String name, String password) {
+    private static void registerPlayer(CustomPlayer player, String nameRaw, String password) {
+        String name = nameRaw.isEmpty() ? player.getName() : nameRaw;
+
         PlayerDataManager.registerNewPlayer(player, name, password).thenAccept(outcome -> {
             if (outcome == Outcome.ASYNC_TASK_ALREADY_RUNNING) return;
 
@@ -66,7 +67,7 @@ public class AuthSystem extends MenuAbstract {
                 Messages.sendMessageBlock(player, Alignment.CENTER, true,
                     ChatMsgs.BROKENLENS_GAMES,
                     "§eplay.brlns.reb",
-                    "§b@BrokenLensMCPE",
+                    "§b@BrokenLensMCPE  ",
                     "",
                     "§aWelcome §e" + player.data.name + "§a!",
                     "§aHave Fun!"
@@ -79,8 +80,8 @@ public class AuthSystem extends MenuAbstract {
                 case NAME_ALREADY_IN_USE -> ChatMsgs.ERROR_PFX + "Sorry, the name you want is already taken!";
                 case PLAYER_ALREADY_LOGGED_IN -> ChatMsgs.ERROR_PFX + "You are already authenticated (username: §e" + player.data.name + "§c)\n"
                                                 + ChatMsgs.INFO_PFX + "Type §e/logout §ato switch usernames";
-                case DB_ERROR -> ChatMsgs.ERROR_PFX + "Something wrong happened. Report this error to developers: db_error_auth";
-                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: switch_register";
+                case DB_ERROR -> ChatMsgs.ERROR_PFX + "Something wrong happened. Report this error to developers: auth_db_error";
+                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: auth_switch_register";
             });
 
             String path = "auth.register-outcome.";
@@ -94,7 +95,7 @@ public class AuthSystem extends MenuAbstract {
             };
 
             if (path.contains("error")) {
-                Server.getInstance().getLogger().error(path);
+                BrlnsReb.logger.error(path.substring(0, path.length() - 1));
             }
 
             SimpleForm responseWindow = new SimpleForm(
@@ -106,7 +107,9 @@ public class AuthSystem extends MenuAbstract {
         });
     }
 
-    private static void loginPlayer(CustomPlayer player, String name, String password) {
+    private static void loginPlayer(CustomPlayer player, String nameRaw, String password) {
+        String name = nameRaw.isEmpty() ? player.getName() : nameRaw;
+
         PlayerDataManager.playerLogin(player, name, password).thenAccept(outcome -> {
             if (outcome == Outcome.ASYNC_TASK_ALREADY_RUNNING) return;
 
@@ -116,8 +119,8 @@ public class AuthSystem extends MenuAbstract {
                                                 + ChatMsgs.INFO_PFX + "Type §e/logout §ato switch usernames";
                 case NAME_NOT_FOUND -> ChatMsgs.ERROR_PFX + "The name you typed does not exist!";
                 case WRONG_PASSWORD -> ChatMsgs.ERROR_PFX + "Wrong passoword!";
-                case DB_ERROR -> ChatMsgs.ERROR_PFX + "Something wrong happened. Report this error to developers: db_error_auth";
-                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: switch_login";
+                case DB_ERROR -> ChatMsgs.ERROR_PFX + "Something wrong happened. Report this error to developers: auth_db_error";
+                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: auth_switch_login";
             });
 
             String path = "auth.login-outcome.";
@@ -131,7 +134,7 @@ public class AuthSystem extends MenuAbstract {
             };
 
             if (path.contains("error")) {
-                Server.getInstance().getLogger().error(path);
+                BrlnsReb.logger.error(path.substring(0, path.length() - 1));
             }
 
             path = YamlUtil.checkConfigPath(path);
@@ -148,7 +151,7 @@ public class AuthSystem extends MenuAbstract {
         Messages.sendMessageBlock(player, Alignment.CENTER, true,
             ChatMsgs.BROKENLENS_GAMES,
             "§eplay.brlns.reb",
-            "§b@BrokenLensMCPE",
+            "§b@BrokenLensMCPE  ",
             "",
             "§aWelcome Back §e" + player.data.name + "§a!"
         );

@@ -109,7 +109,7 @@ public class MainHub extends Lobby {
         for (MinigameType mgt : MinigameType.values()) {
             Minigame npcMinigame = MinigameManager.getMinigame(mgt.nameTag);
             if (npcMinigame == null) {
-                BrlnsReb.instance.getLogger().error("§cNo such minigame nametag (from config): " + mgt.nameTag);
+                BrlnsReb.logger.error("§cNo such minigame nametag (from config): " + mgt.nameTag);
                 continue;
             }
 

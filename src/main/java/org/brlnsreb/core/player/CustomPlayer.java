@@ -180,7 +180,7 @@ public class CustomPlayer extends Player {
             case LOBBY -> this.setNameTag(this.grayNameTag);
             case WAITING_LOBBY -> this.setNameTag(this.greenNameTag);
             case DEATH_LOBBY -> this.setNameTag("§l§fGHOST§r " + data.name);
-            default -> BrlnsReb.instance.getLogger().alert("CustomPlayer::resetNameTag, unrecognized state: " + state.toString());
+            default -> BrlnsReb.logger.alert("CustomPlayer::resetNameTag, unrecognized state: " + state.toString());
         } 
     }
 
@@ -365,7 +365,7 @@ public class CustomPlayer extends Player {
     public void saveNBT() {
         Location spawn = MainHub.instance.getMap().spawn;
         if (spawn == null) {
-            BrlnsReb.instance.getLogger().error("MainHub spawn is null! Proceeding to save player's NBT according to PNX...");
+            BrlnsReb.logger.error("MainHub spawn is null! Proceeding to save player's NBT according to PNX...");
             super.saveNBT();
             return;
         }

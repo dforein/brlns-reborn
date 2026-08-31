@@ -52,7 +52,7 @@ public class GoldSystem {
 
     private void spawnGold() {
         if (validSpawns == null || validSpawns.isEmpty()) {
-            BrlnsReb.instance.getLogger().warning("MM: No valid spawns available!");
+            BrlnsReb.logger.warning("MM: No valid spawns available!");
             return;
         }
         
@@ -104,7 +104,7 @@ public class GoldSystem {
         this.validSpawns = mapper.getSpawns(map.mapId);
         
         if (validSpawns.isEmpty()) {
-            BrlnsReb.instance.getLogger().warning("MM: No gold spawns found for map: " + map.mapId);
+            BrlnsReb.logger.warning("MM: No gold spawns found for map: " + map.mapId);
         }
     }
 }

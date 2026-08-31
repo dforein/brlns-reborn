@@ -40,9 +40,9 @@ public class BrlnsReb extends PluginBase {
     private static boolean underMaintenance;
     private static Server server;
 
-    private DatabaseManager databaseManager;
-    private MinigameManager minigameManager;
-    private MainHub mainHub;
+    private static DatabaseManager databaseManager;
+    private static MinigameManager minigameManager;
+    private static MainHub mainHub;
 
     private final String[] RESOURCES = {
             "global/config.yml",
@@ -102,7 +102,7 @@ public class BrlnsReb extends PluginBase {
         minigameManager = new MinigameManager();
         prepareMainHub();
         
-        this.getLogger().info(TextFormat.DARK_GREEN + "BrokenLens Reborn server enabled!");
+        logger.info(TextFormat.DARK_GREEN + "BrokenLens Reborn server enabled!");
     }
 
     @Override
@@ -119,7 +119,7 @@ public class BrlnsReb extends PluginBase {
     
     @Override
     public void onDisable() {
-        this.getLogger().info(TextFormat.DARK_RED + "BrokenLens Reborn server disabled!");
+        logger.info(TextFormat.DARK_RED + "BrokenLens Reborn server disabled!");
 
         if (saveAtShutdown) return;
         for (Level level : new ArrayList<>(server.getLevels().values())) {
@@ -140,7 +140,7 @@ public class BrlnsReb extends PluginBase {
     }
 
     private void prepareMainHub() {
-        this.mainHub = new MainHub();
+        mainHub = new MainHub();
 
         server.setDefaultLevel(mainHub.getMap().level);
         server.getDefaultLevel().setSpawnLocation(mainHub.getMap().spawn);
@@ -165,7 +165,7 @@ public class BrlnsReb extends PluginBase {
     public static int getDebugVar() { return debugVar; }
     public static void setDebugVar(int value) { debugVar = value; }
 
-    public DatabaseManager getDatabaseManager() { return databaseManager; }
-    public MinigameManager getMinigameManager() { return minigameManager; }
+    public static DatabaseManager getDatabaseManager() { return databaseManager; }
+    public static MinigameManager getMinigameManager() { return minigameManager; }
     public static ServerScheduler getScheduler() { return server.getScheduler(); }
 }

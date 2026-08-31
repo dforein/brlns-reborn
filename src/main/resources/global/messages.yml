@@ -74,7 +74,7 @@ auth:
 
         If you can, 
         report this bug to staff members: 
-        "Auth HandleResponse, database error".
+        "auth_db_error".
     error:
       title: Error during registration
       content: |-
@@ -82,7 +82,7 @@ auth:
 
         If you can, 
         report this bug to staff members: 
-        "Auth HandleResponse, invalid switch".
+        "auth_switch_register".
   login-outcome:
     ok: 
       title: 
@@ -109,7 +109,7 @@ auth:
         The server is having some trouble with the database, we will investigate the bug.
 
         If you can, report this bug to staff members: 
-        "Auth HandleResponse, database error".
+        "auth_db_error".
     error:
       title: Error during login
       content: |-
@@ -117,4 +117,4 @@ auth:
 
         If you can, 
         report this bug to staff members: 
-        "Auth HandleResponse, invalid switch".
+        "auth_switch_login".

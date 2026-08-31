@@ -18,8 +18,7 @@ import java.io.*;
 import java.util.*;
 
 public class GoldSpawnMapper {
-    
-    private final BrlnsReb plugin;
+
     private final Map<String, List<Vector3>> mapCache;
     private final Map<String, List<Vector3>> barrierCache;
     private final File mapsFolder;
@@ -50,11 +49,10 @@ public class GoldSpawnMapper {
     );
     
     public GoldSpawnMapper() {
-        this.plugin = BrlnsReb.instance;
         this.mapCache = new HashMap<>();
         this.barrierCache = new HashMap<>();
-        this.mapsFolder = new File(plugin.getDataFolder(), "mm/maps");
-        this.barriersFolder = new File(plugin.getDataFolder(), "mm/barriers");
+        this.mapsFolder = new File(BrlnsReb.instance.getDataFolder(), "mm/maps");
+        this.barriersFolder = new File(BrlnsReb.instance.getDataFolder(), "mm/barriers");
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         
         if (!mapsFolder.exists()) {
@@ -378,7 +376,7 @@ public class GoldSpawnMapper {
             
             gson.toJson(data, writer);
         } catch (IOException e) {
-            plugin.getLogger().error("Failed to save map: " + mapId, e);
+            BrlnsReb.logger.error("Failed to save map: " + mapId, e);
         }
     }
     
@@ -393,7 +391,7 @@ public class GoldSpawnMapper {
             
             gson.toJson(data, writer);
         } catch (IOException e) {
-            plugin.getLogger().error("Failed to save barriers: " + mapId, e);
+            BrlnsReb.logger.error("Failed to save barriers: " + mapId, e);
         }
     }
     
@@ -420,7 +418,7 @@ public class GoldSpawnMapper {
             return true;
             
         } catch (IOException e) {
-            plugin.getLogger().error("Failed to load map: " + mapId, e);
+            BrlnsReb.logger.error("Failed to load map: " + mapId, e);
             return false;
         }
     }
@@ -448,7 +446,7 @@ public class GoldSpawnMapper {
             return true;
             
         } catch (IOException e) {
-            plugin.getLogger().error("Failed to load barriers: " + mapId, e);
+            BrlnsReb.logger.error("Failed to load barriers: " + mapId, e);
             return false;
         }
     }

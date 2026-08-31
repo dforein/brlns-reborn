@@ -11,6 +11,8 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.powernukkitx.utils.Config;
 import org.powernukkitx.utils.TextFormat;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,6 +22,7 @@ import java.util.*;
 
 public class DatabaseManager {
     
+    private static Config config;
     private static HikariDataSource dataSource;
     private static boolean enabled;
 
@@ -84,38 +87,86 @@ public class DatabaseManager {
 
 
     public DatabaseManager() {
+        config = Configs.getConfig("global/database.yml");
         enabled = initConnectionPool();
     }
 
     public boolean retryInit() {
         if (dataSource != null && !dataSource.isClosed()) dataSource.close();
+        config.reload();
+
         enabled = initConnectionPool();
         return enabled;
     }
 
 
     private boolean initConnectionPool() {
-        Config config = Configs.getConfig("global/database.yml");
-
         if (!config.getBoolean("enabled", false)) {
             BrlnsReb.logger.warning(TextFormat.GOLD + "Database disabled by settings.");
             return false;
         }
 
-        String host = config.getString("database.host");
-        int port = config.getInt("database.port");
-        String database = config.getString("database.database");
-        String username = config.getString("database.username");
-        String password = config.getString("database.password");
-        int poolSize = config.getInt("database.pool-size");
+        final String NULL = "null";
+        final String CONNECTION_URL = "mariadb://%s:%d/%s";
+        final String ADDED_TO_URL = "?characterEncoding=UTF-8&autoReconnect=true";
 
-        String jdbcUrl = String.format(
-            "jdbc:mariadb://%s:%d/%s?useSSL=false&characterEncoding=UTF-8&autoReconnect=true",
-            host, port, database
-        );
+        String host = NULL, database = NULL;
+        int port = 3306;
+
+        String url = config.getString("database.connection-string");
+
+        String username = config.getString("database.username", NULL);
+        String password = config.getString("database.password", NULL);
+        if (username.equals(NULL) || password.equals(NULL)) {
+            if (!username.equals(NULL) || !password.equals(NULL)) {
+                BrlnsReb.logger.error(TextFormat.RED + "Database username or password is null");
+                return false;
+            }
+        }
+        
+        if (url.equals(NULL)) {
+            host = config.getString("database.host", NULL);
+            port = config.getInt("database.port", 3306);
+            database = config.getString("database.database");
+
+            if (host.equals(NULL) || database.equals(NULL)) {
+                BrlnsReb.logger.error(TextFormat.RED + "Database host or port or database is null");
+                return false;
+            }
+            url = "jdbc:" + CONNECTION_URL.formatted(host, port, database) + ADDED_TO_URL;
+
+        } else {
+            if (url.startsWith("mysql")) {
+                url = "mariadb" + url.substring("mysql".length(), url.length());
+            }
+
+            if (username.equals(NULL)) {
+                try {
+                    URI uri = new URI(url);
+                    String userInfo = uri.getUserInfo();
+                    if (userInfo != null) {
+                        String[] parts = userInfo.split(":", 2);
+                        if (parts.length == 2) {
+                            username = parts[0];
+                            password = parts[1];
+                        }
+                        
+                        url = new URI(uri.getScheme(), null, uri.getHost(), uri.getPort(),
+                                    uri.getPath(), uri.getQuery(), uri.getFragment()).toString();
+                    }
+                } catch (URISyntaxException e) {
+                    BrlnsReb.logger.error("Invalid database connection string:" + e.getMessage());
+                    return false;
+                }
+            }
+
+            url = "jdbc:" + url + ADDED_TO_URL;
+        }
+        
+        int poolSize = config.getInt("pool-size");
 
         HikariConfig hikariConfig = new HikariConfig();
-        hikariConfig.setJdbcUrl(jdbcUrl);
+        hikariConfig.setJdbcUrl(url);
         hikariConfig.setDriverClassName("org.mariadb.jdbc.Driver");
         hikariConfig.setUsername(username);
         hikariConfig.setPassword(password);
@@ -134,7 +185,7 @@ public class DatabaseManager {
             dataSource = new HikariDataSource(hikariConfig);
             
             try (Connection testConn = dataSource.getConnection()) {
-                BrlnsReb.logger.info(TextFormat.DARK_GREEN + "Database connected successfully to " + database);
+                BrlnsReb.logger.info(TextFormat.DARK_GREEN + "Database connected successfully" + (database.equals(NULL) ? "" : ("to " + database)));
             }
             
             createTables();

@@ -318,7 +318,7 @@ public abstract class WaitingLobby extends Lobby {
             if (!availableMapIds.isEmpty()) {
                 selectedMapId = availableMapIds.get(new Random().nextInt(availableMapIds.size()));
             } else {
-                BrlnsReb.instance.getLogger().error("CRITIC ERROR: No maps enabled in config!");
+                BrlnsReb.logger.error("CRITIC ERROR: No maps enabled in config!");
                 msgUtil.broadcastPrefix(ChatMsgs.ERROR_PFX + "No maps available! Match cancelled.");
                 match.forceStop();
                 return;
