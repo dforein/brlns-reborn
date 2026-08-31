@@ -23,6 +23,7 @@ import org.brlnsreb.utils.level.TimeOfDay;
 import org.brlnsreb.utils.level.Weather;
 import org.brlnsreb.utils.messages.ChatMsgs;
 import org.brlnsreb.utils.messages.Messages;
+import org.brlnsreb.utils.messages.ChatMsgs.Alignment;
 import org.brlnsreb.utils.voting.VotingSystem;
 import org.powernukkitx.event.player.PlayerItemHeldEvent;
 import org.powernukkitx.item.Item;
@@ -146,6 +147,18 @@ public abstract class WaitingLobby extends Lobby {
     protected void onJoinMessages(CustomPlayer player) {
         lastPlayerName = player.data.name;
         hasJoinedLast = true;
+
+        Messages.sendMessageBlock(player, Alignment.CENTER, true,
+            minigame.mgt.displayName,
+            "§aPlaying on §epnx-" + minigame.mgt.nameTag + match.getNumber(),
+            "§aThe game will start shortly...",
+            "",
+            "§eRead the rules before you play!",
+            "",
+            "§2Are you lost in this game? visit:",
+            "§6brokenlens.xyz",
+            "§2for tutorials about how to play!"
+        );
 
         Messages.sendActionBar(
             players, 

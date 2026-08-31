@@ -50,7 +50,7 @@ public class Messages {
 
     //message block
 
-    public void sendMessageBlock(Alignment alignment, boolean addSpace, String... lines) {
+    public void broadcastMessageBlock(Alignment alignment, boolean addSpace, String... lines) {
         sendMessageBlock(players, alignment, addSpace, lines);
         if (spectators != null) sendMessageBlock(spectators, alignment, addSpace, lines);
     }

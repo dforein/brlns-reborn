@@ -69,11 +69,7 @@ public class MainHub extends Lobby {
     } 
 
     protected void onServerJoinMessages(CustomPlayer player) {
-        player.sendMessage(         //send disclaimer
-            ChatMsgs.BROKENLENS_PFX + YamlUtil.getStr(configPath() + "disclaimer", messages)
-        );
-
-        MainLobbyUtils.friendAlertsNotify(player, null, null, false);
+        MainLobbyUtils.friendAlertsNotify(player, null, null, true);
     }
 
 
@@ -84,6 +80,7 @@ public class MainHub extends Lobby {
     }
 
     protected void onJoinMessages(CustomPlayer player) {
+        player.sendTitle(ChatMsgs.BROKENLENS_REBORN, "§eplay.brlns.reb");
         MainLobbyUtils.friendAlertsNotify(player, null, ChatMsgs.BROKENLENS);
     }
 

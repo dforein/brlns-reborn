@@ -380,7 +380,7 @@ public class FriendCommand extends Command {
         }
 
         sender.sendMessage(
-            "§e--- §aFriend List §7¦ §aPage §e%d§a/§e%d ---".formatted(currentPage, pages)
+            "§e--- §aFriend List §7| §aPage §e%d§a/§e%d ---".formatted(currentPage, pages)
         );
 
         ArrayList<String> curr;

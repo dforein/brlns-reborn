@@ -149,6 +149,7 @@ public class AccountsManager {
             }
 
             if (player.spawned) updatePlayer(player, name);
+            else                player.setDisplayName(name);
 
             PlayerDataManager.onLogin(name, player.getUniqueId());
         });

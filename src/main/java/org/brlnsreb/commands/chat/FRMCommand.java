@@ -57,7 +57,7 @@ public class FRMCommand extends Command {
                     }
                     
                     sender.sendMessage(
-                        "§l§aFRM §dCURRENT§r §a%d §eyou§7: §7%s".formatted(      //TODO: CURRENT? //TEXT
+                        "§l§aFRM §dCURRENT§r §a%d §eyou§7: §7%s".formatted(      //TEXT //TODO: CURRENT?
                             receiversCount,
                             message
                         )

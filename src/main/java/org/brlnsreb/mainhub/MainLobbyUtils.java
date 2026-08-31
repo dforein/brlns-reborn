@@ -26,12 +26,12 @@ public class MainLobbyUtils {
 
         //get the boolean value of alerts (get alerts of friends) and notify (notify friends) 
         boolean alerts = data.getFriendAlerts();
-        boolean notify = data.getFriendNotify() && player.minigameCurrent != minigame;
+        boolean notify = !serverJoin && data.getFriendNotify() && player.minigameCurrent != minigame;
         if (!alerts && !notify) return;
         
         //build the message to send to friends, if notify is enabled
         String notifyMessage = null;
-        if (notify && !serverJoin) {
+        if (notify) {
             notifyMessage = ChatMsgs.INFO_PFX + YamlUtil.getStr(
                 "lobby.friend-minigame-join", 
                 Configs.getGlobalMessages()

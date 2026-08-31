@@ -30,6 +30,13 @@ match:
     subtitle: '&6Oh no... too bad'
 
 auth:
+  after-server-join: '&aHave you got a &3Xbox Live &agamertag which
+    didn''t match your &eBroken&6Lens &ausername? You
+    can use the &e/login &acommand to access your
+    previous stats!'
+  after-register: '&aYou can register an account on our forums at
+    &6brokenlens.xyz &awith the same username used on brokenlens
+    to get a cool member tag!'
   menu:
     title: Login to your account
     label0: Register an account or Login to save stats, coins and experience!
@@ -37,7 +44,7 @@ auth:
     input2: Password
     toggle3: Register this username if available
   register-outcome:
-    ok: 
+    ok:
       title: Account registered successfully
       content: |-
         Welcome %s!
@@ -48,7 +55,8 @@ auth:
       title: Error during registration
       content: |-
         Sorry, you can't use %s: it's invalid!
-        Make sure you use only alphanumerical characters and the lenght of your name is between 3 and 26 characters. Other kinds of characters, except the underscore ("_"), are not valid.
+        Make sure you use only alphanumerical characters and the lenght of your name is between 3 and 26 characters. 
+        Other kinds of characters, except the underscore ("_"), are not valid.
     name-already-in-use:
       title: Error during registration
       content: |-
@@ -57,7 +65,7 @@ auth:
     player-already-logged-in:
       title: Error during registration
       content: |-
-        You are already logged in.
+        You are already logged in!
         Either another player is using your account or you're already using your account.
     db-error:
       title: Error during registration

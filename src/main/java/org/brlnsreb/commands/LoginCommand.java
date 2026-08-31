@@ -27,7 +27,8 @@ public class LoginCommand extends Command {
 
         CustomPlayer player = (CustomPlayer) sender;
         if (player.data.isLogged()) {
-            sender.sendMessage(ChatMsgs.INFO_PFX + "You are already logged in!");
+            sender.sendMessage(ChatMsgs.ERROR_PFX + "You are already authenticated (username: §e" + player.data.name + "§c)");
+            sender.sendMessage(ChatMsgs.INFO_PFX + "Type §e/logout §ato switch usernames");
             return true;
         }
 

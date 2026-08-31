@@ -20,11 +20,7 @@ public class PlayerCreationListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         event.setJoinMessage("");
 
-        CustomPlayer player = (CustomPlayer) event.getPlayer();
-        player.updateExp();
-        player.updatePresetNameTags();
-        if (player.data.isLogged()) player.setDisplayName(player.data.name);
-        PlayerUtils.updateOnlinePlayer(player, true);
+        PlayerUtils.updateOnlinePlayer(event.getPlayer(), true); //remove the name for players who aren't in the same level (main hub)
     }
 
 }

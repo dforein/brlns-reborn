@@ -35,7 +35,7 @@ public class MMBossBar extends BossBarAbstract {
     
     public void updateExpAndGold(CustomPlayer innocent, MMPlayerGameData gameData) {
         updateBossBar(innocent,
-            "§l§7- §a" + gameData.getExpEarned() + " EXP §7¦ §e" + gameData.gold + " GOLD §7-"
+            "§l§7- §a" + gameData.getExpEarned() + " EXP §7| §e" + gameData.gold + " GOLD §7-"
         );
     }
 
@@ -47,7 +47,7 @@ public class MMBossBar extends BossBarAbstract {
 
     public void updateExpAndDistance(CustomPlayer murderer, MMPlayerGameData gameData) {
         updateBossBar(murderer,
-            "§l§7- §aNEAREST: " + "%.2f".formatted(getNearestDistance(murderer)) + "m §7¦ §a" + gameData.getExpEarned() + " EXP §7-"
+            "§l§7- §aNEAREST: " + "%.2f".formatted(getNearestDistance(murderer)) + "m §7| §a" + gameData.getExpEarned() + " EXP §7-"
         );
     }
 

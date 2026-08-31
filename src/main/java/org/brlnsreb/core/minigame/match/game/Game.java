@@ -157,7 +157,7 @@ public abstract class Game {
         }
 
         //starting message
-        msgUtil.sendMessageBlock(Alignment.CENTER, true,
+        msgUtil.broadcastMessageBlock(Alignment.CENTER, true,
             ChatMsgs.BROKENLENS_GAMES,
             "",
             "§7- " + minigame.mgt.displayName + " §7-",

@@ -15,11 +15,18 @@ import org.cloudburstmc.protocol.bedrock.data.skin.PersonaPieceTintData;
 import org.cloudburstmc.protocol.common.util.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.brlnsreb.BrlnsReb;
+import org.brlnsreb.core.auth.AuthSystem;
 import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.player.data.PlayerData;
+import org.brlnsreb.core.player.data.database.Outcome;
 import org.brlnsreb.core.player.data.database.PlayerDataManager;
 import org.brlnsreb.mainhub.MainHub;
+import org.brlnsreb.utils.config.Configs;
+import org.brlnsreb.utils.config.YamlUtil;
+import org.brlnsreb.utils.messages.ChatMsgs;
+import org.brlnsreb.utils.messages.Messages;
+import org.brlnsreb.utils.messages.ChatMsgs.Alignment;
 import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.minigame.match.MatchExpand;
 import org.powernukkitx.Player;
@@ -84,15 +91,41 @@ public class CustomPlayer extends Player {
 
     public CustomPlayer(@NotNull BedrockServerSession session, @NotNull PlayerInfo info) {
         super(session, info);
-
-        PlayerDataManager.onServerJoin(this);
     }
 
     @Override
     public void onPlayerLocallyInitialized() {
         super.onPlayerLocallyInitialized();
+
+        this.sendMessage(ChatMsgs.INFO_PFX + "Logging in...");
+
+        PlayerDataManager.onServerJoin(this).thenAccept(outcome -> {
+            if (outcome != Outcome.OK) return;
+
+            if (data.isLogged()) {
+                AuthSystem.sendLoginMessageBlock(this);
+            } else {
+                Messages.sendMessageBlock(this, Alignment.LEFT, false,
+                    "§aWelcome to §eBroken§6Lens §d" + this.getDisplayName() + "§a!",
+                    "§aYou can login to save stats and coins!",
+                    "§aLogin by typing §e/login"
+                );
+            }
+
+            this.sendMessage(
+                ChatMsgs.INFO_PFX + YamlUtil.getStr("auth.after-server-join", Configs.getGlobalMessages())
+            );
+
+            //send disclaimer
+            this.sendMessage(
+                ChatMsgs.BROKENLENS_PFX 
+                + YamlUtil.getStr(
+                    MainHub.instance.configPath() + "disclaimer", 
+                    MainHub.instance.getMessages()
+                )
+            );
+        });
         
-        PlayerUtils.updateOnlinePlayer(this, true);     //remove the name for players who aren't in the same level (main hub)
         PlayerUtils.cleanPlayerList(this);
 
         MainHub.instance.onServerJoin(this);
