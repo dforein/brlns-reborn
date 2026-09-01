@@ -44,7 +44,7 @@ public class FRMCommand extends Command {
                         if (!friend.getLevel().equals(sender.getLevel())) continue;
  
                         friend.sendMessage(
-                            "§l§aFRM §3%s§7: §7%s".formatted(      //TEXT
+                            "§l§aFRM§r §3%s§7: §7%s".formatted(      //TEXT
                                 senderData.name,
                                 message
                             )
@@ -53,7 +53,7 @@ public class FRMCommand extends Command {
                     }
                     
                     sender.sendMessage(
-                        "§l§aFRM §a%d §eyou§7: §7%s".formatted(      //TEXTì
+                        "§l§aFRM§r §a%d §eyou§7: §7%s".formatted(      //TEXTì
                             receiversCount,
                             message
                         )

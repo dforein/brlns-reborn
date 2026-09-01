@@ -22,6 +22,7 @@ public class ChatListener implements Listener {
     private String[] CHAT_COMMANDS_0 = {        //0 args before text
         "/grm",
         "/frm",
+        "/trm",
         "/reply"
     };
 
