@@ -32,7 +32,7 @@ import org.brlnsreb.core.minigame.match.MatchExpand;
 import org.powernukkitx.Player;
 import org.powernukkitx.Server;
 import org.powernukkitx.block.Block;
-import org.powernukkitx.entity.Entity;
+import org.powernukkitx.entity.EntityLiving;
 import org.powernukkitx.event.entity.EntityDamageByEntityEvent;
 import org.powernukkitx.event.entity.EntityDamageEvent;
 import org.powernukkitx.event.entity.EntityDamageEvent.DamageCause;
@@ -274,13 +274,10 @@ public class CustomPlayer extends Player {
                 break;
 
             case ONLY_PLAYERS:
-                if (source instanceof EntityDamageByEntityEvent event) {
-                    Entity entity = event.getDamager();
-                    if (entity instanceof Player) {
-                        return checkAndAttack(source);
-                    }
-                }
-                break;
+                if (!(source instanceof EntityDamageByEntityEvent event)) break;
+                if (!(event.getDamager() instanceof CustomPlayer player)) break;
+                if (!player.canAttackPlayers) break;
+                return checkAndAttack(source);
 
             case FULL:
                 return checkAndAttack(source);
@@ -290,20 +287,20 @@ public class CustomPlayer extends Player {
                 return checkAndAttack(source);
 
             case ONLY_INANIMATE:
-                if (source instanceof EntityDamageByEntityEvent) break;
+                if (source instanceof EntityDamageByEntityEvent event
+                    && event.getDamager() instanceof EntityLiving) break;
                 return checkAndAttack(source);
                 
             case ONLY_MOBS:
-                if (source instanceof EntityDamageByEntityEvent event) {
-                    if (event.getDamager() instanceof Player) break;
-                    return checkAndAttack(source);
-                }
-                break;
+                if (!(source instanceof EntityDamageByEntityEvent event)) break;
+                if (!(event.getDamager() instanceof EntityLiving)) break;
+                if (event.getDamager() instanceof CustomPlayer) break;
+                return checkAndAttack(source);
             
             case MOBS_AND_PLAYERS:
                 if (!(source instanceof EntityDamageByEntityEvent event)) break;
-                Entity entity = event.getDamager();
-                if (entity instanceof CustomPlayer player && !player.canAttackPlayers) break;
+                if (!(event.getDamager() instanceof EntityLiving damager)) break;
+                if (damager instanceof CustomPlayer player && !player.canAttackPlayers) break;
                 return checkAndAttack(source);
         }
         
@@ -317,11 +314,10 @@ public class CustomPlayer extends Player {
             matchCurrent.getGame().getListenerAccess().onPlayerDamage(this, source);
         }
 
-        //canAttackPlayer check
+        //getting damager (if damager exists)
         CustomPlayer damager = null;
         if (source instanceof EntityDamageByEntityEvent event) {
             if (event.getDamager() instanceof CustomPlayer) {
- 
                 damager = (CustomPlayer) event.getDamager();
                 if (!damager.canAttackPlayers) return false;
             }

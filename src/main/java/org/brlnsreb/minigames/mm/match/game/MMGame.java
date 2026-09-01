@@ -313,6 +313,8 @@ public class MMGame extends GameExpand implements GameTeam {
     }
 
     public void afterDeath(DamageCause cause, Location deathLoc, CustomPlayer victim, CustomPlayer killer) {
+        death.onDeath(victim, deathLoc);
+
         if (!this.isInGame()) return;
 
         MMPlayerGameData gameData = gameDataMap.get(killer);
@@ -336,7 +338,6 @@ public class MMGame extends GameExpand implements GameTeam {
             }
         }
 
-        death.onDeath(victim, deathLoc);
         roleCheckOnLeave(victim, deathLoc);
         checkWinConditions();
     }
@@ -524,6 +525,9 @@ public class MMGame extends GameExpand implements GameTeam {
 
     public void endGame() {
         stopGame();
+
+        if (isMurdererAlive())  murderer.canAttackPlayers = false;
+        if (isSheriffAlive())   sheriff.canAttackPlayers = false;
         
         for (CustomPlayer p : players) {
             if (murdererWin && isSheriffAlive()) {
