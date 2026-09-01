@@ -28,7 +28,9 @@ public class PlayerInventoryListener implements Listener {
         if (event.getInventory().getHolder() instanceof CustomPlayer player) {
             switch (player.state) {
                 case PLAYING -> { 
-                    if (!player.matchCurrent.getGame().onItemPickup(player, event.getItem())) event.setCancelled();
+                    if (!player.matchCurrent.getGame().getListenerAccess().onItemPickup(player, event.getItem())) {
+                        event.setCancelled();
+                    }
                 }
                 default -> event.setCancelled();
             }

@@ -7,21 +7,24 @@ import org.brlnsreb.core.maps.GameMapLevel;
 import org.brlnsreb.core.maps.RandomSpawnsMap;
 import org.brlnsreb.core.minigame.match.MatchExpand;
 import org.brlnsreb.core.minigame.match.game.GameExpand;
+import org.brlnsreb.core.minigame.match.game.GameTeam;
+import org.brlnsreb.core.minigame.match.game.listeners.ListenerAccess;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.core.player.CustomPlayer.DamageMode;
 import org.brlnsreb.core.player.CustomPlayer.InteractMode;
 import org.brlnsreb.core.player.data.StatType;
 import org.brlnsreb.minigames.mm.match.game.entities.DeadBodyEntity;
-import org.brlnsreb.minigames.mm.match.game.entities.ThrownSwordEntity;
 import org.brlnsreb.minigames.mm.match.game.gamedata.MMPlayerGameData;
 import org.brlnsreb.minigames.mm.match.game.gamedata.MMRole;
 import org.brlnsreb.minigames.mm.match.game.gamedata.MMPlayerGameData.MMEvent;
 import org.brlnsreb.minigames.mm.match.game.items.MMItemManager;
+import org.brlnsreb.minigames.mm.match.game.listeners.MMListenerAccess;
 import org.brlnsreb.minigames.mm.match.game.systems.DeathSystem;
 import org.brlnsreb.minigames.mm.match.game.systems.GoldSystem;
 import org.brlnsreb.minigames.mm.match.game.systems.ProjectileSystem;
 import org.brlnsreb.minigames.mm.match.game.systems.RaycastSystem;
+import org.brlnsreb.minigames.mm.match.game.teams.MMTeamManager;
 import org.brlnsreb.minigames.mm.match.game.ui.MMBossBar;
 import org.brlnsreb.minigames.mm.match.game.ui.MMScoreboard;
 import org.brlnsreb.minigames.mm.match.game.ui.MMSpectatorMenu;
@@ -32,26 +35,16 @@ import org.brlnsreb.utils.level.TimeOfDay;
 import org.brlnsreb.utils.level.Weather;
 import org.powernukkitx.Player;
 import org.powernukkitx.entity.Entity;
-import org.powernukkitx.entity.item.EntityItem;
-import org.powernukkitx.event.entity.EntityDamageByEntityEvent;
-import org.powernukkitx.event.entity.EntityDamageEvent;
-import org.powernukkitx.event.entity.ProjectileHitEvent;
 import org.powernukkitx.event.entity.EntityDamageEvent.DamageCause;
-import org.powernukkitx.event.player.PlayerChatEvent;
-import org.powernukkitx.event.player.PlayerCommandPreprocessEvent;
-import org.powernukkitx.event.player.PlayerDropItemEvent;
-import org.powernukkitx.event.player.PlayerItemHeldEvent;
-import org.powernukkitx.item.Item;
-import org.powernukkitx.item.ItemGoldIngot;
-import org.powernukkitx.item.ItemGoldenHoe;
 import org.powernukkitx.level.Location;
 import org.powernukkitx.level.Position;
 import org.powernukkitx.level.Sound;
 import org.powernukkitx.scheduler.Task;
 
-public class MMGame extends GameExpand {
+public class MMGame extends GameExpand implements GameTeam {
 
-    private final Map<CustomPlayer, MMPlayerGameData> gameDataMap = new HashMap<>();
+    private final MMTeamManager teams;
+    private final Map<CustomPlayer, MMPlayerGameData> gameDataMap;
 
     private final MMBossBar bossBar;
     private final MMScoreboard scoreboard;
@@ -67,7 +60,6 @@ public class MMGame extends GameExpand {
 
     private CustomPlayer murderer;
     private boolean firstKill;
-    private static float damageMultiplier;
 
     private CustomPlayer sheriff;
     private static boolean friendlyFireDeath;
@@ -77,18 +69,11 @@ public class MMGame extends GameExpand {
 
     private final Set<Entity> deadBodies = new HashSet<>();
 
-    private static final String[] blockedChatCommands = {
-        "grm",
-        "frm",
-        "say",
-        "whisper",
-        "tell",
-        "msg",
-        "me"
-    };
-
     public MMGame(MatchExpand match, String mapId, TimeOfDay time, Weather weather) {
         super(match, mapId, time, weather);
+
+        this.teams = new MMTeamManager(this);
+        this.gameDataMap = new HashMap<>();
 
         this.bossBar = new MMBossBar(this);
         this.scoreboard = new MMScoreboard(this);
@@ -101,7 +86,6 @@ public class MMGame extends GameExpand {
         this.raycast = new RaycastSystem(this, scheduler);
 
         this.firstKill = true;
-        damageMultiplier = (float) config.getDouble("game.murderer-damage-multiplier");
         friendlyFireDeath = config.getBoolean("game.items.hoe.friendly-fire-death");
 
         MMPlayerGameData.setExpPrizes(config);
@@ -110,6 +94,10 @@ public class MMGame extends GameExpand {
 
     protected GameMapLevel prepareMap(String mapId, TimeOfDay time, Weather weather) {
         return new RandomSpawnsMap(minigame, mapId, time, weather);
+    }
+
+    protected ListenerAccess createListenerAccess() {
+        return new MMListenerAccess(this);
     }
 
 
@@ -157,6 +145,22 @@ public class MMGame extends GameExpand {
 
         roleCheckOnLeave(player, player.getPosition());
         checkWinConditions();
+    }
+
+    private void roleCheckOnLeave(CustomPlayer player, Position lastPos) {
+        MMPlayerGameData gameData = gameDataMap.remove(player);
+        if (gameData == null) return;
+        if (gameData.role == MMRole.MURDERER) {
+            murderer = null;
+        } else if (gameData.role == MMRole.SHERIFF) {
+            sheriff = null;
+
+            death.dropSheriffHoe(lastPos);
+            items.giveYellowDye();
+
+            msgUtil.broadcastPresetPrefix("sheriff-gun-dropped");
+            msgUtil.broadcastPresetPrefix("sheriff-dead-instructions");
+        }
     }
 
 
@@ -292,7 +296,6 @@ public class MMGame extends GameExpand {
 
             case SHERIFF -> {
                 sheriff = player;
-                raycast.resetXpBarRecharge(sheriff);
                 msgUtil.sendPresetMessagePrefix(player, "sheriff-advice");
             }
         
@@ -424,26 +427,10 @@ public class MMGame extends GameExpand {
         }
     }
 
-    private void roleCheckOnLeave(CustomPlayer player, Position lastPos) {
-        MMPlayerGameData gameData = gameDataMap.remove(player);
-        if (gameData == null) return;
-        if (gameData.role == MMRole.MURDERER) {
-            murderer = null;
-        } else if (gameData.role == MMRole.SHERIFF) {
-            sheriff = null;
-
-            death.dropSheriffHoe(lastPos);
-            items.giveYellowDye();
-
-            msgUtil.broadcastPresetPrefix("sheriff-gun-dropped");
-            msgUtil.broadcastPresetPrefix("sheriff-dead-instructions");
-        }
-    }
-
 
     //features
 
-    private boolean collectGold(CustomPlayer player) {
+    public boolean collectGold(CustomPlayer player) {
         MMPlayerGameData gameData = getGameData(player);
         if (gameData.role != MMRole.INNOCENT) return false;
 
@@ -454,7 +441,11 @@ public class MMGame extends GameExpand {
         return true;
     }
 
-    private void useFlash(CustomPlayer player) {
+    public CustomPlayer shoot(CustomPlayer shooter) {
+        return raycast.shoot(shooter);
+    }
+
+    public void useFlash(CustomPlayer player) {
         MMPlayerGameData gameData = gameDataMap.get(player);
         if (gameData.flashUsed) return;
 
@@ -462,7 +453,7 @@ public class MMGame extends GameExpand {
         items.useFlash(player, scheduler);
     }
 
-    private void throwSword(CustomPlayer player) {
+    public void throwSword(CustomPlayer player) {
         if (!projectile.throwSword(player)) {
             int cooldown = projectile.getCooldownSeconds(player);
             if (cooldown < 0) cooldown = 0; 
@@ -470,7 +461,7 @@ public class MMGame extends GameExpand {
         }
     }
 
-    private boolean newSheriff(CustomPlayer player, boolean checkGold) {
+    public boolean newSheriff(CustomPlayer player, boolean checkGold) {
         if (!this.isInGame()) return false;
         if (player == murderer || player == sheriff) return false;
         MMPlayerGameData gameData = gameDataMap.get(player);
@@ -569,126 +560,17 @@ public class MMGame extends GameExpand {
     }
 
 
-    //LISTENER ACCESS
+    //getters
 
-    //items
-
-    public void onItemUse(CustomPlayer player, Item item) {
-        switch (item.getId()) {
-            //sheriff
-            case Item.GOLDEN_HOE -> {
-                CustomPlayer victim = raycast.shoot(player);
-                if (victim != null) getMatch().onDeath(victim, player);
-            }
-
-            //murderer
-            case Item.IRON_SWORD -> throwSword(player);
-            case Item.BLAZE_ROD -> useFlash(player);
-
-            //innocent
-            case Item.YELLOW_DYE -> newSheriff(player, true);
-            
-            //spectator
-            case Item.COMPASS -> spectatorMenu.openSpectateMenu(player);
-            case Item.CLOCK -> spectatorMenu.openActionsMenu(player);
-        }
-    }
-
-    public boolean onItemPickup(CustomPlayer player, EntityItem itemEntity) {
-        if (!this.isInGame()) return false;
-
-        if (itemEntity.getItem() instanceof ItemGoldIngot) {
-            if (collectGold(player)) itemEntity.close();
-        }
-
-        if (itemEntity.getItem() instanceof ItemGoldenHoe) {
-            if (newSheriff(player, false)) itemEntity.close();
-        }
-
-        return false;
-    }
-
-    public boolean onItemHeld(CustomPlayer player, PlayerItemHeldEvent event) { return true; }
-    public boolean onItemDrop(CustomPlayer player, PlayerDropItemEvent event) { return false; }
-
-
-    //damage
-
-    public void onPlayerDamage(CustomPlayer player, EntityDamageEvent event) {
-        if (event instanceof EntityDamageByEntityEvent e) {
-            MMPlayerGameData damagerGameData = gameDataMap.get(e.getDamager());
-            if (damagerGameData == null || damagerGameData.role != MMRole.MURDERER) return;
-
-            event.setDamage(event.getFinalDamage() * damageMultiplier);
-        }
-    }
-
-
-    //projectile
-
-    public void onProjectileHit(CustomPlayer player, ProjectileHitEvent event) {
-        if (!this.isInGame()) return;
-        if (!(event.getEntity() instanceof ThrownSwordEntity thrownSword)) return;
-        if (player == murderer) return;
-
-        getMatch().onDeath(player, (CustomPlayer) thrownSword.shootingEntity);
-    }
-
-
-    //chat
-
-    public boolean onChat(CustomPlayer player, PlayerChatEvent event) {
-        if (!this.isInGame()) return true;
-
-        if (players.contains(player)) return roleCheckOnChat(player);
-        if (spectators.contains(player)) {
-            event.getRecipients().removeIf(recipient -> players.contains(recipient));
-            return true;
-        }
-
-        return false;
-    }
-
-    public boolean onCommandPreprocess(CustomPlayer player, PlayerCommandPreprocessEvent event) {
-        if (!this.isInGame()) return true;
-
-        String command = event.getMessage()
-            .substring(1)
-            .trim()
-            .split(" ")[0];
-
-        for (String blocked : blockedChatCommands) {
-            if (!command.equals(blocked)) continue;
-
-            if (players.contains(player)) return roleCheckOnChat(player);
-            if (spectators.contains(player)) {
-                msgUtil.sendPresetMessagePrefix(player, "no-chat-spectators", new String[] { "spectators" });
-                return false;
-            }
-        }
-        
-        return true;
-    }
-
-    private boolean roleCheckOnChat(CustomPlayer player) {
-        switch (gameDataMap.get(player).role) {
-            case MURDERER:
-                msgUtil.sendPresetMessagePrefix(player, "no-chat", new String[] { "the murderer" });
-                return false;
-
-            case SHERIFF:
-                msgUtil.sendPresetMessagePrefix(player, "no-chat", new String[] { "the sheriff" });
-                return false;
-
-            case INNOCENT: return true;
-            default: return true;
-        }
-    }
-
-
+    public CustomPlayer getMurderer() { return murderer; }
+    public CustomPlayer getSheriff() { return sheriff; }
     public boolean isMurdererAlive() { return murderer != null; }
     public boolean isSheriffAlive() { return sheriff != null; }
+
     public MMPlayerGameData getGameData(CustomPlayer player) { return gameDataMap.get(player); }
+    public MMPlayerGameData getGameData(Entity player) { return gameDataMap.get(player); }
     public RandomSpawnsMap getMap() { return (RandomSpawnsMap) map; }
+    public MMSpectatorMenu getSpectatorMenu() { return spectatorMenu; }
+    public MMTeamManager getTeamManager() { return teams; }
 
 }

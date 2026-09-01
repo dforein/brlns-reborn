@@ -6,6 +6,7 @@ import java.util.Set;
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.maps.GameMapLevel;
 import org.brlnsreb.core.minigame.match.game.items.SpectatorItemManager;
+import org.brlnsreb.core.minigame.match.game.listeners.ListenerAccess;
 import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.match.GameState;
 import org.brlnsreb.core.minigame.match.GameStateType;
@@ -24,14 +25,6 @@ import org.brlnsreb.utils.messages.ChatMsgs;
 import org.brlnsreb.utils.messages.Messages;
 import org.brlnsreb.utils.messages.ChatMsgs.Alignment;
 import org.powernukkitx.Player;
-import org.powernukkitx.entity.item.EntityItem;
-import org.powernukkitx.event.entity.EntityDamageEvent;
-import org.powernukkitx.event.entity.ProjectileHitEvent;
-import org.powernukkitx.event.player.PlayerChatEvent;
-import org.powernukkitx.event.player.PlayerCommandPreprocessEvent;
-import org.powernukkitx.event.player.PlayerDropItemEvent;
-import org.powernukkitx.event.player.PlayerItemHeldEvent;
-import org.powernukkitx.item.Item;
 import org.powernukkitx.level.Location;
 import org.powernukkitx.scheduler.ServerScheduler;
 import org.powernukkitx.utils.Config;
@@ -50,6 +43,7 @@ public abstract class Game {
     protected final Set<CustomPlayer> players;
     protected final Set<CustomPlayer> spectators;
     protected final GameMapLevel map;
+    protected final ListenerAccess listeners;
 
     protected final SpectatorItemManager spectatorItems;
 
@@ -69,6 +63,7 @@ public abstract class Game {
         this.players = match.getPlayers();
         this.spectators = match.getSpectators();
         this.map = prepareMap(mapId, time, weather);
+        this.listeners = createListenerAccess();
         
         this.spectatorItems = new SpectatorItemManager();
 
@@ -76,6 +71,8 @@ public abstract class Game {
     }
 
     protected abstract GameMapLevel prepareMap(String mapId, TimeOfDay time, Weather weather);
+    protected abstract ListenerAccess createListenerAccess();
+    
     
     //join-leave logic
 
@@ -251,17 +248,7 @@ public abstract class Game {
     //</GAME LIFECYCLE>
 
 
-    //events from listeners
-
-    public abstract void onItemUse(CustomPlayer player, Item item);
-    public abstract boolean onItemPickup(CustomPlayer player, EntityItem itemEntity);
-    public abstract boolean onItemHeld(CustomPlayer player, PlayerItemHeldEvent event);
-    public abstract boolean onItemDrop(CustomPlayer player, PlayerDropItemEvent event);
-    public abstract void onPlayerDamage(CustomPlayer player, EntityDamageEvent event);
-    public abstract void onProjectileHit(CustomPlayer player, ProjectileHitEvent event);
-    public abstract boolean onChat(CustomPlayer player, PlayerChatEvent event);
-    public abstract boolean onCommandPreprocess(CustomPlayer player, PlayerCommandPreprocessEvent event);
-
+    //getters
 
     public boolean isPregameCountdown() { return state.current == GameStateType.PREGAME_COUNTDOWN; }
     public boolean isInGame() { return state.current == GameStateType.IN_GAME; }
@@ -274,6 +261,7 @@ public abstract class Game {
     public Messages getMsgUtil() { return msgUtil; }
     public GameState getState() { return state; }
     public GameStateType state() { return state.current; }
+    public ListenerAccess getListenerAccess() { return listeners; }
     public TimerSystem getTimer() { return timer; }
 
 }

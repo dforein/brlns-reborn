@@ -42,7 +42,7 @@ public class ChatListener implements Listener {
         CustomPlayer player = (CustomPlayer) event.getPlayer();
 
         if (player.isPlaying() || player.isGameSpectator()) {
-            if (!player.matchCurrent.getGame().onChat(player, event)) {
+            if (!player.matchCurrent.getGame().getListenerAccess().onChat(player, event)) {
                 event.setCancelled();
                 return;
             }
@@ -85,7 +85,7 @@ public class ChatListener implements Listener {
 
         switch (player.state) {
             case PLAYING, SPECTATOR:
-                if (!player.matchCurrent.getGame().onCommandPreprocess(player, event)) {
+                if (!player.matchCurrent.getGame().getListenerAccess().onCommandPreprocess(player, event)) {
                     event.setCancelled();
                     return;
                 }

@@ -15,6 +15,7 @@ import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.minigame.MinigameType;
 import org.brlnsreb.core.minigame.match.game.Game;
+import org.brlnsreb.core.minigame.match.game.listeners.ListenerAccess;
 import org.brlnsreb.core.minigame.match.waitinglobby.WaitingLobby;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
@@ -215,14 +216,14 @@ public abstract class Match {
     public void onItemUse(CustomPlayer player, Item item) {
         switch (state.current) {
             case WAITING_LOBBY, LOBBY_COUNTDOWN -> waitingLobby.onItemUse(player, item);
-            case PREGAME_COUNTDOWN, IN_GAME, ENDING -> game.onItemUse(player, item);
+            case PREGAME_COUNTDOWN, IN_GAME, ENDING -> game.getListenerAccess().onItemUse(player, item);
         }
     }
 
     public boolean onItemHeld(CustomPlayer player, PlayerItemHeldEvent event) {
         switch (state.current) {
             case WAITING_LOBBY, LOBBY_COUNTDOWN: return waitingLobby.onItemHeld(player, event);
-            case PREGAME_COUNTDOWN, IN_GAME, ENDING: return game.onItemHeld(player, event);
+            case PREGAME_COUNTDOWN, IN_GAME, ENDING: return game.getListenerAccess().onItemHeld(player, event);
             default: return false;
         }
     }
@@ -230,7 +231,7 @@ public abstract class Match {
     public boolean onItemDrop(CustomPlayer player, PlayerDropItemEvent event) {
         switch (state.current) {
             case WAITING_LOBBY, LOBBY_COUNTDOWN: return false;
-            case PREGAME_COUNTDOWN, IN_GAME, ENDING: return game.onItemDrop(player, event);
+            case PREGAME_COUNTDOWN, IN_GAME, ENDING: return game.getListenerAccess().onItemDrop(player, event);
             default: return false;
         }
     }
@@ -249,5 +250,6 @@ public abstract class Match {
     public Config getMessages() { return minigame.getMessages(); }
     public Config getMapSettings() { return minigame.getMapSettings(); }
     public Messages getMsgUtil() { return msgUtil; }
+    public ListenerAccess getListenerAccess() { return game != null ? game.getListenerAccess() : null; }
     
 }

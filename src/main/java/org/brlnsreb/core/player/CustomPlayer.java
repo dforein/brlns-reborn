@@ -81,7 +81,7 @@ public class CustomPlayer extends Player {
     public String greenNameTag;             //used especially in waiting lobby/ingame
     public String ingameChatNameTag;        //name tag to display in chat when texting during game
 
-    public PlayerData data = null;
+    public PlayerData data = new PlayerData();
 
     private Scoreboard scoreboard = null;
     private Long bossBarId = null;
@@ -91,6 +91,8 @@ public class CustomPlayer extends Player {
 
     public CustomPlayer(@NotNull BedrockServerSession session, @NotNull PlayerInfo info) {
         super(session, info);
+
+        MainHub.instance.teleportToSpawn(this);
     }
 
     @Override
@@ -312,7 +314,7 @@ public class CustomPlayer extends Player {
     private boolean checkAndAttack(EntityDamageEvent source) {
         //game preprocessing
         if (this.isPlaying()) {
-            matchCurrent.getGame().onPlayerDamage(this, source);
+            matchCurrent.getGame().getListenerAccess().onPlayerDamage(this, source);
         }
 
         //canAttackPlayer check

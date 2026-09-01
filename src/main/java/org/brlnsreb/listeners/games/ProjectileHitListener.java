@@ -14,7 +14,7 @@ public class ProjectileHitListener implements Listener {
         if (!(event.getMovingObjectPosition().entityHit instanceof CustomPlayer playerHit)) return;
         if (!playerHit.isPlaying()) return;
 
-        playerHit.matchCurrent.getGame().onProjectileHit(playerHit, event);
+        playerHit.matchCurrent.getListenerAccess().onProjectileHit(playerHit, event);
     }
 
 }

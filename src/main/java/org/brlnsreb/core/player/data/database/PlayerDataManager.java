@@ -23,10 +23,7 @@ public class PlayerDataManager {
     public static CompletableFuture<Outcome> onServerJoin(CustomPlayer player) {
         UUID uuid = player.getUniqueId();
 
-        //put empty PlayerData shell in the player
-        PlayerData data = new PlayerData();
-        uuid2DataMap.put(uuid, data);
-        player.data = data;
+        uuid2DataMap.put(uuid, player.data);
 
         if (!DatabaseManager.isEnabled()) return CompletableFuture.completedFuture(Outcome.DB_ERROR);
         
