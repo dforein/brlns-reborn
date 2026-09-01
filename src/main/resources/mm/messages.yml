@@ -35,7 +35,7 @@ murderer-warning: '&eBeware. The sheriff can easily discover you while you are h
 murderer-won: '&cMURDERER WON'
 innocents-won: '&aINNOCENT team WON!'
 congratulations: '&aCongratulations! You WON'
-sword-cooldown: '&cYou have to wait for the cooldown before throwing the sword again!'
+sword-cooldown: '&cThat sword is heavy! You have to take a little breath, so please wait &e%d &cseconds before throwing it again'
 no-chat: '&cSorry, %s can''t use the chat'
 no-chat-spectators: '&cSorry, %s can''t use chat commands'
 teleported-to: '&aTeleported to &e%s''s &alocation'

@@ -1,6 +1,16 @@
 {
    "format_version" : "1.20.20",
    "sound_definitions" : {
+      "random.fizz.3dfalse" : {
+         "category": "ui",
+         "sounds" : [
+            {
+               "is3D" : false,
+               "name": "sounds/random/fizz",
+               "volume" : 1.0
+            }
+         ]
+      },
       "random.click" : {
          "category" : "ui",
          "sounds" : [

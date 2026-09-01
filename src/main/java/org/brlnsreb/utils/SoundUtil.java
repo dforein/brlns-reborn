@@ -12,6 +12,8 @@ public class SoundUtil {
 
     private static final float DEFAULT_PITCH = 1.0f;
     private static final float DEFAULT_VOLUME = 1.0f;
+    
+    public static final String RANDOM_FIZZ_3DFALSE = "random.fizz.3dfalse";
 
     public static void sendSoundTo(Player player, String soundName) {
         sendSoundTo(player, soundName, DEFAULT_VOLUME, DEFAULT_PITCH);

@@ -26,7 +26,7 @@ public class ProjectileSystem {
         if (!cooldown.check(murderer.getUniqueId())) return false;
 
         Level level = game.getMap().level;
-        Vector3 eyePosition = new Vector3(
+        Vector3 startVect = murderer.getDirectionVector().divide(2.0).add(
             murderer.x,
             murderer.y + murderer.getEyeHeight(),
             murderer.z
@@ -34,7 +34,7 @@ public class ProjectileSystem {
 
         ThrownSwordEntity thrownSword = new ThrownSwordEntity(
             level.getChunk(murderer.getFloorX() >> 4, murderer.getFloorZ() >> 4), 
-            Entity.getDefaultNBT(eyePosition)
+            Entity.getDefaultNBT(startVect)
         );
 
         thrownSword.shootingEntity = murderer;
@@ -47,4 +47,9 @@ public class ProjectileSystem {
 
         return true;
     }
+
+    public int getCooldownSeconds(Player murderer) {
+        return cooldown.getSecondsRemaining(murderer.getUniqueId());
+    }
+
 }

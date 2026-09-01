@@ -35,4 +35,34 @@ public class Cooldown {
         cooldowns.put(obj, now);
         return true;
     }
+
+    public int getSecondsRemaining(Object obj) {
+        if (!cooldowns.containsKey(obj)) return -1;
+        return (int) ((milliseconds - System.currentTimeMillis() + cooldowns.get(obj)) / 1000);
+    }
+    
+    public int getTicksRemaining(Object obj) {
+        if (!cooldowns.containsKey(obj)) return -1;
+        return (int) ((milliseconds - System.currentTimeMillis() + cooldowns.get(obj)) / 50);
+    }
+    public int getMillisecondsRemaining(Object obj) {
+        if (!cooldowns.containsKey(obj)) return -1;
+        return (int) (milliseconds - System.currentTimeMillis() + cooldowns.get(obj));
+    }
+
+    public int getSeconds(Object obj) {
+        if (!cooldowns.containsKey(obj)) return -1;
+        return (int) ((System.currentTimeMillis() - cooldowns.get(obj)) / 1000);
+    }
+
+    public int getTicks(Object obj) {
+        if (!cooldowns.containsKey(obj)) return -1;
+        return (int) ((System.currentTimeMillis() - cooldowns.get(obj)) / 50);
+    }
+
+    public int getMilliseconds(Object obj) {
+        if (!cooldowns.containsKey(obj)) return -1;
+        return (int) (System.currentTimeMillis() - cooldowns.get(obj));
+    }
+
 }

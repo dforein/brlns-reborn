@@ -3,6 +3,7 @@ package org.brlnsreb.commands.op;
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.minigame.MinigameType;
 import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.utils.SoundUtil;
 import org.brlnsreb.utils.messages.ChatMsgs;
 import org.brlnsreb.utils.messages.ChatMsgs.Alignment;
 import org.cloudburstmc.math.vector.Vector3f;
@@ -19,6 +20,7 @@ import org.powernukkitx.command.SenderType;
 import org.powernukkitx.command.route.RouteTree;
 import org.powernukkitx.command.route.node.RouteNode;
 import org.powernukkitx.command.tree.node.MessageStringNode;
+import org.powernukkitx.level.Sound;
 import org.powernukkitx.plugin.annotation.CommandDefinition;
 
 @CommandDefinition(
@@ -69,6 +71,15 @@ public class TestCommand extends Command {
                 playerActionPacket.setResultPos(p.toNetwork().toInt());
                 BrlnsReb.getScheduler().scheduleDelayedTask(() -> p.waitForAck(() -> p.sendPacket(playerActionPacket) ), 40);
 
+                return CommandResult.success();
+            }))
+            .then(RouteNode.literal("sound1").exec(ctx -> {
+                SoundUtil.sendSoundTo(getPlayer(ctx), Sound.RANDOM_CLICK.getSound());
+                SoundUtil.sendSoundTo(getPlayer(ctx), SoundUtil.RANDOM_FIZZ_3DFALSE);
+                return CommandResult.success();
+            }))
+            .then(RouteNode.literal("sound2").exec(ctx -> {
+                SoundUtil.sendSoundTo(getPlayer(ctx), Sound.RANDOM_FIZZ.getSound());
                 return CommandResult.success();
             }));
 

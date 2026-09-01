@@ -36,7 +36,7 @@ game:
   items:
     sword:
       name: '&o&l&cMurderstick'
-      throw-cooldown: 10
+      throw-cooldown: 7
       throw-speed: 3
     blaze-rod:
       name: '&o&l&6Lights Out'

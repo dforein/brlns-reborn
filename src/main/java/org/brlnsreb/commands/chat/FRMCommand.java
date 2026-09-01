@@ -2,11 +2,9 @@ package org.brlnsreb.commands.chat;
 
 import java.util.List;
 
-import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.data.PlayerData;
 import org.brlnsreb.listeners.general.ChatListener;
-import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.utils.messages.ChatMsgs;
 import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandResult;
@@ -37,7 +35,6 @@ public class FRMCommand extends Command {
                     }
                     
                     String message = ChatListener.getMessage(ctx);
-                    Minigame minigame = sender.minigameCurrent;
                     List<String> friends = senderData.getOnlineFriendsKeysCopy();
 
                     int receiversCount = 0;
@@ -47,8 +44,7 @@ public class FRMCommand extends Command {
                         if (!friend.getLevel().equals(sender.getLevel())) continue;
  
                         friend.sendMessage(
-                            "§l§aFRM %s §3%s§7: §7%s".formatted(      //TEXT
-                                minigame != null ? minigame.mgt.displayNameTagP : MainHub.displayNameTagP,
+                            "§l§aFRM §3%s§7: §7%s".formatted(      //TEXT
                                 senderData.name,
                                 message
                             )
@@ -57,7 +53,7 @@ public class FRMCommand extends Command {
                     }
                     
                     sender.sendMessage(
-                        "§l§aFRM §dCURRENT§r §a%d §eyou§7: §7%s".formatted(      //TEXT //TODO: CURRENT?
+                        "§l§aFRM §a%d §eyou§7: §7%s".formatted(      //TEXTì
                             receiversCount,
                             message
                         )

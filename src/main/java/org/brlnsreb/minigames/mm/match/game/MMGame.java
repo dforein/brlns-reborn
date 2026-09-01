@@ -464,7 +464,9 @@ public class MMGame extends GameExpand {
 
     private void throwSword(CustomPlayer player) {
         if (!projectile.throwSword(player)) {
-            msgUtil.sendPresetMessagePrefix(player, "sword-cooldown");
+            int cooldown = projectile.getCooldownSeconds(player);
+            if (cooldown < 0) cooldown = 0; 
+            msgUtil.sendPresetMessagePrefix(player, "sword-cooldown", new Integer[] { cooldown });
         }
     }
 
@@ -548,10 +550,10 @@ public class MMGame extends GameExpand {
         
         msgUtil.sendTitle(murdererWin ? "title.murderer-won" : "title.innocents-won", null);
 
-        SoundUtil.sendSoundTo(players, Sound.RANDOM_CLICK.getSound());
-        SoundUtil.sendSoundTo(players, "entity.generic.extinguish_fire");
-        SoundUtil.sendSoundTo(spectators, Sound.RANDOM_CLICK.getSound());
-        SoundUtil.sendSoundTo(spectators, "entity.generic.extinguish_fire");
+        SoundUtil.sendSoundTo(players, Sound.RANDOM_CLICK.getSound(), 1.0f, 0.95f);
+        SoundUtil.sendSoundTo(players, SoundUtil.RANDOM_FIZZ_3DFALSE, 0.9f, 0.9f);
+        SoundUtil.sendSoundTo(spectators, Sound.RANDOM_CLICK.getSound(), 1.0f, 0.95f);
+        SoundUtil.sendSoundTo(spectators, SoundUtil.RANDOM_FIZZ_3DFALSE, 0.9f, 0.9f);
     }
 
     public void forceStop() {

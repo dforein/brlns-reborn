@@ -4,7 +4,7 @@
     "description": "BrokenLens Reborn Resource Pack",
     "name": "BrokenLens Reborn Pack",
     "uuid": "7d454a7c-682b-408c-8c71-88fabd1a32b1",
-    "version": [2, 0, 0],
+    "version": [2, 0, 1],
     "min_engine_version": [1, 21, 0]
   },
   "modules": [
@@ -12,7 +12,7 @@
       "description": "BrokenLens Reborn Resources",
       "type": "resources",
       "uuid": "991504ed-fb0f-4404-a6f9-4a03509439bd",
-      "version": [2, 0, 0]
+      "version": [2, 0, 1]
     }
   ]
 }
