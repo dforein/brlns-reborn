@@ -34,7 +34,6 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
 
     private static final double LOOK_DISTANCE = 10;
     private static final double DISTANCE_SQ_THRES = LOOK_DISTANCE * LOOK_DISTANCE;
-    private static final double ROTATION_THRES = 30;
     private double defaultYaw = 0;
     private double defaultPitch = 0;
     private double lastBodyYaw = 0;
@@ -119,17 +118,23 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
                 double headDiff = targetYaw - this.headYaw;
                 while (headDiff > 180) headDiff -= 360;
                 while (headDiff < -180) headDiff += 360;
-                double nextHeadYaw = this.headYaw + (headDiff * lerpSpeed);
+                if (Math.abs(headDiff) < 0.5) {
+                    this.headYaw = targetYaw;
+                } else {
+                    this.headYaw += headDiff * lerpSpeed;
+                }
 
                 double angleDiff = targetYaw - lastBodyYaw;
                 while (angleDiff > 180) angleDiff -= 360;
                 while (angleDiff < -180) angleDiff += 360;
 
-                if (Math.abs(angleDiff) > ROTATION_THRES) {
+                if (Math.abs(angleDiff) > 0.5) {
                     lastBodyYaw += angleDiff * lerpSpeed;
+                } else {
+                    lastBodyYaw = targetYaw;
                 }
 
-                this.setRotation(lastBodyYaw, targetPitch, nextHeadYaw);
+                this.setRotation(lastBodyYaw, targetPitch, this.headYaw);
                 this.updateMovement();
 
             } else {
