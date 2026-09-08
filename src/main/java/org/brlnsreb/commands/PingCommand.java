@@ -16,7 +16,7 @@ import org.powernukkitx.utils.TextFormat;
     description = "Check your ping"
 )
 
-public class PingCommand extends Command {
+public class PingCommand extends Command implements BrlnsCommand {
 
     private enum Grade {
         POOR(TextFormat.DARK_RED),

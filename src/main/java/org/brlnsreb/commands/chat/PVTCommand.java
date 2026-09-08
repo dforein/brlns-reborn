@@ -1,5 +1,6 @@
 package org.brlnsreb.commands.chat;
 
+import org.brlnsreb.commands.BrlnsCommand;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.core.player.data.PlayerData;
@@ -20,7 +21,7 @@ import org.powernukkitx.plugin.annotation.CommandDefinition;
     usage = ChatMsgs.INFO_PFX + "Usage: §e/pvt <player> <message>"
 )
 
-public class PVTCommand extends Command {
+public class PVTCommand extends Command implements BrlnsCommand {
 
     @Override
     public void buildCommandTree(RouteTree tree) {

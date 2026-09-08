@@ -1,5 +1,6 @@
 package org.brlnsreb.commands.chat;
 
+import org.brlnsreb.commands.BrlnsCommand;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.messages.ChatMsgs;
 import org.powernukkitx.command.Command;
@@ -14,7 +15,7 @@ import org.powernukkitx.utils.TextFormat;
     commandMode = CommandMode.RAW
 )
 
-public class ChatCommand extends Command {
+public class ChatCommand extends Command implements BrlnsCommand {
     
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {

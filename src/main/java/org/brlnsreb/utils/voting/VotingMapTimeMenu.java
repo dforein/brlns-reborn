@@ -83,13 +83,11 @@ public class VotingMapTimeMenu extends MenuAbstract {
             timeDefaultIndex
         );
         
-        int formId = sendForm(player, menu);
-        menu.onSubmit((p, response) -> handleVoteResponse(player, response, formId));
+        menu.send(player);
+        menu.onSubmit((p, response) -> handleVoteResponse(player, response));
     }
     
-    public void handleVoteResponse(Player player, CustomResponse response, int formId) {
-        removeForm(formId);
-
+    public void handleVoteResponse(Player player, CustomResponse response) {
         String message;
         String[] placeholder = new String[1];
         

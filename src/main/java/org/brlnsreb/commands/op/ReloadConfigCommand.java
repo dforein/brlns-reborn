@@ -1,5 +1,6 @@
 package org.brlnsreb.commands.op;
 
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.utils.config.Configs;
@@ -26,8 +27,10 @@ public class ReloadConfigCommand extends Command {
         Configs.reloadConfig();
         YamlUtil.resetCache();
 
-        MinigameManager.onConfigReload();
-        MainHub.instance.onConfigReload();
+        if (!BrlnsReb.isLoadAllLevelsEnabled()) {
+            MinigameManager.onConfigReload();
+            MainHub.instance.onConfigReload();
+        }
 
         sender.sendMessage(ChatMsgs.SUCCESS_PFX + "Config files reloaded!");
         return true;

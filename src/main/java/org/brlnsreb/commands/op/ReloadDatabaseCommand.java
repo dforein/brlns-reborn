@@ -1,6 +1,7 @@
 package org.brlnsreb.commands.op;
 
 import org.brlnsreb.BrlnsReb;
+import org.brlnsreb.commands.BrlnsCommand;
 import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandSender;
 import org.powernukkitx.plugin.annotation.CommandDefinition;
@@ -14,7 +15,7 @@ import org.powernukkitx.utils.TextFormat;
     commandMode = CommandMode.RAW
 )
 
-public class ReloadDatabaseCommand extends Command {
+public class ReloadDatabaseCommand extends Command implements BrlnsCommand {
 
      @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {

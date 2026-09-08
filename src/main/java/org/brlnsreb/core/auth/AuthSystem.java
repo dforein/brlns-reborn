@@ -37,14 +37,12 @@ public class AuthSystem extends MenuAbstract {
         menu.addInput(YamlUtil.getStr(path + "input1", messages), player.getName());
         menu.addInput(YamlUtil.getStr(path + "input2", messages));
         menu.addToggle(YamlUtil.getStr(path + "toggle3", messages), false);
-
-        int formId = sendForm(player, menu);
-        menu.onSubmit((p, response) -> handleResponse((CustomPlayer) p, response, formId));
+        
+        menu.send(player);
+        menu.onSubmit((p, response) -> handleResponse((CustomPlayer) p, response));
     }
 
-    public static void handleResponse(CustomPlayer player, CustomResponse response, int formId) {
-        removeForm(formId);
-
+    public static void handleResponse(CustomPlayer player, CustomResponse response) {
         String name = response.getInputResponse(1);
         String password = response.getInputResponse(2);
 

@@ -1,33 +1,102 @@
 package org.brlnsreb.core.levels;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.StandardCopyOption;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.HashSet;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.io.FileUtils;
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer;
-
+import org.brlnsreb.utils.config.Configs;
+import org.brlnsreb.utils.config.YamlUtil;
 import org.powernukkitx.Server;
 import org.powernukkitx.level.GameRule;
 import org.powernukkitx.level.GameRules;
 import org.powernukkitx.level.Level;
 import org.powernukkitx.utils.Config;
+import org.powernukkitx.utils.TextFormat;
 
 public class LevelManager {
 
+    private static final GameRule[] PARTICULAR_GAME_RULES = {
+        GameRule.PVP,
+        GameRule.DO_FIRE_TICK,
+        GameRule.DO_TILE_DROPS,
+        GameRule.DO_ENTITY_DROPS,
+        GameRule.DO_MOB_LOOT,
+        GameRule.TNT_EXPLODES,
+        GameRule.MOB_GRIEFING
+    };
+
+    private static final GameRule[] ENABLED_GAME_RULES = {
+        GameRule.DO_LIMITED_CRAFTING,
+        GameRule.COMMAND_BLOCKS_ENABLED,
+        GameRule.SEND_COMMAND_FEEDBACK,
+        GameRule.DO_IMMEDIATE_RESPAWN,
+        GameRule.COMMAND_BLOCK_OUTPUT
+    };
+
+    private static final GameRule[] DISABLED_GAME_RULES = {
+        GameRule.NATURAL_REGENERATION,
+        GameRule.DO_DAYLIGHT_CYCLE,
+        GameRule.DO_INSOMNIA,
+        GameRule.DO_MOB_SPAWNING,
+        GameRule.DO_WEATHER_CYCLE,
+        GameRule.SHOW_DAYS_PLAYED,
+        GameRule.RECIPES_UNLOCK,
+        GameRule.SHOW_COORDINATES,
+        GameRule.PROJECTILES_CAN_BREAK_BLOCKS,
+        GameRule.LOCATOR_BAR
+    };
+
+    private static final String DUPLICATE_FOLDERS_TXT_PATH = BrlnsReb.instance.getDataFolder() + "/duplicate-folders.txt";
+
     private static Server server;
-    private static HashSet<Integer> enabledPhysicsLevels = new HashSet<>();
-    private static final java.util.Set<String> reservedFolderNames = ConcurrentHashMap.newKeySet();
+    private static Map<Integer, Integer> enabledPhysicsLevels = new HashMap<>();        // level id -> range of blocks from players (-1 = all world)
+    private static final Set<String> reservedFolderNames = ConcurrentHashMap.newKeySet();
 
     public static void init() {
         server = Server.getInstance();
+    }
+
+    //level loading
+
+    public static void loadAllLevelsUnderMaintenance() {
+        removeDuplicateWorldFolders();
+
+        for (String levelName : getAllLevelNames()) {
+            server.loadLevel(levelName);
+            GameRules gameRules = server.getLevelByName(levelName).getGameRules();
+            
+            for (GameRule rule : PARTICULAR_GAME_RULES) {
+                gameRules.setGameRule(rule, false);
+            }
+            for (GameRule rule : ENABLED_GAME_RULES) {
+                gameRules.setGameRule(rule, true);
+            }
+            for (GameRule rule : DISABLED_GAME_RULES) {
+                gameRules.setGameRule(rule, false);
+            }
+            gameRules.setGameRule(GameRule.SHOW_COORDINATES, true);
+            gameRules.setGameRule(GameRule.LOCATOR_BAR, true);
+        }
+
+        Config mainHubConfig = Configs.getConfig("main_hub/config.yml");
+        server.setDefaultLevel(
+            server.getLevelByName(mainHubConfig.getString("world"))
+        );
+        server.getDefaultLevel().setSpawnLocation(
+            YamlUtil.parseVector3(mainHubConfig.getString("spawn-pos"))
+        );
     }
 
     public static Level loadLobbyLevel(String levelName, boolean copyWorld) {
@@ -39,8 +108,7 @@ public class LevelManager {
     }
 
     private static Level loadLevel(String levelName, boolean isLobby, boolean copyWorld, Config config) {
-        HashSet<String> availableLevels = getAllLevelNames();
-        if (!availableLevels.contains(levelName)) return null;
+        if (!getAllLevelNames().contains(levelName)) return null;
 
         String folderName = levelName;
         
@@ -57,13 +125,21 @@ public class LevelManager {
 
             //check if folder of levelNameX exists, else create it
             String worldsPath = server.getDataPath() + "/worlds/";
-            Path levelFolder = Path.of(worldsPath + folderName);
-            if (!Files.exists(levelFolder)) {
-                if (!copyWorld(Path.of(worldsPath + levelName), levelFolder)) {
+            if (!Files.exists(Path.of(worldsPath + folderName))) {
+                try {
+                    FileUtils.copyDirectory(new File(worldsPath + levelName), new File(worldsPath + folderName));
+                } catch (IOException e) {
+                    BrlnsReb.logger.error("Error during world duplication: " + e.getMessage());
                     reservedFolderNames.remove(folderName);
                     return null;
                 }
-                availableLevels.add(folderName);
+                
+                try (BufferedWriter bw = new BufferedWriter(new FileWriter(DUPLICATE_FOLDERS_TXT_PATH, true))) {
+                    bw.write(folderName);
+                    bw.newLine();
+                } catch (IOException e) {
+                    BrlnsReb.logger.error("Writing error with duplicate-folders.txt: " + e.getMessage());
+                }
             }
         }
         
@@ -93,6 +169,9 @@ public class LevelManager {
         enabledPhysicsLevels.remove(level.getId());
     }
 
+
+    //gamerules
+
     public static void setGameRules(Level level) {
         setGameRules(level, true, null);
     }
@@ -105,59 +184,79 @@ public class LevelManager {
         GameRules gameRules = level.getGameRules();
 
         //particular
-        GameRule[] particulars = {
-            GameRule.PVP,
-            GameRule.DO_FIRE_TICK,
-            GameRule.DO_TILE_DROPS,
-            GameRule.DO_ENTITY_DROPS,
-            GameRule.DO_MOB_LOOT,
-            GameRule.TNT_EXPLODES,
-            GameRule.MOB_GRIEFING
-        };
-
-        for (GameRule rule : particulars) {
+        for (GameRule rule : PARTICULAR_GAME_RULES) {
             gameRules.setGameRule(rule, 
                 isLobby? false : config.getBoolean("settings.gamerules." + rule.getName(), false)  //default: false
             );
         }
 
         //universal (gets updated every time a new game needs something particular)
-        GameRule[] enabled = {
-            GameRule.DO_LIMITED_CRAFTING,
-            GameRule.COMMAND_BLOCKS_ENABLED,
-            GameRule.SEND_COMMAND_FEEDBACK,
-            GameRule.DO_IMMEDIATE_RESPAWN,
-            GameRule.COMMAND_BLOCK_OUTPUT
-        };
+        for (GameRule rule : ENABLED_GAME_RULES) { gameRules.setGameRule(rule, true); }
+        for (GameRule rule : DISABLED_GAME_RULES) { gameRules.setGameRule(rule, false); }
 
-        GameRule[] disabled = {
-            GameRule.NATURAL_REGENERATION,
-            GameRule.DO_DAYLIGHT_CYCLE,
-            GameRule.DO_INSOMNIA,
-            GameRule.DO_MOB_SPAWNING,
-            GameRule.DO_WEATHER_CYCLE,
-            GameRule.SHOW_DAYS_PLAYED,
-            GameRule.RECIPES_UNLOCK,
-            GameRule.SHOW_COORDINATES,
-            GameRule.PROJECTILES_CAN_BREAK_BLOCKS,
-            GameRule.LOCATOR_BAR
-        };
-
-        for (GameRule rule : enabled) { gameRules.setGameRule(rule, true); }
-        for (GameRule rule : disabled) { gameRules.setGameRule(rule, false); }
-
-        level.save();
+        if (BrlnsReb.isUnderMaintenance()) {
+            //don't save, and enable show coordinates
+            gameRules.setGameRule(GameRule.SHOW_COORDINATES, true);
+        } else {
+            level.save();
+        }
     }
 
-    public static void enablePhysicsIn(Level level) {
-        enabledPhysicsLevels.add(level.getId());
+
+    //physics
+
+    public static void enablePhysicsIn(Level level, Integer range) {
+        enabledPhysicsLevels.put(level.getId(), range);
     }
 
-    public static void enablePhysicsIn(int levelId) {
-        enabledPhysicsLevels.add(levelId);
+    public static void enablePhysicsIn(Integer levelId, Integer range) {
+        enabledPhysicsLevels.put(levelId, range);
     }
 
-    public static HashSet<Integer> getEnabledPhysicsLevels() { return enabledPhysicsLevels; }
+    public static void enablePhysicsIn(String levelName, Integer range) {
+        enabledPhysicsLevels.put(server.getLevelByName(levelName).getId(), range);
+    }
+
+    public static void disablePhysicsIn(Level level) {
+        enabledPhysicsLevels.remove(level.getId());
+    }
+
+    public static void disablePhysicsIn(Integer levelId) {
+        enabledPhysicsLevels.remove(levelId);
+    }
+
+    public static void disablePhysicsIn(String levelName) {
+        enabledPhysicsLevels.remove(server.getLevelByName(levelName).getId());
+    }
+
+    public static boolean arePhysicsEnabledIn(Level level) {
+        return enabledPhysicsLevels.containsKey(level.getId());
+    }
+
+    public static boolean arePhysicsEnabledIn(Integer levelId) {
+        return enabledPhysicsLevels.containsKey(levelId);
+    }
+
+    public static boolean arePhysicsEnabledIn(String levelName) {
+        return enabledPhysicsLevels.containsKey(server.getLevelByName(levelName).getId());
+    }
+
+    public static Integer getPhysicsRangeIn(Level level) {
+        return enabledPhysicsLevels.get(level.getId());
+    }
+
+    public static Integer getPhysicsRangeIn(Integer levelId) {
+        return enabledPhysicsLevels.get(levelId);
+    }
+
+    public static Integer getPhysicsRangeIn(String levelName) {
+        return enabledPhysicsLevels.get(server.getLevelByName(levelName).getId());
+    }
+
+    public static Map<Integer, Integer> getEnabledPhysicsLevels() { return enabledPhysicsLevels; }
+
+
+    //utils
 
     public static HashSet<String> getAllLevelNames() {
         Path worldsFolder = Path.of(server.getDataPath() + "/worlds");
@@ -180,29 +279,28 @@ public class LevelManager {
         }
     }
 
-    private static boolean copyWorld(Path source, Path destination) {
-        try {
-            Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                    Path targetDir = destination.resolve(source.relativize(dir));
-                    Files.createDirectories(targetDir);
-                    return FileVisitResult.CONTINUE;
-                }
+    public static void removeDuplicateWorldFolders() {
+        Path path = Paths.get(DUPLICATE_FOLDERS_TXT_PATH);
+        if (!Files.exists(path)) return;
 
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    Files.copy(file, destination.resolve(source.relativize(file)), 
-                            StandardCopyOption.REPLACE_EXISTING);
-                    return FileVisitResult.CONTINUE;
-                }
-            });
-            return true;
-            
+        int removed = 0;
+        try {
+            String worldsPath = server.getDataPath() + "/worlds/";
+            for (String duplicate : Files.readAllLines(path, StandardCharsets.UTF_8)) {
+                FileUtils.deleteDirectory(new File(worldsPath + duplicate));
+                removed++;
+            }
+
+            Files.delete(path);
+
         } catch (IOException e) {
-            server.getLogger().error("Failed to copy world from " + source + " to " + destination, e);
-            return false;
+            BrlnsReb.logger.error("Error during duplicate folders deletion: " + e.getMessage());
         }
+
+        int removedFolders = removed;
+        BrlnsReb.getScheduler().scheduleTask(
+            () -> BrlnsReb.logger.info(TextFormat.GREEN + "Removed " + removedFolders + " duplicate world folders.")
+        );
     }
 
 }

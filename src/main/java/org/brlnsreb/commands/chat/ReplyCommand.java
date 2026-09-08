@@ -1,5 +1,6 @@
 package org.brlnsreb.commands.chat;
 
+import org.brlnsreb.commands.BrlnsCommand;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.messages.ChatMsgs;
 import org.powernukkitx.command.Command;
@@ -16,7 +17,7 @@ import org.powernukkitx.plugin.annotation.CommandDefinition;
     usage = ChatMsgs.INFO_PFX + "Usage: §e/reply <message>"
 )
 
-public class ReplyCommand extends Command {
+public class ReplyCommand extends Command implements BrlnsCommand {
 
     @Override
     public void buildCommandTree(RouteTree tree) {

@@ -28,13 +28,11 @@ public class GamesMenu extends MenuAbstract {
             );  //TODO: add images?
         }
 
-        int formId = sendForm(player, menu);
-        menu.onSubmit((p, response) -> handleResponse((CustomPlayer) p, response.buttonId(), formId));
+        menu.send(player);
+        menu.onSubmit((p, response) -> handleResponse((CustomPlayer) p, response.buttonId()));
     }
 
-    public static void handleResponse(CustomPlayer player, int buttonId, int formId) {
-        removeForm(formId);
-
+    public static void handleResponse(CustomPlayer player, int buttonId) {
         if (buttonId == 0) {
             MainHub.instance.onJoin(player);
         } else {

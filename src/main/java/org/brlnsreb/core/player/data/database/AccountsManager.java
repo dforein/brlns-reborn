@@ -83,7 +83,7 @@ public class AccountsManager {
     }
 
     public static Outcome createNewAccount(CustomPlayer player, String name, String password) throws SQLException {
-        //check name: alphanumeric + underscore, min and max lenght
+        //check name: alphanumerical + underscore, min and max lenght
         if (!name.matches("^[A-Za-z0-9_]{3,26}$")) return Outcome.INVALID_NAME;
         
         //check whether the name is already in use

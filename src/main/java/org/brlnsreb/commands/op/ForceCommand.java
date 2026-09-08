@@ -1,5 +1,6 @@
 package org.brlnsreb.commands.op;
 
+import org.brlnsreb.commands.BrlnsCommand;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.messages.ChatMsgs;
 import org.powernukkitx.command.Command;
@@ -16,7 +17,7 @@ import org.powernukkitx.plugin.annotation.CommandDefinition;
     usage = "/force <start|stop>"
 )
 
-public class ForceCommand extends Command {
+public class ForceCommand extends Command implements BrlnsCommand {
 
     @Override
     public void buildCommandTree(RouteTree tree) {

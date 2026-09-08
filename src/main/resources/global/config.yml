@@ -1,8 +1,13 @@
-server-under-maintenance: false
+maintenance:
+  # if 'true', the whitelist is enabled (put only staff players) and the maintenance commands are made available.
+  server-under-maintenance: false
+  # if 'true', all levels are loaded and the minigame maintenance commands are made available.
+  # this works only if 'server-under-maintenance' is 'true'
+  load-all-levels: true
 
 lobby:
   items:
-    games: 
+    games:
       name: '&l&o&6BrokenLens Games&r &7Hold / Right click'
       title: 'BrokenLens Games'
       hub-button-text: 'BrokenLens HUB'

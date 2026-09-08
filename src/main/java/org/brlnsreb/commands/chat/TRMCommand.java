@@ -2,6 +2,7 @@ package org.brlnsreb.commands.chat;
 
 import java.util.List;
 
+import org.brlnsreb.commands.BrlnsCommand;
 import org.brlnsreb.core.minigame.match.MatchTeam;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.listeners.general.ChatListener;
@@ -20,7 +21,7 @@ import org.powernukkitx.plugin.annotation.CommandDefinition;
     usage = ChatMsgs.INFO_PFX + "Usage: §e/trm <message>"
 )
 
-public class TRMCommand extends Command {
+public class TRMCommand extends Command implements BrlnsCommand {
 
     @Override
     public void buildCommandTree(RouteTree tree) {

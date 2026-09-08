@@ -1,20 +1,17 @@
-package org.brlnsreb.commands.op;
+package org.brlnsreb.commands.maintenance;
 
 import org.brlnsreb.BrlnsReb;
 import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandSender;
-import org.powernukkitx.plugin.annotation.CommandDefinition;
-import org.powernukkitx.plugin.annotation.CommandDefinition.CommandMode;
 import org.powernukkitx.utils.TextFormat;
 
-@CommandDefinition(
-    name = "togglesave", 
-    permission = "admin",
-    description = "Toggle saving worlds at server shutdown",
-    commandMode = CommandMode.RAW
-)
-
 public class ToggleSaveCommand extends Command {
+
+    public ToggleSaveCommand() {
+        super("togglesave");
+        setDescription("Toggle saving worlds at server shutdown");
+        setPermission("admin");
+    }
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {

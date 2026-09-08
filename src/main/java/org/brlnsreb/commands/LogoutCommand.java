@@ -15,7 +15,7 @@ import org.powernukkitx.utils.TextFormat;
     commandMode = CommandMode.RAW
 )
 
-public class LogoutCommand extends Command {
+public class LogoutCommand extends Command implements BrlnsCommand {
     
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {

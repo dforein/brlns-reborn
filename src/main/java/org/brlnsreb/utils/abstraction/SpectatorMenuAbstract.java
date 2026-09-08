@@ -19,7 +19,7 @@ import org.powernukkitx.scheduler.TaskHandler;
 
 public abstract class SpectatorMenuAbstract extends MenuAbstract {
 
-    private final Map<UUID, List<UUID>> spectatePendingMenus = new HashMap<>();
+    private final Map<UUID, List<UUID>> spectatePendingPlayerLists = new HashMap<>();
     private final Map<UUID, TaskHandler> spectateHandlers = new HashMap<>();
 
 
@@ -32,13 +32,11 @@ public abstract class SpectatorMenuAbstract extends MenuAbstract {
         menu.addButton("Play Again");
         menu.addButton("Play Another Game");
         
-        int formId = sendForm(spectator, menu);
-        menu.onSubmit((p, response) -> handleActionsResponse(spectator, response.buttonId(), formId));
+        menu.send(spectator);
+        menu.onSubmit((p, response) -> handleActionsResponse(spectator, response.buttonId()));
     }
 
-    private void handleActionsResponse(CustomPlayer spectator, int buttonId, int formId) {
-        removeForm(formId);
-
+    private void handleActionsResponse(CustomPlayer spectator, int buttonId) {
         spectator.matchCurrent.onLeave(spectator);
 
         switch (buttonId) {
@@ -73,19 +71,16 @@ public abstract class SpectatorMenuAbstract extends MenuAbstract {
             return;
         }
 
-        int formId = sendForm(spectator, menu);
-        spectatePendingMenus.put(spectator.getUniqueId(), playerIds);
-        menu.onSubmit((p, response) -> handleSpectateResponse(spectator, response.buttonId(), formId));
+        spectatePendingPlayerLists.put(spectator.getUniqueId(), playerIds);
+        menu.onSubmit((p, response) -> handleSpectateResponse(spectator, response.buttonId()));
     }
 
     protected abstract String getDisplayNameForSpectateMenu(CustomPlayer player);
 
-    private void handleSpectateResponse(CustomPlayer spectator, int buttonId, int formId) {
-        removeForm(formId);
-
+    private void handleSpectateResponse(CustomPlayer spectator, int buttonId) {
         Game game = getGame();
         
-        List<UUID> playerIds = spectatePendingMenus.remove(spectator.getUniqueId());
+        List<UUID> playerIds = spectatePendingPlayerLists.remove(spectator.getUniqueId());
         CustomPlayer target = PlayerUtils.getPlayer(playerIds.get(
             buttonId == 0 
                 ? ThreadLocalRandom.current().nextInt(playerIds.size()) 

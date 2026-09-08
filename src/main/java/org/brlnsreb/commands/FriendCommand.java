@@ -44,7 +44,7 @@ import org.powernukkitx.plugin.annotation.CommandDefinition;
             """ //TEXT
 )
 
-public class FriendCommand extends Command {
+public class FriendCommand extends Command implements BrlnsCommand {
 
     @Override
     public void buildCommandTree(RouteTree tree) {

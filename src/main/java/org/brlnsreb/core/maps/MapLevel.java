@@ -39,7 +39,7 @@ public abstract class MapLevel {
         loadSpawns();
 
         if (arePhysicsEnabled()) {
-            LevelManager.enablePhysicsIn(level);
+            LevelManager.enablePhysicsIn(level, null);
         }
     }
 

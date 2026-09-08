@@ -1,5 +1,7 @@
 package org.brlnsreb.utils.level;
 
+import java.util.List;
+
 import org.powernukkitx.level.Level;
 
 public enum Weather {
@@ -34,6 +36,10 @@ public enum Weather {
             level.setThundering(false);
             return CLEAR;
         }
+    }
+
+    public static List<String> getStringList() {
+        return List.of(CLEAR.name, RAIN.name, STORM.name);
     }
 
 }
