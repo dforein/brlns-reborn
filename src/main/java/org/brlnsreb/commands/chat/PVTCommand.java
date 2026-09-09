@@ -38,7 +38,7 @@ public class PVTCommand extends Command implements BrlnsCommand {
 
                         return sendPVT(ctx, sender, receiver);
                     })))
-            ;//.orElse(ctx -> ctx.getSender().sendMessage(usageMessage)); TODO: enable
+            .orElse(ctx -> ctx.getSender().sendMessage(usageMessage));
     }
 
     public static CommandResult sendPVT(CommandContext ctx, CustomPlayer sender, CustomPlayer receiver) {

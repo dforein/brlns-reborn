@@ -97,6 +97,11 @@ public class DeathLobby extends Lobby {
     protected void onJoinItems(CustomPlayer player) {}
 
 
+    @Override
+    public void onLeave(CustomPlayer player) {
+        playerLocs.remove(player.getUniqueId());
+    }
+
     public void onLeave(Player player) {
         playerLocs.remove(player.getUniqueId());
     }

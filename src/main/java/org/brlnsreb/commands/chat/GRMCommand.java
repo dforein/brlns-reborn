@@ -63,7 +63,7 @@ public class GRMCommand extends Command implements BrlnsCommand {
 
                     return CommandResult.success();
                 }))
-            ;//.orElse(ctx -> ctx.getSender().sendMessage(usageMessage)); TODO: enable
+            .orElse(ctx -> ctx.getSender().sendMessage(usageMessage));
     }
 
 }

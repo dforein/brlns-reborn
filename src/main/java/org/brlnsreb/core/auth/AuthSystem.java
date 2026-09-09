@@ -67,7 +67,7 @@ public class AuthSystem extends MenuAbstract {
                     "§eplay.brlns.reb",
                     "§b@BrokenLensMCPE  ",
                     "",
-                    "§aWelcome §e" + player.data.name + "§a!",
+                    "§aWelcome §e" + name + "§a!",
                     "§aHave Fun!"
                 );
             }
@@ -76,7 +76,7 @@ public class AuthSystem extends MenuAbstract {
                 case OK -> ChatMsgs.INFO_PFX + YamlUtil.getStr("auth.after-register", messages);
                 case INVALID_NAME -> ChatMsgs.ERROR_PFX + "You used an invalid name!";
                 case NAME_ALREADY_IN_USE -> ChatMsgs.ERROR_PFX + "Sorry, the name you want is already taken!";
-                case PLAYER_ALREADY_LOGGED_IN -> ChatMsgs.ERROR_PFX + "You are already authenticated (username: §e" + player.data.name + "§c)\n"
+                case PLAYER_ALREADY_LOGGED_IN -> ChatMsgs.ERROR_PFX + "You are already authenticated (username: §e" + name + "§c)\n"
                                                 + ChatMsgs.INFO_PFX + "Type §e/logout §ato switch usernames";
                 case DB_ERROR -> ChatMsgs.ERROR_PFX + "Something wrong happened. Report this error to developers: auth_db_error";
                 default -> ChatMsgs.ERROR_PFX + "Report this error to developers: auth_switch_register";
@@ -111,9 +111,9 @@ public class AuthSystem extends MenuAbstract {
         PlayerDataManager.playerLogin(player, name, password).thenAccept(outcome -> {
             if (outcome == Outcome.ASYNC_TASK_ALREADY_RUNNING) return;
 
-            if (outcome == Outcome.OK) sendLoginMessageBlock(player);
+            if (outcome == Outcome.OK) sendLoginMessageBlock(player, name);
             else player.sendMessage(switch(outcome) {
-                case PLAYER_ALREADY_LOGGED_IN -> ChatMsgs.ERROR_PFX + "You are already authenticated (username: §e" + player.data.name + "§c)\n"
+                case PLAYER_ALREADY_LOGGED_IN -> ChatMsgs.ERROR_PFX + "You are already authenticated (username: §e" + name + "§c)\n"
                                                 + ChatMsgs.INFO_PFX + "Type §e/logout §ato switch usernames";
                 case NAME_NOT_FOUND -> ChatMsgs.ERROR_PFX + "The name you typed does not exist!";
                 case WRONG_PASSWORD -> ChatMsgs.ERROR_PFX + "Wrong passoword!";
@@ -145,13 +145,13 @@ public class AuthSystem extends MenuAbstract {
         });
     }
 
-    public static void sendLoginMessageBlock(CustomPlayer player) {
+    public static void sendLoginMessageBlock(CustomPlayer player, String name) {
         Messages.sendMessageBlock(player, Alignment.CENTER, true,
             ChatMsgs.BROKENLENS_GAMES,
             "§eplay.brlns.reb",
             "§b@BrokenLensMCPE  ",
             "",
-            "§aWelcome Back §e" + player.data.name + "§a!"
+            "§aWelcome Back §e" + name + "§a!"
         );
     }
 

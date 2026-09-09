@@ -2,6 +2,7 @@ package org.brlnsreb.core.player;
 
 import java.util.Collection;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer.DamageMode;
@@ -29,7 +30,7 @@ import org.powernukkitx.utils.SkinConverter;
 
 public class PlayerUtils {
 
-    public static int onlinePlayers = 0;
+    public static AtomicInteger onlinePlayers = new AtomicInteger(0);
 
     //change world
 
@@ -306,10 +307,8 @@ public class PlayerUtils {
 
     public static PlayerListPacket removeOnlinePlayerPacket(Player player) {
         final PlayerListPacket pk = new PlayerListPacket();
-
         final PlayerListRemoveEntry entry = new PlayerListRemoveEntry();
         entry.setUuid(player.getUniqueId());
-
         pk.getEntries().add(entry);
 
         return pk;

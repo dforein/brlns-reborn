@@ -185,6 +185,7 @@ public abstract class WaitingLobby extends Lobby {
     }
 
     //OVERRIDE if you need more voting options
+    @Override
     public void onLeave(CustomPlayer player) {
         lastPlayerName = player.data.name;
         hasJoinedLast = true;

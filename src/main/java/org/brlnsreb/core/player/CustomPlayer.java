@@ -105,7 +105,7 @@ public class CustomPlayer extends Player {
             if (outcome != Outcome.OK) return;
 
             if (data.isLogged()) {
-                AuthSystem.sendLoginMessageBlock(this);
+                AuthSystem.sendLoginMessageBlock(this, data.name);
             } else {
                 Messages.sendMessageBlock(this, Alignment.LEFT, false,
                     "§aWelcome to §eBroken§6Lens §d" + this.getDisplayName() + "§a!",

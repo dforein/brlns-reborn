@@ -11,6 +11,8 @@ import org.brlnsreb.core.player.data.database.FriendsManager;
 import org.brlnsreb.core.player.data.database.Outcome;
 import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.utils.messages.ChatMsgs;
+import org.brlnsreb.utils.messages.Messages;
+import org.brlnsreb.utils.messages.ChatMsgs.Alignment;
 import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandContext;
 import org.powernukkitx.command.CommandResult;
@@ -20,28 +22,11 @@ import org.powernukkitx.command.route.node.RouteNode;
 import org.powernukkitx.command.tree.node.IntNode;
 import org.powernukkitx.command.tree.node.StringNode;
 import org.powernukkitx.plugin.annotation.CommandDefinition;
+import org.powernukkitx.utils.TextFormat;
 
 @CommandDefinition(
     name = "friend",
-    description = "Manage your friends",
-    usage = """
-            §l§eINFO§r §aUsage: §e/friend <subcommand>
-            §l§eINFO§r §aSubcommands:
-            §3»§r§2▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬§3«
-            §2- §dadd §7- §aAdd a friend!
-            §2- §dremove §7- §aRemove a friend from your friends list
-            §2- §daccept §7- §aAccept a friend invite
-            §2- §dacceptall §7- §aAccept all friend requests you've received
-            §2- §ddeny §7- §aDeny a friend invite
-            §2- §ddenyall §7- §aDeny all friend requests you've received
-            §2- §dspectate §7- §aSpectate a friend's game
-            §2- §djoin §7- §aJoin a friend's game
-            §2- §dlist §7- §aView your friend list
-            §2- §dalerts §7- §aToggle friend join/left alerts
-            §2- §dnotify §7- §aToggle online/joinable status
-            §2- §doff §7- §aTurn off friend invites for your current session
-            §3》§r§2▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬§3《
-            """ //TEXT
+    description = "Manage your friends"
 )
 
 public class FriendCommand extends Command implements BrlnsCommand {
@@ -354,7 +339,28 @@ public class FriendCommand extends Command implements BrlnsCommand {
             .then(alertsNode)
             .then(notifyNode)
             .then(offNode)
-            ;//.orElse(ctx -> ctx.getSender().sendMessage(usageMessage)); TODO: enable
+            .orElse(ctx -> {
+                if (!(ctx.getSender() instanceof CustomPlayer sender)) {
+                    ctx.getSender().sendMessage(TextFormat.RED + "Only players can use this command!");
+                    return;
+                }
+                sender.sendMessage(ChatMsgs.INFO_PFX + "Usage: §e/friend <subcommand>");
+                sender.sendMessage(ChatMsgs.INFO_PFX + "Subcommands:");
+                Messages.sendMessageBlock(sender, Alignment.LEFT, false,
+                    "§dadd §7- §aAdd a friend!",
+                    "§dremove §7- §aRemove a friend from your friends list",
+                    "§daccept §7- §aAccept a friend invite",
+                    "§dacceptall §7- §aAccept all friend requests you've received",
+                    "§ddeny §7- §aDeny a friend invite",
+                    "§ddenyall §7- §aDeny all friend requests you've received",
+                    "§dspectate §7- §aSpectate a friend's game",
+                    "§djoin §7- §aJoin a friend's game",
+                    "§dlist §7- §aView your friend list",
+                    "§dalerts §7- §aToggle friend join/left alerts",
+                    "§dnotify §7- §aToggle online/joinable status",
+                    "§doff §7- §aTurn off friend invites for your current session"
+                );
+            });
     }
 
     private boolean listExec(CommandContext ctx, int currentPage) {

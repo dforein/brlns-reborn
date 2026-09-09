@@ -62,7 +62,7 @@ public class TRMCommand extends Command implements BrlnsCommand {
                         return CommandResult.fail(ChatMsgs.ERROR_PFX + "You are playing a solo minigame!");     //TEXT
                     }
                 }))
-            ;//.orElse(ctx -> ctx.getSender().sendMessage(usageMessage)); TODO: enable
+            .orElse(ctx -> ctx.getSender().sendMessage(usageMessage));
     }
 
 }

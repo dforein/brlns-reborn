@@ -110,7 +110,9 @@ public class BrlnsReb extends PluginBase {
         loadAllLevels = underMaintenance ? Configs.getGlobalConfig().getBoolean("maintenance.load-all-levels") : false;
 
         server = getServer();
+        server.getSettings().levelSettings().loadAllLevels(false);
         server.setDifficulty(2);
+        server.getSettings().save();
 
         LevelManager.init();
 
@@ -156,34 +158,26 @@ public class BrlnsReb extends PluginBase {
         logger.info(TextFormat.DARK_GREEN + "BrokenLens Reborn server " + (!underMaintenance ? "online!" : "under maintenance."));
     }
 
-    private void unregisterBrlnsCommands() {
-        ArrayList<String> unregistered = new ArrayList<>();
-        for (Entry<String, Command> command : server.getCommandMap().getCommands().entrySet()) {
-            if (command.getValue() instanceof BrlnsCommand) {
-                unregistered.add(command.getKey());
-            }
+    private void saveAllResources() {
+        for (String file : RESOURCES) { 
+            saveResource(file, false); 
         }
-        server.getCommandMap().unregister(unregistered.toArray(new String[unregistered.size()]));
-    }
-
-    private void registerCommands(List<Class<? extends Command>> commandClasses) {
-        for (Class<? extends Command> clazz : commandClasses) {
-            try {
-                server.getCommandMap().register("bl", clazz.getDeclaredConstructor().newInstance());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        for (MinigameType mgt : MinigameType.values()) {
+            saveResource(mgt.nameTag + "/config.yml", false);
+            saveResource(mgt.nameTag + "/messages.yml", false);
+            saveResource(mgt.nameTag + "/maps.yml", false);
         }
     }
 
-    private void registerListenersEvents(List<Class<? extends Listener>> listenerClasses) {
-        for (Class<? extends Listener> clazz : listenerClasses) {
-            try {
-                server.getPluginManager().registerEvents(clazz.getDeclaredConstructor().newInstance(), this);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+    private void prepareMainHub() {
+        mainHub = new MainHub();
+
+        server.getSettings().baseSettings().defaultLevelName(mainHub.getMap().level.getName());
+        server.setDefaultLevel(mainHub.getMap().level);
+        server.getDefaultLevel().setSpawnLocation(mainHub.getMap().spawn);
+
+        server.getSettings().save();
+        server.getDefaultLevel().save();
     }
 
     @Override
@@ -211,25 +205,37 @@ public class BrlnsReb extends PluginBase {
         }
     }
 
-    private void saveAllResources() {
-        for (String file : RESOURCES) { 
-            saveResource(file, false); 
-        }
-        for (MinigameType mgt : MinigameType.values()) {
-            saveResource(mgt.nameTag + "/config.yml", false);
-            saveResource(mgt.nameTag + "/messages.yml", false);
-            saveResource(mgt.nameTag + "/maps.yml", false);
+
+    private void registerCommands(List<Class<? extends Command>> commandClasses) {
+        for (Class<? extends Command> clazz : commandClasses) {
+            try {
+                server.getCommandMap().register("bl", clazz.getDeclaredConstructor().newInstance());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    private void prepareMainHub() {
-        mainHub = new MainHub();
-
-        server.setDefaultLevel(mainHub.getMap().level);
-        server.getDefaultLevel().setSpawnLocation(mainHub.getMap().spawn);
-
-        server.getDefaultLevel().save();
+    private void registerListenersEvents(List<Class<? extends Listener>> listenerClasses) {
+        for (Class<? extends Listener> clazz : listenerClasses) {
+            try {
+                server.getPluginManager().registerEvents(clazz.getDeclaredConstructor().newInstance(), this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
+
+    private void unregisterBrlnsCommands() {
+        ArrayList<String> unregistered = new ArrayList<>();
+        for (Entry<String, Command> command : server.getCommandMap().getCommands().entrySet()) {
+            if (command.getValue() instanceof BrlnsCommand) {
+                unregistered.add(command.getKey());
+            }
+        }
+        server.getCommandMap().unregister(unregistered.toArray(new String[unregistered.size()]));
+    }
+
 
     public static boolean isUnderMaintenance() { return underMaintenance; }
     public static boolean isLoadAllLevelsEnabled() { return loadAllLevels; }

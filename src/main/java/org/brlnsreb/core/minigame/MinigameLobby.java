@@ -100,7 +100,7 @@ public abstract class MinigameLobby extends Lobby {
  
     private void updateBackToHubNpcSubtitle() {
         String subtitle = YamlUtil.getStr(configPath() + "npcs.back-to-hub.text2", config)
-            .formatted(PlayerUtils.onlinePlayers);
+            .formatted(PlayerUtils.onlinePlayers.get());
 
         backToHubNpc.updateSubtitle(subtitle);
     }
@@ -109,7 +109,7 @@ public abstract class MinigameLobby extends Lobby {
         String text = YamlUtil.getStr("lobby.holograms.main.text", Configs.getGlobalConfig()).formatted(
             ChatMsgs.BROKENLENS_GAMES,
             minigame.mgt.displayNameTagY,
-            PlayerUtils.onlinePlayers
+            PlayerUtils.onlinePlayers.get()
         );
 
         mainHolo.setText(text);

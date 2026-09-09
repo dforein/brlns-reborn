@@ -1,7 +1,7 @@
 package org.brlnsreb.listeners.general;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.minigame.match.deathlobby.DeathLobby;
+import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.core.player.data.database.AccountsManager;
@@ -34,7 +34,7 @@ public class PlayerQuitListener implements Listener {
     private void handlePlayerLeave(Player p) {
         BrlnsReb.logger.info("Player " + p.getDisplayName() + " logout registered successfully");
 
-        PlayerUtils.onlinePlayers--;
+        PlayerUtils.onlinePlayers.decrementAndGet();
         CustomPlayer player = (CustomPlayer) p;
 
         AccountsManager.savePlayerData(player);
@@ -42,8 +42,9 @@ public class PlayerQuitListener implements Listener {
         if (player.matchCurrent != null) {
             player.matchCurrent.onLeave(player);
         }
-        if (player.getLobby() != null && player.getLobby() instanceof DeathLobby deathLobby) {
-            deathLobby.onLeave(p);
+        Lobby lobby = player.getLobby();
+        if (lobby != null) {
+            lobby.onLeave(player);
         }
         ScoreboardAbstract.remove(player);
         PlayerDataManager.onServerLeave(player);

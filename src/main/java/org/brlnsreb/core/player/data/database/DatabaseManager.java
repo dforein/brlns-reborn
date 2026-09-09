@@ -185,7 +185,7 @@ public class DatabaseManager {
             dataSource = new HikariDataSource(hikariConfig);
             
             try (Connection testConn = dataSource.getConnection()) {
-                BrlnsReb.logger.info(TextFormat.DARK_GREEN + "Database connected successfully" + (database.equals(NULL) ? "" : ("to " + database)));
+                BrlnsReb.logger.info(TextFormat.DARK_GREEN + "Database connected successfully" + (database.equals(NULL) ? "" : (" to " + database)));
             }
             
             createTables();

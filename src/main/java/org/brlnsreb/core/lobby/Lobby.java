@@ -78,6 +78,8 @@ public abstract class Lobby {
     protected abstract void onJoinMessages(CustomPlayer player);    //chat, titles, etc.
     protected abstract void onJoinUi(CustomPlayer player);
     protected abstract void onJoinItems(CustomPlayer player);
+
+    public void onLeave(CustomPlayer player) {}
     
     public void teleportToSpawn(CustomPlayer player) {
         PlayerUtils.lobbyTeleport(player, map.spawn);

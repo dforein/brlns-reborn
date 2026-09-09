@@ -33,7 +33,7 @@ public class ReplyCommand extends Command implements BrlnsCommand {
 
                     return PVTCommand.sendPVT(ctx, sender, receiver);
                 }))
-            ;//.orElse(ctx -> ctx.getSender().sendMessage(usageMessage)); TODO: enable
+            .orElse(ctx -> ctx.getSender().sendMessage(usageMessage));
     }
 
 }
