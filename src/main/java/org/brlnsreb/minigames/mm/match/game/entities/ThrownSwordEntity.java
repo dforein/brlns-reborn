@@ -55,7 +55,7 @@ public class ThrownSwordEntity extends EntityProjectile implements CustomEntity 
 
     @Override
     public boolean canCollideWith(Entity entity) {
-        if (entity instanceof DeadBodyEntity || entity.getId() == shootingEntity.getId()) {
+        if (entity instanceof DeadBodyEntity || entity.runtimeId() == shootingEntity.runtimeId()) {
             return false;
         }
 

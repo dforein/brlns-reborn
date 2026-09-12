@@ -30,6 +30,12 @@ public class ItemManager {
         player.getInventory().setItem(slot, item);
     }
 
+    public static void giveItem(Player player, int slot, String itemId, String itemName, String tag) {
+        //give player an item (with name)
+        Item item = buildItem(itemId, itemName, tag);
+        player.getInventory().setItem(slot, item);
+    }
+
     public static void giveItem(Player player, int slot, String itemId, String itemName, boolean unbreakable) {
         //give player an item (with name + unbreakable)
         Item item = buildItem(itemId, itemName, unbreakable);
@@ -53,6 +59,16 @@ public class ItemManager {
     public static Item buildItem(String itemId, String itemName) {
         Item item = Item.get(itemId);
         item.setCustomName(TextFormat.colorize(itemName));
+
+        return item;
+    }
+
+    public static Item buildItem(String itemId, String itemName, String data) {
+        Item item = buildItem(itemId, itemName);
+        CompoundTag nbt = item.getNbt();
+        if (nbt == null) nbt = new CompoundTag();
+        nbt.putCompound("blr", (new CompoundTag()).putString("data", data));
+        item.setNbt(nbt);
 
         return item;
     }

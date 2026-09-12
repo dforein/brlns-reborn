@@ -65,7 +65,7 @@ public class TestCommand extends Command {
                 p.sendPacket(pk);
 
                 final PlayerActionPacket playerActionPacket = new PlayerActionPacket();
-                playerActionPacket.setPlayerRuntimeID(p.getId());
+                playerActionPacket.setPlayerRuntimeID(p.runtimeId());
                 playerActionPacket.setAction(PlayerActionType.CHANGE_DIMENSION_ACK);
                 playerActionPacket.setBlockPosition(p.toNetwork().toInt());
                 playerActionPacket.setResultPos(p.toNetwork().toInt());

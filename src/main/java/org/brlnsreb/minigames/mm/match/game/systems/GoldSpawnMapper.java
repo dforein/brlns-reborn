@@ -6,10 +6,9 @@ import org.powernukkitx.level.Level;
 import org.powernukkitx.math.AxisAlignedBB;
 import org.powernukkitx.math.BlockFace;
 import org.powernukkitx.math.Vector3;
-import org.powernukkitx.utils.TextFormat;
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.maps.RandomSpawnsMap;
 import org.brlnsreb.utils.Vect;
+import org.brlnsreb.utils.messages.ChatMsgs;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -20,181 +19,117 @@ import java.util.*;
 
 public class GoldSpawnMapper {
 
-    private final Map<String, List<Vector3>> mapCache;
-    private final File mapsFolder;
-    private final Gson gson;
+    private static final Map<String, List<Vector3>> mapCache = new HashMap<>();
+    private static final File mapsFolder = new File(BrlnsReb.instance.getDataFolder(), "mm/maps");
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+    private static final Map<String, Set<Vector3>> mapIncludeWIP = new HashMap<>();
+    private static final Map<String, Set<Vector3>> mapExcludeWIP = new HashMap<>();
+    public static enum Operation {
+        INCLUDE(true, true), 
+        EXCLUDE(false, true), 
+        INCLUDE_IGNORE(true, false), 
+        EXCLUDE_IGNORE(false, false);
+
+        public final boolean value;
+        public final boolean overwrite;
+
+        private Operation(boolean value, boolean overwrite) {
+            this.value = value;
+            this.overwrite = overwrite;
+        }
+    }
+
+    static {
+        if (!mapsFolder.exists()) mapsFolder.mkdirs();
+    }
     
     private static final double MIN_SPACE = 1.8;
-    private static final HashSet<String> SAFE_PASSABLE_BLOCKS = new HashSet<>(Arrays.asList(
-            Block.AIR,
-            Block.TALL_GRASS, Block.TALL_DRY_GRASS,
-            Block.SHORT_GRASS, Block.SHORT_DRY_GRASS,
-            Block.DEADBUSH,
-            Block.REEDS, Block.BAMBOO, 
-            Block.KELP, Block.SEAGRASS,
-            Block.CORAL_FAN_HANG, Block.CORAL_FAN_HANG2, Block.CORAL_FAN_HANG3, 
-            Block.TUBE_CORAL, Block.BRAIN_CORAL, Block.BUBBLE_CORAL, Block.FIRE_CORAL, Block.HORN_CORAL,
-            Block.TUBE_CORAL_FAN, Block.BRAIN_CORAL_FAN, Block.BUBBLE_CORAL_FAN, Block.FIRE_CORAL_FAN, Block.HORN_CORAL_FAN,
-            Block.TUBE_CORAL_WALL_FAN, Block.BRAIN_CORAL_WALL_FAN, Block.BUBBLE_CORAL_WALL_FAN, Block.FIRE_CORAL_WALL_FAN, Block.HORN_CORAL_WALL_FAN,
-            Block.DEAD_TUBE_CORAL, Block.DEAD_BRAIN_CORAL, Block.DEAD_BUBBLE_CORAL, Block.DEAD_FIRE_CORAL, Block.DEAD_HORN_CORAL,
-            Block.DEAD_TUBE_CORAL_FAN, Block.DEAD_BRAIN_CORAL_FAN, Block.DEAD_BUBBLE_CORAL_FAN, Block.DEAD_FIRE_CORAL_FAN, Block.DEAD_HORN_CORAL_FAN,
-            Block.DEAD_TUBE_CORAL_WALL_FAN, Block.DEAD_BRAIN_CORAL_WALL_FAN, Block.DEAD_BUBBLE_CORAL_WALL_FAN, 
-            Block.DEAD_FIRE_CORAL_WALL_FAN, Block.DEAD_HORN_CORAL_WALL_FAN,
-            Block.DANDELION, Block.POPPY, Block.BLUE_ORCHID, Block.ALLIUM, Block.AZURE_BLUET, Block.NETHER_SPROUTS,
-            Block.RED_TULIP, Block.ORANGE_TULIP, Block.WHITE_TULIP, Block.PINK_TULIP, Block.OXEYE_DAISY, 
-            Block.BROWN_MUSHROOM, Block.RED_MUSHROOM, Block.SUNFLOWER, Block.ROSE_BUSH, Block.PEONY, Block.LARGE_FERN, 
-            Block.CORNFLOWER, Block.LILY_OF_THE_VALLEY, 
-            Block.CRIMSON_FUNGUS, Block.CRIMSON_ROOTS, Block.WARPED_FUNGUS, Block.WARPED_ROOTS,
-            Block.WATER, Block.FLOWING_WATER,
-            Block.VINE, Block.CAVE_VINES, Block.WEEPING_VINES, Block.TWISTING_VINES,
-            Block.WHEAT, Block.CARROTS, Block.POTATOES, Block.BEETROOT,
-            Block.OAK_SAPLING, Block.BIRCH_SAPLING, Block.SPRUCE_SAPLING, Block.ACACIA_SAPLING,
-            Block.CHERRY_SAPLING, Block.JUNGLE_SAPLING, Block.DARK_OAK_SAPLING, Block.PALE_OAK_SAPLING,
-            Block.LADDER,
-            Block.RAIL,
-            Block.REDSTONE_WIRE, Block.TRIP_WIRE,
-            Block.TORCH, Block.REDSTONE_TORCH,
-            Block.SCAFFOLDING
-        )
-    );
+    private static final HashSet<String> SAFE_PASSABLE_BLOCKS = new HashSet<>(List.of(
+        Block.VINE, Block.CAVE_VINES, Block.WEEPING_VINES, Block.TWISTING_VINES,
+        Block.LADDER, Block.SCAFFOLDING
+    ));
+    private static final HashSet<String> UNSAFE_PASSABLE_BLOCKS = new HashSet<>(List.of(
+        Block.LAVA, Block.FLOWING_LAVA,
+        Block.WEB, Block.SWEET_BERRY_BUSH
+    ));
     
-    public GoldSpawnMapper() {
-        this.mapCache = new HashMap<>();
-        this.mapsFolder = new File(BrlnsReb.instance.getDataFolder(), "mm/maps");
-        this.gson = new GsonBuilder().setPrettyPrinting().create();
-        
-        if (!mapsFolder.exists()) {
-            mapsFolder.mkdirs();
-        }
-    }
+    private static Vector3 getValidPos(Level level, Vect pos) {
+        //this should be a one to one function (int Vect to valid Vector3)
 
-    public void scanMap(RandomSpawnsMap map, String mapId, Player admin) {
-        admin.sendMessage(TextFormat.YELLOW + "Starting scan for map: " + mapId);
-        admin.sendMessage(TextFormat.GRAY + "This may take a while...");
-        
-        List<Vector3> validSpawns = new ArrayList<>();
-        
-        Level level = map.level;
-        Vector3 min = map.min;
-        Vector3 max = map.max;
-        Vect curr = new Vect();
-        
-        int totalBlocks = (int)((max.x - min.x) * (max.y - min.y) * (max.z - min.z));
-        int checked = 0;
-        int lastPercent = 0;
-        
-        long startTime = System.currentTimeMillis();
-        
-        for (int x = (int)min.x; x <= max.x; x++) {
-        for (int z = (int)min.z; z <= max.z; z++) {
-        for (int y = (int)min.y; y <= max.y; y++) {
+        Block target = pos.getBlock(level);
+        if (UNSAFE_PASSABLE_BLOCKS.contains(target.getId())) return null;
+        Block below = pos.add(-1.0, Vect.Y).getBlock(level);
+        Block above = pos.add(2.0, Vect.Y).getBlock(level);
+        if (above.isSolid(BlockFace.DOWN)) return null;         //it means there is less than a block of height
+        if (UNSAFE_PASSABLE_BLOCKS.contains(above.getId())) return null;
+        Block above2 = pos.add(1.0, Vect.Y).getBlock(level);
 
-            ValidSpace space = getValidSpace(level, curr.set(x, y, z));
+        AxisAlignedBB targetBB = target.getBoundingBox();
+        AxisAlignedBB belowBB = below.getBoundingBox();
+        AxisAlignedBB aboveBB = above.getBoundingBox();
+        AxisAlignedBB above2BB = above2.getBoundingBox();
 
-            if (space != null) {
-                validSpawns.add(space.bottom);
-            }
-            
-            checked++;
-            
-            int percent = (checked * 100) / totalBlocks;
-            if (percent >= lastPercent + 5) {
-                admin.sendMessage(TextFormat.GRAY + "Progress: " + percent + "% (" + validSpawns.size() + " spawns found)");
-                lastPercent = percent;
-            }
+        boolean isBaseBelow = true;
 
-        }}}
-        
-        long elapsed = System.currentTimeMillis() - startTime;
-        
-        saveToJson(mapId, validSpawns);
-        mapCache.put(mapId, validSpawns);
-        
-        admin.sendMessage(TextFormat.GREEN + "Scan completed!");
-        admin.sendMessage(TextFormat.GOLD + "Found: " + validSpawns.size() + " valid spawns");
-        admin.sendMessage(TextFormat.GRAY + "Time: " + (elapsed / 1000.0) + "s");
-        admin.sendMessage(TextFormat.GRAY + "Saved to: maps/" + mapId + ".json");
-    }
-    
-    private ValidSpace getValidSpace(Level level, Vect pos) {
-        Block blockTarget = pos.getBlock(level);
-        Block blockAbove = pos.add(1.0, Vect.Y).getBlock(level);
-        Block blockBelow = pos.add(-2.0, Vect.Y).getBlock(level);
-        AxisAlignedBB targetBB = blockTarget.getBoundingBox();
-        AxisAlignedBB belowBB = blockBelow.getBoundingBox();
-        AxisAlignedBB aboveBB = blockAbove.getBoundingBox();
-        boolean considerTarget = false;
+        //BASE BLOCK CHECKS + DEFINE CANDIDATE POS
 
-        if (!SAFE_PASSABLE_BLOCKS.contains(blockTarget.getId())) return null;
-        if (!blockBelow.isSolid(BlockFace.UP) && !blockBelow.isSolid(BlockFace.DOWN))
-            if (blockTarget.isSolid(BlockFace.UP) || !blockTarget.isSolid(BlockFace.DOWN))
-                return null;
-            else
-                considerTarget = true;
-
-        Vector3 posBottom = pos.set(considerTarget ? targetBB.getMaxY() : belowBB.getMaxY(), Vect.Y).getNewVector3();
-        Vector3 posTop;
-
-        if (SAFE_PASSABLE_BLOCKS.contains(blockAbove.getId())) {
-            posTop = null;
+        //is target passable?
+        if (isSafePassable(target)) {
+            //then is below solid? (only the upper face)
+            if (!below.isSolid(BlockFace.UP)) return null;
         } else {
-            if (considerTarget)
-                if (aboveBB.getMinY() - targetBB.getMaxY() >= MIN_SPACE)
-                    posTop = pos.set(aboveBB.getMinY(), Vect.Y).getNewVector3();
-                else
-                    return null;
-            else
-                if (aboveBB.getMinY() - belowBB.getMaxY() >= MIN_SPACE)
-                    posTop = pos.set(aboveBB.getMinY(), Vect.Y).getNewVector3();
-                else
-                    return null;
+            //else:
+            //then is target solid down?
+            if (!target.isSolid(BlockFace.DOWN)) return null;
+            //then is target not solid up? (if it's solid, it's invalid by default)
+            if (target.isSolid(BlockFace.UP)) return null;
+            isBaseBelow = false;
+        }
+        
+        Vector3 candidate = pos.set(
+            isBaseBelow ? belowBB.getMaxY() : targetBB.getMaxY(), 
+            Vect.Y
+        ).getNewVector3();
+
+        //MINIMUM SPACE CHECK
+        
+        double measuredHeight = 0.0;
+
+        //measure target height (below is ignored since it's always solid on top)
+        if (isBaseBelow) {
+            measuredHeight++;       //target is a whole passable block
+        } else {
+            measuredHeight += target.getFloorY() + 1.0 - targetBB.getMaxY();
         }
 
-        return new ValidSpace(posBottom, posTop);
-    }
-    
-    public void removeVolume(String mapId, Vector3 pos1, Vector3 pos2, Player admin) {
-        if (pos1 == null || pos2 == null) {
-            admin.sendMessage(TextFormat.RED + "No positions saved");
-            return;
+        //measure above height
+        if (isSafePassable(above) || aboveBB == null) {
+            measuredHeight++;
+        } else {
+            measuredHeight += above.getFloorY() + 1.0 - aboveBB.getMaxY();
         }
+        if (measuredHeight >= MIN_SPACE) return candidate;
 
-        List<Vector3> spawns = mapCache.get(mapId);
-        
-        if (spawns == null) {
-            if (!loadFromJson(mapId)) {
-                admin.sendMessage(TextFormat.RED + "Map not found: " + mapId);
-                return;
-                        }
-            spawns = mapCache.get(mapId);
-                }
-                
-        int beforeSize = spawns.size();
-        
-        double minX = Math.min(pos1.x, pos2.x);
-        double maxX = Math.max(pos1.x, pos2.x);
-        double minY = Math.min(pos1.y, pos2.y);
-        double maxY = Math.max(pos1.y, pos2.y);
-        double minZ = Math.min(pos1.z, pos2.z);
-        double maxZ = Math.max(pos1.z, pos2.z);
-        
-        spawns.removeIf(v -> 
-            v.x >= minX && v.x <= maxX &&
-            v.y >= minY && v.y <= maxY &&
-            v.z >= minZ && v.z <= maxZ
-        );
-        
-        int removed = beforeSize - spawns.size();
-        
-        saveToJson(mapId, spawns);
-        
-        admin.sendMessage(TextFormat.GREEN + "Removed " + removed + " spawns from volume");
-        admin.sendMessage(TextFormat.GRAY + "Remaining: " + spawns.size() + " spawns");
+        //measure above2 height
+        if (isSafePassable(above2) || above2BB == null) {
+            measuredHeight++;
+        } else {
+            measuredHeight += above2.getFloorY() + 1.0 - above2BB.getMaxY();
+        }
+        if (measuredHeight >= MIN_SPACE) return candidate;
+
+        return null;
     }
-    
-    public void addVolume(String mapId, Vector3 pos1, Vector3 pos2, Level level, Player admin) {
+
+    private static boolean isSafePassable(Block block) {
+        return !UNSAFE_PASSABLE_BLOCKS.contains(block.getId())
+            && ( block.canPassThrough() || SAFE_PASSABLE_BLOCKS.contains(block.getId()) );
+    }
+
+    public static int startMapping(String mapId) {
         List<Vector3> spawns = mapCache.get(mapId);
-        
+
         if (spawns == null) {
             if (!loadFromJson(mapId)) {
                 spawns = new ArrayList<>();
@@ -203,40 +138,88 @@ public class GoldSpawnMapper {
                 spawns = mapCache.get(mapId);
             }
         }
-        
-        int beforeSize = spawns.size();
-        
-        double minX = Math.min(pos1.x, pos2.x);
-        double maxX = Math.max(pos1.x, pos2.x);
-        double minY = Math.min(pos1.y, pos2.y);
-        double maxY = Math.max(pos1.y, pos2.y);
-        double minZ = Math.min(pos1.z, pos2.z);
-        double maxZ = Math.max(pos1.z, pos2.z);
-        Vect curr = new Vect();
-        
-        admin.sendMessage(TextFormat.YELLOW + "Scanning volume...");
-        
-        for (int x = (int)minX; x <= maxX; x++) {
-        for (int z = (int)minZ; z <= maxZ; z++) {
-        for (int y = (int)minY; y <= maxY; y++) {
 
-            ValidSpace space = getValidSpace(level, curr.set(x, y, z));
-            
-            if (space != null && !spawns.contains(space.bottom)) {
-                spawns.add(space.bottom);
+        if (!mapIncludeWIP.containsKey(mapId)) {
+            mapIncludeWIP.put(mapId, new HashSet<>(spawns));
+            mapExcludeWIP.put(mapId, new HashSet<>());
+        }
+
+        return spawns.size();
+    }
+
+    public static void finishMapping(String mapId) {
+        mapCache.put(mapId, new ArrayList<>(mapIncludeWIP.get(mapId)));
+
+        saveToJson(mapId);
+        
+        mapIncludeWIP.remove(mapId);
+        mapExcludeWIP.remove(mapId);
+    }
+
+    public static void leaveMapping(String mapId) {
+        mapIncludeWIP.remove(mapId);
+        mapExcludeWIP.remove(mapId);
+    }
+
+    public static void volumeOperation(Operation op, Player player, String mapId, Vector3 pos1, Vector3 pos2) {
+        Set<Vector3> mainSet = op.value ? mapIncludeWIP.get(mapId) : mapExcludeWIP.get(mapId);
+        Set<Vector3> dualSet = op.value ? mapExcludeWIP.get(mapId) : mapIncludeWIP.get(mapId);
+
+        double minX = Math.floor(Math.min(pos1.x, pos2.x));
+        double minY = Math.floor(Math.min(pos1.y, pos2.y));
+        double minZ = Math.floor(Math.min(pos1.z, pos2.z));
+
+        double maxX = Math.floor(Math.max(pos1.x, pos2.x));
+        double maxY = Math.floor(Math.max(pos1.y, pos2.y));
+        double maxZ = Math.floor(Math.max(pos1.z, pos2.z));
+
+        Level level = player.level;
+        Vect curr = new Vect();
+
+        int scanned = (int) ((maxX - minX + 1.0) * (maxY - minY + 1.0) * (maxZ - minZ + 1.0));
+        int moved = 0, alreadyMoved = 0, ignored = 0;
+
+        player.sendMessage("§eScanning volume...");
+
+        for (double x = minX; x <= maxX; x++) {
+        for (double y = minY; y <= maxY; y++) {
+        for (double z = minZ; z <= maxZ; z++) {
+
+            Vector3 valid = getValidPos(level, curr.set(x, y, z));
+            if (valid == null) continue;
+
+            if (mainSet.contains(valid)) {
+                alreadyMoved++;
+                continue;
+            }
+
+            if (op.overwrite) {
+                mainSet.add(valid);
+                dualSet.remove(valid);
+                moved++;
+            } else {
+                if (!dualSet.contains(valid)) {
+                    mainSet.add(valid);
+                    moved++;
+                } else ignored++;
             }
 
         }}}
         
-        int added = spawns.size() - beforeSize;
-        
-        saveToJson(mapId, spawns);
-        
-        admin.sendMessage(TextFormat.GREEN + "Added " + added + " new spawns from volume");
-        admin.sendMessage(TextFormat.GRAY + "Total: " + spawns.size() + " spawns");
+        player.sendMessage(ChatMsgs.BAR);
+        player.sendMessage("§dScanned " + scanned + " blocks");
+        player.sendMessage("- §a"+ (op.value ? "Included" : "Excluded") +" "+moved+" spawns from volume");
+        if (alreadyMoved > 0) {
+            player.sendMessage("- §eIgnored " + alreadyMoved + " already "+ (op.value ? "included" : "excluded") +" spawns from volume");
+        }
+        if (ignored > 0) {
+            player.sendMessage("- §eIgnored " + ignored + " "+ (op.value ? "excluded" : "included") +" spawns from volume");
+        }
+        player.sendMessage("§2NEW TOTAL: §l" + mapIncludeWIP.get(mapId).size() + " spawns");
+        player.sendMessage(ChatMsgs.BAR);
     }
     
-    public List<Vector3> getSpawns(String mapId) {
+    public static List<Vector3> getSpawns(String mapId) {
         if (mapCache.containsKey(mapId)) {
             return new ArrayList<>(mapCache.get(mapId));
         }
@@ -248,25 +231,13 @@ public class GoldSpawnMapper {
         return new ArrayList<>();
     }
     
-    public List<String> listMaps() {
-        List<String> maps = new ArrayList<>();
-        
-        File[] files = mapsFolder.listFiles((dir, name) -> name.endsWith(".json"));
-        if (files != null) {
-            for (File file : files) {
-                maps.add(file.getName().replace(".json", ""));
-            }
-        }
-        
-        return maps;
-    }
-    
-    private void saveToJson(String mapId, List<Vector3> spawns) {
-        File file = new File(mapsFolder, mapId + ".json");
-        
-        try (FileWriter writer = new FileWriter(file)) {
+    private static void saveToJson(String mapId) {
+        List<Vector3> spawns = mapCache.get(mapId);
+        if (spawns == null || spawns.isEmpty()) return;
+
+        try (FileWriter writer = new FileWriter(new File(mapsFolder, mapId + ".json"))) {
             Map<String, Object> data = new HashMap<>();
-            data.put("map_name", mapId);
+            data.put("map_id", mapId);
             data.put("spawn_count", spawns.size());
             data.put("valid_spawns", spawns);
             
@@ -276,9 +247,8 @@ public class GoldSpawnMapper {
         }
     }
     
-    private boolean loadFromJson(String mapId) {
+    private static boolean loadFromJson(String mapId) {
         File file = new File(mapsFolder, mapId + ".json");
-        
         if (!file.exists()) return false;
         
         try (FileReader reader = new FileReader(file)) {
@@ -304,12 +274,9 @@ public class GoldSpawnMapper {
         }
     }
     
-    public boolean reloadMap(String mapId) {
+    public static boolean reloadMap(String mapId) {
         mapCache.remove(mapId);
         return loadFromJson(mapId);
     }
-
-    public record MapInfo(String mapId, Vector3 min, Vector3 max, Level level) {};
-    public record ValidSpace(Vector3 bottom, Vector3 top) {};
 
 }

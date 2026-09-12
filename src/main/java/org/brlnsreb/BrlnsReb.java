@@ -31,6 +31,7 @@ import org.brlnsreb.core.player.data.database.DatabaseManager;
 import org.brlnsreb.core.player.data.database.PlayerDataManager;
 import org.brlnsreb.listeners.general.PhysicsBlockUpdateListener;
 import org.brlnsreb.listeners.maintenance.MaintenanceInteractListener;
+import org.brlnsreb.listeners.maintenance.MaintenanceJoinListener;
 import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.minigames.mm.match.game.entities.DeadBodyEntity;
 import org.brlnsreb.minigames.mm.match.game.entities.ThrownSwordEntity;
@@ -68,6 +69,7 @@ public class BrlnsReb extends PluginBase {
     );
 
     private static final List<Class<? extends Listener>> ALL_LEVELS_MAINTENANCE_LISTENERS = List.of(
+        MaintenanceJoinListener.class,
         MaintenanceInteractListener.class
     );
     

@@ -291,7 +291,7 @@ public class PlayerUtils {
 
         final PlayerListAddEntry entry = new PlayerListAddEntry();
         entry.setUuid(player.getUniqueId());
-        entry.setActorUniqueID(player.getId());
+        entry.setActorUniqueID(player.runtimeId());
         entry.setPlayerName(player.getName());
         entry.setXblXUID(player.getXUID());
         entry.setPlatformOnlineID("");

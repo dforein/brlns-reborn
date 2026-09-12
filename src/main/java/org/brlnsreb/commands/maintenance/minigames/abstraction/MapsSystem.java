@@ -138,14 +138,14 @@ public class MapsSystem extends MenuAbstract {
         instances.put(player.getUniqueId(), instance);
 
         player.getInventory().clearAll();
-        ItemManager.giveItem(player, 0, Item.LIGHT_BLUE_DYE, "§bSet MIN X §r§7(from your X)");
-        ItemManager.giveItem(player, 1, Item.LIGHT_BLUE_DYE, "§bSet MIN Y §r§7(from your Y)");
-        ItemManager.giveItem(player, 2, Item.LIGHT_BLUE_DYE, "§bSet MIN Z §r§7(from your Z)");
-        ItemManager.giveItem(player, 3, Item.CYAN_DYE, "§3Set MAX X §r§7(from your X)");
-        ItemManager.giveItem(player, 4, Item.CYAN_DYE, "§3Set MAX Y §r§7(from your Y)");
-        ItemManager.giveItem(player, 5, Item.CYAN_DYE, "§3Set MAX Z §r§7(from your Z)");
-        ItemManager.giveItem(player, 7, Item.LIME_DYE, "§aGo to Next Step 1");
-        ItemManager.giveItem(player, 8, Item.RED_DYE, "§cLeave");
+        ItemManager.giveItem(player, 0, Item.LIGHT_BLUE_DYE, "§bSet MIN X §r§7(from your X)", "minX");
+        ItemManager.giveItem(player, 1, Item.LIGHT_BLUE_DYE, "§bSet MIN Y §r§7(from your Y)", "minY");
+        ItemManager.giveItem(player, 2, Item.LIGHT_BLUE_DYE, "§bSet MIN Z §r§7(from your Z)", "minZ");
+        ItemManager.giveItem(player, 3, Item.CYAN_DYE, "§3Set MAX X §r§7(from your X)", "maxX");
+        ItemManager.giveItem(player, 4, Item.CYAN_DYE, "§3Set MAX Y §r§7(from your Y)", "maxY");
+        ItemManager.giveItem(player, 5, Item.CYAN_DYE, "§3Set MAX Z §r§7(from your Z)", "maxZ");
+        ItemManager.giveItem(player, 7, Item.LIME_DYE, "§aGo to Next Step", "minMaxToSpawns");
+        ItemManager.giveItem(player, 8, Item.RED_DYE, "§cLeave", "leaveAddNewMap");
 
         player.sendMessage(
             "[§aTips§r] Go to your map world with §e/world tp§r, then use the items given to set with" 
@@ -159,11 +159,11 @@ public class MapsSystem extends MenuAbstract {
         spawnsMap.put(player.getUniqueId(), new ArrayList<>());
 
         player.getInventory().clearAll();
-        ItemManager.giveItem(player, 0, Item.NETHER_STAR, "§dSet new Spawn Point §r§7(from your position)");
-        ItemManager.giveItem(player, 1, Item.ORANGE_DYE, "§eTeleport to last Spawn Point saved");
-        ItemManager.giveItem(player, 2, Item.CLOCK, "§cRemove last Spawn Point saved");
-        ItemManager.giveItem(player, 7, Item.LIME_DYE, "§aGo to Next Step 2");
-        ItemManager.giveItem(player, 8, Item.RED_DYE, "§cLeave");
+        ItemManager.giveItem(player, 0, Item.NETHER_STAR, "§dSet new Spawn Point §r§7(from your position)", "setSpawn");
+        ItemManager.giveItem(player, 1, Item.ORANGE_DYE, "§eTeleport to last Spawn Point saved", "lastSpawn");
+        ItemManager.giveItem(player, 2, Item.CLOCK, "§cRemove last Spawn Point saved", "removeSpawn");
+        ItemManager.giveItem(player, 7, Item.LIME_DYE, "§aGo to Next Step", "spawnsToFields");
+        ItemManager.giveItem(player, 8, Item.RED_DYE, "§cLeave", "leaveAddNewMap");
 
         player.sendMessage(
             "[§aTips§r] Use the items to fill and manage the spawns list (=list of possible player spawns at game start)."
@@ -227,6 +227,22 @@ public class MapsSystem extends MenuAbstract {
 
             editMaps(p);
         });
+    }
+
+    public static void leaveAddNewMap(Player player) {
+        ModalForm form = new ModalForm("Leave process");
+
+        form.content("Are you sure to leave the process?");
+        form.yes("Yes", p -> {
+            UUID uuid = p.getUniqueId();
+            minMaxMap.remove(uuid);
+            spawnsMap.remove(uuid);
+            instances.remove(uuid);
+            p.getInventory().clearAll();
+            p.sendMessage("§aYou left the process");
+        });
+        form.no("No", p -> {});
+        form.send(player);
     }
 
 

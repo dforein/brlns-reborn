@@ -100,8 +100,7 @@ public class GoldSystem {
     }
 
     public void loadSpawns() {
-        GoldSpawnMapper mapper = new GoldSpawnMapper();
-        this.validSpawns = mapper.getSpawns(map.mapId);
+        this.validSpawns = GoldSpawnMapper.getSpawns(map.mapId);
         
         if (validSpawns.isEmpty()) {
             BrlnsReb.logger.warning("MM: No gold spawns found for map: " + map.mapId);
