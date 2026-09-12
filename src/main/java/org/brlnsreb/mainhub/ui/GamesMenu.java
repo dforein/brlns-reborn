@@ -20,24 +20,19 @@ public class GamesMenu extends MenuAbstract {
 
         SimpleForm menu = new SimpleForm(YamlUtil.getStr("lobby.items.games.title", globalConfig));
 
-        menu.addButton(YamlUtil.getStr("lobby.items.games.hub-button-text", globalConfig));
+        menu.addButton(
+            YamlUtil.getStr("lobby.items.games.hub-button-text", globalConfig),
+            p -> MainHub.instance.onJoin((CustomPlayer) p)
+        );
 
         for (Minigame mg : MinigameManager.getMinigames()) {
             menu.addButton(
-                mg.mgt.displayName + " §r§8(§r" + mg.getPlayerCount() + "§8)"
+                mg.mgt.displayName + " §r§8(§r" + mg.getPlayerCount() + "§8)",
+                p -> mg.onLobbyJoin((CustomPlayer) p)
             );  //TODO: add images?
         }
 
         menu.send(player);
-        menu.onSubmit((p, response) -> handleResponse((CustomPlayer) p, response.buttonId()));
-    }
-
-    public static void handleResponse(CustomPlayer player, int buttonId) {
-        if (buttonId == 0) {
-            MainHub.instance.onJoin(player);
-        } else {
-            MinigameManager.getMinigames().get(buttonId - 1).onLobbyJoin(player);
-        }
     }
 
 }
