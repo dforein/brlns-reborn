@@ -37,7 +37,7 @@ auth:
   after-register: '&aYou can register an account on our forums at
     &6brokenlens.xyz &awith the same username used on brokenlens
     to get a cool member tag!'
-  menu:
+  form:
     title: Login to your account
     label0: Register an account or Login to save stats, coins and experience!
     input1: Username &c(!)

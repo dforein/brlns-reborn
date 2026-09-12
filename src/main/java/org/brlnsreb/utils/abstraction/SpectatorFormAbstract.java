@@ -17,23 +17,23 @@ import org.brlnsreb.utils.messages.ChatMsgs;
 import org.powernukkitx.form.window.SimpleForm;
 import org.powernukkitx.scheduler.TaskHandler;
 
-public abstract class SpectatorMenuAbstract extends MenuAbstract {
+public abstract class SpectatorFormAbstract extends FormAbstract {
 
     private final Map<UUID, List<UUID>> spectatePendingPlayerLists = new HashMap<>();
     private final Map<UUID, TaskHandler> spectateHandlers = new HashMap<>();
 
 
-    public void openActionsMenu(CustomPlayer spectator) {
+    public void openActionsForm(CustomPlayer spectator) {
         checkCooldown(spectator);
 
-        SimpleForm menu = new SimpleForm("Spectator Actions");
+        SimpleForm form = new SimpleForm("Spectator Actions");
 
-        menu.addButton("Return to Lobby");
-        menu.addButton("Play Again");
-        menu.addButton("Play Another Game");
+        form.addButton("Return to Lobby");
+        form.addButton("Play Again");
+        form.addButton("Play Another Game");
         
-        menu.send(spectator);
-        menu.onSubmit((p, response) -> handleActionsResponse(spectator, response.buttonId()));
+        form.send(spectator);
+        form.onSubmit((p, response) -> handleActionsResponse(spectator, response.buttonId()));
     }
 
     private void handleActionsResponse(CustomPlayer spectator, int buttonId) {
@@ -47,22 +47,22 @@ public abstract class SpectatorMenuAbstract extends MenuAbstract {
     }
 
 
-    public void openSpectateMenu(CustomPlayer spectator) {
+    public void openSpectateForm(CustomPlayer spectator) {
         if (!checkCooldown(spectator)) return;
 
-        SimpleForm menu = new SimpleForm("Spectate player");
+        SimpleForm form = new SimpleForm("Spectate player");
 
         List<UUID> playerIds = new ArrayList<>();
 
-        menu.addButton("Random Player");
+        form.addButton("Random Player");
 
         boolean playersEmpty = true;
         for (CustomPlayer p : getGame().getPlayers()) {
-            String displayName = getDisplayNameForSpectateMenu(p);
+            String displayName = getDisplayNameForSpectateForm(p);
             if (displayName == null) continue;
             playersEmpty = false;
             
-            menu.addButton(displayName);
+            form.addButton(displayName);
             playerIds.add(p.getUniqueId());
         }
         
@@ -72,10 +72,10 @@ public abstract class SpectatorMenuAbstract extends MenuAbstract {
         }
 
         spectatePendingPlayerLists.put(spectator.getUniqueId(), playerIds);
-        menu.onSubmit((p, response) -> handleSpectateResponse(spectator, response.buttonId()));
+        form.onSubmit((p, response) -> handleSpectateResponse(spectator, response.buttonId()));
     }
 
-    protected abstract String getDisplayNameForSpectateMenu(CustomPlayer player);
+    protected abstract String getDisplayNameForSpectateForm(CustomPlayer player);
 
     private void handleSpectateResponse(CustomPlayer spectator, int buttonId) {
         Game game = getGame();

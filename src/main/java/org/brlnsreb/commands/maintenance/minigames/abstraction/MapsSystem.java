@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.levels.LevelManager;
 import org.brlnsreb.core.minigame.MinigameType;
-import org.brlnsreb.utils.abstraction.MenuAbstract;
+import org.brlnsreb.utils.abstraction.FormAbstract;
 import org.brlnsreb.utils.config.Configs;
 import org.brlnsreb.utils.items.ItemManager;
 import org.brlnsreb.utils.level.Weather;
@@ -25,7 +25,7 @@ import org.powernukkitx.utils.Config;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 
-public class MapsSystem extends MenuAbstract {
+public class MapsSystem extends FormAbstract {
 
     protected final MinigameType mgt;
     protected final Config maps;
@@ -60,46 +60,46 @@ public class MapsSystem extends MenuAbstract {
         }
     }
 
-    public void openMenu(Player player) {
+    public void openForm(Player player) {
         createMapsForm().send(player);
     }
 
     protected SimpleForm createMapsForm() {
-        SimpleForm menu = new SimpleForm(mgt.nameTag.toUpperCase() + " map settings");
+        SimpleForm form = new SimpleForm(mgt.nameTag.toUpperCase() + " map settings");
 
-        menu.addButton("Edit default map", p -> editDefaultMap(p));
-        menu.addButton("Edit enabled maps", p -> enableMaps(p));
-        menu.addButton("Edit maps", p -> editMaps(p));
+        form.addButton("Edit default map", p -> editDefaultMap(p));
+        form.addButton("Edit enabled maps", p -> enableMaps(p));
+        form.addButton("Edit maps", p -> editMaps(p));
 
-        return menu;
+        return form;
     }
 
 
     protected void editDefaultMap(Player player) {
-        CustomForm menu = new CustomForm(mgt.nameTag.toUpperCase() + " default map");
+        CustomForm form = new CustomForm(mgt.nameTag.toUpperCase() + " default map");
         List<String> enabledMaps = maps.getStringList("enabled-maps");
 
-        menu.addLabel("§7Choose the default map from the list of enabled maps.\n" 
+        form.addLabel("§7Choose the default map from the list of enabled maps.\n" 
                 + "It is used as fallback in case another map is not available for some reason.");
-        menu.addDropdown("Default map", enabledMaps, enabledMaps.indexOf(maps.getString("default-map")));
+        form.addDropdown("Default map", enabledMaps, enabledMaps.indexOf(maps.getString("default-map")));
 
-        menu.send(player);
-        menu.onSubmit((p, response) -> {
+        form.send(player);
+        form.onSubmit((p, response) -> {
             maps.set("default-map", response.getDropdownResponse(1).elementText());
             maps.save();
-            openMenu(player);
+            openForm(player);
         });
     }
 
     protected void enableMaps(Player player) {
-        SimpleForm menu = new SimpleForm(mgt.nameTag.toUpperCase() + " enabled maps");
+        SimpleForm form = new SimpleForm(mgt.nameTag.toUpperCase() + " enabled maps");
         List<String> enabledMaps = maps.getStringList("enabled-maps");
         List<String> disabledMaps = getAllMaps();
         disabledMaps.removeAll(enabledMaps);
 
-        menu.addButton("§l§6Go back", p -> openMenu(player));
+        form.addButton("§l§6Go back", p -> openForm(player));
         for (String eMap : enabledMaps) {
-            menu.addButton(eMap + " §7(§aENABLED§7)", p -> {
+            form.addButton(eMap + " §7(§aENABLED§7)", p -> {
                 enabledMaps.remove(eMap);
                 maps.set("enabled-maps", enabledMaps);
                 maps.save();
@@ -107,7 +107,7 @@ public class MapsSystem extends MenuAbstract {
             });
         }
         for (String dMap : disabledMaps) {
-            menu.addButton(dMap + " §7(§cDISABLED§7)", p -> {
+            form.addButton(dMap + " §7(§cDISABLED§7)", p -> {
                 enabledMaps.add(dMap);
                 maps.set("enabled-maps", enabledMaps);
                 maps.save();
@@ -115,21 +115,21 @@ public class MapsSystem extends MenuAbstract {
             });
         }
 
-        menu.send(player);
+        form.send(player);
     }
 
     protected void editMaps(Player player) {
-        SimpleForm menu = new SimpleForm(mgt.nameTag.toUpperCase() + " maps");
+        SimpleForm form = new SimpleForm(mgt.nameTag.toUpperCase() + " maps");
         List<String> mapList = getAllMaps();
 
-        menu.addButton("§l§6Go back", p -> openMenu(player));
-        menu.addButton("§2Add§r new map", p -> addNewMapMinMax(player, this));
-        menu.addButton("§cRemove§r a map", p -> removeMap(player));
+        form.addButton("§l§6Go back", p -> openForm(player));
+        form.addButton("§2Add§r new map", p -> addNewMapMinMax(player, this));
+        form.addButton("§cRemove§r a map", p -> removeMap(player));
         for (String map : mapList) {
-            menu.addButton("Edit " + map, p -> editMap(player, map));
+            form.addButton("Edit " + map, p -> editMap(player, map));
         }
 
-        menu.send(player);
+        form.send(player);
     }
 
 
@@ -173,20 +173,20 @@ public class MapsSystem extends MenuAbstract {
     public void addNewMapFields(Player player) { addNewMapFields(player, null); }
     protected void addNewMapFields(Player player, String error) {
         player.getInventory().clearAll();
-        CustomForm menu = new CustomForm("Add new " + mgt.nameTag.toUpperCase() + " map");
+        CustomForm form = new CustomForm("Add new " + mgt.nameTag.toUpperCase() + " map");
 
-        if (error != null) menu.addLabel("§cError: "+ error);
-        menu.addInput("§lMap Id§r §7used in maps.yml and here\n(only alphabet letters, numbers, underscores)", "e.g. thegrandhotel");
-        menu.addInput("§lName§r §7the actual name displayed to players", "e.g. The Grand Hotel");
-        menu.addInput("§lWorld§r §7the folder name of the world", "e.g. the_grand_hotel or mapId");
-        menu.addToggle("§lNight vision§r", true);
-        menu.addDropdown("§lWeather§r", Weather.getStringList());
-        menu.addInput("§lBuilders§r §7divided by commas\n(NO unnecessary spaces for commas)", "e.g. Alice,Bob Bobby,Chloe_rine");
-        menu.addInput("§lBuilders team§r", "e.g. @BrokenLensCommunity");
-        menu.addToggle("§lEnable map§r", true);
+        if (error != null) form.addLabel("§cError: "+ error);
+        form.addInput("§lMap Id§r §7used in maps.yml and here\n(only alphabet letters, numbers, underscores)", "e.g. thegrandhotel");
+        form.addInput("§lName§r §7the actual name displayed to players", "e.g. The Grand Hotel");
+        form.addInput("§lWorld§r §7the folder name of the world", "e.g. the_grand_hotel or mapId");
+        form.addToggle("§lNight vision§r", true);
+        form.addDropdown("§lWeather§r", Weather.getStringList());
+        form.addInput("§lBuilders§r §7divided by commas\n(NO unnecessary spaces for commas)", "e.g. Alice,Bob Bobby,Chloe_rine");
+        form.addInput("§lBuilders team§r", "e.g. @BrokenLensCommunity");
+        form.addToggle("§lEnable map§r", true);
 
-        menu.send(player);
-        menu.onSubmit((p, response) -> {
+        form.send(player);
+        form.onSubmit((p, response) -> {
             int i = error == null ? 0 : 1;
             String mapId = response.getInputResponse(i++);
             if (!mapId.matches("^[a-zA-Z0-9_-]+$")) {
@@ -247,15 +247,15 @@ public class MapsSystem extends MenuAbstract {
 
 
     protected void removeMap(Player player) {
-        SimpleForm menu = new SimpleForm("Remove " + mgt.nameTag.toUpperCase() + " map");
+        SimpleForm form = new SimpleForm("Remove " + mgt.nameTag.toUpperCase() + " map");
         List<String> mapList = getAllMaps();
 
-        menu.addButton("§6Go back", p -> editMaps(player));
+        form.addButton("§6Go back", p -> editMaps(player));
         for (String map : mapList) {
-            menu.addButton(map, p -> confirmRemoveMap(player, map));
+            form.addButton(map, p -> confirmRemoveMap(player, map));
         }
 
-        menu.send(player);
+        form.send(player);
     }
 
     protected void confirmRemoveMap(Player player, String map) {
@@ -279,53 +279,53 @@ public class MapsSystem extends MenuAbstract {
 
     protected void editMap(Player player, String mapId) { editMap(player, mapId, null); }
     protected void editMap(Player player, String mapId, String error) {
-        CustomForm menu = new CustomForm("Edit " + mgt.nameTag.toUpperCase() + " map");
+        CustomForm form = new CustomForm("Edit " + mgt.nameTag.toUpperCase() + " map");
         String path = "maps." + mapId + ".";
 
-        if (error != null) menu.addLabel("§cError: "+ error);
-        menu.addInput("§lMap Id§r §7used in maps.yml and here\n(only alphabet letters, numbers, underscores)",
+        if (error != null) form.addLabel("§cError: "+ error);
+        form.addInput("§lMap Id§r §7used in maps.yml and here\n(only alphabet letters, numbers, underscores)",
             "e.g. the-grand-hotel", 
             mapId
         );
-        menu.addInput(
+        form.addInput(
             "§lName§r §7the actual name displayed to players", 
             "e.g. The Grand Hotel", 
             maps.getString(path + "name")
         );
-        menu.addInput(
+        form.addInput(
             "§lWorld§r §7the folder name of the world", 
             "e.g. the_grand_hotel", 
             maps.getString(path + "world")
         );
-        menu.addInput(
+        form.addInput(
             "§lMin§r §7the minimum coordinates below which players die",
             "e.g. 12 -2 10",
             maps.getString(path + "min")
         );
-        menu.addInput(
+        form.addInput(
             "§lMax§r §7the maximum coordinates above which players die",
             "e.g. 213 40 324",
             maps.getString(path + "max")
         );
-        menu.addToggle("§lNight vision§r", maps.getBoolean(path + "night-vision"));
-        menu.addDropdown(
+        form.addToggle("§lNight vision§r", maps.getBoolean(path + "night-vision"));
+        form.addDropdown(
             "§lWeather§r", 
             Weather.getStringList(), 
             Weather.getStringList().indexOf(maps.getString(path + "weather"))
         );
-        menu.addInput(
+        form.addInput(
             "§lBuilders§r §7divided by commas", 
             "e.g. Alice,Bob Bobby,Chloe_rine", 
             String.join(",", maps.getStringList(path + "builders"))
         );
-        menu.addInput(
+        form.addInput(
             "§lBuilders team§r", 
             "e.g. @BrokenLensCommunity", 
             maps.getString(path + "builders-team")
         );
 
-        menu.send(player);
-        menu.onSubmit((p, response) -> {
+        form.send(player);
+        form.onSubmit((p, response) -> {
             int i = error == null ? 0 : 1;
             String newMapId = response.getInputResponse(i++);
             if (!newMapId.matches("^[a-zA-Z0-9_-]+$")) {

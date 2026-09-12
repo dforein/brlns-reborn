@@ -3,18 +3,18 @@ package org.brlnsreb.minigames.mm.match.game.ui;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.minigames.mm.match.game.MMGame;
 import org.brlnsreb.minigames.mm.match.game.gamedata.MMPlayerGameData;
-import org.brlnsreb.utils.abstraction.SpectatorMenuAbstract;
+import org.brlnsreb.utils.abstraction.SpectatorFormAbstract;
 
-public class MMSpectatorMenu extends SpectatorMenuAbstract {
+public class MMSpectatorForm extends SpectatorFormAbstract {
 
     private final MMGame game;
     
-    public MMSpectatorMenu(MMGame game) {
+    public MMSpectatorForm(MMGame game) {
         super();
         this.game = game;
     }
 
-    protected String getDisplayNameForSpectateMenu(CustomPlayer player) {
+    protected String getDisplayNameForSpectateForm(CustomPlayer player) {
         MMPlayerGameData gameData = game.getGameData(player);
         if (gameData == null) return null;
 

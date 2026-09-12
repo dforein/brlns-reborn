@@ -4,7 +4,7 @@ import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.data.database.Outcome;
 import org.brlnsreb.core.player.data.database.PlayerDataManager;
-import org.brlnsreb.utils.abstraction.MenuAbstract;
+import org.brlnsreb.utils.abstraction.FormAbstract;
 import org.brlnsreb.utils.config.Configs;
 import org.brlnsreb.utils.config.YamlUtil;
 import org.brlnsreb.utils.messages.ChatMsgs;
@@ -17,7 +17,7 @@ import org.powernukkitx.form.window.SimpleForm;
 import org.powernukkitx.scheduler.ServerScheduler;
 import org.powernukkitx.utils.Config;
 
-public class AuthSystem extends MenuAbstract {
+public class AuthSystem extends FormAbstract {
 
     private static ServerScheduler scheduler;
     private static Config messages;
@@ -27,19 +27,19 @@ public class AuthSystem extends MenuAbstract {
         messages = Configs.getGlobalMessages();
     }
 
-    public static void openMenu(Player player) {
+    public static void openForm(Player player) {
         if (!checkCooldown(player)) return;
 
-        String path = "auth.menu.";
+        String path = "auth.form.";
 
-        CustomForm menu = new CustomForm(messages.getString(path + "title"));
-        menu.addLabel(YamlUtil.getStr(path + "label0", messages));
-        menu.addInput(YamlUtil.getStr(path + "input1", messages), player.getName());
-        menu.addInput(YamlUtil.getStr(path + "input2", messages));
-        menu.addToggle(YamlUtil.getStr(path + "toggle3", messages), false);
+        CustomForm form = new CustomForm(messages.getString(path + "title"));
+        form.addLabel(YamlUtil.getStr(path + "label0", messages));
+        form.addInput(YamlUtil.getStr(path + "input1", messages), player.getName());
+        form.addInput(YamlUtil.getStr(path + "input2", messages));
+        form.addToggle(YamlUtil.getStr(path + "toggle3", messages), false);
         
-        menu.send(player);
-        menu.onSubmit((p, response) -> handleResponse((CustomPlayer) p, response));
+        form.send(player);
+        form.onSubmit((p, response) -> handleResponse((CustomPlayer) p, response));
     }
 
     public static void handleResponse(CustomPlayer player, CustomResponse response) {

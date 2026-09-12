@@ -6,7 +6,7 @@ import org.powernukkitx.form.window.CustomForm;
 import org.powernukkitx.utils.Config;
 import org.powernukkitx.utils.TextFormat;
 import org.brlnsreb.core.minigame.match.waitinglobby.WaitingLobby;
-import org.brlnsreb.utils.abstraction.MenuAbstract;
+import org.brlnsreb.utils.abstraction.FormAbstract;
 import org.brlnsreb.utils.config.Configs;
 import org.brlnsreb.utils.config.YamlUtil;
 import org.brlnsreb.utils.level.TimeOfDay;
@@ -15,24 +15,24 @@ import org.brlnsreb.utils.messages.Messages;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VotingMapTimeMenu extends MenuAbstract {
+public class VotingMapTimeForm extends FormAbstract {
 
     private VotingSystem<String> mapVoting;
     private VotingSystem<TimeOfDay> timeVoting;
     private Config mapSettings;
     private Messages msgUtil;
 
-    public VotingMapTimeMenu(WaitingLobby waitingLobby) {
+    public VotingMapTimeForm(WaitingLobby waitingLobby) {
         this.mapVoting = waitingLobby.getMapVoting();
         this.timeVoting = waitingLobby.getTimeVoting();
         this.mapSettings = waitingLobby.getMapSettings();
         this.msgUtil = waitingLobby.getMsgUtil();
     }
     
-    public void openMenu(Player player) {
+    public void openForm(Player player) {
         if (!checkCooldown(player)) return;
         
-        CustomForm menu = new CustomForm("Game Poll");
+        CustomForm form = new CustomForm("Game Poll");
         
         //map dropdown
         List<String> availableMapIds = mapVoting.getAvailableOptions();
@@ -53,7 +53,7 @@ public class VotingMapTimeMenu extends MenuAbstract {
             mapDefaultIndex = 0;
         }
         
-        menu.addDropdown(
+        form.addDropdown(
             TextFormat.colorize("Vote for map:"),
             mapOptions,
             mapDefaultIndex
@@ -77,14 +77,14 @@ public class VotingMapTimeMenu extends MenuAbstract {
             timeDefaultIndex = 0;
         }
         
-        menu.addDropdown(
+        form.addDropdown(
             TextFormat.colorize("Vote for time:"),
             timeOptions,
             timeDefaultIndex
         );
         
-        menu.send(player);
-        menu.onSubmit((p, response) -> handleVoteResponse(player, response));
+        form.send(player);
+        form.onSubmit((p, response) -> handleVoteResponse(player, response));
     }
     
     public void handleVoteResponse(Player player, CustomResponse response) {

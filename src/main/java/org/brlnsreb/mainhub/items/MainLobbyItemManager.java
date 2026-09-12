@@ -2,7 +2,7 @@ package org.brlnsreb.mainhub.items;
 
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerUtils;
-import org.brlnsreb.mainhub.ui.GamesMenu;
+import org.brlnsreb.mainhub.ui.GamesForm;
 import org.brlnsreb.utils.config.Configs;
 import org.brlnsreb.utils.items.ItemManager;
 import org.powernukkitx.Player;
@@ -20,7 +20,7 @@ public class MainLobbyItemManager extends ItemManager {
 
     public void onItemUse(CustomPlayer player, Item item) {
         switch (item.getId()) {
-            case Item.ORANGE_DYE -> GamesMenu.openMenu(player);
+            case Item.ORANGE_DYE -> GamesForm.openForm(player);
             //case Item.PURPLE_DYE -> ;
             //case Item.BLAZE_ROD -> ;
             case Item.SLIME_BALL -> player.minigameCurrent.onMatchJoin(player);

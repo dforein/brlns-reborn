@@ -32,7 +32,7 @@ public class LoginCommand extends Command implements BrlnsCommand {
             return true;
         }
 
-        AuthSystem.openMenu(player);
+        AuthSystem.openForm(player);
 
         return true;
     }

@@ -3,7 +3,7 @@ package org.brlnsreb.utils.abstraction;
 import org.brlnsreb.utils.Cooldown;
 import org.powernukkitx.Player;
 
-public abstract class MenuAbstract {
+public abstract class FormAbstract {
 
     protected static final Cooldown openingCooldown = Cooldown.seconds(0.5);
 

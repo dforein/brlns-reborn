@@ -41,7 +41,7 @@ public class MaintenanceInteractListener implements Listener {
             case "spawnsToFields" -> {
                 MapsSystem instance = MapsSystem.instances.remove(uuid);
                 if (instance != null) instance.addNewMapFields(p);
-                else p.sendMessage(ChatMsgs.ERROR_PFX + "No menu instance found.");
+                else p.sendMessage(ChatMsgs.ERROR_PFX + "No form instance found.");
             }
 
             case "leaveAddNewMap" -> MapsSystem.leaveAddNewMap(p);

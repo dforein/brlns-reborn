@@ -8,14 +8,14 @@ import org.powernukkitx.utils.TextFormat;
 
 public abstract class MapsCommand extends Command {
 
-    private final MapsSystem menu;
+    private final MapsSystem form;
 
-    public MapsCommand(MinigameType mgt, MapsSystem menu) {
+    public MapsCommand(MinigameType mgt, MapsSystem form) {
         super(mgt.nameTag);
         setDescription("Manage maps for " + mgt.displayName);
         setPermission("admin");
 
-        this.menu = menu;
+        this.form = form;
     }
 
     @Override
@@ -30,7 +30,7 @@ public abstract class MapsCommand extends Command {
             return true;
         }
 
-        menu.openMenu(player);
+        form.openForm(player);
         return true;
     }
     

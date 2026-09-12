@@ -8,14 +8,14 @@ import org.brlnsreb.core.minigame.match.waitinglobby.items.WaitingLobbyItemManag
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.minigames.mm.match.waitinglobby.items.MMWaitingLobbyItemManager;
 import org.brlnsreb.utils.level.TimeOfDay;
-import org.brlnsreb.utils.voting.VotingMapTimeMenu;
+import org.brlnsreb.utils.voting.VotingMapTimeForm;
 import org.brlnsreb.utils.voting.VotingSystem;
 import org.powernukkitx.event.player.PlayerItemHeldEvent;
 import org.powernukkitx.item.Item;
 
 public class MMWaitingLobby extends WaitingLobby {
 
-    private VotingMapTimeMenu votingMenu;
+    private VotingMapTimeForm votingForm;
     
     public MMWaitingLobby(Match match) {
         super(match);
@@ -26,8 +26,8 @@ public class MMWaitingLobby extends WaitingLobby {
         this.timeVoting = new VotingSystem<>();
     }
 
-    protected void requireVotingMenu() {
-        this.votingMenu = new VotingMapTimeMenu(this);
+    protected void requireVotingForm() {
+        this.votingForm = new VotingMapTimeForm(this);
     }
 
     protected WaitingLobbyItemManager requireItemManager() {
@@ -61,7 +61,7 @@ public class MMWaitingLobby extends WaitingLobby {
 
     public void onItemUse(CustomPlayer player, Item item) {
         switch (item.getId()) {
-            case Item.NETHER_STAR -> votingMenu.openMenu(player);
+            case Item.NETHER_STAR -> votingForm.openForm(player);
         }
     }
 

@@ -59,8 +59,8 @@ public class MMListenerAccess extends ListenerAccess {
             case Item.YELLOW_DYE -> game.newSheriff(player, true);
             
             //spectator
-            case Item.COMPASS -> game.getSpectatorMenu().openSpectateMenu(player);
-            case Item.CLOCK -> game.getSpectatorMenu().openActionsMenu(player);
+            case Item.COMPASS -> game.getSpectatorForm().openSpectateForm(player);
+            case Item.CLOCK -> game.getSpectatorForm().openActionsForm(player);
         }
     }
 

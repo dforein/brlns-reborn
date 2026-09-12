@@ -27,7 +27,7 @@ import org.brlnsreb.minigames.mm.match.game.systems.RaycastSystem;
 import org.brlnsreb.minigames.mm.match.game.teams.MMTeamManager;
 import org.brlnsreb.minigames.mm.match.game.ui.MMBossBar;
 import org.brlnsreb.minigames.mm.match.game.ui.MMScoreboard;
-import org.brlnsreb.minigames.mm.match.game.ui.MMSpectatorMenu;
+import org.brlnsreb.minigames.mm.match.game.ui.MMSpectatorForm;
 import org.brlnsreb.utils.SoundUtil;
 import org.brlnsreb.utils.TimerSystem;
 import org.brlnsreb.utils.config.YamlUtil;
@@ -49,7 +49,7 @@ public class MMGame extends GameExpand implements GameTeam {
     private final MMBossBar bossBar;
     private final MMScoreboard scoreboard;
     private final MMItemManager items;
-    private final MMSpectatorMenu spectatorMenu;
+    private final MMSpectatorForm spectatorForm;
 
     private Task updateUiTask;
     private Task checkPosTask;
@@ -78,7 +78,7 @@ public class MMGame extends GameExpand implements GameTeam {
         this.bossBar = new MMBossBar(this);
         this.scoreboard = new MMScoreboard(this);
         this.items = new MMItemManager(this);
-        this.spectatorMenu = new MMSpectatorMenu(this);
+        this.spectatorForm = new MMSpectatorForm(this);
 
         this.gold = new GoldSystem(config, map);
         this.death = new DeathSystem(this, scheduler);
@@ -574,7 +574,7 @@ public class MMGame extends GameExpand implements GameTeam {
     public MMPlayerGameData getGameData(CustomPlayer player) { return gameDataMap.get(player); }
     public MMPlayerGameData getGameData(Entity player) { return gameDataMap.get(player); }
     public RandomSpawnsMap getMap() { return (RandomSpawnsMap) map; }
-    public MMSpectatorMenu getSpectatorMenu() { return spectatorMenu; }
+    public MMSpectatorForm getSpectatorForm() { return spectatorForm; }
     public MMTeamManager getTeamManager() { return teams; }
 
 }

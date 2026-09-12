@@ -31,22 +31,22 @@ public class MMMapsSystem extends MapsSystem {
     }
 
     @Override
-    public void openMenu(Player player) {
-        SimpleForm menu = createMapsForm();
-        menu.addButton(" §6Gold spawns mapping", p -> goldSpawnsMapping(p));
-        menu.send(player);
+    public void openForm(Player player) {
+        SimpleForm form = createMapsForm();
+        form.addButton(" §6Gold spawns mapping", p -> goldSpawnsMapping(p));
+        form.send(player);
     }
 
     private void goldSpawnsMapping(Player player) {
-        SimpleForm menu = new SimpleForm("Select " + mgt.nameTag.toUpperCase() + " map for gold mapping");
+        SimpleForm form = new SimpleForm("Select " + mgt.nameTag.toUpperCase() + " map for gold mapping");
         List<String> mapList = getAllMaps();
 
-        menu.addButton("§6Go back", p -> openMenu(p));
+        form.addButton("§6Go back", p -> openForm(p));
         for (String map : mapList) {
-            menu.addButton(map, p -> startGoldSpawnsMapping(p, map));
+            form.addButton(map, p -> startGoldSpawnsMapping(p, map));
         }
 
-        menu.send(player);
+        form.send(player);
     }
 
     private void startGoldSpawnsMapping(Player player, String mapId) {

@@ -100,7 +100,7 @@ public abstract class WaitingLobby extends Lobby {
         BrlnsReb.getScheduler().scheduleRepeatingTask(BrlnsReb.instance, updateUiTask, 10);
 
         initVotingSystems();
-        requireVotingMenu();
+        requireVotingForm();
         prepareVoting();
     }
 
@@ -291,7 +291,7 @@ public abstract class WaitingLobby extends Lobby {
     //voting logic
 
     protected abstract void initVotingSystems();
-    protected abstract void requireVotingMenu();
+    protected abstract void requireVotingForm();
 
     //OVERRIDE if you need more voting options
     protected void prepareVoting() {

@@ -4,35 +4,35 @@ import org.brlnsreb.core.minigame.Minigame;
 import org.brlnsreb.core.minigame.MinigameManager;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.mainhub.MainHub;
-import org.brlnsreb.utils.abstraction.MenuAbstract;
+import org.brlnsreb.utils.abstraction.FormAbstract;
 import org.brlnsreb.utils.config.Configs;
 import org.brlnsreb.utils.config.YamlUtil;
 import org.powernukkitx.Player;
 import org.powernukkitx.form.window.SimpleForm;
 import org.powernukkitx.utils.Config;
 
-public class GamesMenu extends MenuAbstract {
+public class GamesForm extends FormAbstract {
 
-    public static void openMenu(Player player) {
+    public static void openForm(Player player) {
         if (!checkCooldown(player)) return;
 
         Config globalConfig = Configs.getGlobalConfig();
 
-        SimpleForm menu = new SimpleForm(YamlUtil.getStr("lobby.items.games.title", globalConfig));
+        SimpleForm form = new SimpleForm(YamlUtil.getStr("lobby.items.games.title", globalConfig));
 
-        menu.addButton(
+        form.addButton(
             YamlUtil.getStr("lobby.items.games.hub-button-text", globalConfig),
             p -> MainHub.instance.onJoin((CustomPlayer) p)
         );
 
         for (Minigame mg : MinigameManager.getMinigames()) {
-            menu.addButton(
+            form.addButton(
                 mg.mgt.displayName + " §r§8(§r" + mg.getPlayerCount() + "§8)",
                 p -> mg.onLobbyJoin((CustomPlayer) p)
             );  //TODO: add images?
         }
 
-        menu.send(player);
+        form.send(player);
     }
 
 }

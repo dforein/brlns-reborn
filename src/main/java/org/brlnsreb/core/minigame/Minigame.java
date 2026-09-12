@@ -64,7 +64,7 @@ public abstract class Minigame {
 
     public boolean onMatchJoin(CustomPlayer player) {
         if (!player.data.isLogged()) {
-            AuthSystem.openMenu(player);
+            AuthSystem.openForm(player);
             return false;
         }
 

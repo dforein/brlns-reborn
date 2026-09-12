@@ -32,7 +32,7 @@ public class PhysicsCommand extends Command {
                 return CommandResult.success();
             }))
             .then(RouteNode.literal("settings").exec(ctx -> {
-                PhysicsMenu.openMenu((Player) ctx.getSender());
+                PhysicsForm.openForm((Player) ctx.getSender());
                 return CommandResult.success();
             }));
     }
