@@ -12,6 +12,7 @@ import org.powernukkitx.plugin.annotation.PluginMeta;
 import org.powernukkitx.registry.RegisterException;
 import org.powernukkitx.registry.Registries;
 import org.powernukkitx.scheduler.ServerScheduler;
+import org.powernukkitx.utils.Config;
 import org.powernukkitx.utils.TextFormat;
 
 import java.util.ArrayList;
@@ -35,7 +36,6 @@ import org.brlnsreb.listeners.maintenance.MaintenanceJoinListener;
 import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.minigames.mm.match.game.entities.DeadBodyEntity;
 import org.brlnsreb.minigames.mm.match.game.entities.ThrownSwordEntity;
-import org.brlnsreb.utils.config.Configs;
 
 @PluginMeta(
     name = "brlnsreb",
@@ -48,6 +48,7 @@ import org.brlnsreb.utils.config.Configs;
 public class BrlnsReb extends PluginBase {
 
     private static final String[] RESOURCES = {
+        "maintenance.yml",
         "global/config.yml",
         "global/database.yml",
         "global/messages.yml",
@@ -108,8 +109,10 @@ public class BrlnsReb extends PluginBase {
     @Override
     public void onEnable() {
         saveAllResources();
-        underMaintenance = Configs.getGlobalConfig().getBoolean("maintenance.server-under-maintenance");
-        loadAllLevels = underMaintenance ? Configs.getGlobalConfig().getBoolean("maintenance.load-all-levels") : false;
+
+        Config maintenanceConfig = new Config(getDataFolder() + "/maintenance.yml", Config.YAML);
+        underMaintenance = maintenanceConfig.getBoolean("maintenance.server-under-maintenance");
+        loadAllLevels = underMaintenance ? maintenanceConfig.getBoolean("maintenance.load-all-levels") : false;
 
         server = getServer();
         server.getSettings().levelSettings().loadAllLevels(false);
