@@ -33,7 +33,7 @@ public class PVTCommand extends Command implements BrlnsCommand {
                         CustomPlayer receiver = PlayerUtils.getPlayer((String) ctx.getArg("player"));
 
                         if (receiver == null) {
-                            return CommandResult.fail(ChatMsgs.ERROR_PFX + "No player found with such name");     //TEXT
+                            return CommandResult.fail(ChatMsgs.ERROR_PFX + "No player online found with such name");     //TEXT
                         }
 
                         return sendPVT(ctx, sender, receiver);
