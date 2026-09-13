@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.core.player.PlayerStateType;
 import org.cloudburstmc.protocol.bedrock.data.actor.ActorFlags;
 import org.cloudburstmc.protocol.bedrock.data.skin.ImageData;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +24,7 @@ import org.powernukkitx.entity.custom.CustomEntityDefinition;
 import org.powernukkitx.entity.data.human.Skin;
 import org.powernukkitx.event.entity.EntityDamageByEntityEvent;
 import org.powernukkitx.event.entity.EntityDamageEvent;
+import org.powernukkitx.item.Item;
 import org.powernukkitx.level.Position;
 import org.powernukkitx.level.format.IChunk;
 import org.powernukkitx.nbt.tag.CompoundTag;
@@ -163,15 +165,24 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
                 && task != null) {
 
             task.accept(player);
-            //Server.getInstance().getLogger().info("NPC: attack");
         }
         source.setCancelled(true);
     
         return false;
     }
 
-    public void executeTask(CustomPlayer player) {
-        task.accept(player);
+    @Override
+    public boolean onInteract(Player player, Item item) {
+        CustomPlayer p = (CustomPlayer) player;
+
+        if (p.state == PlayerStateType.LOBBY || p.state == PlayerStateType.WAITING_LOBBY) {
+            if (!item.getName().equals(Item.AIR.getName())) {
+                return false;
+            }
+        }
+
+        task.accept(p);
+        return true;
     }
 
     public void tempBlockTask(int ticks) {

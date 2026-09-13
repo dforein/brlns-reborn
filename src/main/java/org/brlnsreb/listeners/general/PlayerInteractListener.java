@@ -31,18 +31,6 @@ import org.brlnsreb.mainhub.items.MainLobbyItemManager;
 public class PlayerInteractListener implements Listener {
 
     @EventHandler
-    public void onEntityInteract(PlayerInteractEntityEvent event) {
-        if (event.getEntity() instanceof NPCEntity npc) {
-            CustomPlayer player = (CustomPlayer) event.getPlayer();
-            if (player.state == PlayerStateType.LOBBY || player.state == PlayerStateType.WAITING_LOBBY) {
-                if (!event.getItem().getName().equals(Item.AIR.getName())) return;
-            }
-
-            npc.executeTask(player);
-        }
-    }
-
-    @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         CustomPlayer player = (CustomPlayer) event.getPlayer();
 
@@ -100,9 +88,10 @@ public class PlayerInteractListener implements Listener {
     public void onInteractEntity(PlayerInteractEntityEvent event) {
         CustomPlayer player = (CustomPlayer) event.getPlayer();
 
-        if (player.interactMode != InteractMode.FULL) {
-            event.setCancelled();
-        }
+        if (player.interactMode == InteractMode.FULL) return;
+        if (event.getEntity() instanceof NPCEntity) return;
+
+        event.setCancelled();
     }
 
     @EventHandler
