@@ -124,8 +124,9 @@ public class BrlnsReb extends PluginBase {
         if (underMaintenance) {     //TODO test
             server.getSettings().baseSettings().allowList(true);
             server.getSettings().baseSettings().allowListMessage("Server is under maintenance.");
-
             registerCommands(MAINTENANCE_COMMANDS);
+        } else {
+            server.getSettings().baseSettings().allowList(false);
         }
 
         if (underMaintenance && loadAllLevels) {
