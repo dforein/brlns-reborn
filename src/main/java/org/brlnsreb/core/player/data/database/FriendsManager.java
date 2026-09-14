@@ -186,6 +186,32 @@ public class FriendsManager {
         });
     }
 
+    public static void sendRequestMessages(Outcome outcome, String senderName, String receiverName) {
+        CustomPlayer sender = PlayerUtils.getPlayer(senderName);
+        sender.sendMessage(
+            switch (outcome) {
+                case OK -> ChatMsgs.SUCCESS_PFX + "Friend request sent to §e" + receiverName;
+                //ps: here ADDED_FRIEND isn't OK, it's an extraordinary outcome; while in /friend accept it's normal so it's OK
+                case ADDED_FRIEND -> ChatMsgs.SUCCESS_PFX + "§e" + receiverName + "§a added to your friend list";
+                case NAME_NOT_FOUND -> ChatMsgs.ERROR_PFX + "Does not exist such a player named " + receiverName;
+                case CANNOT_FRIEND_SELF -> ChatMsgs.ERROR_PFX + "You cannot send a request to yourself!";
+                case ALREADY_FRIENDS -> ChatMsgs.ERROR_PFX + receiverName + " is already your friend!";
+                case REQUEST_ALREADY_SENT -> ChatMsgs.ERROR_PFX + "You have already sent a request to " + receiverName;
+                case REQUESTS_DISABLED -> ChatMsgs.ERROR_PFX + "Sorry, requests are not enabled for " + receiverName;
+                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend_add_error";
+            }
+        );
+
+        CustomPlayer receiver = PlayerUtils.getPlayer(receiverName);
+        if (receiver != null) {
+            if (outcome == Outcome.OK) {
+                receiver.sendMessage(ChatMsgs.INFO_PFX + "§3" + senderName + "§a wants to be your friend! \n§e/friend accept/deny " + senderName);
+            } else if (outcome == Outcome.ADDED_FRIEND) {
+                receiver.sendMessage(ChatMsgs.INFO_PFX + "§e" + senderName + "§a added to your friend list");
+            }
+        }
+    }
+
     private static Outcome acceptRequestSync(String senderName, String receiverName) throws SQLException {
         //check if request is present
         PlayerData data = PlayerDataManager.getPlayerData(receiverName);

@@ -2,27 +2,34 @@ package org.brlnsreb.mainhub.items;
 
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerUtils;
+import org.brlnsreb.mainhub.systems.MagicStaff;
 import org.brlnsreb.mainhub.ui.GamesForm;
+import org.brlnsreb.mainhub.ui.MenuForm;
 import org.brlnsreb.utils.config.Configs;
 import org.brlnsreb.utils.items.ItemManager;
 import org.powernukkitx.Player;
 import org.powernukkitx.item.Item;
-import org.powernukkitx.utils.Config;
 
 public class MainLobbyItemManager extends ItemManager {
 
     public static MainLobbyItemManager instance;
     
-    public MainLobbyItemManager(Config config) {
+    public MainLobbyItemManager() {
         super(Configs.getGlobalConfig());
         instance = this;
+        
+        MagicStaff.init();
     }
+
+    public void onConfigReload() {
+        MagicStaff.onConfigReload();
+    } 
 
     public void onItemUse(CustomPlayer player, Item item) {
         switch (item.getId()) {
             case Item.ORANGE_DYE -> GamesForm.openForm(player);
-            //case Item.PURPLE_DYE -> ;
-            //case Item.BLAZE_ROD -> ;
+            case Item.PURPLE_DYE -> MenuForm.openForm(player);
+            case Item.BLAZE_ROD -> MagicStaff.doMagic(player);
             case Item.SLIME_BALL -> player.minigameCurrent.onMatchJoin(player);
         }
     }

@@ -58,10 +58,11 @@ public class LevelManager {
         GameRule.LOCATOR_BAR
     };
 
-    private static final String DUPLICATE_FOLDERS_TXT_PATH = BrlnsReb.instance.getDataFolder() + "/duplicate-folders.txt";
+    private static final String DUPLICATE_FOLDERS_TXT_PATH = BrlnsReb.instance.getDataFolder() + "/zz__internal_data/duplicate-folders.txt";
 
     private static Server server;
-    private static Map<Integer, Integer> enabledPhysicsLevels = new HashMap<>();        // level id -> range of blocks from players (-1 = all world)
+    private static final Set<Integer> mainLobbyLevels = new HashSet<>();
+    private static final Map<Integer, Integer> enabledPhysicsLevels = new HashMap<>();        // level id -> range of blocks from players (-1 = all world)
     private static final Set<String> reservedFolderNames = ConcurrentHashMap.newKeySet();
 
     public static void init() {
@@ -100,7 +101,9 @@ public class LevelManager {
     }
 
     public static Level loadLobbyLevel(String levelName, boolean copyWorld) {
-        return loadLevel(levelName, true, copyWorld, null);
+        Level newLevel = loadLevel(levelName, true, copyWorld, null);
+        if (!copyWorld) mainLobbyLevels.add(newLevel.getId());
+        return newLevel;
     }
 
     public static Level loadLevel(String levelName, Config config) {
@@ -257,6 +260,10 @@ public class LevelManager {
 
 
     //utils
+
+    public static boolean isMainLobby(Level level) {
+        return mainLobbyLevels.contains(level.getId());
+    }
 
     public static HashSet<String> getAllLevelNames() {
         Path worldsFolder = Path.of(server.getDataPath() + "/worlds");

@@ -24,6 +24,7 @@ import org.powernukkitx.entity.custom.CustomEntityDefinition;
 import org.powernukkitx.entity.data.human.Skin;
 import org.powernukkitx.event.entity.EntityDamageByEntityEvent;
 import org.powernukkitx.event.entity.EntityDamageEvent;
+import org.powernukkitx.event.entity.EntityDamageEvent.DamageCause;
 import org.powernukkitx.item.Item;
 import org.powernukkitx.level.Position;
 import org.powernukkitx.level.format.IChunk;
@@ -161,6 +162,7 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
     @Override
     public boolean attack(EntityDamageEvent source) {
         if (source instanceof EntityDamageByEntityEvent event
+                && event.getCause() == DamageCause.ENTITY_ATTACK
                 && event.getDamager() instanceof CustomPlayer player
                 && task != null) {
 
@@ -174,7 +176,7 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
     @Override
     public boolean onInteract(Player player, Item item) {
         CustomPlayer p = (CustomPlayer) player;
-
+        
         if (p.state == PlayerStateType.LOBBY || p.state == PlayerStateType.WAITING_LOBBY) {
             if (!item.getName().equals(Item.AIR.getName())) {
                 return false;

@@ -41,7 +41,7 @@ public class MainHub extends Lobby {
         instance = this;
 
         this.bossBar = new MainLobbyBossBar(ChatMsgs.BROKENLENS);
-        items = new MainLobbyItemManager(config);
+        items = new MainLobbyItemManager();
         this.lobbyMessages = new MainLobbyMessages(messages);
 
         this.bossBar.startBossBarUpdates(map.level);
@@ -152,6 +152,7 @@ public class MainHub extends Lobby {
         reloadHologramConfigData(frontalHolo, "frontal", true);
 
         bossBar.onConfigReload(ChatMsgs.BROKENLENS);
+        items.onConfigReload();
         lobbyMessages.onConfigReload();
     }
 

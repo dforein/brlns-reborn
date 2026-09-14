@@ -26,9 +26,12 @@ import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.CustomPlayer.InteractMode;
 import org.brlnsreb.mainhub.items.MainLobbyItemManager;
+import org.brlnsreb.utils.Cooldown;
 
 @EventListener
 public class PlayerInteractListener implements Listener {
+
+    private static final Cooldown itemUseCooldown = Cooldown.milliseconds(50);
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
@@ -74,6 +77,7 @@ public class PlayerInteractListener implements Listener {
     private void checkItemInteraction(CustomPlayer player, Action action, Item item) {
         if (item == null) return;
         if (!(action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)) return;
+        if (!itemUseCooldown.check(player.getUniqueId())) return;
 
         if (player.state == PlayerStateType.LOBBY) {
             MainLobbyItemManager.instance.onItemUse(player, item);
@@ -98,9 +102,7 @@ public class PlayerInteractListener implements Listener {
     public void onInteractItemFrame(ItemFrameUseEvent event) {
         CustomPlayer player = (CustomPlayer) event.getPlayer();
 
-        if (player != null && 
-            player.interactMode != InteractMode.FULL
-        ) {
+        if (player != null && player.interactMode != InteractMode.FULL) {
             event.setCancelled();
         }
     }
