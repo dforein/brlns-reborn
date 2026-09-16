@@ -132,7 +132,7 @@ public abstract class Game {
             "§l§3Reward Summary",
             "§6You earned §l§2" + gameData.getCoinsEarned() + "§r §6coins",
             "§2You earned §l§6" + gameData.getExpEarned() + "§r §2of experience",
-            "§6You got §l§d" + 0 + " §c" + 0 + " §e" + 0 + " §9" + 0 + "§r §6gems",     //TODO: gems
+            "§6You got §l§a" + 0 + " §c" + 0 + " §e" + 0 + " §9" + 0 + "§r §6gems",     //TODO: gems
             "§2Support us at:",
             "§6store.brlns.reb"
         );
