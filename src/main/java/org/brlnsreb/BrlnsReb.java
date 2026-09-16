@@ -133,7 +133,7 @@ public class BrlnsReb extends PluginBase {
             LevelManager.loadAllLevelsUnderMaintenance();
 
             logger.info(TextFormat.DARK_GREEN + "All levels loaded!");
-            logger.info(TextFormat.DARK_GREEN + "BrokenLens Reborn server under maintenance.");
+            logger.info(TextFormat.DARK_GREEN + "BrokenLens Reborn server under MAINTENANCE.");
             logger.info(TextFormat.GREEN + "Global chat enabled in loadAllLevels mode: players can chat on different worlds.");
             logger.info(TextFormat.GREEN + "Minigame map management commands available in loadAllLevels mode: run /<minigameTag> (e.g. /mm).");
             logger.info(TextFormat.RED + "Remember that autosave is disabled. To enable it, run /togglesave");
@@ -161,7 +161,7 @@ public class BrlnsReb extends PluginBase {
         minigameManager = new MinigameManager();
         prepareMainHub();
         
-        logger.info(TextFormat.DARK_GREEN + "BrokenLens Reborn server " + (!underMaintenance ? "online!" : "under maintenance."));
+        logger.info(TextFormat.DARK_GREEN + "BrokenLens Reborn server " + (!underMaintenance ? "ONLINE!" : "under MAINTENANCE."));
     }
 
     private void saveAllResources() {
