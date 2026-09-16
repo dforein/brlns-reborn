@@ -45,7 +45,6 @@ dependencies {
     compileOnly('org.powernukkitx:server:nightly-SNAPSHOT') {
         changing = true
     }
-    compileOnly 'org.powernukkitx.protocol:bedrock-connection:3.0.0.Beta7-Debug-SNAPSHOT'
     compileOnly 'eu.okaeri:okaeri-configs-core:5.0.1'
 
     annotationProcessor('org.powernukkitx:server:nightly-SNAPSHOT') {

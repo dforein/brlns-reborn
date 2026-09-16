@@ -196,7 +196,7 @@ public class BrlnsReb extends PluginBase {
             if (!p.isOnline()) continue;
             PlayerDataManager.savePlayerDataSync(p.getUniqueId());
             p.save();
-            p.kick("Server is shutting down: autokicking all players.");
+            p.kick("Server is shutting down", false);
         }
     }
     
