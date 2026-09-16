@@ -220,6 +220,9 @@ public class MapsSystem extends FormAbstract {
                 var enabledMaps = maps.getStringList("enabled-maps");
                 enabledMaps.add(mapId);
                 maps.set("enabled-maps", enabledMaps);
+                if (maps.getString("default-map", "").isEmpty()) {
+                    maps.set("default-map", mapId);
+                }
             }
             maps.save();
             minMaxMap.remove(p.getUniqueId());

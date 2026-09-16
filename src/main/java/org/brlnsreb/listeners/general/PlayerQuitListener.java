@@ -32,7 +32,7 @@ public class PlayerQuitListener implements Listener {
     }
 
     private void handlePlayerLeave(Player p) {
-        BrlnsReb.logger.info("Player " + p.getDisplayName() + " logout registered successfully");
+        BrlnsReb.logger.info("§6LEAVE§r " + p.getDisplayName());
 
         PlayerUtils.onlinePlayers.decrementAndGet();
         CustomPlayer player = (CustomPlayer) p;

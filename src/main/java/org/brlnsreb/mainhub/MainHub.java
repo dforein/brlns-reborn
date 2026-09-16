@@ -55,8 +55,6 @@ public class MainHub extends Lobby {
     //server join
 
     public void onServerJoin(CustomPlayer player) {
-        PlayerUtils.onlinePlayers.incrementAndGet();
-
         PlayerUtils.lobbyTeleport(player, map.spawn);
 
         onServerJoinMessages(player);

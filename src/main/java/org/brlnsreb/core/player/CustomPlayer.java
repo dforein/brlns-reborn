@@ -129,8 +129,9 @@ public class CustomPlayer extends Player {
         });
         
         PlayerUtils.cleanPlayerList(this);
-
         MainHub.instance.onServerJoin(this);
+
+        BrlnsReb.logger.info("§aJOIN§r " + this.getName());
     }
 
 
