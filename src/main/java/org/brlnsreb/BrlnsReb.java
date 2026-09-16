@@ -110,9 +110,9 @@ public class BrlnsReb extends PluginBase {
     public void onEnable() {
         saveAllResources();
 
-        Config maintenanceConfig = new Config(getDataFolder() + "/maintenance.yml", Config.YAML);
-        underMaintenance = maintenanceConfig.getBoolean("maintenance.server-under-maintenance");
-        loadAllLevels = underMaintenance ? maintenanceConfig.getBoolean("maintenance.load-all-levels") : false;
+        Config maintenance = new Config(getDataFolder() + "/maintenance.yml", Config.YAML);
+        underMaintenance = maintenance.getBoolean("server-under-maintenance");
+        loadAllLevels = underMaintenance ? maintenance.getBoolean("load-all-levels") : false;
 
         server = getServer();
         server.getSettings().levelSettings().loadAllLevels(false);
