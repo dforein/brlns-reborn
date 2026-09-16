@@ -24,7 +24,7 @@ public class Cooldown {
         return new Cooldown(milliseconds);
     }
 
-    public boolean check(Object obj) {
+    public boolean checkOrAdd(Object obj) {
         long now = System.currentTimeMillis();
 
         if (cooldowns.containsKey(obj)

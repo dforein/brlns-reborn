@@ -77,7 +77,7 @@ public class PlayerInteractListener implements Listener {
     private void checkItemInteraction(CustomPlayer player, Action action, Item item) {
         if (item == null) return;
         if (!(action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)) return;
-        if (!itemUseCooldown.check(player.getUniqueId())) return;
+        if (!itemUseCooldown.checkOrAdd(player.getUniqueId())) return;
 
         if (player.state == PlayerStateType.LOBBY) {
             MainLobbyItemManager.instance.onItemUse(player, item);

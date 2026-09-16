@@ -37,7 +37,7 @@ public class RaycastSystem {
     }
     
     public CustomPlayer shoot(CustomPlayer shooter) {
-        if (!cooldown.check(shooter.getUniqueId())) return null;
+        if (!cooldown.checkOrAdd(shooter.getUniqueId())) return null;
 
         Level level = game.getMap().level;
 

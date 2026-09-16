@@ -22,7 +22,7 @@ public class ProjectileSystem {
     }
     
     public boolean throwSword(Player murderer) {
-        if (!cooldown.check(murderer.getUniqueId())) return false;
+        if (!cooldown.checkOrAdd(murderer.getUniqueId())) return false;
 
         Vector3 startVect = murderer.getDirectionVector().divide(2.0).add(
             murderer.x,

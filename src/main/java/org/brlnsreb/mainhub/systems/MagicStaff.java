@@ -30,7 +30,7 @@ public class MagicStaff {
     }
 
     public static void doMagic(CustomPlayer player) {
-        if (!cooldown.check(player.getUniqueId())) {
+        if (!cooldown.checkOrAdd(player.getUniqueId())) {
             player.sendMessage(ChatMsgs.ERROR_PFX + "Slow down!");
             player.sendMessage(ChatMsgs.ERROR_PFX + "Recharging power... wait §e" 
                     + cooldown.getSecondsRemaining(player.getUniqueId()) + " §cseconds");
