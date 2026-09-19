@@ -1,8 +1,10 @@
 package org.brlnsreb.mainhub;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.lobby.Lobby;
@@ -17,9 +19,13 @@ import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.mainhub.items.MainLobbyItemManager;
 import org.brlnsreb.mainhub.messages.MainLobbyMessages;
 import org.brlnsreb.mainhub.ui.MainLobbyBossBar;
+import org.brlnsreb.utils.Cooldown;
 import org.brlnsreb.utils.config.Configs;
 import org.brlnsreb.utils.config.YamlUtil;
 import org.brlnsreb.utils.messages.ChatMsgs;
+import org.powernukkitx.Player;
+import org.powernukkitx.math.Vector3;
+import org.powernukkitx.scheduler.Task;
 import org.powernukkitx.utils.Config;
 
 public class MainHub extends Lobby {
@@ -36,6 +42,12 @@ public class MainHub extends Lobby {
     private final HashMap<MinigameType, NPCEntity> mgtNpcMap = new HashMap<>();
     private final HologramEntity frontalHolo;
 
+    private boolean launchersEnabled;
+    private Task launchersTask;
+    private List<Vector3> launchersPos;
+    private double launchersSpeed;
+    private Cooldown launchersCooldown = Cooldown.seconds(3.5);
+
     public MainHub() {
         super();
         instance = this;
@@ -49,6 +61,8 @@ public class MainHub extends Lobby {
         this.spawnAllNpcs();
 
         this.frontalHolo = createHologram("frontal", true);
+
+        scheduleLauncherTask();
     }
 
 
@@ -135,6 +149,15 @@ public class MainHub extends Lobby {
     }
 
 
+    //launcher
+
+    private void scheduleLauncherTask() {
+        reloadLaunchersConfigData();
+
+        
+    }
+
+
     //config
 
     public void onConfigReload() {
@@ -152,6 +175,44 @@ public class MainHub extends Lobby {
         bossBar.onConfigReload(ChatMsgs.BROKENLENS);
         items.onConfigReload();
         lobbyMessages.onConfigReload();
+
+        reloadLaunchersConfigData();
+    }
+
+    public void reloadLaunchersConfigData() {
+        launchersEnabled = config.getBoolean(configPath() + "player-launchers.enable");
+        if (!launchersEnabled) return;
+
+        launchersSpeed = config.getDouble(configPath() + "player-launchers.speed");
+        launchersPos = config.getStringList(configPath() + "player-launchers.pos").stream()
+            .map(str -> YamlUtil.parseVector3(str).floor())
+            .collect(Collectors.toUnmodifiableList());
+
+        if (launchersTask != null) launchersTask.cancel();
+        launchersTask = new Task() {
+            @Override
+            public void onRun(int currentTick) {
+                for (Player p : map.level.getPlayers().values()) {
+                    double floorX = p.getFloorX();
+                    double floorZ = p.getFloorZ();
+                    double floorY = p.getFloorY();
+                    for (Vector3 pos : launchersPos) {
+                        if (floorX == pos.x && floorZ == pos.z && floorY == pos.y) {
+                            if (!launchersCooldown.checkOrAdd(p.getUniqueId())) break;
+
+                            Vector3 direction = p.getDirectionVector();
+                            p.motionX += direction.x * launchersSpeed;
+                            p.motionY += Math.max(Math.abs(direction.y), 0.2) * launchersSpeed * 0.65;
+                            p.motionZ += direction.z * launchersSpeed;
+
+                            break;
+                        }
+                    }
+                }
+            }
+        };
+
+        BrlnsReb.getScheduler().scheduleRepeatingTask(BrlnsReb.instance, launchersTask, 2);
     }
 
     public Config getConfig() { 

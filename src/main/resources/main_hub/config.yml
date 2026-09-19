@@ -21,3 +21,9 @@ holograms:
       &b<< Hit a NPC to Join a Game >> 
       &a
       &ebrokenlens.xyz
+player-launchers:
+  enable: true
+  speed: 3.15
+  pos:
+  - 2409 36 2427
+  - 2409 36 2435
