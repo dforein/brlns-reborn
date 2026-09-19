@@ -93,7 +93,7 @@ public class FriendCommand extends Command implements BrlnsCommand {
                         );
 
                         if (outcome != Outcome.OK) return;
-                        CustomPlayer requestSender = PlayerUtils.getPlayer(requestSenderName);
+                        CustomPlayer requestSender = PlayerUtils.getLoggedPlayer(requestSenderName);
                         if (requestSender == null) return;
 
                         requestSender.sendMessage(ChatMsgs.INFO_PFX + "§e" + requestReceiverName + "§a added to your friend list");
@@ -125,7 +125,7 @@ public class FriendCommand extends Command implements BrlnsCommand {
                         );
 
                         if (outcome != Outcome.OK) return;
-                        CustomPlayer requestSender = PlayerUtils.getPlayer(requestSenderName);
+                        CustomPlayer requestSender = PlayerUtils.getLoggedPlayer(requestSenderName);
                         if (requestSender == null) return;
                         
                         requestSender.sendMessage(ChatMsgs.INFO_PFX + "§e" + requestReceiverName + "§a added to your friend list");
@@ -196,7 +196,7 @@ public class FriendCommand extends Command implements BrlnsCommand {
                     );
                 }
 
-                CustomPlayer friend = PlayerUtils.getPlayer(friendName);
+                CustomPlayer friend = PlayerUtils.getLoggedPlayer(friendName);
                 if (friend == null) {
                     return CommandResult.fail(
                         ChatMsgs.ERROR_PFX + friendName + " is not online."
@@ -388,7 +388,7 @@ public class FriendCommand extends Command implements BrlnsCommand {
             }
 
             String message = "§3" + curr.get(currElementIndex) + " §7- ";
-            CustomPlayer friend = PlayerUtils.getPlayer(curr.get(currElementIndex));
+            CustomPlayer friend = PlayerUtils.getLoggedPlayer(curr.get(currElementIndex));
             if (!online || friend == null) {
                 message += "§cOffline";
             } else {

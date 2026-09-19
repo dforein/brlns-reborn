@@ -335,7 +335,13 @@ public class PlayerUtils {
         player.addEffect(effect);
     }
 
-    public static CustomPlayer getPlayer(String name) {
+    public static CustomPlayer getPlayer(String displayName) {
+        CustomPlayer player = getLoggedPlayer(displayName);
+        if (player != null) return player;
+        return (CustomPlayer) Server.getInstance().getPlayerExactByDisplayName(displayName);
+    }
+
+    public static CustomPlayer getLoggedPlayer(String name) {
         return getPlayer(PlayerDataManager.getPlayerId(name));
     }
 

@@ -90,7 +90,7 @@ public class FriendsManager {
             data.addOnlineFriend(name.getKey(), name.getValue());
             friendData.addOnlineFriend(accountName);
 
-            CustomPlayer friend = PlayerUtils.getPlayer(name.getValue());
+            CustomPlayer friend = PlayerUtils.getLoggedPlayer(name.getValue());
             if (friendJoined != null) friend.sendMessage(friendJoined);
         }
     }
@@ -110,7 +110,7 @@ public class FriendsManager {
             if (friendData == null) continue;
             friendData.removeOnlineFriend(data.name);
 
-            CustomPlayer friend = PlayerUtils.getPlayer(name.getValue());
+            CustomPlayer friend = PlayerUtils.getLoggedPlayer(name.getValue());
             if (friendLeft != null) friend.sendMessage(friendLeft);
         }
     }
@@ -187,7 +187,7 @@ public class FriendsManager {
     }
 
     public static void sendRequestMessages(Outcome outcome, String senderName, String receiverName) {
-        CustomPlayer sender = PlayerUtils.getPlayer(senderName);
+        CustomPlayer sender = PlayerUtils.getLoggedPlayer(senderName);
         sender.sendMessage(
             switch (outcome) {
                 case OK -> ChatMsgs.SUCCESS_PFX + "Friend request sent to §e" + receiverName;
@@ -202,7 +202,7 @@ public class FriendsManager {
             }
         );
 
-        CustomPlayer receiver = PlayerUtils.getPlayer(receiverName);
+        CustomPlayer receiver = PlayerUtils.getLoggedPlayer(receiverName);
         if (receiver != null) {
             if (outcome == Outcome.OK) {
                 receiver.sendMessage(ChatMsgs.INFO_PFX + "§3" + senderName + "§a wants to be your friend! \n§e/friend accept/deny " + senderName);
