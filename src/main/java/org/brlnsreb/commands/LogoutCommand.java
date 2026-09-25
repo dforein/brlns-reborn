@@ -1,6 +1,7 @@
 package org.brlnsreb.commands;
 
 import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.data.database.PlayerDataManager;
 import org.brlnsreb.utils.messages.ChatMsgs;
 import org.powernukkitx.command.Command;
@@ -27,6 +28,11 @@ public class LogoutCommand extends Command implements BrlnsCommand {
         CustomPlayer player = (CustomPlayer) sender;
         if (!player.data.isLogged()) {
             player.sendMessage(ChatMsgs.ERROR_PFX + "You are already logged out!");
+            return true;
+        }
+
+        if (player.state != PlayerStateType.LOBBY) {
+            player.sendMessage(ChatMsgs.ERROR_PFX + "You can logout only outside of a match!");
             return true;
         }
 
