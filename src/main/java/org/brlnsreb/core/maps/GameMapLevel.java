@@ -48,7 +48,7 @@ public abstract class GameMapLevel extends MapLevel {
     protected Level loadLevel(boolean copyworld) {
         return LevelManager.loadLevel(
             YamlUtil.getStr(configPath + "world", mapSettings),
-            mapSettings
+            config
         );
     }
 

@@ -31,7 +31,7 @@ game:
   duration: 420
   ending-duration: 10
   ui-update-ticks: 10
-  murderer-damage-multiplier: 2.5
+  murderer-damage-multiplier: 5
   time-start-tracking: 60
   items:
     sword:
