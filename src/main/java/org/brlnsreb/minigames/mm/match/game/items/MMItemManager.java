@@ -67,7 +67,9 @@ public class MMItemManager extends ItemManager {
         Item dye = buildItem(Item.YELLOW_DYE, getStr(PATH + "yellow-dye.name"));
         
         for (CustomPlayer p : game.getPlayers()) {
-            if (game.getGameData(p).role != MMRole.INNOCENT) continue;
+            MMPlayerGameData gameData = game.getGameData(p);
+            if (gameData == null) continue;
+            if (gameData.role != MMRole.INNOCENT) continue;
 
             Inventory inventory = p.getInventory();
             if (inventory.contains(dye) || inventory.contains(Item.get(Item.GOLDEN_HOE))) continue;
