@@ -88,6 +88,7 @@ public abstract class Minigame {
     protected abstract Match createMatch(int newMatchNumber);
 
     public boolean createNewPendingMatch() {
+        if (pendingMatches.size() >= 3) return false;
         if (!pendingMatches.isEmpty() && pendingMatches.element().getPlayers().size() < getMaxPlayers()) {
             return false;
         }
@@ -136,6 +137,15 @@ public abstract class Minigame {
     public void onMatchEnding(Match match) {
         matches.remove(match);
         busyMatchNumbers.clear(match.getNumber());
+    }
+
+    public void onForceStop(Match match) {
+        busyMatchNumbers.clear(match.getNumber());
+        matches.remove(match);
+        if (pendingMatches.remove(match)) {
+            createNewPendingMatch();
+            lobby.updateJoinNpcSubtitle();
+        }
     }
 
 

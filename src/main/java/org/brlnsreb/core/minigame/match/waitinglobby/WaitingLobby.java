@@ -116,6 +116,7 @@ public abstract class WaitingLobby extends Lobby {
     @Override
     public void close() {
         updateUiTask.cancel();
+        if (timer != null) timer.stop();
         super.close();
     }
 

@@ -173,7 +173,6 @@ public abstract class Match {
             case WAITING_LOBBY, LOBBY_COUNTDOWN -> {
                 for (CustomPlayer p : players) {
                     p.sendMessage(ChatMsgs.INFO_PFX + "§cThe server is forcing match stop, joining hub...");
-                    waitingLobby.onLeave(p);
                     minigame.onLobbyJoin(p);
                 }
                 waitingLobby.close();
@@ -182,7 +181,7 @@ public abstract class Match {
             case PREGAME_COUNTDOWN, IN_GAME, ENDING -> {
                 game.forceStop();
                 for (CustomPlayer p : players) {
-                    onLeave(p, false);
+                    game.prepareAndSaveData(p, false);
                     minigame.onLobbyJoin(p);
                 }
                 for (CustomPlayer s : spectators) {
@@ -192,6 +191,7 @@ public abstract class Match {
         }
 
         closeMatch();
+        minigame.onForceStop(this);
     }
 
     public void onEnding() {
@@ -201,13 +201,12 @@ public abstract class Match {
         for (CustomPlayer s : spectators) minigame.onLobbyJoin(s);
 
         closeMatch();
+        minigame.onMatchEnding(this);
     }
 
     private void closeMatch() {
         players.clear();
         spectators.clear();
-
-        minigame.onMatchEnding(this);
         closed = true;
     }
 
