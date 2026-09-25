@@ -98,7 +98,8 @@ public abstract class Match {
         }
     }
 
-    public void onLeave(CustomPlayer player) {
+    public void onLeave(CustomPlayer player) { onLeave(player, true); }
+    public void onLeave(CustomPlayer player, boolean remove) {
         if (player.state == PlayerStateType.DEATH_LOBBY) return;
 
         switch (state.current) {
@@ -110,11 +111,11 @@ public abstract class Match {
         
             case PREGAME_COUNTDOWN, IN_GAME, ENDING -> {
                 if (player.isPlaying()) {
-                    players.remove(player);
+                    if (remove) players.remove(player);
                     game.prepareAndSaveData(player, false);
                     game.onLeave(player);
                 } else if (player.isGameSpectator()) {
-                    spectators.remove(player);
+                    if (remove) spectators.remove(player);
                 }
             }
         }
@@ -181,7 +182,7 @@ public abstract class Match {
             case PREGAME_COUNTDOWN, IN_GAME, ENDING -> {
                 game.forceStop();
                 for (CustomPlayer p : players) {
-                    onLeave(p);
+                    onLeave(p, false);
                     minigame.onLobbyJoin(p);
                 }
                 for (CustomPlayer s : spectators) {
