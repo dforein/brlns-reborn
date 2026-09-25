@@ -30,29 +30,31 @@ public class FriendsManager {
     public static void loadFriendDataSync(CustomPlayer player, String accountName) throws SQLException {
         PlayerData data = player.data;
 
-        //friends
-        populateDataMapFromDB(
-            data.getOfflineFriends(),
-            accountName,
-            "SELECT friend_name FROM friends WHERE player_name = ?",
-            "friend_name"  
-        );
+        synchronized (data.getFriendLock()) {
+            //friends
+            populateDataMapFromDB(
+                data.getOfflineFriends(),
+                accountName,
+                "SELECT friend_name FROM friends WHERE player_name = ?",
+                "friend_name"  
+            );
 
-        //received friend requests
-        populateDataMapFromDB(
-            data.getReceivedFriendRequests(),
-            accountName,
-            "SELECT sender_name FROM friend_requests WHERE receiver_name = ?",
-            "sender_name"
-        );
+            //received friend requests
+            populateDataMapFromDB(
+                data.getReceivedFriendRequests(),
+                accountName,
+                "SELECT sender_name FROM friend_requests WHERE receiver_name = ?",
+                "sender_name"
+            );
 
-        //sent friend requests
-        populateDataMapFromDB(
-            data.getSentFriendRequests(),
-            accountName,
-            "SELECT receiver_name FROM friend_requests WHERE sender_name = ?",
-            "receiver_name"
-        );
+            //sent friend requests
+            populateDataMapFromDB(
+                data.getSentFriendRequests(),
+                accountName,
+                "SELECT receiver_name FROM friend_requests WHERE sender_name = ?",
+                "receiver_name"
+            );
+        }
 
         addOnlineFriend(data, accountName);
     }
@@ -61,14 +63,12 @@ public class FriendsManager {
         DBResults queryResults = DatabaseManager.executeSelect(sql, accountName);
         if (queryResults.isEmpty()) return;
 
-        scheduler.scheduleTask(() -> {
-            dataMap.clear();
+        dataMap.clear();
 
-            for (int i = 0; i < queryResults.results.size(); i++) {
-                String value = queryResults.getString(i, field);
-                dataMap.put(value.toLowerCase(), value);
-            }
-        });
+        for (int i = 0; i < queryResults.results.size(); i++) {
+            String value = queryResults.getString(i, field);
+            dataMap.put(value.toLowerCase(), value);
+        }
     }
 
 
