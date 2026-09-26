@@ -116,6 +116,7 @@ public class BrlnsReb extends PluginBase {
 
         server = getServer();
         server.getSettings().levelSettings().loadAllLevels(false);
+        server.getSettings().gameplaySettings().forceResources(true);
         server.setDifficulty(2);
         server.getSettings().save();
 
