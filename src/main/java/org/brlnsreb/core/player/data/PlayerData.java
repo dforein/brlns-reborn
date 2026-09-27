@@ -263,17 +263,13 @@ public class PlayerData {
     public void setFriendNotify(boolean value) { synchronized (friendLock) { this.friendNotify = value; } }
     public void setFriendRequestsFlag(boolean value) { synchronized (friendLock) { this.friendRequests = value; } }
 
-    public Set<String> getOfflineFriends() { return this.offlineFriends; }
-    public List<String> getOfflineFriendsCopy() {
-        synchronized (friendLock) { return new ArrayList<>(this.offlineFriends); }
-    }
     public Set<String> getOnlineFriends() { return this.onlineFriends; }
-    public List<String> getOnlineFriendsCopy() {
-        synchronized (friendLock) { return new ArrayList<>(this.onlineFriends); }
-    }
-     public int getFriendCount() { 
-        synchronized (friendLock) { return this.onlineFriends.size() + this.offlineFriends.size(); } 
-    }
+    public List<String> getOnlineFriendsCopy() { synchronized (friendLock) { return new ArrayList<>(this.onlineFriends); } }
+    public int getOnlineFriendCount() { synchronized (friendLock) { return this.onlineFriends.size(); } }
+    public Set<String> getOfflineFriends() { return this.offlineFriends; }
+    public List<String> getOfflineFriendsCopy() { synchronized (friendLock) { return new ArrayList<>(this.offlineFriends); } }
+    public int getOfflineFriendCount() { synchronized (friendLock) { return this.offlineFriends.size(); } }
+    public int getFriendCount() { synchronized (friendLock) { return this.onlineFriends.size() + this.offlineFriends.size(); } }
 
     public Set<String> getReceivedFriendRequests() { return this.receivedFriendRequests; }
     public List<String> getReceivedFriendRequestsCopy() {

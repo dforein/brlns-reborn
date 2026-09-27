@@ -40,12 +40,12 @@ public class FriendCommand extends Command implements BrlnsCommand {
             .then(RouteNode.argument("name", new StringNode())
                 .exec(ctx -> {
                     CustomPlayer sender = getSender(ctx);
-                    String senderName = getPlayerName(sender);
+                    String senderName = sender.data.name;
                     if (senderName == null) return loginFail;
                     String receiverName = ctx.getArg("name");
 
                     FriendsManager.sendRequest(senderName, receiverName).thenAccept(outcome -> {
-                        FriendsManager.sendRequestMessages(outcome, senderName, receiverName);
+                        FriendsManager.sendRequestMessages(outcome, sender, receiverName);
                     });
 
                     return CommandResult.success();
@@ -56,18 +56,12 @@ public class FriendCommand extends Command implements BrlnsCommand {
             .then(RouteNode.argument("name", new StringNode())
                 .exec(ctx -> {
                     CustomPlayer sender = getSender(ctx);
-                    String senderName = getPlayerName(sender);
+                    String senderName = sender.data.name;
+                    String friendName = ctx.getArg("name");
                     if (senderName == null) return loginFail;
 
-                    FriendsManager.removeFriend(senderName, ctx.getArg("name")).thenAccept(outcome -> {
-                        sender.sendMessage(
-                            switch (outcome) {
-                                case OK -> ChatMsgs.SUCCESS_PFX + "§e" + ctx.getArg("name") + "§a removed from your friend list";
-                                case NOT_FRIENDS -> ChatMsgs.ERROR_PFX + ctx.getArg("name") + " not found in your friend list!";
-                                case DB_ERROR -> ChatMsgs.ERROR_PFX + "Report this error to developers: DB_ERROR";
-                                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend_remove_error";
-                            }
-                        );
+                    FriendsManager.removeFriend(senderName, friendName).thenAccept(outcome -> {
+                        FriendsManager.sendRemoveFriendMessages(outcome, sender, friendName);
                     });
 
                     return CommandResult.success();
@@ -78,25 +72,12 @@ public class FriendCommand extends Command implements BrlnsCommand {
             .then(RouteNode.argument("name", new StringNode())
                 .exec(ctx -> {
                     CustomPlayer sender = getSender(ctx);
-                    String requestReceiverName = getPlayerName(sender);
+                    String requestReceiverName = sender.data.name;
                     if (requestReceiverName == null) return loginFail;
                     String requestSenderName = ctx.getArg("name");
 
                     FriendsManager.acceptRequest(requestReceiverName, requestSenderName).thenAccept(outcome -> {
-                        sender.sendMessage(
-                            switch (outcome) {
-                                case OK -> ChatMsgs.SUCCESS_PFX + "§e" + requestSenderName + "§a added to your friend list";
-                                case REQUEST_NOT_FOUND -> ChatMsgs.ERROR_PFX + "Request not found from " + requestSenderName;
-                                case DB_ERROR -> ChatMsgs.ERROR_PFX + "Report this error to developers: DB_ERROR";
-                                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend_accept_error";
-                            }
-                        );
-
-                        if (outcome != Outcome.OK) return;
-                        CustomPlayer requestSender = PlayerUtils.getLoggedPlayer(requestSenderName);
-                        if (requestSender == null) return;
-
-                        requestSender.sendMessage(ChatMsgs.INFO_PFX + "§e" + requestReceiverName + "§a added to your friend list");
+                        FriendsManager.sendAcceptRequestMessages(outcome, sender, requestSenderName);
                     });
                     
                     return CommandResult.success();
@@ -106,26 +87,14 @@ public class FriendCommand extends Command implements BrlnsCommand {
         RouteNode acceptAllNode = RouteNode.literal("acceptall")
             .exec(ctx -> {
                 CustomPlayer sender = getSender(ctx);
-                String requestReceiverName = getPlayerName(sender);
+                String requestReceiverName = sender.data.name;
                 if (requestReceiverName == null) return loginFail;
 
                 List<String> requestSenderNames = sender.data.getReceivedFriendRequestsCopy();
 
                 for (String requestSenderName : requestSenderNames) {
                     FriendsManager.acceptRequest(requestReceiverName, requestSenderName).thenAccept(outcome -> {
-                        sender.sendMessage(
-                            switch (outcome) {
-                                case OK -> ChatMsgs.SUCCESS_PFX + "§e" + requestSenderName + "§a added to your friend list";
-                                case DB_ERROR -> ChatMsgs.ERROR_PFX + "Report this error to developers: DB_ERROR";
-                                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend_acceptall_error";
-                            }
-                        );
-
-                        if (outcome != Outcome.OK) return;
-                        CustomPlayer requestSender = PlayerUtils.getLoggedPlayer(requestSenderName);
-                        if (requestSender == null) return;
-                        
-                        requestSender.sendMessage(ChatMsgs.INFO_PFX + "§e" + requestReceiverName + "§a added to your friend list");
+                        FriendsManager.sendAcceptRequestMessages(outcome, sender, requestSenderName);
                     });
                 }
 
@@ -137,18 +106,11 @@ public class FriendCommand extends Command implements BrlnsCommand {
             .then(RouteNode.argument("name", new StringNode())
                 .exec(ctx -> {
                     CustomPlayer sender = getSender(ctx);
-                    String requestReceiverName = getPlayerName(sender);
+                    String requestReceiverName = sender.data.name;
                     if (requestReceiverName == null) return loginFail;
 
                     FriendsManager.denyRequest(requestReceiverName, ctx.getArg("name")).thenAccept(outcome -> {
-                        sender.sendMessage(
-                            switch (outcome) {
-                                case OK -> ChatMsgs.SUCCESS_PFX + "Denied friend request from §e" + ctx.getArg("name");
-                                case REQUEST_NOT_FOUND -> ChatMsgs.ERROR_PFX + "Request not found from " + ctx.getArg("name");
-                                case DB_ERROR -> ChatMsgs.ERROR_PFX + "Report this error to developers: DB_ERROR";
-                                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend_deny_error";
-                            }
-                        );
+                        FriendsManager.sendDenyRequestMessages(outcome, sender, ctx.getArg("name"));
                     });
                     return CommandResult.success();
                 }));
@@ -157,20 +119,14 @@ public class FriendCommand extends Command implements BrlnsCommand {
         RouteNode denyAllNode = RouteNode.literal("denyall")
             .exec(ctx -> {
                 CustomPlayer sender = getSender(ctx);
-                String requestReceiverName = getPlayerName(sender);
+                String requestReceiverName = sender.data.name;
                 if (requestReceiverName == null) return loginFail;
 
                 List<String> requestSenderNames = sender.data.getReceivedFriendRequestsCopy();
 
                 for (String requestSenderName : requestSenderNames) {
                     FriendsManager.denyRequest(requestReceiverName, requestSenderName).thenAccept(outcome -> {
-                        sender.sendMessage(
-                            switch (outcome) {
-                                case OK -> ChatMsgs.SUCCESS_PFX + "Denied friend request from §e" + requestSenderName;
-                                case DB_ERROR -> ChatMsgs.ERROR_PFX + "Report this error to developers: DB_ERROR";
-                                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend_denyall_error";
-                            }
-                        );
+                        FriendsManager.sendDenyRequestMessages(outcome, sender, requestSenderName);
                     });
                 }
 
@@ -181,7 +137,7 @@ public class FriendCommand extends Command implements BrlnsCommand {
         RouteNode spectateJoinNameNode = RouteNode.argument("name", new StringNode())
             .exec(ctx -> {
                 CustomPlayer sender = getSender(ctx);
-                if (getPlayerName(sender) == null) return loginFail;
+                if (!sender.data.isLogged()) return loginFail;
 
                 String friendName = ctx.getArg("name");
                 if (!sender.data.isFriendWith(friendName)) {
@@ -190,43 +146,11 @@ public class FriendCommand extends Command implements BrlnsCommand {
                     );
                 }
 
-                CustomPlayer friend = PlayerUtils.getLoggedPlayer(friendName);
-                if (friend == null) {
-                    return CommandResult.fail(
-                        ChatMsgs.ERROR_PFX + friendName + " is not online."
-                    );
+                if (joinSpectateFriend(sender, friendName)) {
+                    return CommandResult.success();
+                } else {
+                    return CommandResult.fail();
                 }
-
-                if (friend.state == PlayerStateType.TELEPORTING) {
-                    return CommandResult.fail(ChatMsgs.ERROR_PFX + "You cannot join " + friendName + " right now, retry in a few seconds.");
-                }
-
-                Match match = sender.matchCurrent;
-                if (match != null) match.onLeave(sender);
-                switch (friend.state) {
-                    case LOBBY -> {
-                        if (friend.minigameCurrent == null) {
-                            MainHub.instance.onJoin(sender);
-                        } else {
-                            friend.minigameCurrent.onLobbyJoin(sender);
-                        }
-                    }
-                    
-                    case WAITING_LOBBY, DEATH_LOBBY -> friend.matchCurrent.onJoin(sender);
-
-                    case PLAYING, SPECTATOR -> {
-                        friend.matchCurrent.onJoin(sender);
-                        friend.sendMessage(ChatMsgs.INFO_PFX + "§d" + getPlayerName(sender) + "§a is now spectating.");
-                    }
-
-                    default -> {
-                        MainHub.instance.onJoin(sender);
-                        return CommandResult.fail(ChatMsgs.ERROR_PFX + "Report this error to developers: friend_join_switch_error");
-                    }
-                }
-
-                sender.sendMessage(ChatMsgs.SUCCESS_PFX + "You joined " + friendName + "!");
-                return CommandResult.success();
             });
 
         //friend spectate <name>
@@ -258,7 +182,7 @@ public class FriendCommand extends Command implements BrlnsCommand {
         RouteNode alertsNode = RouteNode.literal("alerts")
             .exec(ctx -> {
                 CustomPlayer sender = getSender(ctx);
-                if (getPlayerName(sender) == null) return loginFail;
+                if (!sender.data.isLogged()) return loginFail;
 
                 PlayerData data = sender.data;
                 data.setFriendAlerts(!data.getFriendAlerts());
@@ -275,7 +199,7 @@ public class FriendCommand extends Command implements BrlnsCommand {
         RouteNode notifyNode = RouteNode.literal("notify")
             .exec(ctx -> {
                 CustomPlayer sender = getSender(ctx);
-                if (getPlayerName(sender) == null) return loginFail;
+                if (!sender.data.isLogged()) return loginFail;
 
                 PlayerData data = sender.data;
                 data.setFriendNotify(!data.getFriendNotify());
@@ -292,7 +216,7 @@ public class FriendCommand extends Command implements BrlnsCommand {
         RouteNode offNode = RouteNode.literal("off")
             .exec(ctx -> {
                 CustomPlayer sender = getSender(ctx);
-                if (getPlayerName(sender) == null) return loginFail;
+                if (!sender.data.isLogged()) return loginFail;
 
                 sender.data.setFriendRequestsFlag(false);
                 sender.sendMessage(ChatMsgs.SUCCESS_PFX + "Friend invites disabled for the current session.");
@@ -338,7 +262,7 @@ public class FriendCommand extends Command implements BrlnsCommand {
 
     private boolean listExec(CommandContext ctx, int currentPage) {
         CustomPlayer sender = getSender(ctx);
-        if (getPlayerName(sender) == null) return false;
+        if (!sender.data.isLogged()) return false;
 
         List<String> onlineFriends = sender.data.getOnlineFriendsCopy();
         List<String> offlineFriends = sender.data.getOfflineFriendsCopy();
@@ -399,12 +323,49 @@ public class FriendCommand extends Command implements BrlnsCommand {
         return true;
     }
 
-    private CustomPlayer getSender(CommandContext ctx) {
-        return (CustomPlayer) ctx.getSender();
+    public static boolean joinSpectateFriend(CustomPlayer player, String friendName) {
+        CustomPlayer friend = PlayerUtils.getLoggedPlayer(friendName);
+        if (friend == null) {
+            player.sendMessage(ChatMsgs.ERROR_PFX + friendName + " is not online now.");
+            return false;
+        }
+
+        if (friend.state == PlayerStateType.TELEPORTING) {
+            player.sendMessage(ChatMsgs.ERROR_PFX + "You cannot join " + friendName + " right now, retry in a few seconds.");
+            return false;
+        }
+
+        Match match = player.matchCurrent;
+        if (match != null) match.onLeave(player);
+        switch (friend.state) {
+            case LOBBY -> {
+                if (friend.minigameCurrent == null) {
+                    MainHub.instance.onJoin(player);
+                } else {
+                    friend.minigameCurrent.onLobbyJoin(player);
+                }
+            }
+            
+            case WAITING_LOBBY, DEATH_LOBBY -> friend.matchCurrent.onJoin(player);
+
+            case PLAYING, SPECTATOR -> {
+                friend.matchCurrent.onJoin(player);
+                friend.sendMessage(ChatMsgs.INFO_PFX + "§d" + player.data.name + "§a is now spectating.");
+            }
+
+            default -> {
+                MainHub.instance.onJoin(player);
+                player.sendMessage(ChatMsgs.ERROR_PFX + "Report this error to developers: friend_join_switch_error");
+                return false;
+            }
+        }
+
+        player.sendMessage(ChatMsgs.SUCCESS_PFX + "You joined " + friendName + "!");
+        return true;
     }
 
-    private String getPlayerName(CustomPlayer player) {
-        return player.data.name;
+    private CustomPlayer getSender(CommandContext ctx) {
+        return (CustomPlayer) ctx.getSender();
     }
 
 }

@@ -186,8 +186,7 @@ public class FriendsManager {
         });
     }
 
-    public static void sendRequestMessages(Outcome outcome, String senderName, String receiverName) {
-        CustomPlayer sender = PlayerUtils.getLoggedPlayer(senderName);
+    public static void sendRequestMessages(Outcome outcome, CustomPlayer sender, String receiverName) {
         sender.sendMessage(
             switch (outcome) {
                 case OK -> ChatMsgs.SUCCESS_PFX + "Friend request sent to §e" + receiverName;
@@ -205,9 +204,9 @@ public class FriendsManager {
         CustomPlayer receiver = PlayerUtils.getLoggedPlayer(receiverName);
         if (receiver != null) {
             if (outcome == Outcome.OK) {
-                receiver.sendMessage(ChatMsgs.INFO_PFX + "§3" + senderName + "§a wants to be your friend! \n§e/friend accept/deny " + senderName);
+                receiver.sendMessage(ChatMsgs.INFO_PFX + "§3" + sender.data.name + "§a wants to be your friend! \n§e/friend accept/deny " + sender.data.name);
             } else if (outcome == Outcome.ADDED_FRIEND) {
-                receiver.sendMessage(ChatMsgs.INFO_PFX + "§e" + senderName + "§a added to your friend list");
+                receiver.sendMessage(ChatMsgs.INFO_PFX + "§e" + sender.data.name + "§a added to your friend list");
             }
         }
     }
@@ -259,6 +258,23 @@ public class FriendsManager {
         });
     }
 
+    public static void sendAcceptRequestMessages(Outcome outcome, CustomPlayer requestReceiver, String requestSenderName) {
+        requestReceiver.sendMessage(
+            switch (outcome) {
+                case OK -> ChatMsgs.SUCCESS_PFX + "§e" + requestSenderName + "§a added to your friend list";
+                case REQUEST_NOT_FOUND -> ChatMsgs.ERROR_PFX + "Request not found from " + requestSenderName;
+                case DB_ERROR -> ChatMsgs.ERROR_PFX + "Report this error to developers: DB_ERROR";
+                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend_accept_error";
+            }
+        );
+
+        if (outcome != Outcome.OK) return;
+        CustomPlayer requestSender = PlayerUtils.getLoggedPlayer(requestSenderName);
+        if (requestSender == null) return;
+
+        requestSender.sendMessage(ChatMsgs.INFO_PFX + "§e" + requestReceiver.data.name + "§a added to your friend list");
+    }
+
     public static CompletableFuture<Outcome> denyRequest(String receiverName, String senderName) {
         return CompletableFuture.supplyAsync(() -> {
             try {
@@ -279,6 +295,17 @@ public class FriendsManager {
         }).exceptionally(e -> {
             return PlayerDataManager.onDBError(e);
         });
+    }
+
+    public static void sendDenyRequestMessages(Outcome outcome, CustomPlayer requestReceiver, String requestSenderName) {
+        requestReceiver.sendMessage(
+            switch (outcome) {
+                case OK -> ChatMsgs.SUCCESS_PFX + "Denied friend request from §e" + requestSenderName;
+                case REQUEST_NOT_FOUND -> ChatMsgs.ERROR_PFX + "Request not found from " + requestSenderName;
+                case DB_ERROR -> ChatMsgs.ERROR_PFX + "Report this error to developers: DB_ERROR";
+                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend_deny_error";
+            }
+        );
     }
 
 
@@ -309,6 +336,17 @@ public class FriendsManager {
         }).exceptionally(e -> {
             return PlayerDataManager.onDBError(e);
         });
+    }
+
+    public static void sendRemoveFriendMessages(Outcome outcome, CustomPlayer player, String friendName) {
+        player.sendMessage(
+            switch (outcome) {
+                case OK -> ChatMsgs.SUCCESS_PFX + "§e" + friendName + "§a removed from your friend list";
+                case NOT_FRIENDS -> ChatMsgs.ERROR_PFX + friendName + " not found in your friend list!";
+                case DB_ERROR -> ChatMsgs.ERROR_PFX + "Report this error to developers: DB_ERROR";
+                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: friend_remove_error";
+            }
+        );
     }
 
 
