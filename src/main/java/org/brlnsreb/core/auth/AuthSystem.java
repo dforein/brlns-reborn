@@ -10,7 +10,6 @@ import org.brlnsreb.utils.config.YamlUtil;
 import org.brlnsreb.utils.messages.ChatMsgs;
 import org.brlnsreb.utils.messages.Messages;
 import org.brlnsreb.utils.messages.ChatMsgs.Alignment;
-import org.powernukkitx.Player;
 import org.powernukkitx.form.response.CustomResponse;
 import org.powernukkitx.form.window.CustomForm;
 import org.powernukkitx.form.window.SimpleForm;
@@ -27,7 +26,7 @@ public class AuthSystem extends FormAbstract {
         messages = Configs.getGlobalMessages();
     }
 
-    public static void openForm(Player player) {
+    public static void openForm(CustomPlayer player) {
         if (!checkCooldown(player)) return;
 
         String path = "auth.form.";
@@ -39,7 +38,7 @@ public class AuthSystem extends FormAbstract {
         form.addToggle(YamlUtil.getStr(path + "toggle3", messages), false);
         
         form.send(player);
-        form.onSubmit((p, response) -> handleResponse((CustomPlayer) p, response));
+        form.onSubmit((p, response) -> handleResponse(player, response));
     }
 
     public static void handleResponse(CustomPlayer player, CustomResponse response) {

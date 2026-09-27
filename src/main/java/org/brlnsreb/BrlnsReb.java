@@ -36,6 +36,7 @@ import org.brlnsreb.listeners.maintenance.MaintenanceJoinListener;
 import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.minigames.mm.match.game.entities.DeadBodyEntity;
 import org.brlnsreb.minigames.mm.match.game.entities.ThrownSwordEntity;
+import org.brlnsreb.utils.config.Configs;
 
 @PluginMeta(
     name = "brlnsreb",
@@ -110,7 +111,7 @@ public class BrlnsReb extends PluginBase {
     public void onEnable() {
         saveAllResources();
 
-        Config maintenance = new Config(getDataFolder() + "/maintenance.yml", Config.YAML);
+        Config maintenance = Configs.getConfig("maintenance.yml");
         underMaintenance = maintenance.getBoolean("server-under-maintenance");
         loadAllLevels = underMaintenance ? maintenance.getBoolean("load-all-levels") : false;
 

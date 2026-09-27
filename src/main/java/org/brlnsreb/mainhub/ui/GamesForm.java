@@ -7,13 +7,12 @@ import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.utils.abstraction.FormAbstract;
 import org.brlnsreb.utils.config.Configs;
 import org.brlnsreb.utils.config.YamlUtil;
-import org.powernukkitx.Player;
 import org.powernukkitx.form.window.SimpleForm;
 import org.powernukkitx.utils.Config;
 
 public class GamesForm extends FormAbstract {
 
-    public static void openForm(Player player) {
+    public static void openForm(CustomPlayer player) {
         if (!checkCooldown(player)) return;
 
         Config globalConfig = Configs.getGlobalConfig();
@@ -22,13 +21,13 @@ public class GamesForm extends FormAbstract {
 
         form.addButton(
             YamlUtil.getStr("lobby.items.games.hub-button-text", globalConfig),
-            p -> MainHub.instance.onJoin((CustomPlayer) p)
+            p -> MainHub.instance.onJoin(player)
         );
 
         for (Minigame mg : MinigameManager.getMinigames()) {
             form.addButton(
                 mg.mgt.displayName + " §r§8(§r" + mg.getPlayerCount() + "§8)",
-                p -> mg.onLobbyJoin((CustomPlayer) p)
+                p -> mg.onLobbyJoin(player)
             );  //TODO: add images?
         }
 

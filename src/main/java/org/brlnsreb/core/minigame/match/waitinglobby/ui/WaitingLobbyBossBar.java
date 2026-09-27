@@ -7,7 +7,6 @@ import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.utils.abstraction.BossBarAbstract;
 import org.brlnsreb.utils.config.Configs;
 import org.brlnsreb.utils.config.YamlUtil;
-import org.powernukkitx.Player;
 import org.powernukkitx.utils.Config;
 
 public class WaitingLobbyBossBar extends BossBarAbstract {
@@ -35,36 +34,33 @@ public class WaitingLobbyBossBar extends BossBarAbstract {
     }
 
     public void updateWaitingLobby() {
-        for (Player p : players) {
-            updateBossBar(
-                (CustomPlayer) p, 
-                YamlUtil.getStr(PATH + "text-waiting-players", config)
-            );
+        for (CustomPlayer p : players) {
+            updateBossBar(p, YamlUtil.getStr(PATH + "text-waiting-players", config));
         }
     }
 
     public void updateLobbyCountdown(int seconds) {
         this.currentSeconds = seconds;
 
-        for (Player p : players) {
+        for (CustomPlayer p : players) {
             updateCountdown(
-                (CustomPlayer) p,
-                formatCountdownMessage(seconds),
+                p, 
+                formatCountdownMessage(seconds), 
                 seconds,
                 secondsCountdown
             );
         }
     }
 
-    public void updatePlayer(Player player) {
+    public void updatePlayer(CustomPlayer player) {
         if (this.currentSeconds < 0) {
             updateBossBar(
-                (CustomPlayer) player, 
+                player, 
                 YamlUtil.getStr(PATH + "text-waiting-players", config)
             );
         } else {
             updateCountdown(
-                (CustomPlayer) player, 
+                player, 
                 formatCountdownMessage(this.currentSeconds),
                 this.currentSeconds,
                 secondsCountdown
