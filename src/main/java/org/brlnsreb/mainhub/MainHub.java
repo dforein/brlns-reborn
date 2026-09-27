@@ -46,7 +46,7 @@ public class MainHub extends Lobby {
     private Task launchersTask;
     private List<Vector3> launchersPos;
     private double launchersSpeed;
-    private Cooldown launchersCooldown = Cooldown.seconds(3.5);
+    private Cooldown launchersCooldown = Cooldown.seconds(2);
 
     public MainHub() {
         super();
