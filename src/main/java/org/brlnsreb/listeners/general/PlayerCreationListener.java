@@ -20,7 +20,6 @@ public class PlayerCreationListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         event.setJoinMessage("");
 
-        PlayerUtils.onlinePlayers.incrementAndGet();
         PlayerUtils.updateOnlinePlayer(event.getPlayer(), true); //remove the name for players who aren't in the same level (main hub)
     }
 

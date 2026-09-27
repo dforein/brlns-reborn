@@ -3,7 +3,6 @@ package org.brlnsreb.listeners.general;
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.lobby.Lobby;
 import org.brlnsreb.core.player.CustomPlayer;
-import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.core.player.data.database.AccountsManager;
 import org.brlnsreb.core.player.data.database.FriendsManager;
 import org.brlnsreb.core.player.data.database.PlayerDataManager;
@@ -34,7 +33,6 @@ public class PlayerQuitListener implements Listener {
     private void handlePlayerLeave(Player p) {
         BrlnsReb.logger.info("§6LEAVE§r " + p.getDisplayName());
 
-        PlayerUtils.onlinePlayers.decrementAndGet();
         CustomPlayer player = (CustomPlayer) p;
 
         AccountsManager.savePlayerData(player);

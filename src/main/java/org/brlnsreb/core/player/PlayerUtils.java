@@ -30,8 +30,6 @@ import org.powernukkitx.utils.SkinConverter;
 
 public class PlayerUtils {
 
-    public static AtomicInteger onlinePlayers = new AtomicInteger(0);
-
     //change world
 
     public static PlayerStateType changeWorld(CustomPlayer p, Location loc, boolean lobby) {

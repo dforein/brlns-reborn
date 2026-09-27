@@ -9,7 +9,6 @@ import org.brlnsreb.core.lobby.entities.NPCEntity;
 import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
-import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.mainhub.MainLobbyUtils;
 import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.mainhub.items.MainLobbyItemManager;
@@ -17,6 +16,7 @@ import org.brlnsreb.mainhub.ui.MainLobbyBossBar;
 import org.brlnsreb.utils.config.Configs;
 import org.brlnsreb.utils.config.YamlUtil;
 import org.brlnsreb.utils.messages.ChatMsgs;
+import org.powernukkitx.Server;
 import org.powernukkitx.utils.Config;
 
 public abstract class MinigameLobby extends Lobby {
@@ -100,7 +100,7 @@ public abstract class MinigameLobby extends Lobby {
  
     private void updateBackToHubNpcSubtitle() {
         String subtitle = YamlUtil.getStr(configPath() + "npcs.back-to-hub.text2", config)
-            .formatted(PlayerUtils.onlinePlayers.get());
+            .formatted(Server.getInstance().getOnlinePlayers().size());
 
         backToHubNpc.updateSubtitle(subtitle);
     }
@@ -109,7 +109,7 @@ public abstract class MinigameLobby extends Lobby {
         String text = YamlUtil.getStr("lobby.holograms.main.text", Configs.getGlobalConfig()).formatted(
             ChatMsgs.BROKENLENS_GAMES,
             minigame.mgt.displayNameTagY,
-            PlayerUtils.onlinePlayers.get()
+            Server.getInstance().getOnlinePlayers().size()
         );
 
         mainHolo.setText(text);
