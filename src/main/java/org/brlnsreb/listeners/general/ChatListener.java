@@ -23,7 +23,8 @@ public class ChatListener implements Listener {
         "/grm",
         "/frm",
         "/trm",
-        "/reply"
+        "/reply",
+        "/announce"
     };
 
     private String[] CHAT_COMMANDS_1 = {        //1 arg before text (e.g. the player name)
@@ -31,8 +32,12 @@ public class ChatListener implements Listener {
     };
 
     public static String getMessage(CommandContext ctx) {
-        String message = ctx.getArg("message");
-        message = message.substring(1, message.length() - 1)
+        String rawMessage = ctx.getArg("message");
+        return getMessage(rawMessage);
+    }
+
+    public static String getMessage(String rawMessage) {
+        String message = rawMessage.substring(1, rawMessage.length() - 1)
             .replace(curlyBrktOpenCode, "{")
             .replace(curlyBrktCloseCode, "}");
         return TextFormat.colorize(message);
