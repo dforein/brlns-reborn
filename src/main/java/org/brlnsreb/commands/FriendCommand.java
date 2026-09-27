@@ -1,6 +1,6 @@
 package org.brlnsreb.commands;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.player.CustomPlayer;
@@ -109,10 +109,7 @@ public class FriendCommand extends Command implements BrlnsCommand {
                 String requestReceiverName = getPlayerName(sender);
                 if (requestReceiverName == null) return loginFail;
 
-                ArrayList<String> requestSenderNames;
-                synchronized (sender.data.getFriendLock()) {
-                    requestSenderNames = new ArrayList<>(sender.data.getReceivedFriendRequests().values());
-                }
+                List<String> requestSenderNames = sender.data.getReceivedFriendRequestsCopy();
 
                 for (String requestSenderName : requestSenderNames) {
                     FriendsManager.acceptRequest(requestReceiverName, requestSenderName).thenAccept(outcome -> {
@@ -163,10 +160,7 @@ public class FriendCommand extends Command implements BrlnsCommand {
                 String requestReceiverName = getPlayerName(sender);
                 if (requestReceiverName == null) return loginFail;
 
-                ArrayList<String> requestSenderNames;
-                synchronized (sender.data.getFriendLock()) {
-                    requestSenderNames = new ArrayList<>(sender.data.getReceivedFriendRequests().values());
-                }
+                List<String> requestSenderNames = sender.data.getReceivedFriendRequestsCopy();
 
                 for (String requestSenderName : requestSenderNames) {
                     FriendsManager.denyRequest(requestReceiverName, requestSenderName).thenAccept(outcome -> {
@@ -346,12 +340,10 @@ public class FriendCommand extends Command implements BrlnsCommand {
         CustomPlayer sender = getSender(ctx);
         if (getPlayerName(sender) == null) return false;
 
-        ArrayList<String> onlineFriends;
-        ArrayList<String> offlineFriends;
-        synchronized (sender.data.getFriendLock()) {
-            onlineFriends = new ArrayList<>(sender.data.getOnlineFriends().values());
-            offlineFriends = new ArrayList<>(sender.data.getOfflineFriends().values());
-        }
+        List<String> onlineFriends = sender.data.getOnlineFriendsCopy();
+        List<String> offlineFriends = sender.data.getOfflineFriendsCopy();
+        onlineFriends.sort(String.CASE_INSENSITIVE_ORDER);
+        offlineFriends.sort(String.CASE_INSENSITIVE_ORDER);
 
         int pages = (onlineFriends.size() + offlineFriends.size() + 9) / 10;
         if (pages == 0) {
@@ -368,7 +360,7 @@ public class FriendCommand extends Command implements BrlnsCommand {
             "§e--- §aFriend List §7| §aPage §e%d§a/§e%d ---".formatted(currentPage, pages)
         );
 
-        ArrayList<String> curr;
+        List<String> curr;
         boolean online;
         int currElementIndex;
         for (int i = 0; i < 10; i++) {

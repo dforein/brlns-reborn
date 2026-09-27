@@ -1,7 +1,6 @@
 package org.brlnsreb.core.player.data;
 
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.brlnsreb.core.minigame.Minigame;
@@ -24,10 +23,10 @@ public class PlayerData {
     
     private ConcurrentHashMap<Integer, int[]> stats = new ConcurrentHashMap<>();  //HashMap<[if global: 0; else MinigameType id], [array of stats values, value indexes: StatType id]>
     
-    private Map<String, String> offlineFriends = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    private Map<String, String> onlineFriends = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    private Map<String, String> receivedFriendRequests = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    private Map<String, String> sentFriendRequests = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private TreeSet<String> offlineFriends = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    private TreeSet<String> onlineFriends = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    private TreeSet<String> receivedFriendRequests = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    private TreeSet<String> sentFriendRequests = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     private boolean friendAlerts = true;      //if active, the player receives alerts of friends joining the server/a minigame
     private boolean friendNotify = true;      //if active, friends receive alerts of the player joining the server/a minigame
     private boolean friendRequests = true;    //if active, the player can receive friend requests (default: true)
@@ -81,7 +80,7 @@ public class PlayerData {
         }
     }
 
-    public boolean checkCost(int coinsCost) {
+    public boolean checkCoinsCost(int coinsCost) {
         synchronized (accountLock) { return coinsCost <= this.coins; }
     }
 
@@ -176,42 +175,39 @@ public class PlayerData {
     public void addFriend(String name, boolean removeRequests) {
         synchronized (friendLock) {
             if (PlayerDataManager.getPlayerId(name) == null) {
-                this.offlineFriends.put(name.toLowerCase(), name);
+                this.offlineFriends.add(name);
             } else {
-                this.onlineFriends.put(name.toLowerCase(), name);
+                this.onlineFriends.add(name);
             }
 
             if (removeRequests) {
-                this.receivedFriendRequests.remove(name.toLowerCase());
-                this.sentFriendRequests.remove(name.toLowerCase());
+                this.receivedFriendRequests.remove(name);
+                this.sentFriendRequests.remove(name);
             }
         }
     }
 
     public void removeFriend(String name) { 
         synchronized (friendLock) {
-            this.offlineFriends.remove(name.toLowerCase()); 
-            this.onlineFriends.remove(name.toLowerCase());
+            this.offlineFriends.remove(name); 
+            this.onlineFriends.remove(name);
         }
     }
 
     public void addOnlineFriend(String name) {
-        addOnlineFriend(name.toLowerCase(), name);
-    }
-
-    public void addOnlineFriend(String nameLowerCase, String name) {
         synchronized (friendLock) {
             if (isFriendWith(name)) {
-                this.onlineFriends.put(nameLowerCase, name);
-                this.offlineFriends.remove(nameLowerCase);
+                this.onlineFriends.add(name);
+                this.offlineFriends.remove(name);
             }
         }
     }
 
     public void removeOnlineFriend(String name) { 
         synchronized (friendLock) {
-            String removed = this.onlineFriends.remove(name.toLowerCase()); 
-            if (removed != null) this.offlineFriends.put(name.toLowerCase(), name);
+            if (this.onlineFriends.remove(name)) {
+                this.offlineFriends.add(name);
+            }
         }
     }
 
@@ -224,41 +220,70 @@ public class PlayerData {
         return PlayerUtils.getPlayer(friendId);
     }
 
+    public boolean isFriendWith(CustomPlayer player) { return isFriendWith(player.data.name); }
     public boolean isFriendWith(String name) { 
         synchronized (friendLock) {
-            return this.offlineFriends.containsKey(name.toLowerCase())
-                || this.onlineFriends.containsKey(name.toLowerCase()); 
+            return this.offlineFriends.contains(name)
+                || this.onlineFriends.contains(name); 
         }
     }
 
-    public boolean isFriendWith(CustomPlayer player) { return isFriendWith(player.data.name); }
-
     public boolean hasSentRequestTo(String name) {
-        return this.sentFriendRequests.containsKey(name.toLowerCase());
+        synchronized (friendLock) { return this.sentFriendRequests.contains(name); }
     }
 
     public boolean hasReceivedRequestFrom(String name) {
-        return this.receivedFriendRequests.containsKey(name.toLowerCase());
+        synchronized (friendLock) { return this.receivedFriendRequests.contains(name); }
     }
 
-    public void receiveFriendRequest(String name) { synchronized (friendLock) { this.receivedFriendRequests.put(name.toLowerCase(), name); } }
-    public void removeReceivedFriendRequest(String name) { synchronized (friendLock) { this.receivedFriendRequests.remove(name.toLowerCase()); } }
-    public void sendFriendRequest(String name) { synchronized (friendLock) { this.sentFriendRequests.put(name.toLowerCase(), name); } }
-    public void removeSentFriendRequest(String name) { synchronized (friendLock) { this.sentFriendRequests.remove(name.toLowerCase()); } }
+    public String getOriginalFriendName(String name) {
+        String original;
+        synchronized (friendLock) { 
+            original = this.onlineFriends.ceiling(name);
+            if (original != null && original.equalsIgnoreCase(name)) return original;
+            original = this.offlineFriends.ceiling(name);
+            if (original != null && original.equalsIgnoreCase(name)) return original;
+        }
+        return null;
+    }
+
+    public String getOriginalRequestSenderName(String name) {
+        synchronized (friendLock) {
+            String original = this.receivedFriendRequests.ceiling(name);
+            if (original != null && original.equalsIgnoreCase(name)) return original;
+        }
+        return null;
+    }
+
+    public void receiveFriendRequest(String name) { synchronized (friendLock) { this.receivedFriendRequests.add(name); } }
+    public void removeReceivedFriendRequest(String name) { synchronized (friendLock) { this.receivedFriendRequests.remove(name); } }
+    public void sendFriendRequest(String name) { synchronized (friendLock) { this.sentFriendRequests.add(name); } }
+    public void removeSentFriendRequest(String name) { synchronized (friendLock) { this.sentFriendRequests.remove(name); } }
     public void setFriendAlerts(boolean value) { synchronized (friendLock) { this.friendAlerts = value; } }
     public void setFriendNotify(boolean value) { synchronized (friendLock) { this.friendNotify = value; } }
     public void setFriendRequestsFlag(boolean value) { synchronized (friendLock) { this.friendRequests = value; } }
 
-    public Map<String, String> getOfflineFriends() { synchronized (friendLock) { return this.offlineFriends; } }
-    public List<Entry<String, String>> getOfflineFriendsEntriesCopy() {
-        synchronized (friendLock) { return new ArrayList<>(this.offlineFriends.entrySet()); }
+    public Set<String> getOfflineFriends() { return this.offlineFriends; }
+    public List<String> getOfflineFriendsCopy() {
+        synchronized (friendLock) { return new ArrayList<>(this.offlineFriends); }
     }
-    public Map<String, String> getOnlineFriends() { synchronized (friendLock) { return this.onlineFriends; } }
-    public List<String> getOnlineFriendsKeysCopy() {
-        synchronized (friendLock) { return new ArrayList<>(this.onlineFriends.keySet()); }
+    public Set<String> getOnlineFriends() { return this.onlineFriends; }
+    public List<String> getOnlineFriendsCopy() {
+        synchronized (friendLock) { return new ArrayList<>(this.onlineFriends); }
     }
-    public Map<String, String> getReceivedFriendRequests() { synchronized (friendLock) { return this.receivedFriendRequests; } }
-    public Map<String, String> getSentFriendRequests() { synchronized (friendLock) { return this.sentFriendRequests; } }
+     public int getFriendCount() { 
+        synchronized (friendLock) { return this.onlineFriends.size() + this.offlineFriends.size(); } 
+    }
+
+    public Set<String> getReceivedFriendRequests() { return this.receivedFriendRequests; }
+    public List<String> getReceivedFriendRequestsCopy() {
+        synchronized (friendLock) { return new ArrayList<>(this.receivedFriendRequests); }
+    }
+    public Set<String> getSentFriendRequests() { return this.sentFriendRequests; }
+    public List<String> getSentFriendRequestsCopy() {
+        synchronized (friendLock) { return new ArrayList<>(this.receivedFriendRequests); }
+    }
+
     public boolean getFriendAlerts() { synchronized (friendLock) { return this.friendAlerts; } }
     public boolean getFriendNotify() { synchronized (friendLock) { return this.friendNotify; } }
     public boolean getFriendRequestsFlag() { synchronized (friendLock) {return this.friendRequests; } }

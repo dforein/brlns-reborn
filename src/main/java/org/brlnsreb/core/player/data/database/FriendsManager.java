@@ -1,8 +1,7 @@
 package org.brlnsreb.core.player.data.database;
 
 import java.sql.SQLException;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.function.Consumer;
@@ -32,7 +31,7 @@ public class FriendsManager {
 
         synchronized (data.getFriendLock()) {
             //friends
-            populateDataMapFromDB(
+            populateDataSetFromDB(
                 data.getOfflineFriends(),
                 accountName,
                 "SELECT friend_name FROM friends WHERE player_name = ?",
@@ -40,7 +39,7 @@ public class FriendsManager {
             );
 
             //received friend requests
-            populateDataMapFromDB(
+            populateDataSetFromDB(
                 data.getReceivedFriendRequests(),
                 accountName,
                 "SELECT sender_name FROM friend_requests WHERE receiver_name = ?",
@@ -48,7 +47,7 @@ public class FriendsManager {
             );
 
             //sent friend requests
-            populateDataMapFromDB(
+            populateDataSetFromDB(
                 data.getSentFriendRequests(),
                 accountName,
                 "SELECT receiver_name FROM friend_requests WHERE sender_name = ?",
@@ -59,15 +58,15 @@ public class FriendsManager {
         addOnlineFriend(data, accountName);
     }
 
-    private static void populateDataMapFromDB(Map<String, String> dataMap, String accountName, String sql, String field) throws SQLException {
+    private static void populateDataSetFromDB(Set<String> dataSet, String accountName, String sql, String field) throws SQLException {
         DBResults queryResults = DatabaseManager.executeSelect(sql, accountName);
         if (queryResults.isEmpty()) return;
 
-        dataMap.clear();
+        dataSet.clear();
 
         for (int i = 0; i < queryResults.results.size(); i++) {
             String value = queryResults.getString(i, field);
-            dataMap.put(value.toLowerCase(), value);
+            dataSet.add(value);
         }
     }
 
@@ -84,13 +83,13 @@ public class FriendsManager {
             ).formatted(accountName);
         }
 
-        for (Entry<String, String> name : data.getOfflineFriendsEntriesCopy()) {
-            PlayerData friendData = PlayerDataManager.getPlayerData(name.getKey());
+        for (String name : data.getOfflineFriendsCopy()) {
+            PlayerData friendData = PlayerDataManager.getPlayerData(name);
             if (friendData == null) continue;
-            data.addOnlineFriend(name.getKey(), name.getValue());
+            data.addOnlineFriend(name);
             friendData.addOnlineFriend(accountName);
 
-            CustomPlayer friend = PlayerUtils.getLoggedPlayer(name.getValue());
+            CustomPlayer friend = PlayerUtils.getLoggedPlayer(name);
             if (friendJoined != null) friend.sendMessage(friendJoined);
         }
     }
@@ -105,12 +104,12 @@ public class FriendsManager {
             ).formatted(data.name);
         }
 
-        for (Entry<String, String> name : data.getOnlineFriends().entrySet()) {
-            PlayerData friendData = PlayerDataManager.getPlayerData(name.getKey());
+        for (String name : data.getOnlineFriendsCopy()) {
+            PlayerData friendData = PlayerDataManager.getPlayerData(name);
             if (friendData == null) continue;
             friendData.removeOnlineFriend(data.name);
 
-            CustomPlayer friend = PlayerUtils.getLoggedPlayer(name.getValue());
+            CustomPlayer friend = PlayerUtils.getLoggedPlayer(name);
             if (friendLeft != null) friend.sendMessage(friendLeft);
         }
     }
@@ -130,6 +129,7 @@ public class FriendsManager {
                     receiverName
                 );
                 if (accountsResults.isEmpty()) return Outcome.NAME_NOT_FOUND;
+                String receiverNameCorrect = accountsResults.getString("name");
 
                 //check if sender is online, in such case use the sender's data for next checks
                 PlayerData senderData = PlayerDataManager.getPlayerData(senderName);
@@ -140,7 +140,7 @@ public class FriendsManager {
 
                     //(2) check if the other player sent as well a request in the past, in such case accept directly
                     if (senderData.hasReceivedRequestFrom(receiverName)) {
-                        acceptRequestSync(receiverName, senderName);    //the receiver is a past sender, so i put the receiver as the sender arg
+                        acceptRequestSync(senderName, receiverName);    //the receiver is a past sender, so i put the receiver as the sender arg
                         return Outcome.ADDED_FRIEND;
                     }
                 } else {
@@ -158,7 +158,7 @@ public class FriendsManager {
                         receiverName, senderName
                     );
                     if (!reverseRequest.isEmpty()) {
-                        acceptRequestSync(receiverName, senderName);
+                        acceptRequestSync(senderName, receiverName);
                         return Outcome.ADDED_FRIEND;
                     }
                 }
@@ -170,10 +170,10 @@ public class FriendsManager {
                 //checks passed, add new friend request
                 DatabaseManager.executeUpdate(
                     "INSERT INTO friend_requests (sender_name, receiver_name) VALUES (?, ?)",
-                    senderName, receiverName
+                    senderName, receiverNameCorrect
                 );
 
-                updateIfOnline(senderName, sdata -> sdata.sendFriendRequest(receiverName));
+                updateIfOnline(senderName, sdata -> sdata.sendFriendRequest(receiverNameCorrect));
                 updateIfOnline(receiverName, rdata -> rdata.receiveFriendRequest(senderName));
 
                 return Outcome.OK;
@@ -212,34 +212,37 @@ public class FriendsManager {
         }
     }
 
-    private static Outcome acceptRequestSync(String senderName, String receiverName) throws SQLException {
+    private static Outcome acceptRequestSync(String receiverName, String senderName) throws SQLException {
         //check if request is present
         PlayerData data = PlayerDataManager.getPlayerData(receiverName);
+        String senderNameCorrect;
         if (data != null) {
-            if (!data.hasReceivedRequestFrom(senderName)) return Outcome.REQUEST_NOT_FOUND;
+            senderNameCorrect = data.getOriginalRequestSenderName(senderName);
+            if (senderNameCorrect == null) return Outcome.REQUEST_NOT_FOUND;
         } else {
             DBResults request = DatabaseManager.executeSelect(
-                "SELECT * FROM friend_requests WHERE sender_name = ? AND receiver_name = ?",
+                "SELECT sender_name FROM friend_requests WHERE sender_name = ? AND receiver_name = ?",
                 senderName, receiverName
             );
             if (request.isEmpty()) return Outcome.REQUEST_NOT_FOUND;
+            senderNameCorrect = request.getString("sender_name");
         }
         
         //accept friend request
         DatabaseManager.executeTransaction(conn -> {
             DatabaseManager.executeUpdate(conn,
                 "DELETE FROM friend_requests WHERE sender_name = ? AND receiver_name = ?",
-                senderName, receiverName);
+                senderNameCorrect, receiverName);
             DatabaseManager.executeUpdate(conn,
                 "INSERT INTO friends (player_name, friend_name) VALUES (?, ?)",
-                senderName, receiverName);
+                senderNameCorrect, receiverName);
             DatabaseManager.executeUpdate(conn,
                 "INSERT INTO friends (player_name, friend_name) VALUES (?, ?)",
-                receiverName, senderName);
+                receiverName, senderNameCorrect);
         });
 
-        updateIfOnline(senderName, sdata -> sdata.addFriend(receiverName, true));
-        updateIfOnline(receiverName, rdata -> rdata.addFriend(senderName, true));
+        updateIfOnline(senderNameCorrect, sdata -> sdata.addFriend(receiverName, true));
+        updateIfOnline(receiverName, rdata -> rdata.addFriend(senderNameCorrect, true));
 
         return Outcome.OK;
     }
@@ -247,7 +250,7 @@ public class FriendsManager {
     public static CompletableFuture<Outcome> acceptRequest(String receiverName, String senderName) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return acceptRequestSync(senderName, receiverName);
+                return acceptRequestSync(receiverName, senderName);
             } catch (SQLException e) {
                 throw new CompletionException(e);
             }

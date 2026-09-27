@@ -39,7 +39,7 @@ public class MainLobbyUtils {
         }
 
 
-        List<String> friends = data.getOnlineFriendsKeysCopy();
+        List<String> friends = data.getOnlineFriendsCopy();
         
         List<String> friendsInHub = new ArrayList<>();
         Map<Minigame, List<String>> friendsInMinigames = new LinkedHashMap<>();

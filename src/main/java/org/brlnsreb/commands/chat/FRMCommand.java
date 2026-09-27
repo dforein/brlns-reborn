@@ -36,7 +36,7 @@ public class FRMCommand extends Command implements BrlnsCommand {
                     }
                     
                     String message = ChatListener.getMessage(ctx);
-                    List<String> friends = senderData.getOnlineFriendsKeysCopy();
+                    List<String> friends = senderData.getOnlineFriendsCopy();
 
                     int receiversCount = 0;
                     for (String name : friends) {

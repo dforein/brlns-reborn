@@ -163,9 +163,8 @@ public class PlayerDataManager {
                 );
 
                 //execute player logout
-                String name = player.data.name.toLowerCase();
                 AccountsManager.playerLogoutSync(player);
-                name2UuidMap.remove(name);
+                name2UuidMap.remove(player.data.name.toLowerCase());
 
                 
                 return Outcome.OK;

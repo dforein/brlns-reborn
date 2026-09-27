@@ -39,7 +39,7 @@ public class GRMCommand extends Command implements BrlnsCommand {
                     
                     String message = ChatListener.getMessage(ctx);
                     Minigame minigame = sender.minigameCurrent;
-                    List<String> receivers = sender.data.getOnlineFriendsKeysCopy();
+                    List<String> receivers = sender.data.getOnlineFriendsCopy();
 
                     for (String name : receivers) {
                         CustomPlayer friend = senderData.getFriend(name);
