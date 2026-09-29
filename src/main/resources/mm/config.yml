@@ -1,5 +1,4 @@
 settings:
-  check-players-at-game-start: true
   min-players: 2
   max-players: 24
   physics-enabled: false
@@ -28,6 +27,7 @@ lobby:
       pos: 0 29 9
 
 game:
+  check-players-at-game-start: true
   pregame-countdown-seconds: 10
   duration: 420
   ending-duration: 10

@@ -253,7 +253,7 @@ public class MMGame extends GameExpand implements GameTeam {
         gold.startSpawning();
 
         //player check at game start
-        if (config.getBoolean("settings.check-players-at-game-start") && players.size() != 2) {     //2 players (sheriff and murderer) are an exception
+        if (config.getBoolean("game.check-players-at-game-start") && players.size() != 2) {     //2 players (sheriff and murderer) are an exception
             scheduler.scheduleDelayedTask(BrlnsReb.instance, this::checkWinConditions, 20);      //end the game directly if the players aren't enough
         }
     }
