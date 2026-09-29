@@ -148,7 +148,7 @@ public abstract class Game {
     //pregame
 
     public void onPregameStart() {
-        int secondsCountdown = Configs.getGlobalConfig().getInt("match.game.pregame-countdown-seconds");
+        int secondsCountdown = config.getInt("game.pregame-countdown-seconds");
 
         //all players join game world
         for (CustomPlayer p : players) {
