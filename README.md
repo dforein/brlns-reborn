@@ -14,7 +14,7 @@ This project is not affiliated with official BrokenLens.
 ## Plugin setup
 ### Database
 After starting the server with the plugin for the first time, the plugin will generate a **brlnsreb** folder under the plugins folder, where you can edit the settings of the plugin.
-The first important settings to set up are the database settings in *brlnsreb/global/database.yml*, where there are written some instructions to compile the fields. Remember to set ```enabled: true``` after you finished compiling the below fields.
+The first important settings to set up are the database settings in *brlnsreb/global/database.yml*, where there are written some instructions to compile the fields. Remember to set ```enabled: true``` after you finished compiling the below fields.  
 **Note**: if you are receiving all the original worlds used by the developer, you can skip everything after here and go to the final step.
 
 ### Worlds configuration
@@ -25,7 +25,7 @@ Then you have to put all the worlds needed (lobbies, maps, etc) under the **worl
 **Tip**: ```yaw``` refers to the initial rotation angle of an NPC, you can set them up later while looking at them ingame and updating the configs with ```/reloadconfig``` to avoid the need of rejoining to check the NPC everytime you change the yaw.  
   
 ### Maps and minigames configuration
-After this, start the server (*maintenance.yml* should have all fields set to ```true```) and for each minigame run the command ```/<minigame>``` (e.g. ```/mm``` for MurderMystery) to set up the maps and other settings that are minigame-specific (e.g. gold spawns in MurderMystery). Remember to remove all maps already present or only the maps you don't have, those are maps by original brlns builders (note: i cannot send you those maps without the builders' approvation, it's easier to ask them directly if you want to get their original maps).
+After this, start the server (*maintenance.yml* should have all fields set to ```true```) and for each minigame run the command ```/<minigame>``` (e.g. ```/mm``` for MurderMystery) to set up the maps and other settings that are minigame-specific (e.g. gold spawns in MurderMystery). Remember to remove all maps already present or only the maps you don't have, those are maps by original brlns builders (note: i cannot send you those maps without the builders' approvation, it's easier to ask them directly if you want to get their original maps).  
 **Note**: the maps are map configurations saved in *maps.yml* and linked to world folders, if you remove a map you won't remove the world folder as well.
   
 ### Final step
@@ -33,19 +33,19 @@ Finally, you are ready to start the server: in *brlnsreb/maintenance.yml* set th
 
 ## Operator commands and usage
 ### General commands
-Always active when maintenance is disabled.
-```/announce``` - makes a server announcement (works also from console).  
+Always active when maintenance is disabled.  
+```/announce``` - makes a server announcement (works also from console).    
 ```/force <start|stop>``` - starts/stops the match you are in as player, it works only inside a match.  
 ```/globalchat``` - toggles the chat over all server.  
 ```/reloadconfig``` - reloads all the yml files (except database and maintenance).  
 ```/reloaddatabase``` - restarts the database connection.  
 ```/test``` - a test/debug command for developers (if you are not a developer better avoid using it).  
 ### Maintenance commands
-Only active when maintenance is enabled.
-```/physics``` - opens a window to manage physics in a world.
+Only active when maintenance is enabled.  
+```/physics``` - opens a window to manage physics in a world.  
 **Note**: the window opens on the world you are currently in, with its physics settings showed correctly, but when you select another world it doesn't update to the settings of the selected world. I didn't implement such thing because Minecraft doesn't allow window updates, only the player can update the window.
 ```/togglesave``` - toggles the worlds autosave (by default autosave is disabled and the worlds don't save even when the server is shutting down).  
-**Note**: if you want to save without autosave, use the PowerNukkitX built-in command ```/save-all```.
+**Note**: if you want to save without autosave, use the PowerNukkitX built-in command ```/save-all```.  
 ### Maintenance loadAllLevels commands
-Only active when maintenance and loadAllLevels are enabled.
-```/<minigame>``` (e.g. ```/mm```)  
+Only active when maintenance and loadAllLevels are enabled.  
+```/<minigame>``` (e.g. ```/mm```) - opens a window to edit the minigame maps settings or other minigame-specific settings.  
