@@ -1,0 +1,332 @@
+package org.brlnsreb.core.lobby.entities;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.function.Consumer;
+
+import javax.imageio.ImageIO;
+
+import org.brlnsreb.BrlnsReb;
+import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.core.player.PlayerStateType;
+import org.cloudburstmc.protocol.bedrock.data.actor.ActorFlags;
+import org.cloudburstmc.protocol.bedrock.data.skin.ImageData;
+import org.jetbrains.annotations.NotNull;
+
+import org.powernukkitx.Player;
+import org.powernukkitx.entity.Entity;
+import org.powernukkitx.entity.EntityHuman;
+import org.powernukkitx.entity.custom.CustomEntity;
+import org.powernukkitx.entity.custom.CustomEntityDefinition;
+import org.powernukkitx.entity.data.human.Skin;
+import org.powernukkitx.event.entity.EntityDamageByEntityEvent;
+import org.powernukkitx.event.entity.EntityDamageEvent;
+import org.powernukkitx.event.entity.EntityDamageEvent.DamageCause;
+import org.powernukkitx.item.Item;
+import org.powernukkitx.level.Position;
+import org.powernukkitx.level.format.IChunk;
+import org.powernukkitx.nbt.tag.CompoundTag;
+
+public class NPCEntity extends EntityHuman implements CustomEntity {
+
+    public static final String IDENTIFIER = "brlnsreb:npc";
+    private static final String GEOMETRY_HUMANOID_JSON = loadHumanoidGeometryJson();
+
+    private static final double LOOK_DISTANCE = 10;
+    private static final double DISTANCE_SQ_THRES = LOOK_DISTANCE * LOOK_DISTANCE;
+    private double defaultYaw = 0;
+    private double defaultPitch = 0;
+    private double lastBodyYaw = 0;
+    private double lerpSpeed = 0.25;
+
+    private Consumer<CustomPlayer> task = null;
+    private HologramEntity text1 = null;
+    private HologramEntity text2 = null;
+    private double verticalOffset1 = 0.6;
+    private double verticalOffset2 = 0.25;
+
+    public NPCEntity(IChunk chunk, CompoundTag nbt) {
+        super(chunk, nbt);
+    }
+
+    public void updateTitle(String line) {
+        if (text1 == null) {
+            text1 = createHologram(verticalOffset1);
+        }
+
+        text1.setText(line);
+    }
+
+    public void updateSubtitle(String line) {
+        if (text2 == null) {
+            text2 = createHologram(verticalOffset2);
+        }
+
+        text2.setText(line);
+    }
+
+    public void updateText(String line1, String line2) {
+        if (text1 == null || text2 == null) {
+            createHologram(verticalOffset1);
+            createHologram(verticalOffset2);
+        }
+
+        text1.setText(line1);
+        text2.setText(line2);
+    }
+
+    private HologramEntity createHologram(double verticalOffset) {
+        Position pos = new Position(
+            this.x,
+            this.y + 1.5 + verticalOffset,
+            this.z,
+            this.level
+        );
+
+        HologramEntity text = new HologramEntity(pos.getChunk(), Entity.getDefaultNBT(pos));
+        text.spawnToAll();
+
+        return text;
+    }
+
+    @Override
+    public boolean onUpdate(int currentTick) {
+        if (this.closed) return false;
+
+        if (currentTick % 2 == 0) {
+            Player closest = null;
+            double minDistanceSq = DISTANCE_SQ_THRES;
+
+            for (Player p : this.getLevel().getPlayers().values()) {
+                double distSq = this.distanceSquared(p);
+                if (distSq < minDistanceSq) {
+                    minDistanceSq = distSq;
+                    closest = p;
+                }
+            }
+
+            if (closest != null) {
+                //players nearby
+                double dx = closest.x - this.x;
+                double dz = closest.z - this.z;
+                double dy = (closest.y + closest.getEyeHeight()) - (this.y + this.getEyeHeight());
+                double horizontalDist = Math.sqrt(dx * dx + dz * dz);
+
+                double targetYaw = -Math.toDegrees(Math.atan2(dx, dz));
+                double targetPitch = -Math.toDegrees(Math.atan2(dy, horizontalDist));
+
+                double headDiff = targetYaw - this.headYaw;
+                while (headDiff > 180) headDiff -= 360;
+                while (headDiff < -180) headDiff += 360;
+                if (Math.abs(headDiff) < 0.5) {
+                    this.headYaw = targetYaw;
+                } else {
+                    this.headYaw += headDiff * lerpSpeed;
+                }
+
+                double angleDiff = targetYaw - lastBodyYaw;
+                while (angleDiff > 180) angleDiff -= 360;
+                while (angleDiff < -180) angleDiff += 360;
+
+                if (Math.abs(angleDiff) > 0.5) {
+                    lastBodyYaw += angleDiff * lerpSpeed;
+                } else {
+                    lastBodyYaw = targetYaw;
+                }
+
+                this.setRotation(lastBodyYaw, targetPitch, this.headYaw);
+                this.updateMovement();
+
+            } else {
+                //no players
+                if (Math.abs(this.yaw - defaultYaw) > 1 || Math.abs(this.pitch - defaultPitch) > 1) {
+                    double yawDiff = defaultYaw - this.yaw;
+                    while (yawDiff > 180) yawDiff -= 360;
+                    while (yawDiff < -180) yawDiff += 360;
+                    
+                    double nextYaw = this.yaw + (yawDiff * lerpSpeed);
+                    this.lastBodyYaw = nextYaw;
+
+                    this.setRotation(nextYaw, defaultPitch, nextYaw);
+                    this.updateMovement();
+                }
+            }
+        }
+
+        return super.onUpdate(currentTick);
+    }
+
+    @Override
+    public boolean attack(EntityDamageEvent source) {
+        if (source instanceof EntityDamageByEntityEvent event
+                && event.getCause() == DamageCause.ENTITY_ATTACK
+                && event.getDamager() instanceof CustomPlayer player
+                && task != null) {
+
+            task.accept(player);
+        }
+        source.setCancelled(true);
+    
+        return false;
+    }
+
+    @Override
+    public boolean onInteract(Player player, Item item) {
+        CustomPlayer p = (CustomPlayer) player;
+        
+        if (p.state == PlayerStateType.LOBBY || p.state == PlayerStateType.WAITING_LOBBY) {
+            if (!item.getName().equals(Item.AIR.getName())) {
+                return false;
+            }
+        }
+
+        task.accept(p);
+        return true;
+    }
+
+    public void tempBlockTask(int ticks) {
+        Consumer<CustomPlayer> taskTemp = task;
+        task = player -> {};
+        BrlnsReb.getScheduler().scheduleDelayedTask(BrlnsReb.instance, () -> this.setTask(taskTemp), ticks);
+    }
+
+    public void setSkin(String skinFilePath) {
+        this.setSkin(loadSkin(skinFilePath));
+    }
+
+    @SuppressWarnings("deprecation")
+    public Skin loadSkin(String skinFilePath) {
+        try {
+            InputStream inputStream = BrlnsReb.instance.getClass().getClassLoader().getResourceAsStream(skinFilePath);
+            if (inputStream == null) throw new RuntimeException("Skin not found: " + skinFilePath);
+
+            BufferedImage image = ImageIO.read(inputStream);
+            ImageData skinData = ImageData.from(image);
+
+            org.cloudburstmc.protocol.bedrock.data.skin.Skin skin = org.cloudburstmc.protocol.bedrock.data.skin.Skin.builder()
+                .skinId(skinFilePath)
+                .fullSkinId(skinFilePath + "_")
+                .playFabId("")
+                .skinResourcePatch(GEOMETRY_CUSTOM)
+                .skinData(skinData)
+                .geometryData(GEOMETRY_HUMANOID_JSON)
+                .geometryDataEngineVersion("0.0.0")
+                .geometryName("geometry.humanoid.custom")
+                .animationData("")
+                .animations(List.of())
+                .capeId("")
+                .capeData(ImageData.EMPTY)
+                .capeOnClassic(false)
+                .premium(false)
+                .persona(false)
+                .armSize("wide")
+                .skinColor("#0")
+                .personaPieces(List.of())
+                .tintColors(List.of())
+                .primaryUser(true)
+                .overridingPlayerAppearance(true)
+                .build();
+            
+            return new Skin(skin, true);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static String loadHumanoidGeometryJson() {
+        try (InputStream in = EntityHuman.class.getClassLoader()
+                .getResourceAsStream("gamedata/skin_geometry.json")) {
+            if (in == null) return "";
+            return new String(in.readAllBytes(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            return "";
+        }
+    }
+
+    public void setDefaultPose(double yaw) {
+        this.defaultYaw = yaw;
+        this.yaw = yaw;
+    }
+
+    public void setDefaultPose(double yaw, double pitch) {
+        this.defaultYaw = yaw;
+        this.defaultPitch = pitch;
+    }
+
+    public void setLerpSpeed(double lerpSpeed) {
+        this.lerpSpeed = lerpSpeed;
+    }
+
+    public void setTask(Consumer<CustomPlayer> task) {
+        this.task = task;
+    }
+
+    public HologramEntity getText1() {
+        return text1;
+    }
+
+    public HologramEntity getText2() {
+        return text2;
+    }
+
+    public void setTextVerticalOffset(double offset) {
+        this.verticalOffset1 = offset;
+    }
+
+    public void setTextVerticalOffset(double offsetText1, double offsetText2) {
+        this.verticalOffset1 = offsetText1;
+        this.verticalOffset2 = offsetText2;
+    }
+    
+    @Override
+    public @NotNull String getIdentifier() {
+        return IDENTIFIER;
+    }
+
+    public static CustomEntityDefinition definition() {
+        return CustomEntityDefinition.simpleBuilder(IDENTIFIER)
+                .eid(IDENTIFIER)
+                .hasSpawnEgg(false)
+                .isSummonable(true)
+                .health(5)
+                .physics(false, false, false)
+                .pushable(false, false)
+                .isPersistent(true)
+                .build();
+    }
+
+    @Override
+    protected void initEntity() {
+        super.initEntity();
+        
+        this.setFireImmune(true);
+        this.setInvulnerable(true);
+        this.setNameTagVisible(false);
+        this.setImmobile(false);
+        this.setDataFlag(ActorFlags.SILENT, true);
+        this.setDataFlag(ActorFlags.COLLIDABLE, false);
+
+        this.setHealthCurrent(5);
+    }
+
+    @Override
+    public float getGravity() {
+        return 0.0f;
+    }
+
+    @Override
+    public boolean canCollideWith(Entity entity) {
+        return false;
+    }
+    
+    @Override
+    public boolean canBeMovedByCurrents() {
+        return false;
+    }
+
+}

@@ -1,0 +1,120 @@
+lobby:
+  bossbar:
+      message1: '&l&eBroken&6Lens &%sReborn'  #replace variable color
+      message2: '&l&ePlaying %s'  #replace name
+      other-messages:
+      colors:
+      - 'e'
+      - 'a'
+      - '9'
+  friend-server-join: '&3%s &ais now online'
+  friend-minigame-join: '&3%s &ais now playing %s'
+  friend-server-left: '&3%s &ais no longer online'
+
+match:
+  force-stop: '&cMatch is stopping!'
+  waiting-lobby:
+    action-bar:
+      on-join: '&3%s &7joined (&a%d&7/&a%d&7)'
+      on-leave: '&3%s &7left (&a%d&7/&a%d&7)'
+    voting:
+      map-vote: '&aYou voted on the map: &e%s'
+      time-vote: '&aYou voted on the time of day: &e%s'
+      weather-vote: '&aYou voted on the weather: &e%s'
+    going-to-play: '&eYou''re going to play on the map &d%s &eat &d%s &e/ &d%s'
+    timer-shortened: '&aTimer shortened to %d seconds'
+  game:
+    map-credits: '&eMap created by &d%s'
+  death-lobby:
+    title: '&cYOU ARE DEAD'
+    subtitle: '&6Oh no... too bad'
+
+auth:
+  after-server-join: '&aHave you got a &3Xbox Live &agamertag which
+    didn''t match your &eBroken&6Lens &ausername? You
+    can use the &e/login &acommand to access your
+    previous stats!'
+  after-register: '&aYou can register an account on our forums at
+    &6brokenlens.xyz &awith the same username used on brokenlens
+    to get a cool member tag!'
+  form:
+    title: Login to your account
+    label0: Register an account or Login to save stats, coins and experience!
+    input1: Username &c(!)
+    input2: Password
+    toggle3: Register this username if available
+  register-outcome:
+    ok:
+      title: Account registered successfully
+      content: |-
+        Welcome %s!
+        You are now a registered BrokenLens Reborn member
+        
+        Have fun!
+    invalid-name:
+      title: Error during registration
+      content: |-
+        Sorry, you can't use %s: it's invalid!
+        Make sure you use only alphanumerical characters and the lenght of your name is between 3 and 26 characters. 
+        Other kinds of characters, except the underscore ("_"), are not valid.
+    name-already-in-use:
+      title: Error during registration
+      content: |-
+        Sorry, you can't use %s: it's already in use!
+        Try a different name.
+    player-already-logged-in:
+      title: Error during registration
+      content: |-
+        You are already logged in!
+        Either another player is using your account or you're already using your account.
+    db-error:
+      title: Error during registration
+      content: |-
+        The server is having some trouble with the database, we will investigate the bug.
+
+        If you can, 
+        report this bug to staff members: 
+        "auth_db_error".
+    error:
+      title: Error during registration
+      content: |-
+        Something wrong happened, we will investigate the bug.
+
+        If you can, 
+        report this bug to staff members: 
+        "auth_switch_register".
+  login-outcome:
+    ok: 
+      title: 
+      content: |-
+        Welcome back %s!
+        Have fun!
+    player-already-logged-in:
+      title: Error during login
+      content: |-
+        You are already logged in.
+        Either another player is using your account or you're already using your account.
+    name-not-found:
+      title: Error during login
+      content: |-
+        That name doesn't exist!
+        If you are new, toggle the "Register this username if available" button to register a new account.
+    wrong-password:
+      title: Error during login
+      content: |-
+        Wrong password!
+    db-error:
+      title: Error during login
+      content: |-
+        The server is having some trouble with the database, we will investigate the bug.
+
+        If you can, report this bug to staff members: 
+        "auth_db_error".
+    error:
+      title: Error during login
+      content: |-
+        Something wrong happened, we will investigate the bug.
+
+        If you can, 
+        report this bug to staff members: 
+        "auth_switch_login".

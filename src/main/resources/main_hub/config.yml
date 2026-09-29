@@ -1,0 +1,29 @@
+world: _mainhub
+spawn-pos: 2431 39 2431
+spawn-yaw: 90
+messages-period: 50   #seconds to wait before sending the next main lobby general message
+npcs:
+  random-game:
+    pos: 2415 37.5 2441
+    text1: '&l&eR&aa&dn&6d&bo&cm &eG&aa&dm&6e'
+    default-yaw: 135
+    skin-file: main_hub/skins/random-game.png
+  mm:
+    pos: 2387 38 2431
+    text1: '&l&aMurder&2Mystery'
+    text2: '&d%d &eplaying'
+    default-yaw: -90
+    skin-file: main_hub/skins/mm.png
+holograms:
+  frontal:
+    pos: 2408 37 2431
+    text: |-
+      &b<< Hit a NPC to Join a Game >> 
+      &a
+      &ebrokenlens.xyz
+player-launchers:
+  enable: true
+  speed: 3.15
+  pos:
+  - 2409 36 2427
+  - 2409 36 2435

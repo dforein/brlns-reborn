@@ -1,0 +1,36 @@
+package org.brlnsreb.utils.config;
+
+import java.util.HashMap;
+
+import org.brlnsreb.BrlnsReb;
+
+import org.powernukkitx.utils.Config;
+
+public class Configs {
+    
+    private static final HashMap<String, Config> configMap = new HashMap<>();
+
+    public static Config getGlobalConfig() {
+        return getConfig("global/config.yml");
+    }
+
+    public static Config getGlobalMessages() {
+        return getConfig("global/messages.yml");
+    }
+
+    public static Config getConfig(String filePath) {
+        Config config = configMap.get(filePath);
+        if (config != null) return config;
+
+        config = new Config(BrlnsReb.instance.getDataFolder() + "/" + filePath, Config.YAML);
+        configMap.put(filePath, config);
+        return config;
+    }
+
+    public static void reloadConfig() {
+        for (Config config : configMap.values()) {
+            config.reload();
+        }
+    }
+
+}

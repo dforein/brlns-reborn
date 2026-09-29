@@ -1,0 +1,39 @@
+package org.brlnsreb.commands.chat;
+
+import org.brlnsreb.commands.BrlnsCommand;
+import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.utils.messages.ChatMsgs;
+import org.powernukkitx.command.Command;
+import org.powernukkitx.command.CommandResult;
+import org.powernukkitx.command.SenderType;
+import org.powernukkitx.command.route.RouteTree;
+import org.powernukkitx.command.route.node.RouteNode;
+import org.powernukkitx.command.tree.node.StringNode;
+import org.powernukkitx.plugin.annotation.CommandDefinition;
+
+@CommandDefinition(
+    name = "reply",
+    description = "Reply to the last PVT you've received",
+    usage = ChatMsgs.INFO_PFX + "Usage: §e/reply <message>"
+)
+
+public class ReplyCommand extends Command implements BrlnsCommand {
+
+    @Override
+    public void buildCommandTree(RouteTree tree) {
+        tree.getRoot().senderType(SenderType.PLAYER)                   //whatever player, also non-logged
+            .then(RouteNode.argument("message", new StringNode())
+                .exec(ctx -> {
+                    CustomPlayer sender = (CustomPlayer) ctx.getSender();
+                    CustomPlayer receiver = sender.data.getLastPvtPlayer();
+
+                    if (receiver == null) {
+                        return CommandResult.fail(ChatMsgs.ERROR_PFX + "You didn't receive any PVT!");     //TEXT
+                    }
+
+                    return PVTCommand.sendPVT(ctx, sender, receiver);
+                }))
+            .orElse(ctx -> ctx.getSender().sendMessage(usageMessage));
+    }
+
+}

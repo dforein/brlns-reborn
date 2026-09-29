@@ -1,0 +1,52 @@
+package org.brlnsreb.commands;
+
+import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.core.player.PlayerStateType;
+import org.brlnsreb.core.player.data.database.PlayerDataManager;
+import org.brlnsreb.utils.messages.ChatMsgs;
+import org.powernukkitx.command.Command;
+import org.powernukkitx.command.CommandSender;
+import org.powernukkitx.plugin.annotation.CommandDefinition;
+import org.powernukkitx.plugin.annotation.CommandDefinition.CommandMode;
+import org.powernukkitx.utils.TextFormat;
+
+@CommandDefinition(
+    name = "logout",
+    description = "Log-out from your account",
+    commandMode = CommandMode.RAW
+)
+
+public class LogoutCommand extends Command implements BrlnsCommand {
+    
+    @Override
+    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
+        if (!(sender instanceof CustomPlayer)) {
+            sender.sendMessage(TextFormat.RED + "Only players can use this command!");
+            return true;
+        }
+
+        CustomPlayer player = (CustomPlayer) sender;
+        if (!player.data.isLogged()) {
+            player.sendMessage(ChatMsgs.ERROR_PFX + "You are already logged out!");
+            return true;
+        }
+
+        if (player.state != PlayerStateType.LOBBY) {
+            player.sendMessage(ChatMsgs.ERROR_PFX + "You can logout only outside of a match!");
+            return true;
+        }
+
+        PlayerDataManager.playerLogout(player).thenAccept(outcome -> {
+            sender.sendMessage(switch (outcome) {
+                case ASYNC_TASK_ALREADY_RUNNING -> ChatMsgs.ERROR_PFX + "Retry in a few seconds.";
+                case PLAYER_ALREADY_LOGGED_OUT -> ChatMsgs.ERROR_PFX + "You are already logged out!";
+                case OK -> ChatMsgs.SUCCESS_PFX + "You logged out from your account.";
+                case DB_ERROR -> ChatMsgs.ERROR_PFX + "Report this error to developers: DB_ERROR";
+                default -> ChatMsgs.ERROR_PFX + "Report this error to developers: LOGOUT ERROR";
+            });
+        });
+
+        return true;
+    }
+
+}

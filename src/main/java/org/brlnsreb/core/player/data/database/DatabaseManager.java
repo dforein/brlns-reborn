@@ -1,0 +1,305 @@
+package org.brlnsreb.core.player.data.database;
+
+import org.brlnsreb.BrlnsReb;
+import org.brlnsreb.utils.config.Configs;
+import org.brlnsreb.utils.database.DBResults;
+import org.brlnsreb.utils.database.SQLConsumer;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
+import org.powernukkitx.utils.Config;
+import org.powernukkitx.utils.TextFormat;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.*;
+
+public class DatabaseManager {
+    
+    private static Config config;
+    private static HikariDataSource dataSource;
+    private static boolean enabled;
+
+    private static final String ACCOUNTS_TABLE = """
+        CREATE TABLE IF NOT EXISTS accounts (
+            name VARCHAR(26) PRIMARY KEY,
+            password_hash VARCHAR(60) NOT NULL,
+            exp INT DEFAULT 0,
+            coins INT DEFAULT 0,
+            friend_alerts BOOLEAN DEFAULT TRUE,
+            friend_notify BOOLEAN DEFAULT TRUE,
+            green_gems INT DEFAULT 0,
+            red_gems INT DEFAULT 0,
+            yellow_gems INT DEFAULT 0,
+            blue_gems INT DEFAULT 0
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    """;
+
+    private static final String PLAYERS_TABLE = """
+        CREATE TABLE IF NOT EXISTS players (
+            uuid VARCHAR(36) PRIMARY KEY,
+            name VARCHAR(26) NOT NULL,
+            last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (name) REFERENCES accounts(name) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    """;
+
+    private static final String STATS_TABLE = """
+        CREATE TABLE IF NOT EXISTS stats (
+            player_name VARCHAR(26) NOT NULL,
+            minigame_id TINYINT UNSIGNED NOT NULL,
+            stat_type TINYINT UNSIGNED NOT NULL,
+            value INT NOT NULL,
+            PRIMARY KEY (player_name, minigame_id, stat_type),
+            FOREIGN KEY (player_name) REFERENCES accounts(name) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    """;
+
+    //yes, i'll use double lines to save friends' associations, cus they are easier to retrieve and elaborate
+    private static final String FRIENDS_TABLE = """
+        CREATE TABLE IF NOT EXISTS friends (
+            player_name VARCHAR(26) NOT NULL,
+            friend_name VARCHAR(26) NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (player_name, friend_name),
+            FOREIGN KEY (player_name) REFERENCES accounts(name) ON DELETE CASCADE,
+            FOREIGN KEY (friend_name) REFERENCES accounts(name) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    """;
+
+    private static final String FRIEND_REQUESTS_TABLE = """
+        CREATE TABLE IF NOT EXISTS friend_requests (
+            sender_name VARCHAR(26) NOT NULL,
+            receiver_name VARCHAR(26) NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (sender_name, receiver_name),
+            FOREIGN KEY (sender_name) REFERENCES accounts(name) ON DELETE CASCADE,
+            FOREIGN KEY (receiver_name) REFERENCES accounts(name) ON DELETE CASCADE,
+            INDEX idx_receiver (receiver_name)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    """;
+
+
+    public DatabaseManager() {
+        config = Configs.getConfig("global/database.yml");
+        enabled = initConnectionPool();
+    }
+
+    public boolean retryInit() {
+        if (dataSource != null && !dataSource.isClosed()) dataSource.close();
+        config.reload();
+
+        enabled = initConnectionPool();
+        return enabled;
+    }
+
+
+    private boolean initConnectionPool() {
+        if (!config.getBoolean("enabled", false)) {
+            BrlnsReb.logger.warning(TextFormat.GOLD + "Database disabled by settings.");
+            return false;
+        }
+
+        final String NULL = "null";
+        final String CONNECTION_URL = "mariadb://%s:%d/%s";
+        final String ADDED_TO_URL = "?characterEncoding=UTF-8&autoReconnect=true";
+
+        String host = NULL, database = NULL;
+        int port = 3306;
+
+        String url = config.getString("database.connection-string");
+
+        String username = config.getString("database.username", NULL);
+        String password = config.getString("database.password", NULL);
+        if (username.equals(NULL) || password.equals(NULL)) {
+            if (!username.equals(NULL) || !password.equals(NULL)) {
+                BrlnsReb.logger.error(TextFormat.RED + "Database username or password is null");
+                return false;
+            }
+        }
+        
+        if (url.equals(NULL)) {
+            host = config.getString("database.host", NULL);
+            port = config.getInt("database.port", 3306);
+            database = config.getString("database.database");
+
+            if (host.equals(NULL) || database.equals(NULL)) {
+                BrlnsReb.logger.error(TextFormat.RED + "Database host or port or database is null");
+                return false;
+            }
+            url = "jdbc:" + CONNECTION_URL.formatted(host, port, database) + ADDED_TO_URL;
+
+        } else {
+            if (url.startsWith("mysql")) {
+                url = "mariadb" + url.substring("mysql".length(), url.length());
+            }
+
+            if (username.equals(NULL)) {
+                try {
+                    URI uri = new URI(url);
+                    String userInfo = uri.getUserInfo();
+                    if (userInfo != null) {
+                        String[] parts = userInfo.split(":", 2);
+                        if (parts.length == 2) {
+                            username = parts[0];
+                            password = parts[1];
+                        }
+                        
+                        url = new URI(uri.getScheme(), null, uri.getHost(), uri.getPort(),
+                                    uri.getPath(), uri.getQuery(), uri.getFragment()).toString();
+                    }
+                } catch (URISyntaxException e) {
+                    BrlnsReb.logger.error("Invalid database connection string:" + e.getMessage());
+                    return false;
+                }
+            }
+
+            url = "jdbc:" + url + ADDED_TO_URL;
+        }
+        
+        int poolSize = config.getInt("pool-size");
+
+        HikariConfig hikariConfig = new HikariConfig();
+        hikariConfig.setJdbcUrl(url);
+        hikariConfig.setDriverClassName("org.mariadb.jdbc.Driver");
+        hikariConfig.setUsername(username);
+        hikariConfig.setPassword(password);
+
+        hikariConfig.setMaximumPoolSize(poolSize);
+        hikariConfig.setMinimumIdle(2);
+        hikariConfig.setConnectionTimeout(30000);
+        hikariConfig.setIdleTimeout(600000);
+        hikariConfig.setMaxLifetime(1000000);
+
+        hikariConfig.addDataSourceProperty("cachePrepStmts", "true");
+        hikariConfig.addDataSourceProperty("prepStmtCacheSize", "250");
+        hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+
+        try {
+            dataSource = new HikariDataSource(hikariConfig);
+            
+            try (Connection testConn = dataSource.getConnection()) {
+                BrlnsReb.logger.info(TextFormat.DARK_GREEN + "Database connected successfully" + (database.equals(NULL) ? "" : (" to " + database)));
+            }
+            
+            createTables();
+            
+            return true;
+            
+        } catch (Exception e) {
+            BrlnsReb.logger.error(TextFormat.RED + "Failed to connect to database: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private void createTables() {
+        try (Connection conn = dataSource.getConnection();
+             var stmt = conn.createStatement()) {
+            
+            //accounts
+            stmt.execute(ACCOUNTS_TABLE);
+            stmt.execute(PLAYERS_TABLE);
+
+            //stats
+            stmt.execute(STATS_TABLE);
+
+            //friends
+            stmt.execute(FRIENDS_TABLE);
+            stmt.execute(FRIEND_REQUESTS_TABLE);
+
+
+            BrlnsReb.logger.info(TextFormat.DARK_GREEN + "Database tables ready");
+            
+        } catch (SQLException e) {
+            BrlnsReb.logger.error("Failed to create tables: " + e.getMessage());
+        }
+    }
+
+    
+    public static Connection getConnection() throws SQLException {
+        if (!isEnabled()) {
+            throw new SQLException("Database not initialized or already closed!");
+        }
+        return dataSource.getConnection();
+    }
+
+    public static DBResults executeSelect(Connection conn, String sql, Object... params) throws SQLException {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            for (int i = 0; i < params.length; i++) {
+                stmt.setObject(i + 1, params[i]);
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            ResultSetMetaData meta = rs.getMetaData();
+            int columnCount = meta.getColumnCount();
+
+            List<Map<String, Object>> results = new ArrayList<>();
+
+            while (rs.next()) {
+                Map<String, Object> row = new HashMap<>(columnCount, 1.0f);
+                for (int i = 1; i <= columnCount; i++) {
+                    row.put(meta.getColumnName(i), rs.getObject(i));
+                }
+                results.add(row);
+            }
+            
+            return new DBResults(results);
+        }
+    }
+
+    public static int executeUpdate(Connection conn, String sql, Object... params) throws SQLException {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            for (int i = 0; i < params.length; i++) {
+                stmt.setObject(i + 1, params[i]);
+            }
+
+            return stmt.executeUpdate();
+        }
+    }
+
+    public static DBResults executeSelect(String sql, Object... params) throws SQLException {
+        try (Connection conn = getConnection()) {
+            return executeSelect(conn, sql, params);
+        }
+    }
+
+    public static int executeUpdate(String sql, Object... params) throws SQLException {
+        try (Connection conn = getConnection()) {
+            return executeUpdate(conn, sql, params);
+        }
+    }
+
+    public static void executeTransaction(SQLConsumer<Connection> work) throws SQLException {
+        try (Connection conn = getConnection()) {
+            conn.setAutoCommit(false);
+            try {
+                work.accept(conn);
+                conn.commit();
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        }
+    }
+
+    
+    public static boolean isEnabled() {
+        return enabled && dataSource != null && !dataSource.isClosed();
+    }
+    
+    public void closePool() {
+        if (dataSource != null && !dataSource.isClosed()) {
+            dataSource.close();
+            BrlnsReb.logger.info("Database connection pool closed.");
+        }
+    }
+
+}
