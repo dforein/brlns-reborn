@@ -43,7 +43,7 @@ Always active when maintenance is disabled.
 ### Maintenance commands
 Only active when maintenance is enabled.  
 ```/physics``` - opens a window to manage physics in a world.  
-**Note**: the window opens on the world you are currently in, with its physics settings showed correctly, but when you select another world it doesn't update to the settings of the selected world. I didn't implement such thing because Minecraft doesn't allow window updates, only the player can update the window.
+**Note**: the window opens on the world you are currently in, with its physics settings showed correctly, but when you select another world it doesn't update to the settings of the selected world. I didn't implement such thing because Minecraft doesn't allow window updates, only the player can update the window.  
 ```/togglesave``` - toggles the worlds autosave (by default autosave is disabled and the worlds don't save even when the server is shutting down).  
 **Note**: if you want to save without autosave, use the PowerNukkitX built-in command ```/save-all```.  
 ### Maintenance loadAllLevels commands
