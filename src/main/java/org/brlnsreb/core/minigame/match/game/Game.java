@@ -165,11 +165,11 @@ public abstract class Game {
         );
 
         //builders message
-        List<String> builders = mapSettings.getStringList(map.configPath + "builders");
+        List<String> builders = mapSettings.getStringList(map.getConfigPath() + "builders");
         if (!builders.isEmpty()) {
             String buildersStr = String.join("&7, &d", builders);
             
-            String buildersTeam = YamlUtil.getStr(map.configPath + "build-team", mapSettings);
+            String buildersTeam = YamlUtil.getStr(map.getConfigPath() + "build-team", mapSettings);
             if (buildersTeam != null && buildersTeam.length() > 0) buildersStr = buildersStr + " &7/ &d" + buildersTeam;
 
             String creditsMsg = YamlUtil.getStr("match.game.map-credits", Configs.getGlobalMessages()).formatted(buildersStr);

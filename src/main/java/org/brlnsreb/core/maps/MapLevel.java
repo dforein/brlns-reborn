@@ -17,7 +17,7 @@ public abstract class MapLevel {
     
     protected final Config config;
     protected final Config mapSettings;
-    public final String configPath;
+    protected String configPath;
 
     public final Level level;
     public final TimeOfDay time;
@@ -52,5 +52,6 @@ public abstract class MapLevel {
     protected abstract boolean arePhysicsEnabled();
     public abstract Location getSpawnFor(CustomPlayer player);
     public Map<Long, Player> getPlayers() { return level.getPlayers(); }
+    public String getConfigPath() { return configPath; }
 
 }

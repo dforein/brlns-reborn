@@ -133,7 +133,7 @@ public abstract class Match {
         msgUtil.broadcastPrefix(
             YamlUtil.getStr("match.waiting-lobby.going-to-play", Configs.getGlobalMessages()), 
             new String[] {
-                YamlUtil.getStr(map.configPath + "name", mapSettings),
+                map.displayName,
                 map.time.displayName,
                 map.weather.displayName
             }

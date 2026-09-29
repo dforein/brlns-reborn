@@ -11,7 +11,7 @@ import org.powernukkitx.math.Vector3;
 public abstract class GameMapLevel extends MapLevel {
 
     public final String mapId;
-    public final String name;
+    public final String displayName;
     public final Vector3 min;
     public final Vector3 max;
     
@@ -27,12 +27,12 @@ public abstract class GameMapLevel extends MapLevel {
         );
 
         this.mapId = mapId;
-        this.name = YamlUtil.getStr(configPath + "name", this.mapSettings);
+        this.displayName = YamlUtil.getStr(this.configPath + "name", this.mapSettings);
 
-        this.min = YamlUtil.parseVector3(YamlUtil.getStr(configPath + "min", this.mapSettings));
-        this.max = YamlUtil.parseVector3(YamlUtil.getStr(configPath + "max", this.mapSettings));
+        this.min = YamlUtil.parseVector3(YamlUtil.getStr(this.configPath + "min", this.mapSettings));
+        this.max = YamlUtil.parseVector3(YamlUtil.getStr(this.configPath + "max", this.mapSettings));
 
-        this.nightVision = this.mapSettings.getBoolean(configPath + "night-vision");
+        this.nightVision = this.mapSettings.getBoolean(this.configPath + "night-vision");
     }
 
     public boolean isInMap(Vector3 pos) {
@@ -46,10 +46,14 @@ public abstract class GameMapLevel extends MapLevel {
     }
 
     protected Level loadLevel(boolean copyworld) {
-        return LevelManager.loadLevel(
-            YamlUtil.getStr(configPath + "world", mapSettings),
-            config
-        );
+        Level level = LevelManager.loadLevel(YamlUtil.getStr(configPath + "world", mapSettings), config);
+
+        if (level == null) {
+            configPath = "maps." + YamlUtil.getStr("default-map", mapSettings) + ".";
+            level = LevelManager.loadLevel(YamlUtil.getStr(configPath + "world", mapSettings), config);
+        }
+
+        return level;
     }
 
     public boolean arePhysicsEnabled() {

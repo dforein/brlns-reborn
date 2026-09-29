@@ -49,15 +49,7 @@ public class MapsSystem extends FormAbstract {
     }
 
     private void removeOfflinePlayers(ConcurrentHashMap<UUID, ? extends Object> hashMap) {
-        ArrayList<UUID> removed = new ArrayList<>();
-        for (UUID uuid : hashMap.keySet()) {
-            if (Server.getInstance().getPlayer(uuid) == null) {
-                removed.add(uuid);
-            }
-        }
-        for (UUID uuid : removed) {
-            hashMap.remove(uuid);
-        }
+        hashMap.keySet().removeIf(uuid -> Server.getInstance().getPlayer(uuid).isEmpty());
     }
 
     public void openForm(Player player) {
@@ -254,10 +246,26 @@ public class MapsSystem extends FormAbstract {
         List<String> mapList = getAllMaps();
 
         form.addButton("§6Go back", p -> editMaps(player));
+        form.addButton("§cRemove all " + mgt.nameTag.toUpperCase() + " maps", p -> confirmRemoveAllMaps(p));
         for (String map : mapList) {
             form.addButton(map, p -> confirmRemoveMap(player, map));
         }
 
+        form.send(player);
+    }
+
+    protected void confirmRemoveAllMaps(Player player) {
+        ModalForm form = new ModalForm("Remove all " + mgt.nameTag.toUpperCase() + " maps");
+
+        form.content("Are you sure to §cremove permanently§r all " + mgt.nameTag.toUpperCase() + " maps?");
+        form.yes("Yes", p -> {
+            maps.remove("maps");
+            maps.remove("enabled-maps");
+            maps.remove("default-map");
+            maps.save();
+            editMaps(p);
+        });
+        form.no("No", p -> removeMap(p));
         form.send(player);
     }
 
@@ -271,6 +279,9 @@ public class MapsSystem extends FormAbstract {
             if (enabledMaps.contains(map)) {
                 enabledMaps.remove(map);
                 maps.set("enabled-maps", enabledMaps);
+            }
+            if (maps.getString("default-map").equals(map)) {
+                maps.remove("default-map");
             }
             maps.save();
             removeMap(p);
@@ -286,7 +297,7 @@ public class MapsSystem extends FormAbstract {
         String path = "maps." + mapId + ".";
 
         if (error != null) form.addLabel("§cError: "+ error);
-        form.addInput("§lMap Id§r §7used in maps.yml and here\n(only alphabet letters, numbers, underscores)",
+        form.addInput("§lMap Id§r §7used in maps.yml and here\n(only alphabet letters, numbers, dashes)",
             "e.g. the-grand-hotel", 
             mapId
         );
@@ -354,7 +365,21 @@ public class MapsSystem extends FormAbstract {
 
             String path_ = "maps." + newMapId + ".";
 
-            if (!mapId.equals(newMapId)) maps.remove("maps." + mapId);
+            if (!mapId.equals(newMapId)) {
+                if (maps.getSection("maps").getKeys(false).contains(newMapId)) {
+                    editMap(p, mapId, "A map with such Map Id already exists, set a different Map Id.");
+                    return;
+                }
+                maps.remove("maps." + mapId);
+                List<String> enabledMaps = maps.getStringList("enabled-maps");
+                if (enabledMaps.remove(mapId)) {
+                    enabledMaps.add(newMapId);
+                    maps.set("enabled-maps", enabledMaps);
+                }
+                if (maps.getString("default-map").equals(mapId)) {
+                    maps.set("default-map", newMapId);
+                }
+            }
             maps.set(path_ + "name", name);
             maps.set(path_ + "world", world);
             maps.set(path_ + "min", min);
