@@ -1,7 +1,9 @@
 package org.brlnsreb.core.maps;
 
+import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.levels.LevelManager;
 import org.brlnsreb.core.minigame.Minigame;
+import org.brlnsreb.core.minigame.MinigameType;
 import org.brlnsreb.utils.config.YamlUtil;
 import org.brlnsreb.utils.level.TimeOfDay;
 import org.brlnsreb.utils.level.Weather;
@@ -9,6 +11,8 @@ import org.powernukkitx.level.Level;
 import org.powernukkitx.math.Vector3;
 
 public abstract class GameMapLevel extends MapLevel {
+
+    private final MinigameType mgt;
 
     public final String mapId;
     public final String displayName;
@@ -25,6 +29,8 @@ public abstract class GameMapLevel extends MapLevel {
             time, weather, 
             true
         );
+
+        this.mgt = minigame.mgt;
 
         this.mapId = mapId;
         this.displayName = YamlUtil.getStr(this.configPath + "name", this.mapSettings);
@@ -51,6 +57,9 @@ public abstract class GameMapLevel extends MapLevel {
         if (level == null) {
             configPath = "maps." + YamlUtil.getStr("default-map", mapSettings) + ".";
             level = LevelManager.loadLevel(YamlUtil.getStr(configPath + "world", mapSettings), config);
+            if (level == null) {
+                BrlnsReb.logger.error("§cNo default map found in "+mgt.nameTag+".yml, add one in maintenance+loadAllLevels mode with /"+mgt.nameTag);
+            }
         }
 
         return level;
