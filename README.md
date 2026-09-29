@@ -20,9 +20,9 @@ The first important settings to set up are the database settings in *brlnsreb/gl
 ### Worlds configuration
 Then you have to put all the worlds needed (lobbies, maps, etc) under the **worlds** folder, and set up every *config.yml* file (under every subfolder of brlnsreb folder) to make the plugin compatible with your worlds. Parse with attention each file from the beginning to the end and edit only the fields you need to change. For example in *brlnsreb/global/config.yml*, you won't need to edit anything except the fields of ```death-lobby```.  
 **Note**: you don't need to edit all the other yml files (e.g. *messages.yml* or *maps.yml*) because those are not related.
-**Note**: ```world``` refers to the name of the world folder, ```pos``` to the position of an entity.  
+**Note**: ```world``` refers to the name of the world folder.  
 **Note**: you don't need to change ```skin-file``` fields, because the skin paths and files refers to internal paths and files inside the plugin itself.  
-**Tip**: ```yaw``` refers to the initial rotation angle of an NPC, you can set them up later while looking at them ingame and updating the configs with ```/reloadconfig``` to avoid the need of rejoining to check the NPC everytime you change the yaw.  
+**Tip**: ```pos``` refers to the position of an entity, ```yaw``` to the initial rotation angle of an NPC. You can set them up later while looking at the NPCs ingame and updating the configs with ```/reloadconfig``` to avoid the need of rejoining to check the NPCs everytime you change the pos/yaw.  
   
 ### Maps and minigames configuration
 After this, start the server (*maintenance.yml* should have all fields set to ```true```) and for each minigame run the command ```/<minigame>``` (e.g. ```/mm``` for MurderMystery) to set up the maps and other settings that are minigame-specific (e.g. gold spawns in MurderMystery). Remember to remove all maps already present or only the maps you don't have, those are maps by original brlns builders (note: i cannot send you those maps without the builders' approvation, it's easier to ask them directly if you want to get their original maps).  
