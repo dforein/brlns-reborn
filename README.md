@@ -13,33 +13,37 @@ This project is not affiliated with official BrokenLens.
 
 ## Plugin setup
 ### Database
-After starting the server with the plugin for the first time, the plugin will generate a **brlnsreb** folder under the plugins folder, where you can edit the settings of the plugin.
+After starting the server with the plugin for the first time, the plugin will generate a **brlnsreb** folder under the plugins folder, where you can edit the settings of the plugin.  
 The first important settings to set up are the database settings in *brlnsreb/global/database.yml*, where there are written some instructions to compile the fields. Remember to set ```enabled: true``` after you finished compiling the below fields.  
-**Note**: if you are receiving all the original worlds used by the developer, you can skip everything after here and go to the final step.
+**Note**: if you are receiving all the original worlds used by the developer, you can skip "Worlds configuration" and "Maps and minigame configuration".  
 
 ### Worlds configuration
 Then you have to put all the worlds needed (lobbies, maps, etc) under the **worlds** folder, and set up every *config.yml* file (under every subfolder of brlnsreb folder) to make the plugin compatible with your worlds. Parse with attention each file from the beginning to the end and edit only the fields you need to change. For example in *brlnsreb/global/config.yml*, you won't need to edit anything except the fields of ```death-lobby```.  
-**Note**: you don't need to edit all the other yml files (e.g. *messages.yml* or *maps.yml*) because those are not related.
+**Note**: you don't need to edit all the other yml files (e.g. *messages.yml* or *maps.yml*) because those are not related.  
 **Note**: ```world``` refers to the name of the world folder.  
-**Note**: you don't need to change ```skin-file``` fields, because the skin paths and files refers to internal paths and files inside the plugin itself.  
+**Note**: you have to add your own NPC skin images, wherever you want (there are already default paths written in the configs, you can edit them if you want).
 **Tip**: ```pos``` refers to the position of an entity, ```yaw``` to the initial rotation angle of an NPC. You can set them up later while looking at the NPCs ingame and updating the configs with ```/reloadconfig``` to avoid the need of rejoining to check the NPCs everytime you change the pos/yaw.  
   
 ### Maps and minigames configuration
 After this, start the server (*maintenance.yml* should have all fields set to ```true```) and for each minigame run the command ```/<minigame>``` (e.g. ```/mm``` for MurderMystery) to set up the maps and other settings that are minigame-specific (e.g. gold spawns in MurderMystery). Remember to remove all maps already present or only the maps you don't have, those are maps by original brlns builders (note: i cannot send you those maps without the builders' approvation, it's easier to ask them directly if you want to get their original maps).  
-**Note**: the maps are map configurations saved in *maps.yml* and linked to world folders, if you remove a map you won't remove the world folder as well.
+**Note**: the maps are map configurations saved in *maps.yml* and linked to world folders, if you remove a map you won't remove the world folder as well.  
+
+### Resources
+The necessary resources (e.g. custom ui, custom entities) are already incorporated inside the plugin. For copyright reasons the resources do not include, for example, the texture of the classic dyes (not necessary for the plugin, but present in the original BrokenLens server). Optionally, you can autonomously download such textures from third-party websites or make your own pack, to place inside the **resource_packs** folder. The project is not affiliated with, nor responsible for, any third-party resource pack you may choose to download.  
   
 ### Final step
-Finally, you are ready to start the server: in *brlnsreb/maintenance.yml* set the field ```server-under-maintenance``` to ```false``` and start the server. Check whether there are errors regarding the database; if so, check your database or the data you compiled in the fields of *database.yml*.
+Finally, you are ready to start the server: in *brlnsreb/maintenance.yml* set the field ```server-under-maintenance``` to ```false``` and start the server. Check whether there are errors regarding the database; if so, check your database or the data you compiled in the fields of *database.yml*.  
 
 ## Operator commands and usage
 ### General commands
 Always active when maintenance is disabled.  
-```/announce``` - makes a server announcement (works also from console).    
+```/announce``` - makes a server announcement (works also from console).  
 ```/force <start|stop>``` - starts/stops the match you are in as player, it works only inside a match.  
 ```/globalchat``` - toggles the chat over all server.  
 ```/reloadconfig``` - reloads all the yml files (except database and maintenance).  
 ```/reloaddatabase``` - restarts the database connection.  
 ```/test``` - a test/debug command for developers (if you are not a developer better avoid using it).  
+
 ### Maintenance commands
 Only active when maintenance is enabled.  
 ```/physics``` - opens a window to manage physics in a world.  
@@ -47,6 +51,7 @@ Only active when maintenance is enabled.
 ```/togglesave``` - toggles the worlds autosave and save at server shudown.  
 **Note**: by default autosave is disabled and the worlds don't save even when the server is shutting down.  
 **Note**: if you want to save without autosave, use the PowerNukkitX built-in command ```/save-all```.  
+
 ### Maintenance loadAllLevels commands
 Only active when maintenance and loadAllLevels are enabled.  
 ```/<minigame>``` (e.g. ```/mm```) - opens a window to edit the minigame maps settings or other minigame-specific settings.  

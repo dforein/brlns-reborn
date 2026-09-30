@@ -7,10 +7,10 @@
         "default": "snowball"
       },
       "textures": {
-        "default": "textures/items/thrown_sword"
+        "default": "textures/items/iron_sword"
       },
       "geometry": {
-        "default": "geometry.item_sprite"
+        "default": "geometry.ts_item_sprite"
       },
       "render_controllers": [
         "controller.render.item_sprite"
