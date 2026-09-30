@@ -1,5 +1,6 @@
 package org.brlnsreb.core.lobby;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -111,7 +112,10 @@ public abstract class Lobby {
 
         npc.setDefaultPose(customConfig.getDouble(configPath + "default-yaw"));
         npc.setTask(task);
-        npc.setSkin(customConfig.getString(configPath + "skin-file"));
+        npc.setSkin(new File(
+            BrlnsReb.instance.getDataFolder(), 
+            customConfig.getString(configPath + "skin-file")
+        ));
 
         npc.spawnToAll();
 
@@ -183,7 +187,10 @@ public abstract class Lobby {
         npc.setDefaultPose(customConfig.getDouble(configPath + "default-yaw"));
         npc.updateTitle(customConfig.getString(configPath + "text1"));
         if (setFixedSubtitle) npc.updateSubtitle(customConfig.getString(configPath + "text2"));
-        npc.setSkin(customConfig.getString(configPath + "skin-file"));
+        npc.setSkin(new File(
+            BrlnsReb.instance.getDataFolder(), 
+            customConfig.getString(configPath + "skin-file")
+        ));
     }
 
 

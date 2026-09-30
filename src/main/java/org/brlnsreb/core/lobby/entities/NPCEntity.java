@@ -1,6 +1,9 @@
 package org.brlnsreb.core.lobby.entities;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -193,49 +196,66 @@ public class NPCEntity extends EntityHuman implements CustomEntity {
         BrlnsReb.getScheduler().scheduleDelayedTask(BrlnsReb.instance, () -> this.setTask(taskTemp), ticks);
     }
 
-    public void setSkin(String skinFilePath) {
-        this.setSkin(loadSkin(skinFilePath));
+    public void setSkin(File skinFile) {
+        Skin skin = loadSkin(skinFile);
+        if (skin == null) {
+            skin = loadSkin(getDefaultSkinImage(), "default_skin");
+        }
+        this.setSkin(skin);
     }
 
-    @SuppressWarnings("deprecation")
-    public Skin loadSkin(String skinFilePath) {
+    public BufferedImage getDefaultSkinImage() {
+        BufferedImage image = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = image.createGraphics();
+        g.setColor(new Color(255, 255, 255));
+        g.fillRect(0, 0, 64, 64);
+        g.dispose();
+        return image;
+    }
+
+    public Skin loadSkin(File skinFile) {
         try {
-            InputStream inputStream = BrlnsReb.instance.getClass().getClassLoader().getResourceAsStream(skinFilePath);
-            if (inputStream == null) throw new RuntimeException("Skin not found: " + skinFilePath);
+            if (skinFile == null || !skinFile.exists()) {
+                BrlnsReb.logger.alert("NPC skin not found: " + skinFile);
+                return null;
+            }
 
-            BufferedImage image = ImageIO.read(inputStream);
-            ImageData skinData = ImageData.from(image);
-
-            org.cloudburstmc.protocol.bedrock.data.skin.Skin skin = org.cloudburstmc.protocol.bedrock.data.skin.Skin.builder()
-                .skinId(skinFilePath)
-                .fullSkinId(skinFilePath + "_")
-                .playFabId("")
-                .skinResourcePatch(GEOMETRY_CUSTOM)
-                .skinData(skinData)
-                .geometryData(GEOMETRY_HUMANOID_JSON)
-                .geometryDataEngineVersion("0.0.0")
-                .geometryName("geometry.humanoid.custom")
-                .animationData("")
-                .animations(List.of())
-                .capeId("")
-                .capeData(ImageData.EMPTY)
-                .capeOnClassic(false)
-                .premium(false)
-                .persona(false)
-                .armSize("wide")
-                .skinColor("#0")
-                .personaPieces(List.of())
-                .tintColors(List.of())
-                .primaryUser(true)
-                .overridingPlayerAppearance(true)
-                .build();
-            
-            return new Skin(skin, true);
+            BufferedImage skinImage = ImageIO.read(skinFile);
+            return loadSkin(skinImage, skinFile.getPath());
 
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    public Skin loadSkin(BufferedImage skinImage, String skinId) {
+        org.cloudburstmc.protocol.bedrock.data.skin.Skin skin = org.cloudburstmc.protocol.bedrock.data.skin.Skin.builder()
+            .skinId(skinId)
+            .fullSkinId(skinId + "_")
+            .playFabId("")
+            .skinResourcePatch(GEOMETRY_CUSTOM)
+            .skinData(ImageData.from(skinImage))
+            .geometryData(GEOMETRY_HUMANOID_JSON)
+            .geometryDataEngineVersion("0.0.0")
+            .geometryName("geometry.humanoid.custom")
+            .animationData("")
+            .animations(List.of())
+            .capeId("")
+            .capeData(ImageData.EMPTY)
+            .capeOnClassic(false)
+            .premium(false)
+            .persona(false)
+            .armSize("wide")
+            .skinColor("#0")
+            .personaPieces(List.of())
+            .tintColors(List.of())
+            .primaryUser(true)
+            .overridingPlayerAppearance(true)
+            .build();
+        
+        return new Skin(skin, true);
     }
 
     private static String loadHumanoidGeometryJson() {
