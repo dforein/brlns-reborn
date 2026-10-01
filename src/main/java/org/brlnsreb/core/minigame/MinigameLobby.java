@@ -19,7 +19,7 @@ import org.brlnsreb.utils.messages.ChatMsgs;
 import org.powernukkitx.Server;
 import org.powernukkitx.utils.Config;
 
-public abstract class MinigameLobby extends Lobby {
+public class MinigameLobby extends Lobby {
 
     protected final NPCEntity joinNpc;
     protected final NPCEntity backToHubNpc;

@@ -36,7 +36,7 @@ public abstract class Minigame {
         this.messages = Configs.getConfig(this.mgt.nameTag + "/messages.yml");
         this.mapSettings = Configs.getConfig(this.mgt.nameTag + "/maps.yml");
 
-        this.lobby = createLobby();
+        this.lobby = new MinigameLobby(this);
         this.matches = new HashSet<>();
         this.busyMatchNumbers = new BitSet();
 
@@ -84,7 +84,6 @@ public abstract class Minigame {
 
     //lobby and match management logic
 
-    protected abstract MinigameLobby createLobby();
     protected abstract Match createMatch(int newMatchNumber);
 
     public boolean createNewPendingMatch() {

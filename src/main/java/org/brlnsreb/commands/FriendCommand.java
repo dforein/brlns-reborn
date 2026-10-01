@@ -8,7 +8,6 @@ import org.brlnsreb.core.player.PlayerStateType;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.core.player.data.PlayerData;
 import org.brlnsreb.core.player.data.database.FriendsManager;
-import org.brlnsreb.core.player.data.database.Outcome;
 import org.brlnsreb.mainhub.MainHub;
 import org.brlnsreb.utils.messages.ChatMsgs;
 import org.brlnsreb.utils.messages.Messages;

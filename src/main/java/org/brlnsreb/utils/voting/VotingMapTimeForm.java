@@ -4,118 +4,61 @@ import org.powernukkitx.Player;
 import org.powernukkitx.form.response.CustomResponse;
 import org.powernukkitx.form.window.CustomForm;
 import org.powernukkitx.utils.Config;
-import org.powernukkitx.utils.TextFormat;
+
 import org.brlnsreb.core.minigame.match.waitinglobby.WaitingLobby;
-import org.brlnsreb.utils.abstraction.FormAbstract;
 import org.brlnsreb.utils.config.Configs;
 import org.brlnsreb.utils.config.YamlUtil;
 import org.brlnsreb.utils.level.TimeOfDay;
-import org.brlnsreb.utils.messages.Messages;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class VotingMapTimeForm extends FormAbstract {
+public class VotingMapTimeForm extends VotingForm {
 
     private VotingSystem<String> mapVoting;
-    private VotingSystem<TimeOfDay> timeVoting;
     private Config mapSettings;
-    private Messages msgUtil;
+
+    private VotingSystem<TimeOfDay> timeVoting;
 
     public VotingMapTimeForm(WaitingLobby waitingLobby) {
+        super(waitingLobby);
         this.mapVoting = waitingLobby.getMapVoting();
-        this.timeVoting = waitingLobby.getTimeVoting();
         this.mapSettings = waitingLobby.getMapSettings();
-        this.msgUtil = waitingLobby.getMsgUtil();
+
+        this.timeVoting = waitingLobby.getTimeVoting();
+
+    }
+
+    private String getMapDisplayName(String mapId) {
+        return YamlUtil.getStr("maps." + mapId + ".name", mapSettings);
+    }
+    private String getTimeDisplayName(TimeOfDay time) { return time.displayName; }
+
+    protected void addElements(CustomForm form, Player player) {
+        addVotingDropdown(form, player, 
+            mapVoting, 
+            this::getMapDisplayName,
+            "Vote for map:"
+        );
+
+        addVotingDropdown(form, player, 
+            timeVoting,
+            this::getTimeDisplayName, 
+            "Vote for time:"
+        );
     }
     
-    public void openForm(Player player) {
-        if (!checkCooldown(player)) return;
-        
-        CustomForm form = new CustomForm("Game Poll");
-        
-        //map dropdown
-        List<String> availableMapIds = mapVoting.getAvailableOptions();
-        List<String> mapOptions = new ArrayList<>();
+    protected int handleResponse(Player player, CustomResponse response) {
+        int dropdownIndex = 0;
 
-        mapOptions.add("None");                       //"None" option
-        for (String mapId : availableMapIds) {              //all randomly selected maps options
-            int votes = mapVoting.getVoteCount(mapId);
-            String mapDisplayName = YamlUtil.getStr("maps." + mapId + ".name", mapSettings);
-            mapOptions.add(mapDisplayName + " (" + votes + ")");
-        }
-        
-        String pastMapVote = mapVoting.getPlayerVote(player);
-        int mapDefaultIndex;
-        if (pastMapVote != null) {
-            mapDefaultIndex = availableMapIds.indexOf(pastMapVote) + 1;
-        } else {
-            mapDefaultIndex = 0;
-        }
-        
-        form.addDropdown(
-            TextFormat.colorize("Vote for map:"),
-            mapOptions,
-            mapDefaultIndex
+        handleVotingResponse(player, response, dropdownIndex++, 
+            mapVoting, this::getMapDisplayName, 
+            YamlUtil.getStr("match.waiting-lobby.voting.map-vote", Configs.getGlobalMessages())
         );
-        
-        //time dropdown
-        List<TimeOfDay> availableTimes = timeVoting.getAvailableOptions();
-        List<String> timeOptions = new ArrayList<>();
 
-        timeOptions.add("None");
-        for (TimeOfDay time : availableTimes) {
-            int votes = timeVoting.getVoteCount(time);
-            timeOptions.add(time.displayName + " (" + votes + ")");
-        }
-        
-        TimeOfDay pastTimeVote = timeVoting.getPlayerVote(player);
-        int timeDefaultIndex;
-        if (pastTimeVote != null) {
-            timeDefaultIndex = availableTimes.indexOf(pastTimeVote) + 1;
-        } else {
-            timeDefaultIndex = 0;
-        }
-        
-        form.addDropdown(
-            TextFormat.colorize("Vote for time:"),
-            timeOptions,
-            timeDefaultIndex
+        handleVotingResponse(player, response, dropdownIndex++, 
+            timeVoting, this::getTimeDisplayName, 
+            YamlUtil.getStr("match.waiting-lobby.voting.time-vote", Configs.getGlobalMessages())
         );
-        
-        form.send(player);
-        form.onSubmit((p, response) -> handleVoteResponse(player, response));
-    }
-    
-    public void handleVoteResponse(Player player, CustomResponse response) {
-        String message;
-        String[] placeholder = new String[1];
-        
-        int mapIndex = response.getDropdownResponse(0).elementId();
-        if (mapIndex > 0) {         //if it's zero, the choice was "None"
-            String selectedMapId = mapVoting.getAvailableOptions().get(mapIndex - 1);
-            mapVoting.vote(player, selectedMapId);
-            
-            message = YamlUtil.getStr("match.waiting-lobby.voting.map-vote", Configs.getGlobalMessages());
-            placeholder[0] = YamlUtil.getStr("maps." + selectedMapId + ".name", mapSettings);
-            
-            msgUtil.sendMessagePrefix(player, message, placeholder);
-        } else {
-            mapVoting.removePlayerVote(player);     //in case he voted before
-        }
-        
-        int timeIndex = response.getDropdownResponse(1).elementId();
-        if (timeIndex > 0) {
-            TimeOfDay selectedTime = timeVoting.getAvailableOptions().get(timeIndex - 1);
-            timeVoting.vote(player, selectedTime);
-            
-            message = YamlUtil.getStr("match.waiting-lobby.voting.time-vote", Configs.getGlobalMessages());
-            placeholder[0] = selectedTime.displayName;
 
-            msgUtil.sendMessagePrefix(player, message, placeholder);
-        } else {
-            timeVoting.removePlayerVote(player);
-        }
+        return dropdownIndex;
     }
 
 }
