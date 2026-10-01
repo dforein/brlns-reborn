@@ -299,7 +299,7 @@ public abstract class WaitingLobby extends Lobby {
         if (mapVoting.getAvailableOptions() == null) {
             List<String> availableMapIds = minigame.getAvailableMapIds();
         
-            while (availableMapIds.size() > 3) {
+            while (availableMapIds.size() > 4) {
                 availableMapIds.remove(
                     ThreadLocalRandom.current().nextInt(availableMapIds.size())
                 );
