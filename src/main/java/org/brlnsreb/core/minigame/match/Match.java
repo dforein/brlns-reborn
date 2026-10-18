@@ -66,7 +66,7 @@ public abstract class Match {
     }
 
     protected abstract WaitingLobby createWaitingLobby();
-    protected abstract Game createGame(String map, TimeOfDay time, Weather weather);
+    protected abstract Game createGame(String mapId, TimeOfDay time, Weather weather);
     
 
     //join-leave logic

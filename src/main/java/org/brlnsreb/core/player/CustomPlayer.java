@@ -1,18 +1,11 @@
 package org.brlnsreb.core.player;
 
 import java.lang.ref.WeakReference;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 import org.cloudburstmc.protocol.bedrock.BedrockServerSession;
-import org.cloudburstmc.protocol.bedrock.data.skin.AnimationData;
-import org.cloudburstmc.protocol.bedrock.data.skin.PersonaPieceData;
-import org.cloudburstmc.protocol.bedrock.data.skin.PersonaPieceTintData;
-import org.cloudburstmc.protocol.common.util.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.auth.AuthSystem;
@@ -36,14 +29,8 @@ import org.powernukkitx.entity.EntityLiving;
 import org.powernukkitx.event.entity.EntityDamageByEntityEvent;
 import org.powernukkitx.event.entity.EntityDamageEvent;
 import org.powernukkitx.event.entity.EntityDamageEvent.DamageCause;
-import org.powernukkitx.level.Location;
 import org.powernukkitx.math.BlockFace;
 import org.powernukkitx.math.Vector3;
-import org.powernukkitx.nbt.tag.CompoundTag;
-import org.powernukkitx.nbt.tag.DoubleTag;
-import org.powernukkitx.nbt.tag.FloatTag;
-import org.powernukkitx.nbt.tag.ListTag;
-import org.powernukkitx.nbt.tag.StringTag;
 import org.powernukkitx.scoreboard.Scoreboard;
 
 public class CustomPlayer extends Player {
@@ -314,6 +301,7 @@ public class CustomPlayer extends Player {
         if (this.isPlaying()) {
             matchCurrent.getGame().getListenerAccess().onPlayerDamage(this, source);
         }
+        if (source.getFinalDamage() <= 0.0F) return false;
 
         //getting damager (if damager exists)
         CustomPlayer damager = null;
@@ -354,166 +342,6 @@ public class CustomPlayer extends Player {
         }
 
         return true;
-    }
-
-
-    //save logic
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public void saveNBT() {
-        Location spawn = MainHub.instance.getMap().spawn;
-        if (spawn == null) {
-            BrlnsReb.logger.error("MainHub spawn is null! Proceeding to save player's NBT according to PNX...");
-            super.saveNBT();
-            return;
-        }
-
-        this.nbt.putList("Pos", new ListTag<DoubleTag>()
-                .add(new DoubleTag(spawn.x))
-                .add(new DoubleTag(spawn.y))
-                .add(new DoubleTag(spawn.z))
-        );
-
-        this.nbt.putList("Motion", new ListTag<DoubleTag>()
-                .add(new DoubleTag(0.0))
-                .add(new DoubleTag(0.0))
-                .add(new DoubleTag(0.0))
-        );
-
-        this.nbt.putList("Rotation", new ListTag<FloatTag>()
-            .add(new FloatTag(spawn.yaw))
-            .add(new FloatTag(0.0F))
-        );
-
-        this.nbt.remove("FallDistance");
-        this.nbt.remove("Fire");
-        this.nbt.remove("Air");
-        this.nbt.putBoolean("OnGround", true);
-        this.nbt.remove("Invulnerable");
-        this.nbt.putFloat("Health", this.getHealthDefaultMax());
-        this.nbt.putInt("playerGameType", Player.ADVENTURE);
-
-        this.nbt.remove("SpawnX");
-        this.nbt.remove("SpawnY");
-        this.nbt.remove("SpawnZ");
-        this.nbt.remove("SpawnLevel");
-        this.nbt.remove("SpawnDimension");
-
-        this.nbt.remove("CursorItem");
-        this.nbt.remove("ActiveEffects");
-        this.nbt.remove("Attributes");
-        
-        this.nbt.remove("Inventory");
-        this.nbt.remove("SelectedInventorySlot");
-        this.nbt.remove("OffInventory");
-        this.nbt.remove("EnderItems");
-
-        this.adventureSettings.saveNBT();
-
-        var skin = getSkin();
-        var serializedSkin = skin.getSkin();
-        if (serializedSkin != null) {
-            CompoundTag skinTag = new CompoundTag()
-                    .putByteArray("Data", serializedSkin.getSkinData().getImage())
-                    .putInt("SkinImageWidth", serializedSkin.getSkinData().getWidth())
-                    .putInt("SkinImageHeight", serializedSkin.getSkinData().getHeight())
-                    .putString("ModelId", serializedSkin.getSkinId())
-                    .putString("CapeId", serializedSkin.getCapeId())
-                    .putByteArray("CapeData", serializedSkin.getCapeData().getImage())
-                    .putInt("CapeImageWidth", serializedSkin.getCapeData().getWidth())
-                    .putInt("CapeImageHeight", serializedSkin.getCapeData().getHeight())
-                    .putByteArray("SkinResourcePatch", serializedSkin.getSkinResourcePatch().getBytes(StandardCharsets.UTF_8))
-                    .putByteArray("GeometryData", serializedSkin.getGeometryData().getBytes(StandardCharsets.UTF_8))
-                    .putByteArray("SkinAnimationData", serializedSkin.getAnimationData().getBytes(StandardCharsets.UTF_8))
-                    .putBoolean("PremiumSkin", serializedSkin.isPremium())
-                    .putBoolean("PersonaSkin", serializedSkin.isPersona())
-                    .putBoolean("CapeOnClassicSkin", serializedSkin.isCapeOnClassic())
-                    .putString("ArmSize", serializedSkin.getArmSize())
-                    .putString("SkinColor", serializedSkin.getSkinColor())
-                    .putBoolean("IsTrustedSkin", skin.isTrusted());
-
-            List<AnimationData> animations = serializedSkin.getAnimations();
-            if (!animations.isEmpty()) {
-                ListTag<CompoundTag> animationsTag = new ListTag<>();
-                for (AnimationData animation : animations) {
-                    animationsTag.add(new CompoundTag()
-                            .putFloat("Frames", animation.getFrames())
-                            .putInt("Type", animation.getTextureType().ordinal())
-                            .putInt("ImageWidth", animation.getImage().getWidth())
-                            .putInt("ImageHeight", animation.getImage().getHeight())
-                            .putInt("AnimationExpression", animation.getExpressionType().ordinal())
-                            .putByteArray("Image", animation.getImage().getImage()));
-                }
-                skinTag.putList("AnimatedImageData", animationsTag);
-            }
-
-            List<PersonaPieceData> personaPieces = serializedSkin.getPersonaPieces();
-            if (!personaPieces.isEmpty()) {
-                ListTag<CompoundTag> piecesTag = new ListTag<>();
-                for (PersonaPieceData piece : personaPieces) {
-                    piecesTag.add(new CompoundTag().putString("PieceId", piece.getId())
-                            .putString("PieceType", piece.getType())
-                            .putString("PackId", piece.getPackId())
-                            .putBoolean("IsDefault", piece.isDefault())
-                            .putString("ProductId", piece.getProductId()));
-                }
-                skinTag.putList("PersonaPieces", piecesTag);
-            }
-            List<PersonaPieceTintData> tints = serializedSkin.getTintColors();
-            if (!tints.isEmpty()) {
-                ListTag<CompoundTag> tintsTag = new ListTag<>();
-                for (PersonaPieceTintData tint : tints) {
-                    ListTag<StringTag> colors = new ListTag<>();
-                    colors.setAll(tint.getColors().stream().map(StringTag::new).collect(Collectors.toList()));
-                    tintsTag.add(new CompoundTag()
-                            .putString("PieceType", tint.getType())
-                            .putList("Colors", colors));
-                }
-                skinTag.putList("PieceTintColors", tintsTag);
-            }
-
-            if (!serializedSkin.getPlayFabId().isEmpty()) {
-                skinTag.putString("PlayFabId", serializedSkin.getPlayFabId());
-            }
-
-            this.getNbt().putCompound("Skin", skinTag);
-        }
-    }
-
-    @Override
-    public void save(boolean async) {
-        Preconditions.checkState(!this.closed, "Tried to save closed player");
-
-        saveNBT();
-
-        if (this.level != null && this.level.getProvider() != null) {
-            this.nbt.putString("Level", Server.getInstance().getDefaultLevel().getName());
-
-            this.nbt.putInt("playerGameType", ADVENTURE);
-            this.nbt.putLong("lastPlayed", System.currentTimeMillis() / 1000);
-            this.nbt.putString("lastIP", this.getAddress());
-            this.nbt.putInt("EXP", this.getExperience());
-            this.nbt.putInt("expLevel", this.getExperienceLevel());
-            this.nbt.putInt("foodLevel", 18);
-            this.nbt.putFloat("foodSaturationLevel", this.getFoodData().getSaturation());
-            this.nbt.putInt("enchSeed", this.getEnchantmentSeed());
-
-            var fogIdentifiers = new ListTag<StringTag>();
-            var userProvidedFogIds = new ListTag<StringTag>();
-            this.fogStack.forEach(fog -> {
-                fogIdentifiers.add(new StringTag(fog));
-                userProvidedFogIds.add(new StringTag(fog));
-            });
-            this.nbt.putList("fogIdentifiers", fogIdentifiers);
-            this.nbt.putList("userProvidedFogIds", userProvidedFogIds);
-
-            this.nbt.putInt("TimeSinceRest", this.timeSinceRest);
-
-            if (!this.getName().isBlank() && this.nbt != null) {
-                this.server.saveOfflinePlayerData(this.uuid, this.getNbt(), async);
-            }
-        }
     }
 
 }

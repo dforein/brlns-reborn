@@ -10,7 +10,6 @@ import org.brlnsreb.core.minigame.match.game.GameExpand;
 import org.brlnsreb.core.minigame.match.game.GameTeam;
 import org.brlnsreb.core.minigame.match.game.listeners.ListenerAccess;
 import org.brlnsreb.core.player.CustomPlayer;
-import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.core.player.CustomPlayer.DamageMode;
 import org.brlnsreb.core.player.CustomPlayer.InteractMode;
 import org.brlnsreb.core.player.data.StatType;
@@ -114,8 +113,6 @@ public class MMGame extends GameExpand implements GameTeam {
     protected void onJoinPreparePlayer(CustomPlayer player) {
         player.interactMode = InteractMode.LIMITED;
 
-        if (map.isNightVisionEnabled()) PlayerUtils.giveNightVision(player);
-
         bossBar.updateExp(player, gameDataMap.get(player));
     }
 
@@ -126,7 +123,6 @@ public class MMGame extends GameExpand implements GameTeam {
     public void onJoinPrepareSpectator(CustomPlayer player) {
         player.setAllowFlight(true);
         player.setFlying(true);
-        if (map.isNightVisionEnabled()) PlayerUtils.giveNightVision(player);
 
         scheduler.scheduleDelayedTask(BrlnsReb.instance, () -> playDeadBodyAnimation(player), 20);
         scheduler.scheduleDelayedTask(BrlnsReb.instance, () -> playDeadBodyAnimation(player), 60);
@@ -214,7 +210,7 @@ public class MMGame extends GameExpand implements GameTeam {
 
     protected void startGame() {
         //message
-        msgUtil.broadcastPresetPrefix(players, "game-start");
+        msgUtil.broadcastPresetPrefix("game-start");
         msgUtil.broadcastPresetPrefix(players, "game-start2");
 
         //role assignment, items

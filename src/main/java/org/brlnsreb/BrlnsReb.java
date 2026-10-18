@@ -116,10 +116,12 @@ public class BrlnsReb extends PluginBase {
         loadAllLevels = underMaintenance ? maintenance.getBoolean("load-all-levels") : false;
 
         server = getServer();
-        server.getSettings().levelSettings().loadAllLevels(false);
-        server.getSettings().gameplaySettings().forceResources(true);
+        var settings = server.getSettings();
+        settings.levelSettings().loadAllLevels(false);
+        settings.gameplaySettings().forceResources(true);
+        settings.playerSettings().savePlayerData(false);
         server.setDifficulty(2);
-        server.getSettings().save();
+        settings.save();
 
         LevelManager.init();
 

@@ -28,7 +28,6 @@ import org.powernukkitx.Player;
 import org.powernukkitx.level.Location;
 import org.powernukkitx.scheduler.ServerScheduler;
 import org.powernukkitx.utils.Config;
-import org.powernukkitx.utils.TextFormat;
 
 public abstract class Game {
 
@@ -86,6 +85,7 @@ public abstract class Game {
 
         PlayerUtils.changeWorld(player, spawnLoc, false);
         player.removeAllEffects();
+        if (map.isNightVisionEnabled()) PlayerUtils.giveNightVision(player);
 
         player.state = PlayerStateType.PLAYING;
         prepareGameData(player);
@@ -109,6 +109,7 @@ public abstract class Game {
         spectatorItems.giveActions(player);
 
         onJoinPrepareSpectator(player);
+        if (map.isNightVisionEnabled()) PlayerUtils.giveNightVision(player);
     }
 
     protected abstract void onJoinPrepareSpectator(CustomPlayer player);
@@ -195,7 +196,10 @@ public abstract class Game {
             int secondsRemaining = timer.getSecondsRemaining();
             if (secondsRemaining <= 3) {
                 for (CustomPlayer p : players) {
-                    p.sendTitle(TextFormat.colorize("&l&a" + secondsRemaining), "", 4, 17, 4);
+                    p.sendTitle("§l§a" + secondsRemaining, "", 4, 17, 4);
+                }
+                for (CustomPlayer p : spectators) {
+                    p.sendTitle("§l§a" + secondsRemaining, "", 4, 17, 4);
                 }
             }
         }, this::onGameStart);

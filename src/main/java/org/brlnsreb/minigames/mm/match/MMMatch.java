@@ -22,13 +22,13 @@ public class MMMatch extends MatchExpand implements MatchTeam {
         return new MMWaitingLobby(this);
     }
 
-    protected Game createGame(String map, TimeOfDay time, Weather weather) {
+    protected Game createGame(String mapId, TimeOfDay time, Weather weather) {
         weather = Weather.get(YamlUtil.getStr(
-            "maps." + map + ".weather", 
+            "maps." + mapId + ".weather", 
             mapSettings
         ));
         
-        return new MMGame(this, map, time, weather);
+        return new MMGame(this, mapId, time, weather);
     }
 
     public GameTeam getTeamGame() {
