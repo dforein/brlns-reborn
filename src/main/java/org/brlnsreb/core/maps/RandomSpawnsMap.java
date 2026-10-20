@@ -41,7 +41,7 @@ public class RandomSpawnsMap extends GameMapLevel {
     public Location getSpawnFor(CustomPlayer player) {
         if (spawns.isEmpty()) return null;
 
-        UUID uuid = player.getUniqueId();
+        UUID uuid = player.getUUID();
         if (playerSpawns.containsKey(uuid)) {
             return playerSpawns.get(uuid);
         }

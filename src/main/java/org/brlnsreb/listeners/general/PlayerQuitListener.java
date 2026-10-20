@@ -46,7 +46,6 @@ public class PlayerQuitListener implements Listener {
         }
         ScoreboardAbstract.remove(player);
         PlayerDataManager.onServerLeave(player);
-        player.save();
     }
     
 }

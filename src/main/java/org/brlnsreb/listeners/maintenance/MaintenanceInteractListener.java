@@ -26,7 +26,7 @@ public class MaintenanceInteractListener implements Listener {
         if (item == null) return;
 
         Player p = event.getPlayer();
-        UUID uuid = p.getUniqueId();
+        UUID uuid = p.getUUID();
         if (!cooldown.checkOrAdd(uuid)) return;
 
         String itemName = item.getDisplayName();

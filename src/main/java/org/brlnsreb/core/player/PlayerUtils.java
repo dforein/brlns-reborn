@@ -1,5 +1,6 @@
 package org.brlnsreb.core.player;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -8,8 +9,6 @@ import org.brlnsreb.core.player.CustomPlayer.DamageMode;
 import org.brlnsreb.core.player.CustomPlayer.InteractMode;
 import org.brlnsreb.core.player.data.database.PlayerDataManager;
 import org.brlnsreb.utils.abstraction.ScoreboardAbstract;
-import org.cloudburstmc.protocol.bedrock.data.BuildPlatform;
-import org.cloudburstmc.protocol.bedrock.data.payload.list.PlayerListAddEntry;
 import org.cloudburstmc.protocol.bedrock.data.payload.list.PlayerListRemoveEntry;
 import org.cloudburstmc.protocol.bedrock.packet.PlayerListPacket;
 
@@ -23,9 +22,8 @@ import org.powernukkitx.item.Item;
 import org.powernukkitx.level.Level;
 import org.powernukkitx.level.Location;
 import org.powernukkitx.math.Vector3;
+import org.powernukkitx.network.process.PlayerListEncoder;
 import org.powernukkitx.scoreboard.data.DisplaySlot;
-import org.powernukkitx.utils.DummyBossBar;
-import org.powernukkitx.utils.SkinConverter;
 
 public class PlayerUtils {
 
@@ -139,8 +137,8 @@ public class PlayerUtils {
     public static void removeScoreboard(CustomPlayer p) {
         if (!p.isOnline()) return;
         if (p.hasScoreboard()) {
-            p.removeScoreboard();
             p.getScoreboard().removeViewer(p, DisplaySlot.SIDEBAR);
+            p.removeScoreboard();
             p.resetScoreboard();
         }
         ScoreboardAbstract.remove(p);
@@ -148,13 +146,17 @@ public class PlayerUtils {
 
     public static void removeBossBar(CustomPlayer p) {
         if (!p.isOnline()) return;
-        if (!p.getDummyBossBars().isEmpty()) {
-            for (DummyBossBar bar : p.getDummyBossBars().values()) {
-                bar.destroy(); 
-            }
+
+        if (p.getBossBarId() != null) {
+            p.removeBossBar(p.getBossBarId());
+            p.resetBossBarId();
         }
 
-        p.resetBossBarId();
+        if (!p.getDummyBossBars().isEmpty()) {
+            for (Long id : new ArrayList<>(p.getDummyBossBars().keySet())) {
+                p.removeBossBar(id);
+            }
+        }
     }
 
 
@@ -208,12 +210,6 @@ public class PlayerUtils {
 
 
     //player list packets
-
-    public static void initPlayerList(Player viewer, Level level) {
-        for (Player p : level.getPlayers().values()) {
-            addViewerToOnlinePlayer(p, viewer);
-        }
-    }
 
     public static void updatePlayerList(Player viewer, Level newLevel) {
         updatePlayerList(viewer, viewer.getLevel(), newLevel);
@@ -282,22 +278,9 @@ public class PlayerUtils {
         }
     }
 
-    @SuppressWarnings("deprecation")
     public static PlayerListPacket addOnlinePlayerPacket(Player player) {
         final PlayerListPacket pk = new PlayerListPacket();
-
-        final PlayerListAddEntry entry = new PlayerListAddEntry();
-        entry.setUuid(player.getUniqueId());
-        entry.setActorUniqueID(player.runtimeId());
-        entry.setPlayerName(player.getName());
-        entry.setXblXUID(player.getXUID());
-        entry.setPlatformOnlineID("");
-        entry.setBuildPlatform(BuildPlatform.UNKNOWN);
-        entry.setSkin(player.getSkin().getSkin());
-        entry.setSerializedSkin(SkinConverter.toSerializedSkin(player.getSkin().getSkin(), player.getSkin().isTrusted()));
-        entry.setPlayerColor(player.getLocatorBarColor().getRGB());
-
-        pk.getEntries().add(entry);
+        pk.getEntries().add(PlayerListEncoder.addEntry(player));
         
         return pk;
     }
@@ -305,7 +288,7 @@ public class PlayerUtils {
     public static PlayerListPacket removeOnlinePlayerPacket(Player player) {
         final PlayerListPacket pk = new PlayerListPacket();
         final PlayerListRemoveEntry entry = new PlayerListRemoveEntry();
-        entry.setUuid(player.getUniqueId());
+        entry.setUuid(player.getUUID());
         pk.getEntries().add(entry);
 
         return pk;

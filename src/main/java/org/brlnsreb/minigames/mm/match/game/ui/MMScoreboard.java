@@ -1,5 +1,6 @@
 package org.brlnsreb.minigames.mm.match.game.ui;
 
+import org.brlnsreb.core.minigame.MinigameType;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.minigames.mm.match.game.MMGame;
 import org.brlnsreb.minigames.mm.match.game.gamedata.MMRole;
@@ -11,6 +12,7 @@ public class MMScoreboard extends ScoreboardAbstract {
 
     public MMScoreboard(MMGame game) {
         this.game = game;
+        this.title = MinigameType.MURDER_MYSTERY.displayName;
     }
 
     public void updateGameScoreboards() {

@@ -23,11 +23,11 @@ public class VotingSystem<T> {
     }
     
     public void vote(Player player, T option) {
-        votes.put(player.getUniqueId(), option);
+        votes.put(player.getUUID(), option);
     }
     
     public T getPlayerVote(Player player) {
-        return votes.get(player.getUniqueId());
+        return votes.get(player.getUUID());
     }
     
     public int getVoteCount(T option) {
@@ -65,7 +65,7 @@ public class VotingSystem<T> {
     }
     
     public void removePlayerVote(Player player) {
-        votes.remove(player.getUniqueId());
+        votes.remove(player.getUUID());
     }
 
 }

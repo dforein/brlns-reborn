@@ -62,8 +62,8 @@ public class DeathLobby extends Lobby {
             @Override
             public void onRun(int currentTick) {
                 for (Player p : map.getPlayers().values()) {
-                    Location prev = playerLocs.putIfAbsent(p.getUniqueId(), p.getLocation());
-                    if (prev != null && playerLocs.get(p.getUniqueId()).equals(prev)) {
+                    Location prev = playerLocs.putIfAbsent(p.getUUID(), p.getLocation());
+                    if (prev != null && playerLocs.get(p.getUUID()).equals(prev)) {
                         onLeave(p);
                         MainHub.instance.onJoin((CustomPlayer) p);
                     }
@@ -99,11 +99,11 @@ public class DeathLobby extends Lobby {
 
     @Override
     public void onLeave(CustomPlayer player) {
-        playerLocs.remove(player.getUniqueId());
+        playerLocs.remove(player.getUUID());
     }
 
     public void onLeave(Player player) {
-        playerLocs.remove(player.getUniqueId());
+        playerLocs.remove(player.getUUID());
     }
 
     

@@ -9,15 +9,17 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.brlnsreb.core.player.CustomPlayer;
+import org.brlnsreb.utils.messages.ChatMsgs;
 
 public abstract class ScoreboardAbstract {
     
-    protected static final String OBJECTIVE_NAME = "scoreboard";
-    protected static final String DISPLAY_TITLE = "";
+    protected String title = ChatMsgs.BROKENLENS_REBORN;
 
-    protected static final Map<UUID, Map<Integer, FakeScorer>> activeScorers = new HashMap<>();
+    protected static final Map<UUID, Map<Integer, FakeScorer>> activeScorers = new ConcurrentHashMap<>();
+    protected static final Map<String, FakeScorer> scorerCache = new ConcurrentHashMap<>();
 
     protected Scoreboard getScoreboardOrCreate(CustomPlayer player) {
         if (player == null || !player.isOnline()) return null;
@@ -25,9 +27,9 @@ public abstract class ScoreboardAbstract {
 
         remove(player);
 
-        Scoreboard sb = new Scoreboard(OBJECTIVE_NAME, DISPLAY_TITLE);
+        Scoreboard sb = new Scoreboard(title, title);
         player.setScoreboard(sb);
-        if (sb != null) sb.addViewer(player, DisplaySlot.SIDEBAR);
+        sb.addViewer(player, DisplaySlot.SIDEBAR);
 
         return sb;
     }
@@ -58,12 +60,12 @@ public abstract class ScoreboardAbstract {
         Scoreboard sb = getScoreboardOrCreate(player);
         if (sb == null) return;
 
-        draw(sb, player.getUniqueId(), lines);
+        draw(sb, player.getUUID(), lines);
     }
 
     public static void remove(CustomPlayer player) {
         //use this to remove the scorers associated to the player
-        activeScorers.remove(player.getUniqueId());
+        activeScorers.remove(player.getUUID());
     }
 
 
@@ -78,24 +80,23 @@ public abstract class ScoreboardAbstract {
     }
 
     protected void setLine(Scoreboard sb, UUID playerId, String text, int score) {
+        text = TextFormat.colorize(text);
 
-        String colorText = TextFormat.colorize(text);
         Map<Integer, FakeScorer> playerMap = activeScorers.computeIfAbsent(playerId, k -> new HashMap<>());
-        
         FakeScorer oldScorer = playerMap.get(score);
         
-        if (oldScorer != null && oldScorer.getName().equals(colorText)) {
+        if (oldScorer != null && oldScorer.getName().equals(text)) {
             return;
         }
 
-        FakeScorer newScorer = new FakeScorer(colorText);
-        sb.addLine(newScorer, score);
-        playerMap.put(score, newScorer);
+        FakeScorer scorer = scorerCache.computeIfAbsent(text, FakeScorer::new);
+
+        sb.addLine(scorer, score);
+        playerMap.put(score, scorer);
 
         if (oldScorer != null) {
             sb.removeLine(oldScorer);
         }
-
     }
 
     protected void clearUnusedLines(Scoreboard sb, UUID playerId, int maxScore) {
@@ -103,7 +104,7 @@ public abstract class ScoreboardAbstract {
         if (playerMap == null) return;
 
         playerMap.entrySet().removeIf(entry -> {
-            if (entry.getKey() > maxScore) {
+            if (entry.getKey() >= maxScore) {
                 sb.removeLine(entry.getValue());
                 return true;
             }

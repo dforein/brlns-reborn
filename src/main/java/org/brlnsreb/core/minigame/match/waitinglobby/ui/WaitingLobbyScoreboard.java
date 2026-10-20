@@ -11,6 +11,7 @@ public class WaitingLobbyScoreboard extends ScoreboardAbstract {
 
     public WaitingLobbyScoreboard(Match match) {
         this.minigameName = match.getMinigame().mgt.displayName;
+        this.title = "";
         this.matchId = match.getId();
     }
 

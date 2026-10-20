@@ -198,7 +198,7 @@ public class MainHub extends Lobby {
                     double floorY = p.getFloorY();
                     for (Vector3 pos : launchersPos) {
                         if (floorX == pos.x && floorZ == pos.z && floorY == pos.y) {
-                            if (!launchersCooldown.checkOrAdd(p.getUniqueId())) break;
+                            if (!launchersCooldown.checkOrAdd(p.getUUID())) break;
 
                             Vector3 direction = p.getDirectionVector();
                             p.motionX += direction.x * launchersSpeed;

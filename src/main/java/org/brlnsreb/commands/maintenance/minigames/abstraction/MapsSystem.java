@@ -126,8 +126,8 @@ public class MapsSystem extends FormAbstract {
 
 
     protected static void addNewMapMinMax(Player player, MapsSystem instance) {
-        minMaxMap.put(player.getUniqueId(), new ObjectObjectImmutablePair<>(new Vector3(), new Vector3()));
-        instances.put(player.getUniqueId(), instance);
+        minMaxMap.put(player.getUUID(), new ObjectObjectImmutablePair<>(new Vector3(), new Vector3()));
+        instances.put(player.getUUID(), instance);
 
         player.getInventory().clearAll();
         ItemManager.giveItem(player, 0, Item.LIGHT_BLUE_DYE, "§bSet MIN X §r§7(from your X)", "minX");
@@ -148,7 +148,7 @@ public class MapsSystem extends FormAbstract {
     }
 
     public static void addNewMapSpawns(Player player) {
-        spawnsMap.put(player.getUniqueId(), new ArrayList<>());
+        spawnsMap.put(player.getUUID(), new ArrayList<>());
 
         player.getInventory().clearAll();
         ItemManager.giveItem(player, 0, Item.NETHER_STAR, "§dSet new Spawn Point §r§7(from your position)", "setSpawn");
@@ -193,9 +193,9 @@ public class MapsSystem extends FormAbstract {
             }
 
             String path = "maps." + mapId + ".";
-            Vector3 min = minMaxMap.get(p.getUniqueId()).first();
-            Vector3 max = minMaxMap.get(p.getUniqueId()).second();
-            List<String> spawns = spawnsMap.get(p.getUniqueId()).stream()
+            Vector3 min = minMaxMap.get(p.getUUID()).first();
+            Vector3 max = minMaxMap.get(p.getUUID()).second();
+            List<String> spawns = spawnsMap.get(p.getUUID()).stream()
                 .map(v -> v.x+" "+v.y+" "+v.z)
                 .collect(Collectors.toUnmodifiableList());
 
@@ -217,8 +217,8 @@ public class MapsSystem extends FormAbstract {
                 }
             }
             maps.save();
-            minMaxMap.remove(p.getUniqueId());
-            spawnsMap.remove(p.getUniqueId());
+            minMaxMap.remove(p.getUUID());
+            spawnsMap.remove(p.getUUID());
 
             editMaps(p);
         });
@@ -229,7 +229,7 @@ public class MapsSystem extends FormAbstract {
 
         form.content("Are you sure to leave the process?");
         form.yes("Yes", p -> {
-            UUID uuid = p.getUniqueId();
+            UUID uuid = p.getUUID();
             minMaxMap.remove(uuid);
             spawnsMap.remove(uuid);
             instances.remove(uuid);

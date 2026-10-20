@@ -21,7 +21,7 @@ public class PlayerDataManager {
     }
 
     public static CompletableFuture<Outcome> onServerJoin(CustomPlayer player) {
-        UUID uuid = player.getUniqueId();
+        UUID uuid = player.getUUID();
 
         uuid2DataMap.put(uuid, player.data);
 
@@ -63,7 +63,7 @@ public class PlayerDataManager {
     }
 
     public static void onServerLeave(CustomPlayer player) {
-        uuid2DataMap.remove(player.getUniqueId());
+        uuid2DataMap.remove(player.getUUID());
         if (player.data.isLogged()) {
             name2UuidMap.remove(player.data.name.toLowerCase());
         }
@@ -86,7 +86,7 @@ public class PlayerDataManager {
                 Outcome outcome = AccountsManager.createNewAccount(player, name, password);
                 if (outcome != Outcome.OK) return outcome;
 
-                onLogin(name, player.getUniqueId());
+                onLogin(name, player.getUUID());
 
                 return Outcome.OK;
 
@@ -110,12 +110,12 @@ public class PlayerDataManager {
                 if (player.data.isLogged()) return Outcome.PLAYER_ALREADY_LOGGED_IN;
 
                 //check whether another player is already logged into the account
-                if (name2UuidMap.putIfAbsent(name.toLowerCase(), player.getUniqueId()) != null) return Outcome.PLAYER_ALREADY_LOGGED_IN;
+                if (name2UuidMap.putIfAbsent(name.toLowerCase(), player.getUUID()) != null) return Outcome.PLAYER_ALREADY_LOGGED_IN;
 
                 //try to load account
                 Outcome outcome = AccountsManager.checkAndLoadAccountDataSync(player, name, password);
                 if (outcome != Outcome.OK) {
-                    name2UuidMap.remove(name.toLowerCase(), player.getUniqueId());
+                    name2UuidMap.remove(name.toLowerCase(), player.getUUID());
                     return outcome;
                 }
                 FriendsManager.loadFriendDataSync(player, name);
@@ -126,10 +126,10 @@ public class PlayerDataManager {
                     name
                 );
                 if (!playerResults.isEmpty()) {
-                    if (!playerResults.getString("uuid").equals(player.getUniqueId().toString())) {
+                    if (!playerResults.getString("uuid").equals(player.getUUID().toString())) {
                         DatabaseManager.executeUpdate(
                             "UPDATE players SET uuid = ? WHERE name = ?", 
-                            player.getUniqueId().toString(), name
+                            player.getUUID().toString(), name
                         );
                     }
                 }
@@ -159,7 +159,7 @@ public class PlayerDataManager {
                 //delete the player-account association
                 DatabaseManager.executeUpdate(
                     "DELETE FROM players WHERE uuid = ?", 
-                    player.getUniqueId().toString()
+                    player.getUUID().toString()
                 );
 
                 //execute player logout

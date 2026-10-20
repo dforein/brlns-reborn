@@ -287,7 +287,7 @@ public class PlayerData {
 
     //PVT and reply commands
 
-    public void setLastPvtPlayer(Player player) { this.lastPvtPlayerId = player.getUniqueId(); }
+    public void setLastPvtPlayer(Player player) { this.lastPvtPlayerId = player.getUUID(); }
     public CustomPlayer getLastPvtPlayer() {
         if (lastPvtPlayerId == null) return null;
         CustomPlayer player = PlayerUtils.getPlayer(lastPvtPlayerId);

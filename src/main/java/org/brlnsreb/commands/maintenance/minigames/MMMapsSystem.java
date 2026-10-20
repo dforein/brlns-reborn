@@ -58,7 +58,7 @@ public class MMMapsSystem extends MapsSystem {
             return;
         }
 
-        mapIds.put(player.getUniqueId(), mapId);
+        mapIds.put(player.getUUID(), mapId);
         GoldSpawnMapper.startMapping(mapId);
 
         player.teleport(pos);

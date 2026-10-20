@@ -8,7 +8,7 @@ public abstract class FormAbstract {
     protected static final Cooldown openingCooldown = Cooldown.seconds(0.5);
 
     protected static boolean checkCooldown(Player player) {
-        boolean check = openingCooldown.checkOrAdd(player.getUniqueId());
+        boolean check = openingCooldown.checkOrAdd(player.getUUID());
         if (check) player.getInventory().setHeldItemIndex(0);
         
         return check;

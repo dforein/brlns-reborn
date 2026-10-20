@@ -8,10 +8,8 @@ import org.brlnsreb.utils.config.YamlUtil;
 import org.brlnsreb.utils.items.ItemManager;
 import org.powernukkitx.Player;
 import org.powernukkitx.item.Item;
-import org.powernukkitx.nbt.tag.CompoundTag;
-import org.powernukkitx.nbt.tag.ListTag;
+import org.powernukkitx.item.ItemWrittenBook;
 import org.powernukkitx.utils.Config;
-import org.powernukkitx.utils.TextFormat;
 
 public abstract class WaitingLobbyItemManager extends ItemManager {
 
@@ -58,35 +56,12 @@ public abstract class WaitingLobbyItemManager extends ItemManager {
         String title = YamlUtil.getStr(path + "title", config);
         String author = YamlUtil.getStr(path + "author", config);
         List<String> content = config.getStringList(path + "content");
+        if (content.isEmpty()) content.add("No rules!");
+        String[] pages = content.toArray(new String[content.size()]);
         
-        if (content.isEmpty()) {
-            content.add("No rules!");
-        }
-        
-        Item book = Item.get(Item.WRITTEN_BOOK);
-        
-        CompoundTag tag = book.getNbt();
-        if (tag == null) {
-            tag = new CompoundTag();
-        }
-        
-        tag.putString("title", TextFormat.colorize(title));
-        tag.putString("author", TextFormat.colorize(author));
-        tag.putInt("generation", 0);
-        tag.putString("xuid", "");
-        
-        ListTag<CompoundTag> pagesList = new ListTag<>();
-        
-        for (String pageContent : content) {
-            CompoundTag pageTag = new CompoundTag();
-            pageTag.putString("photoname", "");
-            pageTag.putString("text", TextFormat.colorize(pageContent));
-            pagesList.add(pageTag);
-        }
-        
-        tag.putList("pages", pagesList);
-        book.setNbt(tag);
+        ItemWrittenBook book = (ItemWrittenBook) Item.get(Item.WRITTEN_BOOK); 
         book.setCustomName(name);
+        book.writeBook(author, title, pages);
         
         return book;
     }

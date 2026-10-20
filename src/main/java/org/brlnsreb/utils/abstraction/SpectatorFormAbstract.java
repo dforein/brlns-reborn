@@ -63,7 +63,7 @@ public abstract class SpectatorFormAbstract extends FormAbstract {
             playersEmpty = false;
             
             form.addButton(displayName);
-            playerIds.add(p.getUniqueId());
+            playerIds.add(p.getUUID());
         }
         
         if (playersEmpty) {
@@ -71,7 +71,7 @@ public abstract class SpectatorFormAbstract extends FormAbstract {
             return;
         }
 
-        spectatePendingPlayerLists.put(spectator.getUniqueId(), playerIds);
+        spectatePendingPlayerLists.put(spectator.getUUID(), playerIds);
         form.onSubmit((p, response) -> handleSpectateResponse(spectator, response.buttonId()));
     }
 
@@ -80,7 +80,7 @@ public abstract class SpectatorFormAbstract extends FormAbstract {
     private void handleSpectateResponse(CustomPlayer spectator, int buttonId) {
         Game game = getGame();
         
-        List<UUID> playerIds = spectatePendingPlayerLists.remove(spectator.getUniqueId());
+        List<UUID> playerIds = spectatePendingPlayerLists.remove(spectator.getUUID());
         CustomPlayer target = PlayerUtils.getPlayer(playerIds.get(
             buttonId == 0 
                 ? ThreadLocalRandom.current().nextInt(playerIds.size()) 
@@ -100,7 +100,7 @@ public abstract class SpectatorFormAbstract extends FormAbstract {
             new String[] { target.data.name }
         );
 
-        TaskHandler oldHandler = spectateHandlers.remove(spectator.getUniqueId());
+        TaskHandler oldHandler = spectateHandlers.remove(spectator.getUUID());
         if (oldHandler != null) oldHandler.cancel();
 
         final TaskHandler[] currHandler = new TaskHandler[1];
@@ -109,7 +109,7 @@ public abstract class SpectatorFormAbstract extends FormAbstract {
                     || !(game.state() == GameStateType.IN_GAME || game.state() == GameStateType.ENDING)
             ) {
                 if (currHandler[0] != null) currHandler[0].cancel();
-                spectateHandlers.remove(spectator.getUniqueId());
+                spectateHandlers.remove(spectator.getUUID());
                 return;
             }
 
@@ -118,7 +118,7 @@ public abstract class SpectatorFormAbstract extends FormAbstract {
             );
         }, 20);
 
-        spectateHandlers.put(spectator.getUniqueId(), currHandler[0]);
+        spectateHandlers.put(spectator.getUUID(), currHandler[0]);
     }
 
     protected abstract Game getGame();

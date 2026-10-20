@@ -71,7 +71,7 @@ public class AccountsManager {
                         INSERT INTO players (uuid, name)
                         VALUES (?, ?)
                         """,
-                        player.getUniqueId().toString(), name
+                        player.getUUID().toString(), name
                     );
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -109,7 +109,7 @@ public class AccountsManager {
             INSERT INTO players (uuid, name)
             VALUES (?, ?)
             """,
-            player.getUniqueId().toString(), name
+            player.getUUID().toString(), name
         );
 
         scheduler.scheduleTask(() -> {
@@ -151,7 +151,7 @@ public class AccountsManager {
             if (player.spawned) updatePlayer(player, name);
             else                player.setDisplayName(name);
 
-            PlayerDataManager.onLogin(name, player.getUniqueId());
+            PlayerDataManager.onLogin(name, player.getUUID());
         });
     }
 

@@ -13,7 +13,7 @@ public abstract class PlayerGameData {
     protected int coinsEarned = 0;
 
     public PlayerGameData(CustomPlayer player) {
-        this.uuid = player.getUniqueId();
+        this.uuid = player.getUUID();
         this.playerData = player.data;
         this.minigameId = player.minigameCurrent.mgt.id;
     }

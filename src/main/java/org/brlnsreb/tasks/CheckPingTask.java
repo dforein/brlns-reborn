@@ -38,7 +38,7 @@ public class CheckPingTask extends Task {
         int median = getMedian(player);
         if (median < 0) return -1;
 
-        long[] pings = pingHistory.get(player.getUniqueId());
+        long[] pings = pingHistory.get(player.getUUID());
         long sumAbsDev = 0;
         int samples = 0;
         for (long ping : pings) {
@@ -53,7 +53,7 @@ public class CheckPingTask extends Task {
 
     public static int getMedian(Player player) {
         //for measuring the average ping (not using mean to avoid giving too much weight to random spikes)
-        long[] pings = pingHistory.get(player.getUniqueId());
+        long[] pings = pingHistory.get(player.getUUID());
         if (pings == null) return -1;
 
         long[] validPings = Arrays.stream(pings).filter(ping -> ping >= 0).toArray();
@@ -68,7 +68,7 @@ public class CheckPingTask extends Task {
     }
 
     public static void onLeave(Player player) {
-        pingHistory.remove(player.getUniqueId());
+        pingHistory.remove(player.getUUID());
     }
 
 }
