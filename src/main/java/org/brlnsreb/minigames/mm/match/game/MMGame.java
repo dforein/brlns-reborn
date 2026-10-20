@@ -129,6 +129,8 @@ public class MMGame extends GameExpand implements GameTeam {
     }
 
     private void playDeadBodyAnimation(Player player) {
+        if (!players.contains(player) && !spectators.contains(player)) return;
+        
         for (Entity e : deadBodies) {
             DeadBodyEntity body = (DeadBodyEntity) e;
             body.playAnimation(body.getStaticAnimation(), Collections.singleton(player));

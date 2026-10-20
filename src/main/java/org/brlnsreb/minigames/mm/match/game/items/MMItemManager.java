@@ -108,7 +108,7 @@ public class MMItemManager extends ItemManager {
         
         scheduler.scheduleDelayedTask(BrlnsReb.instance,
             () -> {
-                if (game.isInGame()) {
+                if (game.isInGame() && game.getPlayers().contains(murderer)) {
                     game.getMsgUtil().sendPresetMessagePrefix(murderer, "lights-out-over");
                 }
             },
