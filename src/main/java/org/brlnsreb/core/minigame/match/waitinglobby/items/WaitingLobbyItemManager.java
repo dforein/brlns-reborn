@@ -10,6 +10,7 @@ import org.powernukkitx.Player;
 import org.powernukkitx.item.Item;
 import org.powernukkitx.item.ItemWrittenBook;
 import org.powernukkitx.utils.Config;
+import org.powernukkitx.utils.TextFormat;
 
 public abstract class WaitingLobbyItemManager extends ItemManager {
 
@@ -57,7 +58,9 @@ public abstract class WaitingLobbyItemManager extends ItemManager {
         String author = YamlUtil.getStr(path + "author", config);
         List<String> content = config.getStringList(path + "content");
         if (content.isEmpty()) content.add("No rules!");
-        String[] pages = content.toArray(new String[content.size()]);
+        String[] pages = content.stream()
+            .map(TextFormat::colorize)
+            .toArray(String[]::new);
         
         ItemWrittenBook book = (ItemWrittenBook) Item.get(Item.WRITTEN_BOOK); 
         book.setCustomName(name);
