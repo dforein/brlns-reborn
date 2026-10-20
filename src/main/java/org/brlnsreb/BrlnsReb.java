@@ -40,7 +40,7 @@ import org.brlnsreb.utils.config.Configs;
 
 @PluginMeta(
     name = "brlnsreb",
-    version = "2.0.0",
+    version = "2.0.1",
     api = {"3.0.4"},
     authors = {"brlnsreb"},
     description = "BrokenLens Reborn plugin"
