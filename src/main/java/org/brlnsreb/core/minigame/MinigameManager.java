@@ -19,7 +19,7 @@ public class MinigameManager {
     public static void forceStop() {
         for (Minigame mg : minigames) {
             for (Match match : new ArrayList<>(mg.getMatches())) {
-                match.forceStop();
+                match.forceStop(true);
             }
         }
     }

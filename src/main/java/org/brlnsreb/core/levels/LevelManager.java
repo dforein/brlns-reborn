@@ -161,15 +161,24 @@ public class LevelManager {
     }
 
     public static void unloadLevel(Level level) {
-        String folderName = level.getName();
+        String folderName = level.getFolderName();
+        List<Level> unloading = new ArrayList<>();
 
-        server.getScheduler().scheduleDelayedTask(() -> {
-            server.unloadLevel(level, true);
+        for (Level l : server.getLevels().values()) {
+            if (l.getFolderName().equals(folderName)) {
+                unloading.add(l);
+            }
+        }
+
+        for (Level l : unloading) {
+            server.unloadLevel(l);
+            CustomPlayer.removeLevel(l.getId());
+            enabledPhysicsLevels.remove(l.getId());
+        }
+
+        synchronized(reservedFolderNames) {
             reservedFolderNames.remove(folderName);
-        }, 5);
-
-        CustomPlayer.removeLevel(level.getId());
-        enabledPhysicsLevels.remove(level.getId());
+        }
     }
 
 

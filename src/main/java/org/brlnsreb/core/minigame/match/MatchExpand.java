@@ -43,16 +43,6 @@ public abstract class MatchExpand extends Match {
     }
 
     @Override
-    public void forceStop() {
-        super.forceStop();
-    }
-
-    @Override
-    public void onEnding() {
-        super.onEnding();
-    }
-
-    @Override
     public GameExpand getGame() { return (GameExpand) game; }
 
 }

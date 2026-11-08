@@ -161,7 +161,8 @@ public abstract class Match {
         waitingLobby = null;
     }
 
-    public void forceStop() {
+    public void forceStop() { forceStop(false); }
+    public void forceStop(boolean global) {
         if (closed) return;
         
         msgUtil.broadcast(msgUtil.getStrPrefix(
@@ -191,7 +192,7 @@ public abstract class Match {
         }
 
         closeMatch();
-        minigame.onForceStop(this);
+        minigame.onForceStop(this, global);
     }
 
     public void onEnding() {

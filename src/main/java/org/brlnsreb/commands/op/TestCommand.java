@@ -1,5 +1,8 @@
 package org.brlnsreb.commands.op;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.minigame.MinigameType;
 import org.brlnsreb.core.player.CustomPlayer;
@@ -12,6 +15,8 @@ import org.cloudburstmc.protocol.bedrock.data.PlayerActionType;
 import org.cloudburstmc.protocol.bedrock.data.payload.common.DimensionType;
 import org.cloudburstmc.protocol.bedrock.packet.ChangeDimensionPacket;
 import org.cloudburstmc.protocol.bedrock.packet.PlayerActionPacket;
+import org.powernukkitx.Player;
+import org.powernukkitx.Server;
 import org.powernukkitx.command.Command;
 import org.powernukkitx.command.CommandContext;
 import org.powernukkitx.command.CommandResult;
@@ -20,6 +25,7 @@ import org.powernukkitx.command.SenderType;
 import org.powernukkitx.command.route.RouteTree;
 import org.powernukkitx.command.route.node.RouteNode;
 import org.powernukkitx.command.tree.node.MessageStringNode;
+import org.powernukkitx.level.Level;
 import org.powernukkitx.level.Sound;
 import org.powernukkitx.plugin.annotation.CommandDefinition;
 
@@ -78,8 +84,21 @@ public class TestCommand extends Command {
                 SoundUtil.sendSoundTo(getPlayer(ctx), SoundUtil.RANDOM_FIZZ_3DFALSE);
                 return CommandResult.success();
             }))
-            .then(RouteNode.literal("sound2").exec(ctx -> {
-                SoundUtil.sendSoundTo(getPlayer(ctx), Sound.RANDOM_FIZZ.getSound());
+            .then(RouteNode.literal("unloadlevel").exec(ctx -> {
+                String folderName = ((Player) ctx.getSender()).level.getFolderName();
+                List<Level> unloading = new ArrayList<>();
+
+                for (Level l : Server.getInstance().getLevels().values()) {
+                    if (l.getFolderName().equals(folderName)) {
+                        unloading.add(l);
+                    }
+                }
+
+                for (Level l : unloading) {
+                    Server.getInstance().unloadLevel(l);
+                }
+
+                Server.getInstance().loadLevel(folderName);
                 return CommandResult.success();
             }));
 

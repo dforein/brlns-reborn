@@ -50,7 +50,7 @@ public abstract class Minigame {
         for (Match match : pendingMatches) match.forceStop();
         pendingMatches.clear();
 
-        BrlnsReb.getScheduler().scheduleDelayedTask(BrlnsReb.instance, () -> createNewPendingMatch(), 6);
+        BrlnsReb.getScheduler().scheduleDelayedTask(BrlnsReb.instance, () -> createNewPendingMatch(), 5);
     }
 
 
@@ -88,21 +88,14 @@ public abstract class Minigame {
 
     public boolean createNewPendingMatch() {
         if (pendingMatches.size() >= 3) return false;
-        if (!pendingMatches.isEmpty() && pendingMatches.element().getPlayers().size() < getMaxPlayers()) {
-            return false;
-        }
 
         Match match = createMatch(getNewMatchNumber());
         matches.add(match);
         pendingMatches.add(match);
 
-        if (pendingMatches.size() < 2) {
-            Match match2 = createMatch(getNewMatchNumber());
-            matches.add(match2);
-            pendingMatches.add(match2);
-        }
-
         lobby.updateJoinNpcSubtitle();
+
+        if (pendingMatches.size() < 2) createNewPendingMatch();
 
         return true;
     }
@@ -138,10 +131,10 @@ public abstract class Minigame {
         busyMatchNumbers.clear(match.getNumber());
     }
 
-    public void onForceStop(Match match) {
+    public void onForceStop(Match match, boolean global) {
         busyMatchNumbers.clear(match.getNumber());
         matches.remove(match);
-        if (pendingMatches.remove(match)) {
+        if (pendingMatches.remove(match) && !global) {
             createNewPendingMatch();
             lobby.updateJoinNpcSubtitle();
         }

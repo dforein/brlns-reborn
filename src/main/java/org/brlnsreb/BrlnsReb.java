@@ -41,7 +41,7 @@ import org.brlnsreb.utils.config.Configs;
 @PluginMeta(
     name = "brlnsreb",
     version = "2.0.1",
-    api = {"3.0.4"},
+    api = {"3.0.6"},
     authors = {"brlnsreb"},
     description = "BrokenLens Reborn plugin"
 )
@@ -125,7 +125,7 @@ public class BrlnsReb extends PluginBase {
 
         LevelManager.init();
 
-        if (underMaintenance) {     //TODO test
+        if (underMaintenance) {
             server.getSettings().baseSettings().allowList(true);
             server.getSettings().baseSettings().allowListMessage("Server is under maintenance.");
             registerCommands(MAINTENANCE_COMMANDS);
@@ -199,7 +199,6 @@ public class BrlnsReb extends PluginBase {
         for (Player p : server.getOnlinePlayers().values()) {
             if (!p.isOnline()) continue;
             PlayerDataManager.savePlayerDataSync(p.getUUID());
-            p.save();
             p.kick("Server is shutting down", false);
         }
     }
@@ -207,12 +206,6 @@ public class BrlnsReb extends PluginBase {
     @Override
     public void onDisable() {
         logger.info(TextFormat.DARK_RED + "BrokenLens Reborn server disabled!");
-
-        if (saveAtShutdown) return;
-        for (Level level : new ArrayList<>(server.getLevels().values())) {
-            if (level.getId() == server.getDefaultLevel().getId()) continue;
-            server.unloadLevel(level, true);
-        }
     }
 
 
