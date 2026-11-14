@@ -1,6 +1,6 @@
 package org.brlnsreb.core.minigame.match;
 
-public enum GameStateType {
+public enum MatchStateType {
     WAITING_LOBBY,
     LOBBY_COUNTDOWN,
     PREGAME_COUNTDOWN,

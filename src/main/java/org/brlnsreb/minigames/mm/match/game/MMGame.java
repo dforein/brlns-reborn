@@ -492,7 +492,7 @@ public class MMGame extends GameExpand implements GameTeam {
 
     public boolean checkWinConditions() {
         if (!this.isInGame()) return false;
-        if (players.size() == 0) forceStop();
+        if (players.size() == 0) match.forceStop();
 
         if (!isMurdererAlive()) {
             murdererWin = false;
@@ -529,8 +529,8 @@ public class MMGame extends GameExpand implements GameTeam {
         
         for (CustomPlayer p : players) {
             if (murdererWin && isSheriffAlive()) {
-                if (p == murderer) gameDataMap.get(p).incrementStat(StatType.WINS);
-                if (p == sheriff) gameDataMap.get(p).incrementStat(StatType.LOSSES);
+                if (p == murderer)  gameDataMap.get(p).incrementStat(StatType.WINS);
+                if (p == sheriff)   gameDataMap.get(p).incrementStat(StatType.LOSSES);
             } else {
                 gameDataMap.get(p).incrementStat(StatType.WINS);
             }
@@ -549,7 +549,7 @@ public class MMGame extends GameExpand implements GameTeam {
         SoundUtil.sendSoundTo(spectators, SoundUtil.RANDOM_FIZZ_3DFALSE, 0.9f, 0.9f);
     }
 
-    public void forceStop() {
+    public void onForceStop() {
         stopGame();
     }
 

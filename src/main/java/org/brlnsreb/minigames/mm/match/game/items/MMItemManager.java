@@ -1,7 +1,7 @@
 package org.brlnsreb.minigames.mm.match.game.items;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.minigame.match.GameStateType;
+import org.brlnsreb.core.minigame.match.MatchStateType;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerUtils;
 import org.brlnsreb.minigames.mm.match.game.MMGame;
@@ -104,7 +104,7 @@ public class MMItemManager extends ItemManager {
 
         game.getMsgUtil().sendPresetMessagePrefix(murderer, "lights-out-murderer", placeholder);
 
-        if (game.state() == GameStateType.ENDING) return;
+        if (game.isEnding()) return;
         
         scheduler.scheduleDelayedTask(BrlnsReb.instance,
             () -> {

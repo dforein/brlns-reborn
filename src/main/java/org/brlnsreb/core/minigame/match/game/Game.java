@@ -8,8 +8,8 @@ import org.brlnsreb.core.maps.GameMapLevel;
 import org.brlnsreb.core.minigame.match.game.items.SpectatorItemManager;
 import org.brlnsreb.core.minigame.match.game.listeners.ListenerAccess;
 import org.brlnsreb.core.minigame.Minigame;
-import org.brlnsreb.core.minigame.match.GameState;
-import org.brlnsreb.core.minigame.match.GameStateType;
+import org.brlnsreb.core.minigame.match.MatchState;
+import org.brlnsreb.core.minigame.match.MatchStateType;
 import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerStateType;
@@ -38,7 +38,7 @@ public abstract class Game {
 
     protected final Match match;
     protected final Minigame minigame;
-    protected final GameState state;
+    protected final MatchState state;
     protected final Set<CustomPlayer> players;
     protected final Set<CustomPlayer> spectators;
     protected final GameMapLevel map;
@@ -187,7 +187,7 @@ public abstract class Game {
     //pregame countdown
 
     protected void onPregameCountdown(int secondsCountdown) {
-        state.current = GameStateType.PREGAME_COUNTDOWN;
+        state.current = MatchStateType.PREGAME_COUNTDOWN;
 
         timer = new TimerSystem();
         timer.start(secondsCountdown, () -> {
@@ -211,7 +211,7 @@ public abstract class Game {
     //ingame
 
     protected void onGameStart() {
-        state.current = GameStateType.IN_GAME;
+        state.current = MatchStateType.IN_GAME;
         for (CustomPlayer p : players) setGameNameTag(p);
         startGame();
     }
@@ -223,7 +223,7 @@ public abstract class Game {
     //ending
 
     protected void onGameEnding() {
-        state.current = GameStateType.ENDING;
+        state.current = MatchStateType.ENDING;
         
         for (CustomPlayer p : players) {
             prepareAndSaveData(p);
@@ -247,15 +247,16 @@ public abstract class Game {
         map.close();
     }
 
-    public abstract void forceStop();
+    public abstract void onForceStop();
 
     //</GAME LIFECYCLE>
 
 
     //getters
 
-    public boolean isPregameCountdown() { return state.current == GameStateType.PREGAME_COUNTDOWN; }
-    public boolean isInGame() { return state.current == GameStateType.IN_GAME; }
+    public boolean isPregameCountdown() { return state.current == MatchStateType.PREGAME_COUNTDOWN; }
+    public boolean isInGame() { return state.current == MatchStateType.IN_GAME; }
+    public boolean isEnding() { return state.current == MatchStateType.ENDING; }
 
     protected abstract PlayerGameData getGameData(CustomPlayer player);
     public Set<CustomPlayer> getPlayers() { return players; }
@@ -263,8 +264,8 @@ public abstract class Game {
     public GameMapLevel getMap() { return map; }
     public Config getConfig() { return config; }
     public Messages getMsgUtil() { return msgUtil; }
-    public GameState getState() { return state; }
-    public GameStateType state() { return state.current; }
+    public MatchState getState() { return state; }
+    public MatchStateType state() { return state.current; }
     public ListenerAccess getListenerAccess() { return listeners; }
     public TimerSystem getTimer() { return timer; }
 

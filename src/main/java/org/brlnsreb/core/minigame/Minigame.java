@@ -135,8 +135,11 @@ public abstract class Minigame {
         busyMatchNumbers.clear(match.getNumber());
         matches.remove(match);
         if (pendingMatches.remove(match) && !global) {
-            createNewPendingMatch();
             lobby.updateJoinNpcSubtitle();
+            BrlnsReb.getScheduler().scheduleDelayedTask(BrlnsReb.instance, () -> { 
+                createNewPendingMatch();
+                lobby.updateJoinNpcSubtitle();
+            }, 20);
         }
     }
 

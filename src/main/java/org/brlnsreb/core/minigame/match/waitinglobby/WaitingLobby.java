@@ -7,7 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.brlnsreb.BrlnsReb;
 import org.brlnsreb.core.lobby.Lobby;
-import org.brlnsreb.core.minigame.match.GameStateType;
+import org.brlnsreb.core.minigame.match.MatchStateType;
 import org.brlnsreb.core.minigame.match.Match;
 import org.brlnsreb.core.minigame.match.waitinglobby.items.WaitingLobbyItemManager;
 import org.brlnsreb.core.minigame.match.waitinglobby.ui.WaitingLobbyBossBar;
@@ -72,13 +72,15 @@ public abstract class WaitingLobby extends Lobby {
         this.secondsCountdown = globalConfig.getInt("match.waiting-lobby.countdown-seconds");
         this.secondsShortenedCountdown = globalConfig.getInt("match.waiting-lobby.shortened-countdown-seconds");
 
-        spawnNpc(
-            "leave",
-            player -> {
-                match.onLeave(player);
-                minigame.onLobbyJoin(player);
-            }
-        );
+        BrlnsReb.getScheduler().scheduleDelayedTask(BrlnsReb.instance, 
+            () -> spawnNpc(
+                "leave",
+                player -> {
+                    match.onLeave(player);
+                    minigame.onLobbyJoin(player);
+                }
+            ),
+        10);
 
         this.msgUtil = match.getMsgUtil();
         this.bossBar = new WaitingLobbyBossBar(this, secondsCountdown);
@@ -178,7 +180,7 @@ public abstract class WaitingLobby extends Lobby {
     protected void onJoinItems(CustomPlayer player) {
         if (countdownShortened) {
             items.giveItemsCountdownShortened(player);
-        } else if (match.state() == GameStateType.LOBBY_COUNTDOWN) {
+        } else if (match.state() == MatchStateType.LOBBY_COUNTDOWN) {
             items.giveItemsCountdown(player);
         } else {
             items.giveItemsWaitingPlayers(player);
@@ -210,12 +212,12 @@ public abstract class WaitingLobby extends Lobby {
         if (playerNumber >= maxPlayers) {
             if (!countdownShortened) shortenCountdown(true);
             
-        } else if (playerNumber >= minPlayers && match.state() == GameStateType.WAITING_LOBBY) {
-            match.getState().current = GameStateType.LOBBY_COUNTDOWN;
+        } else if (playerNumber >= minPlayers && match.state() == MatchStateType.WAITING_LOBBY) {
+            match.getState().current = MatchStateType.LOBBY_COUNTDOWN;
             startCountdown();
 
-        } else if (playerNumber < minPlayers && match.state() == GameStateType.LOBBY_COUNTDOWN) {  //not enough players
-            match.getState().current = GameStateType.WAITING_LOBBY;
+        } else if (playerNumber < minPlayers && match.state() == MatchStateType.LOBBY_COUNTDOWN) {  //not enough players
+            match.getState().current = MatchStateType.WAITING_LOBBY;
             stopCountdown();
             minigame.readdPendingMatch(match);
         }

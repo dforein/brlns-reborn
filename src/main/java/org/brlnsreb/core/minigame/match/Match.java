@@ -29,7 +29,7 @@ import org.brlnsreb.utils.messages.Messages;
 public abstract class Match {
     
     protected final int id;
-    protected final GameState state;
+    protected final MatchState state;
     protected final Set<CustomPlayer> players;
     protected final Set<CustomPlayer> spectators;
     protected final int number;
@@ -51,7 +51,7 @@ public abstract class Match {
     
     public Match(Minigame minigame, int matchNumber) {
         this.id = ThreadLocalRandom.current().nextInt(10000000, 99999999);
-        this.state = new GameState();
+        this.state = new MatchState();
         this.players = new HashSet<>();
         this.spectators = new HashSet<>();
         this.number = matchNumber;
@@ -180,7 +180,7 @@ public abstract class Match {
             }
         
             case PREGAME_COUNTDOWN, IN_GAME, ENDING -> {
-                game.forceStop();
+                game.onForceStop();
                 for (CustomPlayer p : players) {
                     game.prepareAndSaveData(p, false);
                     minigame.onLobbyJoin(p);
@@ -239,8 +239,8 @@ public abstract class Match {
 
 
     public int getId() { return id; }
-    public GameState getState() { return state; }
-    public GameStateType state() { return state.current; }
+    public MatchState getState() { return state; }
+    public MatchStateType state() { return state.current; }
     public Set<CustomPlayer> getPlayers() { return players; }
     public Set<CustomPlayer> getSpectators() { return spectators; }
     public int getNumber() { return number; }

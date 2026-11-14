@@ -8,7 +8,6 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.brlnsreb.BrlnsReb;
-import org.brlnsreb.core.minigame.match.GameStateType;
 import org.brlnsreb.core.minigame.match.game.Game;
 import org.brlnsreb.core.player.CustomPlayer;
 import org.brlnsreb.core.player.PlayerUtils;
@@ -106,7 +105,7 @@ public abstract class SpectatorFormAbstract extends FormAbstract {
         final TaskHandler[] currHandler = new TaskHandler[1];
         currHandler[0] = BrlnsReb.getScheduler().scheduleRepeatingTask(() -> {
             if (!game.getPlayers().contains(target) || !game.getSpectators().contains(spectator)
-                    || !(game.state() == GameStateType.IN_GAME || game.state() == GameStateType.ENDING)
+                    || !(game.isInGame() || game.isEnding())
             ) {
                 if (currHandler[0] != null) currHandler[0].cancel();
                 spectateHandlers.remove(spectator.getUUID());
